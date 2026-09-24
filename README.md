@@ -190,3 +190,4 @@ Not decided yet. Publishing to the shadcn registry directory is tracked in #1.
 ## Claude Code
 
 `.claude/settings.json` enables the TypeScript LSP plugin and disables auto memory and attribution.
+
