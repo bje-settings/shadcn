@@ -133,6 +133,7 @@ on neither side is skipped.
 ```bash
 pnpm ab         # run every case; the HTML report in ab/report has upstream, ours and diff images
 pnpm ab:serve   # browse http://localhost:4400 (side by side), /upstream.html, /ours.html
+pnpm ab:timings # where the last run spent its time, per case kind and per step
 ```
 
 Every case is generated:

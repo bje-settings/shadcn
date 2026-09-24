@@ -52,24 +52,49 @@ async function open(browser: Browser, side: Side, theme: Theme): Promise<Page> {
   return page
 }
 
+// Milliseconds each step of a case took, by step name. Every case reports
+// them as a `timing` annotation, which `pnpm ab:timings` summarizes.
+type Timings = Record<string, number>
+
+async function timed<T>(timings: Timings, step: string, run: () => Promise<T>): Promise<T> {
+  const start = performance.now()
+  try {
+    return await run()
+  } finally {
+    timings[step] = Math.round(performance.now() - start)
+  }
+}
+
 // Shows one case and waits for it to settle: its fonts and images (a Base UI
 // avatar swaps its fallback for the image once it loads), its finite
 // animations (a popup's open transition) and two more frames, in which Base
 // UI moves initial focus and measures positioned popups, then a quiet DOM.
-// Returns whether the DOM went quiet before the 3s cap.
-async function show(page: Page, c: Case): Promise<boolean> {
-  await page.evaluate((id) => {
-    ;(window as Window & { showCase?: (id: string) => void }).showCase?.(id)
-  }, c.id)
-  await page.locator(`[data-case="${c.id}"]`).waitFor({ state: 'attached' })
-  await page.evaluate(() => document.fonts.ready)
-  await page.waitForLoadState('networkidle')
-  await page
-    .locator('img')
-    .evaluateAll((images) =>
-      Promise.all(images.map((image) => (image as HTMLImageElement).decode().catch(() => {}))),
-    )
-  return page.evaluate(async () => {
+// Returns whether the DOM went quiet before the 3s cap, and each wait's time.
+async function show(page: Page, c: Case): Promise<{ settled: boolean; timings: Timings }> {
+  const timings: Timings = {}
+  await timed(timings, 'render', async () => {
+    await page.evaluate((id) => {
+      ;(window as Window & { showCase?: (id: string) => void }).showCase?.(id)
+    }, c.id)
+    await page.locator(`[data-case="${c.id}"]`).waitFor({ state: 'attached' })
+  })
+  await timed(timings, 'fonts', () => page.evaluate(() => document.fonts.ready))
+  await timed(timings, 'networkidle', () => page.waitForLoadState('networkidle'))
+  await timed(timings, 'images', () =>
+    page
+      .locator('img')
+      .evaluateAll((images) =>
+        Promise.all(images.map((image) => (image as HTMLImageElement).decode().catch(() => {}))),
+      ),
+  )
+  const settle = await page.evaluate(async () => {
+    const waits: Record<string, number> = {}
+    let start = performance.now()
+    const lap = (step: string) => {
+      const now = performance.now()
+      waits[step] = Math.round(now - start)
+      start = now
+    }
     // Time-based and finite: a scroll-driven animation (an attachment
     // group's edge fade) or an endless spinner never finishes.
     const finite = document
@@ -83,12 +108,14 @@ async function show(page: Page, c: Case): Promise<boolean> {
       Promise.all(finite.map((animation) => animation.finished.catch(() => {}))),
       new Promise((resolve) => setTimeout(resolve, 2000)),
     ])
+    lap('animations')
     for (let frame = 0; frame < 2; frame++) {
       await new Promise((resolve) => requestAnimationFrame(resolve))
     }
+    lap('frames')
     // Script-driven animation (Recharts grows its bars by rewriting SVG
     // attributes) settles when the DOM stays quiet for 250ms.
-    return new Promise<boolean>((resolve) => {
+    const quiet = await new Promise<boolean>((resolve) => {
       let timer = setTimeout(() => done(true), 250)
       const cap = setTimeout(() => done(false), 3000)
       const observer = new MutationObserver(() => {
@@ -103,7 +130,10 @@ async function show(page: Page, c: Case): Promise<boolean> {
         resolve(quiet)
       }
     })
+    lap('quiet')
+    return { quiet, waits }
   })
+  return { settled: settle.quiet, timings: { ...timings, ...settle.waits } }
 }
 
 const test = base.extend<object, { pages: Pages }>({
@@ -196,49 +226,66 @@ for (const c of cases) {
     const sides = [pages.upstream[c.theme], pages.ours[c.theme]]
     const [upstreamPage, oursPage] = sides as [Page, Page]
     const reported = () => sides.flatMap((page) => errors.get(page) ?? [])
-    // Each case clears its pages' errors when it ends (afterEach), so any
-    // here arrived after the previous case finished: nothing reaches the
-    // console unaccounted for.
-    expect(reported(), 'errors after the previous case').toEqual([])
-    const settled = await Promise.all(sides.map((page) => show(page, c)))
-    if (settled.includes(false)) {
-      // Still changing after 3s (an endless animation): compared as it is.
-      testInfo.annotations.push({ type: 'unsettled', description: 'DOM still changing after 3s' })
-    }
-    for (const page of sides) {
-      const failed = page.locator(`[data-case="${c.id}"] [data-case-error]`)
-      if ((await failed.count()) > 0) {
-        throw new Error(`${await failed.getAttribute('data-case-error')}`)
+    // Recorded however the case ends: passed, failed or skipped.
+    const timings: Record<string, Timings> = { test: {} }
+    try {
+      // Each case clears its pages' errors when it ends (afterEach), so any
+      // here arrived after the previous case finished: nothing reaches the
+      // console unaccounted for.
+      expect(reported(), 'errors after the previous case').toEqual([])
+      const shown = await Promise.all(sides.map((page) => show(page, c)))
+      timings.upstream = shown[0]?.timings ?? {}
+      timings.ours = shown[1]?.timings ?? {}
+      if (shown.some(({ settled }) => !settled)) {
+        // Still changing after 3s (an endless animation): compared as it is.
+        testInfo.annotations.push({ type: 'unsettled', description: 'DOM still changing after 3s' })
       }
+      for (const page of sides) {
+        const failed = page.locator(`[data-case="${c.id}"] [data-case-error]`)
+        if ((await failed.count()) > 0) {
+          throw new Error(`${await failed.getAttribute('data-case-error')}`)
+        }
+      }
+      // A state applies on both sides or on neither; one side alone is a
+      // difference in itself.
+      const [upstreamApplies, oursApplies] = await timed(timings.test, 'applies', () =>
+        Promise.all(sides.map((page) => applies(page, c))),
+      )
+      expect(oursApplies, `${c.state} applies on ours as on upstream`).toBe(upstreamApplies)
+      test.skip(!upstreamApplies, `${c.state} does not apply to this element`)
+      // An overlay case's popup must have mounted: two blank viewports match.
+      if (c.overlay && c.slot !== undefined) {
+        for (const page of sides) await expect(target(page, c)).toBeAttached()
+      }
+      const [upstream, ours] = await timed(timings.test, 'capture', () =>
+        Promise.all([capture(upstreamPage, c), capture(oursPage, c)]),
+      )
+      const width = Math.max(upstream.width, ours.width)
+      const height = Math.max(upstream.height, ours.height)
+      const diff = new PNG({ width, height })
+      const pixels = await timed(timings.test, 'diff', async () =>
+        pixelmatch(
+          padTo(upstream, width, height).data,
+          padTo(ours, width, height).data,
+          diff.data,
+          width,
+          height,
+          { threshold: 0.1 },
+        ),
+      )
+      await timed(timings.test, 'attach', async () => {
+        for (const [name, png] of Object.entries({ upstream, ours, diff })) {
+          await testInfo.attach(name, { body: PNG.sync.write(png), contentType: 'image/png' })
+        }
+      })
+      expect({ size: `${ours.width}x${ours.height}`, pixels }).toEqual({
+        size: `${upstream.width}x${upstream.height}`,
+        pixels: 0,
+      })
+      expect(reported()).toEqual([])
+    } finally {
+      const description = JSON.stringify({ state: c.state, overlay: c.overlay, ...timings })
+      testInfo.annotations.push({ type: 'timing', description })
     }
-    // A state applies on both sides or on neither; one side alone is a
-    // difference in itself.
-    const [upstreamApplies, oursApplies] = await Promise.all(sides.map((page) => applies(page, c)))
-    expect(oursApplies, `${c.state} applies on ours as on upstream`).toBe(upstreamApplies)
-    test.skip(!upstreamApplies, `${c.state} does not apply to this element`)
-    // An overlay case's popup must have mounted: two blank viewports match.
-    if (c.overlay && c.slot !== undefined) {
-      for (const page of sides) await expect(target(page, c)).toBeAttached()
-    }
-    const [upstream, ours] = await Promise.all([capture(upstreamPage, c), capture(oursPage, c)])
-    const width = Math.max(upstream.width, ours.width)
-    const height = Math.max(upstream.height, ours.height)
-    const diff = new PNG({ width, height })
-    const pixels = pixelmatch(
-      padTo(upstream, width, height).data,
-      padTo(ours, width, height).data,
-      diff.data,
-      width,
-      height,
-      { threshold: 0.1 },
-    )
-    for (const [name, png] of Object.entries({ upstream, ours, diff })) {
-      await testInfo.attach(name, { body: PNG.sync.write(png), contentType: 'image/png' })
-    }
-    expect({ size: `${ours.width}x${ours.height}`, pixels }).toEqual({
-      size: `${upstream.width}x${upstream.height}`,
-      pixels: 0,
-    })
-    expect(reported()).toEqual([])
   })
 }
