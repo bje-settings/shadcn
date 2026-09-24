@@ -1,10 +1,12 @@
 // Screenshots every case on the upstream and ours pages and diffs them with
 // pixelmatch. Each worker opens each side once per theme, starting empty, and
 // shows its share of cases one at a time with the gallery's showCase(), so a
-// page never holds more than the case under test. An overlay case, whose popup
-// portals out of its wrapper, is compared as the whole viewport. The report
-// attaches upstream, ours and diff images for every case, and each case
-// records how long its steps took (`pnpm ab:timings`).
+// page never holds more than the case under test. A case is one test: its
+// render is compared at rest, then hovered and focused, then rendered
+// disabled, each state as a step. An overlay case, whose popup portals out of
+// its wrapper, is compared as the whole viewport. The report attaches
+// upstream, ours and diff images for every comparison, and each case records
+// how long its steps took (`pnpm ab:timings`).
 
 import { type Browser, test as base, expect, type Page } from '@playwright/test'
 import pixelmatch from 'pixelmatch'
@@ -13,6 +15,7 @@ import { type Case, cases } from './cases'
 import { PORT } from './playwright.config'
 
 type Side = 'upstream' | 'ours'
+type State = 'rest' | 'hover' | 'focus' | 'disabled'
 type Theme = Case['theme']
 type Pages = Record<Side, Record<Theme, Page>>
 
@@ -53,8 +56,9 @@ async function open(browser: Browser, side: Side, theme: Theme): Promise<Page> {
   return page
 }
 
-// Milliseconds each step of a case took, by step name. Every case reports
-// them as a `timing` annotation, which `pnpm ab:timings` summarizes.
+// Milliseconds a case spent in each step, by step name, summed over the
+// step's runs. Every case reports them as a `timing` annotation, which
+// `pnpm ab:timings` summarizes.
 type Timings = Record<string, number>
 
 async function timed<T>(timings: Timings, step: string, run: () => Promise<T>): Promise<T> {
@@ -62,7 +66,7 @@ async function timed<T>(timings: Timings, step: string, run: () => Promise<T>): 
   try {
     return await run()
   } finally {
-    timings[step] = Math.round(performance.now() - start)
+    timings[step] = (timings[step] ?? 0) + Math.round(performance.now() - start)
   }
 }
 
@@ -70,9 +74,9 @@ async function timed<T>(timings: Timings, step: string, run: () => Promise<T>): 
 // avatar swaps its fallback for the image once it loads), its finite
 // animations (a popup's open transition) and two more frames, in which Base
 // UI moves initial focus and measures positioned popups, then a quiet DOM.
-// Returns whether the DOM went quiet before the 3s cap, and each wait's time.
-async function show(page: Page, c: Case): Promise<{ settled: boolean; timings: Timings }> {
-  const timings: Timings = {}
+// Adds each wait's time to `timings`. Returns whether the DOM went quiet
+// before the 3s cap.
+async function show(page: Page, c: Case, timings: Timings): Promise<boolean> {
   await timed(timings, 'render', async () => {
     await page.evaluate((id) => {
       ;(window as Window & { showCase?: (id: string) => void }).showCase?.(id)
@@ -136,7 +140,32 @@ async function show(page: Page, c: Case): Promise<{ settled: boolean; timings: T
     lap('quiet')
     return { quiet, waits }
   })
-  return { settled: settle.quiet, timings: { ...timings, ...settle.waits } }
+  for (const [step, ms] of Object.entries(settle.waits)) timings[step] = (timings[step] ?? 0) + ms
+  return settle.quiet
+}
+
+// Whether the page's DOM changed since `watch()`: a state that rewrote it (a
+// hover that opened a card, a focus that set an attribute) leaves the render
+// dirty, and the next state starts from a fresh one.
+async function watch(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const w = window as Window & { abWatch?: MutationObserver; abDirty?: boolean }
+    w.abWatch?.disconnect()
+    w.abDirty = false
+    w.abWatch = new MutationObserver(() => {
+      w.abDirty = true
+    })
+    w.abWatch.observe(document.body, {
+      subtree: true,
+      attributes: true,
+      childList: true,
+      characterData: true,
+    })
+  })
+}
+
+async function dirty(page: Page): Promise<boolean> {
+  return page.evaluate(() => (window as Window & { abDirty?: boolean }).abDirty === true)
 }
 
 const test = base.extend<object, { pages: Pages }>({
@@ -169,8 +198,8 @@ function target(page: Page, c: Case) {
 // focus when given it (not one hidden in a closed panel) takes focus, and
 // only form controls honour `disabled`. Other combinations would only repeat
 // the rest case.
-async function applies(page: Page, c: Case): Promise<boolean> {
-  if (c.state === 'rest') return true
+async function applies(page: Page, c: Case, state: State): Promise<boolean> {
+  if (state === 'rest') return true
   return target(page, c).evaluate((element, state) => {
     if (state === 'focus') {
       ;(element as HTMLElement).focus({ focusVisible: true })
@@ -184,19 +213,19 @@ async function applies(page: Page, c: Case): Promise<boolean> {
       return width > 0 && height > 0 && inView
     }
     return 'disabled' in element
-  }, c.state)
+  }, state)
 }
 
 // A screenshot as Playwright encoded it, for the report, and decoded, to diff.
 type Shot = { file: Buffer; png: PNG }
 
-async function capture(page: Page, c: Case): Promise<Shot> {
+async function capture(page: Page, c: Case, state: State): Promise<Shot> {
   const element = target(page, c)
   try {
     // force: skip actionability checks, which never pass for an element that
     // spins (Spinner) or ignores the pointer (Kbd); only :hover matters here.
-    if (c.state === 'hover') await element.hover({ force: true })
-    if (c.state === 'focus') {
+    if (state === 'hover') await element.hover({ force: true })
+    if (state === 'focus') {
       // Focus as the keyboard would, so it matches :focus-visible; tabbing
       // would leave a popup's focus trap or move focus into an open popup.
       await element.evaluate((el) => (el as HTMLElement).focus({ focusVisible: true }))
@@ -229,75 +258,116 @@ test.afterEach(() => {
 
 for (const c of cases) {
   test(c.id, async ({ pages }, testInfo) => {
-    const sides = [pages.upstream[c.theme], pages.ours[c.theme]]
-    const [upstreamPage, oursPage] = sides as [Page, Page]
+    const sides = [pages.upstream[c.theme], pages.ours[c.theme]] as [Page, Page]
     const reported = () => sides.flatMap((page) => errors.get(page) ?? [])
-    // Recorded however the case ends: passed, failed or skipped.
-    const timings: Record<string, Timings> = { test: {} }
+    // Recorded however the case ends: passed or failed.
+    const timings: Record<Side | 'test', Timings> = { upstream: {}, ours: {}, test: {} }
+    const compared: State[] = []
+    let shows = 0
+
+    // Shows a render on both sides, fails on its render error, and watches
+    // it for changes from here on.
+    const showBoth = async (render: Case) => {
+      shows++
+      const settled = await Promise.all([
+        show(sides[0], render, timings.upstream),
+        show(sides[1], render, timings.ours),
+      ])
+      if (settled.includes(false) && !testInfo.annotations.some((a) => a.type === 'unsettled')) {
+        // Still changing after 3s (an endless animation): compared as it is.
+        testInfo.annotations.push({ type: 'unsettled', description: 'DOM still changing after 3s' })
+      }
+      for (const page of sides) {
+        const failed = page.locator(`[data-case="${render.id}"] [data-case-error]`)
+        if ((await failed.count()) > 0) {
+          throw new Error(`${await failed.getAttribute('data-case-error')}`)
+        }
+      }
+      await Promise.all(sides.map(watch))
+    }
+
+    // A state applies on both sides or on neither; one side alone is a
+    // difference in itself.
+    const appliesBoth = async (render: Case, state: State) => {
+      const [upstream, ours] = await timed(timings.test, 'applies', () =>
+        Promise.all(sides.map((page) => applies(page, render, state))),
+      )
+      expect(ours, `${state} applies on ours as on upstream`).toBe(upstream)
+      return upstream
+    }
+
+    // Compares one state of the render on show, if it applies.
+    const compare = (render: Case, state: State) =>
+      test.step(state, async () => {
+        if (!(await appliesBoth(render, state))) return
+        // An overlay case's popup must have mounted: two blank viewports match.
+        if (render.overlay && render.slot !== undefined) {
+          for (const page of sides) await expect(target(page, render)).toBeAttached()
+        }
+        const [upstreamShot, oursShot] = await timed(timings.test, 'capture', () =>
+          Promise.all(sides.map((page) => capture(page, render, state))),
+        )
+        const [upstream, ours] = [upstreamShot.png, oursShot.png]
+        const width = Math.max(upstream.width, ours.width)
+        const height = Math.max(upstream.height, ours.height)
+        const diff = new PNG({ width, height })
+        const pixels = await timed(timings.test, 'diff', async () =>
+          pixelmatch(
+            padTo(upstream, width, height).data,
+            padTo(ours, width, height).data,
+            diff.data,
+            width,
+            height,
+            { threshold: 0.1 },
+          ),
+        )
+        await timed(timings.test, 'attach', async () => {
+          // The screenshots as taken: only the diff needs encoding.
+          const files = {
+            upstream: upstreamShot.file,
+            ours: oursShot.file,
+            diff: PNG.sync.write(diff),
+          }
+          for (const [name, body] of Object.entries(files)) {
+            await testInfo.attach(`${state} ${name}`, { body, contentType: 'image/png' })
+          }
+        })
+        compared.push(state)
+        // Soft: the case's other states are still compared.
+        expect
+          .soft({ size: `${ours.width}x${ours.height}`, pixels }, `${state} matches`)
+          .toEqual({ size: `${upstream.width}x${upstream.height}`, pixels: 0 })
+        expect(reported(), `errors while comparing ${state}`).toEqual([])
+      })
+
     try {
       // Each case clears its pages' errors when it ends (afterEach), so any
       // here arrived after the previous case finished: nothing reaches the
       // console unaccounted for.
       expect(reported(), 'errors after the previous case').toEqual([])
-      const shown = await Promise.all(sides.map((page) => show(page, c)))
-      timings.upstream = shown[0]?.timings ?? {}
-      timings.ours = shown[1]?.timings ?? {}
-      if (shown.some(({ settled }) => !settled)) {
-        // Still changing after 3s (an endless animation): compared as it is.
-        testInfo.annotations.push({ type: 'unsettled', description: 'DOM still changing after 3s' })
-      }
-      for (const page of sides) {
-        const failed = page.locator(`[data-case="${c.id}"] [data-case-error]`)
-        if ((await failed.count()) > 0) {
-          throw new Error(`${await failed.getAttribute('data-case-error')}`)
+      await showBoth(c)
+      await compare(c, 'rest')
+      if (c.interactive) {
+        for (const state of ['hover', 'focus'] as const) {
+          // Each state starts from an untouched render.
+          if ((await Promise.all(sides.map(dirty))).includes(true)) await showBoth(c)
+          await compare(c, state)
         }
       }
-      // A state applies on both sides or on neither; one side alone is a
-      // difference in itself.
-      const [upstreamApplies, oursApplies] = await timed(timings.test, 'applies', () =>
-        Promise.all(sides.map((page) => applies(page, c))),
-      )
-      expect(oursApplies, `${c.state} applies on ours as on upstream`).toBe(upstreamApplies)
-      test.skip(!upstreamApplies, `${c.state} does not apply to this element`)
-      // An overlay case's popup must have mounted: two blank viewports match.
-      if (c.overlay && c.slot !== undefined) {
-        for (const page of sides) await expect(target(page, c)).toBeAttached()
+      // Only form controls honour `disabled`, whichever way they render, so
+      // the disabled render is shown only when this one's element takes it.
+      if (c.disabled && (await appliesBoth(c, 'disabled'))) {
+        await showBoth(c.disabled)
+        await compare(c.disabled, 'disabled')
       }
-      const [upstreamShot, oursShot] = await timed(timings.test, 'capture', () =>
-        Promise.all([capture(upstreamPage, c), capture(oursPage, c)]),
-      )
-      const [upstream, ours] = [upstreamShot.png, oursShot.png]
-      const width = Math.max(upstream.width, ours.width)
-      const height = Math.max(upstream.height, ours.height)
-      const diff = new PNG({ width, height })
-      const pixels = await timed(timings.test, 'diff', async () =>
-        pixelmatch(
-          padTo(upstream, width, height).data,
-          padTo(ours, width, height).data,
-          diff.data,
-          width,
-          height,
-          { threshold: 0.1 },
-        ),
-      )
-      await timed(timings.test, 'attach', async () => {
-        // The screenshots as taken: only the diff needs encoding.
-        const files = {
-          upstream: upstreamShot.file,
-          ours: oursShot.file,
-          diff: PNG.sync.write(diff),
-        }
-        for (const [name, body] of Object.entries(files)) {
-          await testInfo.attach(name, { body, contentType: 'image/png' })
-        }
-      })
-      expect({ size: `${ours.width}x${ours.height}`, pixels }).toEqual({
-        size: `${upstream.width}x${upstream.height}`,
-        pixels: 0,
-      })
-      expect(reported()).toEqual([])
     } finally {
-      const description = JSON.stringify({ state: c.state, overlay: c.overlay, ...timings })
+      const description = JSON.stringify({
+        overlay: c.overlay,
+        interactive: c.interactive,
+        compared,
+        shows,
+        ...timings,
+      })
       testInfo.annotations.push({ type: 'timing', description })
     }
   })

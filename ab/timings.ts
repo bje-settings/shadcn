@@ -13,7 +13,15 @@ type Report = {
   stats: { duration: number; expected: number; skipped: number; unexpected: number; flaky: number }
   suites: Suite[]
 }
-type Timing = { state: string; overlay: boolean } & Record<string, Record<string, number>>
+type Timing = {
+  overlay: boolean
+  interactive: boolean
+  compared: string[]
+  shows: number
+  upstream: Record<string, number>
+  ours: Record<string, number>
+  test: Record<string, number>
+}
 
 type Row = { title: string; status: string; duration: number; unsettled: boolean; timing?: Timing }
 
@@ -47,7 +55,7 @@ for (const spec of specs(report.suites)) {
 function steps(timing: Timing): Record<string, number> {
   const out: Record<string, number> = {}
   for (const side of ['upstream', 'ours'] as const) {
-    for (const [step, ms] of Object.entries(timing[side] ?? {})) {
+    for (const [step, ms] of Object.entries(timing[side])) {
       out[step] = Math.max(out[step] ?? 0, ms)
     }
   }
@@ -68,18 +76,29 @@ function table(head: string[], body: (string | number)[][]): string {
 }
 
 const lines: string[] = ['## A/B timings', '']
+// Comparisons made, by state: each is one upstream and ours screenshot diffed.
+const comparisons = new Map<string, number>()
+for (const row of rows) {
+  for (const state of row.timing?.compared ?? []) {
+    comparisons.set(state, (comparisons.get(state) ?? 0) + 1)
+  }
+}
+const shows = sum(rows.map((row) => row.timing?.shows ?? 0))
 const workers = report.config.metadata?.actualWorkers ?? report.config.workers
 const testTime = sum(rows.map((row) => row.duration))
 lines.push(
   `Wall ${seconds(report.stats.duration)} with ${workers} worker(s); tests total ${seconds(testTime)}.`,
   `${report.stats.expected} passed, ${report.stats.skipped} skipped, ${report.stats.unexpected} failed, ${report.stats.flaky} flaky.`,
+  `${sum([...comparisons.values()])} comparisons (${[...comparisons].map(([state, count]) => `${count} ${state}`).join(', ')}) from ${shows} renders.`,
   '',
 )
 
 // By outcome and kind of case.
 const groups = new Map<string, number[]>()
 for (const row of rows) {
-  const kind = row.timing ? `${row.timing.overlay ? 'overlay' : 'inline'} ${row.timing.state}` : '?'
+  const kind = row.timing
+    ? `${row.timing.overlay ? 'overlay' : 'inline'} ${row.timing.interactive ? 'fixture' : 'example'}`
+    : '?'
   for (const key of [`${row.status}`, `${row.status}: ${kind}`]) {
     groups.set(key, [...(groups.get(key) ?? []), row.duration])
   }

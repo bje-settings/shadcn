@@ -1,8 +1,8 @@
 // Every A/B case, all generated: each fixture (exported component and cva()
-// option) in light and dark, at rest, hovered, keyboard-focused and disabled;
-// each usable sub-example of upstream's docs examples; and each of Typeset's
-// content fixtures inside `.typeset`, both in light and dark. Both pages render
-// this same list from their own modules and stylesheets.
+// option) in light and dark, compared at rest, hovered, keyboard-focused and
+// disabled; each usable sub-example of upstream's docs examples; and each of
+// Typeset's content fixtures inside `.typeset`, both in light and dark. Both
+// pages render this same list from their own modules and stylesheets.
 
 import type { ReactNode } from 'react'
 import { examples } from './generated/examples'
@@ -16,58 +16,71 @@ export type Side = { ui: Ui; examples: Ui }
 export type Case = {
   id: string
   theme: 'light' | 'dark'
-  state: 'rest' | 'hover' | 'focus' | 'disabled'
   // data-slot of the element a state applies to; else the case's first child
   slot?: string
   // Renders only when the page is narrowed to it and is compared as the
   // whole viewport, since its popup portals out of the case
   overlay: boolean
+  // Also compared hovered and keyboard-focused, on the same render
+  interactive: boolean
   render: (side: Side) => ReactNode
+  // The same fixture rendered disabled, compared when its element honours
+  // `disabled`
+  disabled?: Case
 }
 
 const THEMES = ['light', 'dark'] as const
-const STATES = ['rest', 'hover', 'focus', 'disabled'] as const
 
+function fixtureCase(
+  fixture: (typeof fixtures)[number],
+  theme: Case['theme'],
+  disabled: boolean,
+): Case {
+  return {
+    id: `${fixture.label} ${theme}${disabled ? ' disabled' : ''}`,
+    theme,
+    slot: fixture.slot,
+    overlay: fixture.overlay,
+    interactive: !disabled,
+    render: ({ ui }: Side) => {
+      const Component = pick(ui, fixture.item, fixture.component)
+      let element: ReactNode = (
+        <Component {...fixture.props} disabled={disabled || undefined}>
+          {fixture.children ? fixture.component : undefined}
+        </Component>
+      )
+      // Inside its scaffold's ancestors, innermost first.
+      for (const part of [...fixture.ancestors].reverse()) {
+        const Ancestor = pick(ui, fixture.item, part.component)
+        const Trigger = part.trigger && pick(ui, fixture.item, part.trigger.component)
+        element = (
+          <Ancestor {...part.props}>
+            {part.trigger && Trigger && (
+              <Trigger {...part.trigger.props}>{part.trigger.component}</Trigger>
+            )}
+            {element}
+          </Ancestor>
+        )
+      }
+      return element
+    },
+  }
+}
+
+// One A/B test each.
 export const cases: Case[] = [
   ...fixtures.flatMap((fixture) =>
-    THEMES.flatMap((theme) =>
-      STATES.map((state) => ({
-        id: `${fixture.label} ${theme} ${state}`,
-        theme,
-        state,
-        slot: fixture.slot,
-        overlay: fixture.overlay,
-        render: ({ ui }: Side) => {
-          const Component = pick(ui, fixture.item, fixture.component)
-          let element: ReactNode = (
-            <Component {...fixture.props} disabled={state === 'disabled' || undefined}>
-              {fixture.children ? fixture.component : undefined}
-            </Component>
-          )
-          // Inside its scaffold's ancestors, innermost first.
-          for (const part of [...fixture.ancestors].reverse()) {
-            const Ancestor = pick(ui, fixture.item, part.component)
-            const Trigger = part.trigger && pick(ui, fixture.item, part.trigger.component)
-            element = (
-              <Ancestor {...part.props}>
-                {part.trigger && Trigger && (
-                  <Trigger {...part.trigger.props}>{part.trigger.component}</Trigger>
-                )}
-                {element}
-              </Ancestor>
-            )
-          }
-          return element
-        },
-      })),
-    ),
+    THEMES.map((theme) => ({
+      ...fixtureCase(fixture, theme, false),
+      disabled: fixtureCase(fixture, theme, true),
+    })),
   ),
   ...examples.flatMap((example) =>
     THEMES.map((theme) => ({
       id: `${example.example} ${example.name} ${theme}`,
       theme,
-      state: 'rest' as const,
       overlay: false,
+      interactive: false,
       render: (side: Side) => {
         const Example = pick(side.examples, example.example, example.name)
         return <Example />
@@ -78,8 +91,8 @@ export const cases: Case[] = [
     THEMES.map((theme) => ({
       id: `typeset ${fixture.name} ${theme}`,
       theme,
-      state: 'rest' as const,
       overlay: false,
+      interactive: false,
       render: () => (
         <div
           className="typeset"
@@ -91,3 +104,6 @@ export const cases: Case[] = [
     })),
   ),
 ]
+
+// Every render the gallery can show: each case and its disabled render.
+export const renders: Case[] = cases.flatMap((c) => (c.disabled ? [c, c.disabled] : [c]))
