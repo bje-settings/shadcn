@@ -63,6 +63,14 @@ function renderButtonGroupSeparator(props: ComponentProps<typeof ButtonGroupSepa
   return container.querySelector('[data-slot="button-group-separator"]')?.className.split(' ') ?? []
 }
 
+function attributesOfButtonGroupSeparator(props: ComponentProps<typeof ButtonGroupSeparator> = {}) {
+  const { container } = render(<ButtonGroupSeparator {...props} />)
+  const element = container.querySelector('[data-slot="button-group-separator"]')
+  return Object.fromEntries(
+    [...(element?.attributes ?? [])].filter((a) => a.name !== 'id').map((a) => [a.name, a.value]),
+  )
+}
+
 describe('ButtonGroupSeparator', () => {
   it('renders [data-slot="button-group-separator"] with its classes', () => {
     expect(renderButtonGroupSeparator()).toEqual(
@@ -71,8 +79,8 @@ describe('ButtonGroupSeparator', () => {
   })
 
   it('renders the same with orientation="vertical" passed explicitly', () => {
-    expect(renderButtonGroupSeparator({ orientation: 'vertical' })).toEqual(
-      renderButtonGroupSeparator(),
+    expect(attributesOfButtonGroupSeparator({ orientation: 'vertical' })).toEqual(
+      attributesOfButtonGroupSeparator(),
     )
   })
 

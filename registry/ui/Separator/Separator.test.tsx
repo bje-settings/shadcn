@@ -11,13 +11,21 @@ function renderSeparator(props: ComponentProps<typeof Separator> = {}) {
   return container.querySelector('[data-slot="separator"]')?.className.split(' ') ?? []
 }
 
+function attributesOfSeparator(props: ComponentProps<typeof Separator> = {}) {
+  const { container } = render(<Separator {...props} />)
+  const element = container.querySelector('[data-slot="separator"]')
+  return Object.fromEntries(
+    [...(element?.attributes ?? [])].filter((a) => a.name !== 'id').map((a) => [a.name, a.value]),
+  )
+}
+
 describe('Separator', () => {
   it('renders [data-slot="separator"] with its classes', () => {
     expect(renderSeparator()).toEqual(expect.arrayContaining([styles.separator]))
   })
 
   it('renders the same with orientation="horizontal" passed explicitly', () => {
-    expect(renderSeparator({ orientation: 'horizontal' })).toEqual(renderSeparator())
+    expect(attributesOfSeparator({ orientation: 'horizontal' })).toEqual(attributesOfSeparator())
   })
 
   it('appends a consumer className last', () => {
