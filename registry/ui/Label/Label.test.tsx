@@ -8,16 +8,57 @@ import styles from './Label.module.scss'
 
 function renderLabel(props: Partial<ComponentProps<typeof Label>> = {}) {
   cleanup()
-  render(<Label htmlFor="label-demo-terms" {...(props as ComponentProps<typeof Label>)} />)
-  return document.querySelector('[data-slot="label"]')?.getAttribute('class')?.split(' ') ?? []
+  render(
+    <Label
+      data-testid="subject"
+      {...({ htmlFor: 'label-demo-terms', ...props } as ComponentProps<typeof Label>)}
+    />,
+  )
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="label"]')
+}
+
+function classesOfLabel(props: Partial<ComponentProps<typeof Label>> = {}) {
+  return renderLabel(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('Label', () => {
   it('renders [data-slot="label"] with its classes', () => {
-    expect(renderLabel()).toEqual(expect.arrayContaining([styles.label]))
+    expect(classesOfLabel()).toEqual(expect.arrayContaining([styles.label]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderLabel({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderLabel({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(
+      <Label data-testid="subject" htmlFor="label-demo-username">
+        Label
+      </Label>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (3)", () => {
+    cleanup()
+    render(
+      <Label data-testid="subject" htmlFor="label-demo-disabled">
+        Label
+      </Label>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (4)", () => {
+    cleanup()
+    render(
+      <Label data-testid="subject" htmlFor="label-demo-message">
+        Label
+      </Label>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })

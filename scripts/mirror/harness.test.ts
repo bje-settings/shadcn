@@ -46,9 +46,14 @@ function Internal() {
 export { Chip, ChipMark, ChipLabel, ChipInput }`
 
 const parts = (transformed: TransformedComponent) => ({
-  types: new Map<string, PartTypes>([['ChipLabel', { className: true, opens: false }]]),
+  types: new Map<string, PartTypes>([
+    ['ChipLabel', { className: true, opens: false, keepMounted: false, required: [] }],
+  ]),
   scaffolds: new Map<string, Scaffold>(
-    transformed.components.map((c) => [c.name, { ancestors: [], props: {}, children: true }]),
+    transformed.components.map((c) => [
+      c.name,
+      { ancestors: [], props: {}, children: true, others: [] },
+    ]),
   ),
 })
 
@@ -85,12 +90,15 @@ describe('fixturesFor', () => {
       ancestors: [{ component: 'Chip', props: { defaultOpen: true } }],
       props: { value: 'a', tone: 'soft' },
       children: false,
+      others: [],
     }
     const fixtures = fixturesFor({
       name: 'chip',
       upstreamSource: chip,
       transformed,
-      types: new Map([['ChipMark', { className: false, opens: true }]]),
+      types: new Map([
+        ['ChipMark', { className: false, opens: true, keepMounted: false, required: [] }],
+      ]),
       scaffolds: new Map([
         ...parts(transformed).scaffolds,
         ['Chip', scaffold],

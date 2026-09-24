@@ -2,17 +2,151 @@
 
 'use client'
 
+import * as React from 'react'
+
 import { Example } from '@/registry/base-vega/components/example'
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarGroupCount,
+  AvatarImage,
+} from '@/registry/bje/ui/Avatar/Avatar'
 import { Button } from '@/registry/bje/ui/Button/Button'
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from '@/registry/bje/ui/Card/Card'
+import { ToggleGroup, ToggleGroupItem } from '@/registry/bje/ui/ToggleGroup/ToggleGroup'
 import { IconPlaceholder } from '@/app/(create)/components/icon-placeholder'
+
+const spacingOptions = [
+  {
+    className: '[--card-spacing:--spacing(4)]',
+    label: '16px',
+    value: '4',
+  },
+  {
+    className: '[--card-spacing:--spacing(5)]',
+    label: '20px',
+    value: '5',
+  },
+  {
+    className: '[--card-spacing:--spacing(6)]',
+    label: '24px',
+    value: '6',
+  },
+  {
+    className: '[--card-spacing:--spacing(8)]',
+    label: '32px',
+    value: '8',
+  },
+]
+
+function CardCustomSpacing() {
+  const [spacing, setSpacing] = React.useState('4')
+  const selectedSpacing = spacingOptions.find((option) => option.value === spacing)
+
+  return (
+    <Example title="Custom Spacing">
+      <div className="mx-auto grid w-full max-w-sm gap-4">
+        <ToggleGroup
+          value={[spacing]}
+          onValueChange={(value) => {
+            if (value[0]) {
+              setSpacing(value[0])
+            }
+          }}
+          variant="outline"
+          size="sm"
+          className="justify-center"
+        >
+          {spacingOptions.map((option) => (
+            <ToggleGroupItem key={option.value} value={option.value}>
+              {option.label}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
+        <Card className={selectedSpacing?.className}>
+          <CardHeader>
+            <CardTitle>Release Health</CardTitle>
+            <CardDescription>Track readiness across launch signals.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-2 rounded-lg bg-muted/50 p-3 text-sm style-lyra:rounded-none style-sera:rounded-none">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-muted-foreground">Checks passed</span>
+                <span className="font-medium">24 / 26</span>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-muted-foreground">Open blockers</span>
+                <span className="font-medium">2</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </Example>
+  )
+}
+
+function CardMeetingNotes() {
+  return (
+    <Example title="Meeting Notes">
+      <Card className="mx-auto w-full max-w-sm">
+        <CardHeader>
+          <CardTitle>Meeting Notes</CardTitle>
+          <CardDescription>Transcript from the meeting with the client.</CardDescription>
+          <CardAction>
+            <Button variant="outline" size="sm">
+              <IconPlaceholder
+                lucide="CaptionsIcon"
+                tabler="IconTextCaption"
+                hugeicons="TextCheckIcon"
+                phosphor="TextTIcon"
+                remixicon="RiTextWrap"
+                data-icon="inline-start"
+              />
+              Transcribe
+            </Button>
+          </CardAction>
+        </CardHeader>
+        <CardContent>
+          <p>Client requested dashboard redesign with focus on mobile responsiveness.</p>
+          <ol className="mt-4 flex list-decimal flex-col gap-2 pl-6">
+            <li>New analytics widgets for daily/weekly metrics</li>
+            <li>Simplified navigation menu</li>
+            <li>Dark mode support</li>
+            <li>Timeline: 6 weeks</li>
+            <li>Follow-up meeting scheduled for next Tuesday</li>
+          </ol>
+        </CardContent>
+        <CardFooter>
+          <AvatarGroup>
+            <Avatar>
+              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+            <Avatar>
+              <AvatarImage src="https://github.com/maxleiter.png" alt="@maxleiter" />
+              <AvatarFallback>LR</AvatarFallback>
+            </Avatar>
+            <Avatar>
+              <AvatarImage src="https://github.com/evilrabbit.png" alt="@evilrabbit" />
+              <AvatarFallback>ER</AvatarFallback>
+            </Avatar>
+            <AvatarGroupCount>+8</AvatarGroupCount>
+          </AvatarGroup>
+        </CardFooter>
+      </Card>
+    </Example>
+  )
+}
 
 function CardWithImage() {
   return (
@@ -132,4 +266,11 @@ function CardSmall() {
   )
 }
 
-export { CardDefault, CardSmall, CardWithImage, CardWithImageSmall }
+export {
+  CardDefault,
+  CardSmall,
+  CardCustomSpacing,
+  CardWithImage,
+  CardWithImageSmall,
+  CardMeetingNotes,
+}

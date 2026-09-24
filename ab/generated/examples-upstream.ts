@@ -16,6 +16,20 @@ import * as aspectRatioExample from './examples/upstream/aspect-ratio-example'
 import * as tableExample from './examples/upstream/table-example'
 import * as breadcrumbExample from './examples/upstream/breadcrumb-example'
 import * as emptyExample from './examples/upstream/empty-example'
+import * as checkboxExample from './examples/upstream/checkbox-example'
+import * as switchExample from './examples/upstream/switch-example'
+import * as progressExample from './examples/upstream/progress-example'
+import * as sliderExample from './examples/upstream/slider-example'
+import * as tabsExample from './examples/upstream/tabs-example'
+import * as toggleExample from './examples/upstream/toggle-example'
+import * as toggleGroupExample from './examples/upstream/toggle-group-example'
+import * as radioGroupExample from './examples/upstream/radio-group-example'
+import * as avatarExample from './examples/upstream/avatar-example'
+import * as collapsibleExample from './examples/upstream/collapsible-example'
+import * as scrollAreaExample from './examples/upstream/scroll-area-example'
+import * as nativeSelectExample from './examples/upstream/native-select-example'
+import * as accordionExample from './examples/upstream/accordion-example'
+import * as inputOtpExample from './examples/upstream/input-otp-example'
 
 export const upstreamExamples = {
   'button-example': buttonExample,
@@ -34,4 +48,18 @@ export const upstreamExamples = {
   'table-example': tableExample,
   'breadcrumb-example': breadcrumbExample,
   'empty-example': emptyExample,
+  'checkbox-example': checkboxExample,
+  'switch-example': switchExample,
+  'progress-example': progressExample,
+  'slider-example': sliderExample,
+  'tabs-example': tabsExample,
+  'toggle-example': toggleExample,
+  'toggle-group-example': toggleGroupExample,
+  'radio-group-example': radioGroupExample,
+  'avatar-example': avatarExample,
+  'collapsible-example': collapsibleExample,
+  'scroll-area-example': scrollAreaExample,
+  'native-select-example': nativeSelectExample,
+  'accordion-example': accordionExample,
+  'input-otp-example': inputOtpExample,
 }

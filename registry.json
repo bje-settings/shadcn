@@ -503,6 +503,412 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "title": "Checkbox",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Checkbox/Checkbox.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Checkbox/Checkbox.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Checkbox/Checkbox.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Switch/Switch.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Switch/Switch.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Switch/Switch.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "progress",
+      "type": "registry:ui",
+      "title": "Progress",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Progress/Progress.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Progress/Progress.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Progress/Progress.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "slider",
+      "type": "registry:ui",
+      "title": "Slider",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Slider/Slider.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Slider/Slider.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Slider/Slider.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tabs",
+      "type": "registry:ui",
+      "title": "Tabs",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Tabs/Tabs.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Tabs/Tabs.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Tabs/Tabs.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "toggle",
+      "type": "registry:ui",
+      "title": "Toggle",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Toggle/Toggle.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Toggle/Toggle.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Toggle/Toggle.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "toggle-group",
+      "type": "registry:ui",
+      "title": "ToggleGroup",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/toggle", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/ToggleGroup/ToggleGroup.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/ToggleGroup/ToggleGroup.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/ToggleGroup/ToggleGroup.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "title": "RadioGroup",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/RadioGroup/RadioGroup.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/RadioGroup/RadioGroup.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/RadioGroup/RadioGroup.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "avatar",
+      "type": "registry:ui",
+      "title": "Avatar",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Avatar/Avatar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Avatar/Avatar.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Avatar/Avatar.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "collapsible",
+      "type": "registry:ui",
+      "title": "Collapsible",
+      "dependencies": ["@base-ui/react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Collapsible/Collapsible.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Collapsible/Collapsible.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "scroll-area",
+      "type": "registry:ui",
+      "title": "ScrollArea",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/ScrollArea/ScrollArea.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/ScrollArea/ScrollArea.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/ScrollArea/ScrollArea.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "direction",
+      "type": "registry:ui",
+      "title": "Direction",
+      "dependencies": [],
+      "devDependencies": ["@base-ui/react", "@testing-library/dom", "jsdom", "sass", "vitest"],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Direction/Direction.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Direction/Direction.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "native-select",
+      "type": "registry:ui",
+      "title": "NativeSelect",
+      "dependencies": ["clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/NativeSelect/NativeSelect.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/NativeSelect/NativeSelect.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/NativeSelect/NativeSelect.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "accordion",
+      "type": "registry:ui",
+      "title": "Accordion",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Accordion/Accordion.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Accordion/Accordion.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Accordion/Accordion.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input-otp",
+      "type": "registry:ui",
+      "title": "InputOtp",
+      "dependencies": ["clsx", "input-otp", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/InputOtp/InputOtp.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/InputOtp/InputOtp.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/InputOtp/InputOtp.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

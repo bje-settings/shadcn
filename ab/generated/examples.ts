@@ -119,11 +119,19 @@ export const examples = [
   },
   {
     example: 'card-example',
+    name: 'CardCustomSpacing',
+  },
+  {
+    example: 'card-example',
     name: 'CardWithImage',
   },
   {
     example: 'card-example',
     name: 'CardWithImageSmall',
+  },
+  {
+    example: 'card-example',
+    name: 'CardMeetingNotes',
   },
   {
     example: 'alert-example',
@@ -152,6 +160,10 @@ export const examples = [
   {
     example: 'input-example',
     name: 'InputWithButton',
+  },
+  {
+    example: 'input-example',
+    name: 'InputWithNativeSelect',
   },
   {
     example: 'textarea-example',
@@ -264,5 +276,265 @@ export const examples = [
   {
     example: 'empty-example',
     name: 'EmptyInCard',
+  },
+  {
+    example: 'checkbox-example',
+    name: 'CheckboxInTable',
+  },
+  {
+    example: 'switch-example',
+    name: 'SwitchWithLabel',
+  },
+  {
+    example: 'switch-example',
+    name: 'SwitchDisabled',
+  },
+  {
+    example: 'switch-example',
+    name: 'SwitchSizes',
+  },
+  {
+    example: 'progress-example',
+    name: 'ProgressValues',
+  },
+  {
+    example: 'progress-example',
+    name: 'ProgressWithLabel',
+  },
+  {
+    example: 'progress-example',
+    name: 'ProgressControlled',
+  },
+  {
+    example: 'slider-example',
+    name: 'SliderBasic',
+  },
+  {
+    example: 'slider-example',
+    name: 'SliderRange',
+  },
+  {
+    example: 'slider-example',
+    name: 'SliderMultiple',
+  },
+  {
+    example: 'slider-example',
+    name: 'SliderVertical',
+  },
+  {
+    example: 'slider-example',
+    name: 'SliderControlled',
+  },
+  {
+    example: 'slider-example',
+    name: 'SliderDisabled',
+  },
+  {
+    example: 'tabs-example',
+    name: 'TabsBasic',
+  },
+  {
+    example: 'tabs-example',
+    name: 'TabsLine',
+  },
+  {
+    example: 'tabs-example',
+    name: 'TabsVariantsComparison',
+  },
+  {
+    example: 'tabs-example',
+    name: 'TabsDisabled',
+  },
+  {
+    example: 'tabs-example',
+    name: 'TabsWithIcons',
+  },
+  {
+    example: 'tabs-example',
+    name: 'TabsIconOnly',
+  },
+  {
+    example: 'tabs-example',
+    name: 'TabsMultiple',
+  },
+  {
+    example: 'tabs-example',
+    name: 'TabsWithContent',
+  },
+  {
+    example: 'tabs-example',
+    name: 'TabsLineWithContent',
+  },
+  {
+    example: 'tabs-example',
+    name: 'TabsLineDisabled',
+  },
+  {
+    example: 'tabs-example',
+    name: 'TabsVertical',
+  },
+  {
+    example: 'tabs-example',
+    name: 'TabsWithInputAndButton',
+  },
+  {
+    example: 'toggle-example',
+    name: 'ToggleBasic',
+  },
+  {
+    example: 'toggle-example',
+    name: 'ToggleOutline',
+  },
+  {
+    example: 'toggle-example',
+    name: 'ToggleSizes',
+  },
+  {
+    example: 'toggle-example',
+    name: 'ToggleWithButtonText',
+  },
+  {
+    example: 'toggle-example',
+    name: 'ToggleWithButtonIcon',
+  },
+  {
+    example: 'toggle-example',
+    name: 'ToggleWithButtonIconText',
+  },
+  {
+    example: 'toggle-example',
+    name: 'ToggleDisabled',
+  },
+  {
+    example: 'toggle-example',
+    name: 'ToggleWithIcon',
+  },
+  {
+    example: 'toggle-group-example',
+    name: 'ToggleGroupBasic',
+  },
+  {
+    example: 'toggle-group-example',
+    name: 'ToggleGroupOutline',
+  },
+  {
+    example: 'toggle-group-example',
+    name: 'ToggleGroupOutlineWithIcons',
+  },
+  {
+    example: 'toggle-group-example',
+    name: 'ToggleGroupSizes',
+  },
+  {
+    example: 'toggle-group-example',
+    name: 'ToggleGroupSpacing',
+  },
+  {
+    example: 'toggle-group-example',
+    name: 'ToggleGroupWithIcons',
+  },
+  {
+    example: 'toggle-group-example',
+    name: 'ToggleGroupFilter',
+  },
+  {
+    example: 'toggle-group-example',
+    name: 'ToggleGroupDateRange',
+  },
+  {
+    example: 'toggle-group-example',
+    name: 'ToggleGroupSort',
+  },
+  {
+    example: 'toggle-group-example',
+    name: 'ToggleGroupVertical',
+  },
+  {
+    example: 'toggle-group-example',
+    name: 'ToggleGroupVerticalOutline',
+  },
+  {
+    example: 'toggle-group-example',
+    name: 'ToggleGroupVerticalOutlineWithIcons',
+  },
+  {
+    example: 'toggle-group-example',
+    name: 'ToggleGroupVerticalWithSpacing',
+  },
+  {
+    example: 'avatar-example',
+    name: 'AvatarSizes',
+  },
+  {
+    example: 'avatar-example',
+    name: 'AvatarWithBadge',
+  },
+  {
+    example: 'avatar-example',
+    name: 'AvatarWithBadgeIcon',
+  },
+  {
+    example: 'avatar-example',
+    name: 'AvatarGroupExample',
+  },
+  {
+    example: 'avatar-example',
+    name: 'AvatarGroupWithCount',
+  },
+  {
+    example: 'avatar-example',
+    name: 'AvatarGroupWithIconCount',
+  },
+  {
+    example: 'avatar-example',
+    name: 'AvatarInEmpty',
+  },
+  {
+    example: 'collapsible-example',
+    name: 'CollapsibleFileTree',
+  },
+  {
+    example: 'scroll-area-example',
+    name: 'ScrollAreaVertical',
+  },
+  {
+    example: 'native-select-example',
+    name: 'NativeSelectBasic',
+  },
+  {
+    example: 'native-select-example',
+    name: 'NativeSelectWithGroups',
+  },
+  {
+    example: 'native-select-example',
+    name: 'NativeSelectSizes',
+  },
+  {
+    example: 'native-select-example',
+    name: 'NativeSelectDisabled',
+  },
+  {
+    example: 'native-select-example',
+    name: 'NativeSelectInvalid',
+  },
+  {
+    example: 'accordion-example',
+    name: 'AccordionBasic',
+  },
+  {
+    example: 'accordion-example',
+    name: 'AccordionMultiple',
+  },
+  {
+    example: 'accordion-example',
+    name: 'AccordionWithBorders',
+  },
+  {
+    example: 'accordion-example',
+    name: 'AccordionInCard',
+  },
+  {
+    example: 'accordion-example',
+    name: 'AccordionWithDisabled',
   },
 ]

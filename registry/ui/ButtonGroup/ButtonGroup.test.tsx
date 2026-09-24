@@ -11,17 +11,23 @@ import {
 } from './ButtonGroup'
 import styles from './ButtonGroup.module.scss'
 
+// React's useId output (_r_1_, and :r1: or «r1» before React 19.1), which
+// differs between renders; Base UI puts it in ids and data-id.
+const USE_ID = /_r_[0-9a-z]+_|:r[0-9a-z]+:|«r[0-9a-z]+»/g
+
 function renderButtonGroup(props: Partial<ComponentProps<typeof ButtonGroup>> = {}) {
   cleanup()
-  render(<ButtonGroup {...(props as ComponentProps<typeof ButtonGroup>)} />)
-  return (
-    document.querySelector('[data-slot="button-group"]')?.getAttribute('class')?.split(' ') ?? []
-  )
+  render(<ButtonGroup data-testid="subject" {...(props as ComponentProps<typeof ButtonGroup>)} />)
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="button-group"]')
+}
+
+function classesOfButtonGroup(props: Partial<ComponentProps<typeof ButtonGroup>> = {}) {
+  return renderButtonGroup(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('ButtonGroup', () => {
   it('renders [data-slot="button-group"] with its classes', () => {
-    expect(renderButtonGroup()).toEqual(
+    expect(classesOfButtonGroup()).toEqual(
       expect.arrayContaining([styles.buttonGroup, styles.orientationHorizontal]),
     )
   })
@@ -30,11 +36,11 @@ describe('ButtonGroup', () => {
     ['horizontal', styles.orientationHorizontal],
     ['vertical', styles.orientationVertical],
   ] as const)('orientation %s applies its class', (value, className) => {
-    expect(renderButtonGroup({ orientation: value })).toContain(className)
+    expect(classesOfButtonGroup({ orientation: value })).toContain(className)
   })
 
   it('applies no group class for a null group', () => {
-    const classes = renderButtonGroup({ orientation: null })
+    const classes = classesOfButtonGroup({ orientation: null })
     expect(classes).toContain(styles.buttonGroup)
     for (const className of [styles.orientationHorizontal, styles.orientationVertical]) {
       expect(classes).not.toContain(className)
@@ -42,7 +48,83 @@ describe('ButtonGroup', () => {
   })
 
   it('appends a consumer className last', () => {
-    expect(renderButtonGroup({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderButtonGroup({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(
+      <ButtonGroup>
+        <ButtonGroup data-testid="subject">ButtonGroup</ButtonGroup>
+      </ButtonGroup>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (3)", () => {
+    cleanup()
+    render(
+      <ButtonGroup>
+        <ButtonGroup data-testid="subject" aria-label="Single navigation button">
+          ButtonGroup
+        </ButtonGroup>
+      </ButtonGroup>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (4)", () => {
+    cleanup()
+    render(
+      <ButtonGroup data-testid="subject" aria-labelledby="alignment-label">
+        ButtonGroup
+      </ButtonGroup>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (5)", () => {
+    cleanup()
+    render(
+      <ButtonGroup data-testid="subject" orientation="vertical" aria-label="Media controls">
+        ButtonGroup
+      </ButtonGroup>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (6)", () => {
+    cleanup()
+    render(
+      <ButtonGroup data-testid="subject" orientation="vertical" aria-label="Design tools palette">
+        ButtonGroup
+      </ButtonGroup>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (7)", () => {
+    cleanup()
+    render(
+      <ButtonGroup orientation="vertical" aria-label="Design tools palette">
+        <ButtonGroup data-testid="subject" orientation="vertical">
+          ButtonGroup
+        </ButtonGroup>
+      </ButtonGroup>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (8)", () => {
+    cleanup()
+    render(
+      <ButtonGroup orientation="vertical" aria-label="Design tools palette">
+        <ButtonGroup data-testid="subject">ButtonGroup</ButtonGroup>
+      </ButtonGroup>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })
 
@@ -50,22 +132,30 @@ function renderButtonGroupText(props: Partial<ComponentProps<typeof ButtonGroupT
   cleanup()
   render(
     <ButtonGroup>
-      <ButtonGroupText {...(props as ComponentProps<typeof ButtonGroupText>)} />
+      <ButtonGroupText
+        data-testid="subject"
+        {...(props as ComponentProps<typeof ButtonGroupText>)}
+      />
     </ButtonGroup>,
   )
-  return (
-    document.querySelector('[data-slot="button-group-text"]')?.getAttribute('class')?.split(' ') ??
-    []
-  )
+  return document
+    .querySelector('[data-testid="subject"]')
+    ?.closest('[data-slot="button-group-text"]')
+}
+
+function classesOfButtonGroupText(props: Partial<ComponentProps<typeof ButtonGroupText>> = {}) {
+  return renderButtonGroupText(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('ButtonGroupText', () => {
   it('renders [data-slot="button-group-text"] with its classes', () => {
-    expect(renderButtonGroupText()).toEqual(expect.arrayContaining([styles.buttonGroupText]))
+    expect(classesOfButtonGroupText()).toEqual(expect.arrayContaining([styles.buttonGroupText]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderButtonGroupText({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderButtonGroupText({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })
 
@@ -73,29 +163,37 @@ function renderButtonGroupSeparator(
   props: Partial<ComponentProps<typeof ButtonGroupSeparator>> = {},
 ) {
   cleanup()
-  render(<ButtonGroupSeparator {...(props as ComponentProps<typeof ButtonGroupSeparator>)} />)
-  return (
-    document
-      .querySelector('[data-slot="button-group-separator"]')
-      ?.getAttribute('class')
-      ?.split(' ') ?? []
+  render(
+    <ButtonGroup>
+      <ButtonGroupSeparator
+        data-testid="subject"
+        {...(props as ComponentProps<typeof ButtonGroupSeparator>)}
+      />
+    </ButtonGroup>,
   )
+  return document
+    .querySelector('[data-testid="subject"]')
+    ?.closest('[data-slot="button-group-separator"]')
+}
+
+function classesOfButtonGroupSeparator(
+  props: Partial<ComponentProps<typeof ButtonGroupSeparator>> = {},
+) {
+  return renderButtonGroupSeparator(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 function attributesOfButtonGroupSeparator(
   props: Partial<ComponentProps<typeof ButtonGroupSeparator>> = {},
 ) {
-  cleanup()
-  render(<ButtonGroupSeparator {...(props as ComponentProps<typeof ButtonGroupSeparator>)} />)
-  const element = document.querySelector('[data-slot="button-group-separator"]')
+  const element = renderButtonGroupSeparator(props)
   return Object.fromEntries(
-    [...(element?.attributes ?? [])].filter((a) => a.name !== 'id').map((a) => [a.name, a.value]),
+    [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
   )
 }
 
 describe('ButtonGroupSeparator', () => {
   it('renders [data-slot="button-group-separator"] with its classes', () => {
-    expect(renderButtonGroupSeparator()).toEqual(
+    expect(classesOfButtonGroupSeparator()).toEqual(
       expect.arrayContaining([styles.buttonGroupSeparator]),
     )
   })
@@ -107,7 +205,9 @@ describe('ButtonGroupSeparator', () => {
   })
 
   it('appends a consumer className last', () => {
-    expect(renderButtonGroupSeparator({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderButtonGroupSeparator({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })
 

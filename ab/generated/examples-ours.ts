@@ -16,6 +16,20 @@ import * as aspectRatioExample from './examples/ours/aspect-ratio-example'
 import * as tableExample from './examples/ours/table-example'
 import * as breadcrumbExample from './examples/ours/breadcrumb-example'
 import * as emptyExample from './examples/ours/empty-example'
+import * as checkboxExample from './examples/ours/checkbox-example'
+import * as switchExample from './examples/ours/switch-example'
+import * as progressExample from './examples/ours/progress-example'
+import * as sliderExample from './examples/ours/slider-example'
+import * as tabsExample from './examples/ours/tabs-example'
+import * as toggleExample from './examples/ours/toggle-example'
+import * as toggleGroupExample from './examples/ours/toggle-group-example'
+import * as radioGroupExample from './examples/ours/radio-group-example'
+import * as avatarExample from './examples/ours/avatar-example'
+import * as collapsibleExample from './examples/ours/collapsible-example'
+import * as scrollAreaExample from './examples/ours/scroll-area-example'
+import * as nativeSelectExample from './examples/ours/native-select-example'
+import * as accordionExample from './examples/ours/accordion-example'
+import * as inputOtpExample from './examples/ours/input-otp-example'
 
 export const oursExamples = {
   'button-example': buttonExample,
@@ -34,4 +48,18 @@ export const oursExamples = {
   'table-example': tableExample,
   'breadcrumb-example': breadcrumbExample,
   'empty-example': emptyExample,
+  'checkbox-example': checkboxExample,
+  'switch-example': switchExample,
+  'progress-example': progressExample,
+  'slider-example': sliderExample,
+  'tabs-example': tabsExample,
+  'toggle-example': toggleExample,
+  'toggle-group-example': toggleGroupExample,
+  'radio-group-example': radioGroupExample,
+  'avatar-example': avatarExample,
+  'collapsible-example': collapsibleExample,
+  'scroll-area-example': scrollAreaExample,
+  'native-select-example': nativeSelectExample,
+  'accordion-example': accordionExample,
+  'input-otp-example': inputOtpExample,
 }

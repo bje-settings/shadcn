@@ -45,6 +45,10 @@ export type MirrorConfig = {
   // those rules are dropped and listed in the module's header, and A/B skips
   // the docs examples that pass them.
   consumerClasses: ConsumerClasses[]
+  // Mirrored items whose component file is left out of coverage, with the
+  // reason: upstream logic no render the docs example makes reaches (a
+  // controlled value it never passes as a literal). vitest.config.ts reads it.
+  coverageExclusions: Record<string, string>
 }
 
 // Annotated so TypeScript treats shape.fail() as ending control flow.
@@ -102,6 +106,16 @@ export function parseConfig(raw: unknown): MirrorConfig {
     }
   })
 
+  const coverageExclusions =
+    raw.coverageExclusions === undefined
+      ? {}
+      : shape.stringRecord(raw.coverageExclusions, 'coverageExclusions')
+  for (const item of Object.keys(coverageExclusions)) {
+    if (!components.includes(item)) {
+      shape.fail(`coverageExclusions.${item} is not a configured component`)
+    }
+  }
+
   return {
     namespace: name(raw, 'namespace', ''),
     upstream: { url, colorsUrl, style: name(upstream, 'style', 'upstream.') },
@@ -117,6 +131,7 @@ export function parseConfig(raw: unknown): MirrorConfig {
     globalsDir: string(raw, 'globalsDir', ''),
     harnessDir: string(raw, 'harnessDir', ''),
     consumerClasses,
+    coverageExclusions,
   }
 }
 

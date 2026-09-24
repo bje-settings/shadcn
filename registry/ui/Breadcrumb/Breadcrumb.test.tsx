@@ -16,13 +16,15 @@ import styles from './Breadcrumb.module.scss'
 
 function renderBreadcrumb(props: Partial<ComponentProps<typeof Breadcrumb>> = {}) {
   cleanup()
-  render(<Breadcrumb {...(props as ComponentProps<typeof Breadcrumb>)} />)
-  return document.querySelector('[data-slot="breadcrumb"]')?.getAttribute('class')?.split(' ') ?? []
+  render(<Breadcrumb data-testid="subject" {...(props as ComponentProps<typeof Breadcrumb>)} />)
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="breadcrumb"]')
 }
 
 describe('Breadcrumb', () => {
   it('appends a consumer className last', () => {
-    expect(renderBreadcrumb({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderBreadcrumb({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })
 
@@ -30,21 +32,25 @@ function renderBreadcrumbList(props: Partial<ComponentProps<typeof BreadcrumbLis
   cleanup()
   render(
     <Breadcrumb>
-      <BreadcrumbList {...(props as ComponentProps<typeof BreadcrumbList>)} />
+      <BreadcrumbList data-testid="subject" {...(props as ComponentProps<typeof BreadcrumbList>)} />
     </Breadcrumb>,
   )
-  return (
-    document.querySelector('[data-slot="breadcrumb-list"]')?.getAttribute('class')?.split(' ') ?? []
-  )
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="breadcrumb-list"]')
+}
+
+function classesOfBreadcrumbList(props: Partial<ComponentProps<typeof BreadcrumbList>> = {}) {
+  return renderBreadcrumbList(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('BreadcrumbList', () => {
   it('renders [data-slot="breadcrumb-list"] with its classes', () => {
-    expect(renderBreadcrumbList()).toEqual(expect.arrayContaining([styles.breadcrumbList]))
+    expect(classesOfBreadcrumbList()).toEqual(expect.arrayContaining([styles.breadcrumbList]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderBreadcrumbList({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderBreadcrumbList({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })
 
@@ -53,22 +59,29 @@ function renderBreadcrumbItem(props: Partial<ComponentProps<typeof BreadcrumbIte
   render(
     <Breadcrumb>
       <BreadcrumbList>
-        <BreadcrumbItem {...(props as ComponentProps<typeof BreadcrumbItem>)} />
+        <BreadcrumbItem
+          data-testid="subject"
+          {...(props as ComponentProps<typeof BreadcrumbItem>)}
+        />
       </BreadcrumbList>
     </Breadcrumb>,
   )
-  return (
-    document.querySelector('[data-slot="breadcrumb-item"]')?.getAttribute('class')?.split(' ') ?? []
-  )
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="breadcrumb-item"]')
+}
+
+function classesOfBreadcrumbItem(props: Partial<ComponentProps<typeof BreadcrumbItem>> = {}) {
+  return renderBreadcrumbItem(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('BreadcrumbItem', () => {
   it('renders [data-slot="breadcrumb-item"] with its classes', () => {
-    expect(renderBreadcrumbItem()).toEqual(expect.arrayContaining([styles.breadcrumbItem]))
+    expect(classesOfBreadcrumbItem()).toEqual(expect.arrayContaining([styles.breadcrumbItem]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderBreadcrumbItem({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderBreadcrumbItem({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })
 
@@ -78,23 +91,44 @@ function renderBreadcrumbLink(props: Partial<ComponentProps<typeof BreadcrumbLin
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink href="#" {...(props as ComponentProps<typeof BreadcrumbLink>)} />
+          <BreadcrumbLink
+            data-testid="subject"
+            {...({ href: '#', ...props } as ComponentProps<typeof BreadcrumbLink>)}
+          />
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>,
   )
-  return (
-    document.querySelector('[data-slot="breadcrumb-link"]')?.getAttribute('class')?.split(' ') ?? []
-  )
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="breadcrumb-link"]')
+}
+
+function classesOfBreadcrumbLink(props: Partial<ComponentProps<typeof BreadcrumbLink>> = {}) {
+  return renderBreadcrumbLink(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('BreadcrumbLink', () => {
   it('renders [data-slot="breadcrumb-link"] with its classes', () => {
-    expect(renderBreadcrumbLink()).toEqual(expect.arrayContaining([styles.breadcrumbLink]))
+    expect(classesOfBreadcrumbLink()).toEqual(expect.arrayContaining([styles.breadcrumbLink]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderBreadcrumbLink({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderBreadcrumbLink({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink data-testid="subject" />
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })
 
@@ -104,23 +138,30 @@ function renderBreadcrumbPage(props: Partial<ComponentProps<typeof BreadcrumbPag
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbPage {...(props as ComponentProps<typeof BreadcrumbPage>)} />
+          <BreadcrumbPage
+            data-testid="subject"
+            {...(props as ComponentProps<typeof BreadcrumbPage>)}
+          />
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>,
   )
-  return (
-    document.querySelector('[data-slot="breadcrumb-page"]')?.getAttribute('class')?.split(' ') ?? []
-  )
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="breadcrumb-page"]')
+}
+
+function classesOfBreadcrumbPage(props: Partial<ComponentProps<typeof BreadcrumbPage>> = {}) {
+  return renderBreadcrumbPage(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('BreadcrumbPage', () => {
   it('renders [data-slot="breadcrumb-page"] with its classes', () => {
-    expect(renderBreadcrumbPage()).toEqual(expect.arrayContaining([styles.breadcrumbPage]))
+    expect(classesOfBreadcrumbPage()).toEqual(expect.arrayContaining([styles.breadcrumbPage]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderBreadcrumbPage({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderBreadcrumbPage({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })
 
@@ -131,27 +172,35 @@ function renderBreadcrumbSeparator(
   render(
     <Breadcrumb>
       <BreadcrumbList>
-        <BreadcrumbSeparator {...(props as ComponentProps<typeof BreadcrumbSeparator>)} />
+        <BreadcrumbSeparator
+          data-testid="subject"
+          {...(props as ComponentProps<typeof BreadcrumbSeparator>)}
+        />
       </BreadcrumbList>
     </Breadcrumb>,
   )
-  return (
-    document
-      .querySelector('[data-slot="breadcrumb-separator"]')
-      ?.getAttribute('class')
-      ?.split(' ') ?? []
-  )
+  return document
+    .querySelector('[data-testid="subject"]')
+    ?.closest('[data-slot="breadcrumb-separator"]')
+}
+
+function classesOfBreadcrumbSeparator(
+  props: Partial<ComponentProps<typeof BreadcrumbSeparator>> = {},
+) {
+  return renderBreadcrumbSeparator(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('BreadcrumbSeparator', () => {
   it('renders [data-slot="breadcrumb-separator"] with its classes', () => {
-    expect(renderBreadcrumbSeparator()).toEqual(
+    expect(classesOfBreadcrumbSeparator()).toEqual(
       expect.arrayContaining([styles.breadcrumbSeparator]),
     )
   })
 
   it('appends a consumer className last', () => {
-    expect(renderBreadcrumbSeparator({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderBreadcrumbSeparator({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })
 
@@ -161,25 +210,35 @@ function renderBreadcrumbEllipsis(props: Partial<ComponentProps<typeof Breadcrum
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbEllipsis {...(props as ComponentProps<typeof BreadcrumbEllipsis>)} />
+          <BreadcrumbEllipsis
+            data-testid="subject"
+            {...(props as ComponentProps<typeof BreadcrumbEllipsis>)}
+          />
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>,
   )
-  return (
-    document
-      .querySelector('[data-slot="breadcrumb-ellipsis"]')
-      ?.getAttribute('class')
-      ?.split(' ') ?? []
-  )
+  return document
+    .querySelector('[data-testid="subject"]')
+    ?.closest('[data-slot="breadcrumb-ellipsis"]')
+}
+
+function classesOfBreadcrumbEllipsis(
+  props: Partial<ComponentProps<typeof BreadcrumbEllipsis>> = {},
+) {
+  return renderBreadcrumbEllipsis(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('BreadcrumbEllipsis', () => {
   it('renders [data-slot="breadcrumb-ellipsis"] with its classes', () => {
-    expect(renderBreadcrumbEllipsis()).toEqual(expect.arrayContaining([styles.breadcrumbEllipsis]))
+    expect(classesOfBreadcrumbEllipsis()).toEqual(
+      expect.arrayContaining([styles.breadcrumbEllipsis]),
+    )
   })
 
   it('appends a consumer className last', () => {
-    expect(renderBreadcrumbEllipsis({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderBreadcrumbEllipsis({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })

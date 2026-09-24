@@ -17,17 +17,23 @@ import styles from './Table.module.scss'
 
 function renderTable(props: Partial<ComponentProps<typeof Table>> = {}) {
   cleanup()
-  render(<Table {...(props as ComponentProps<typeof Table>)} />)
-  return document.querySelector('[data-slot="table"]')?.getAttribute('class')?.split(' ') ?? []
+  render(<Table data-testid="subject" {...(props as ComponentProps<typeof Table>)} />)
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table"]')
+}
+
+function classesOfTable(props: Partial<ComponentProps<typeof Table>> = {}) {
+  return renderTable(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('Table', () => {
   it('renders [data-slot="table"] with its classes', () => {
-    expect(renderTable()).toEqual(expect.arrayContaining([styles.table]))
+    expect(classesOfTable()).toEqual(expect.arrayContaining([styles.table]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderTable({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderTable({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })
 
@@ -35,21 +41,25 @@ function renderTableHeader(props: Partial<ComponentProps<typeof TableHeader>> = 
   cleanup()
   render(
     <Table>
-      <TableHeader {...(props as ComponentProps<typeof TableHeader>)} />
+      <TableHeader data-testid="subject" {...(props as ComponentProps<typeof TableHeader>)} />
     </Table>,
   )
-  return (
-    document.querySelector('[data-slot="table-header"]')?.getAttribute('class')?.split(' ') ?? []
-  )
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-header"]')
+}
+
+function classesOfTableHeader(props: Partial<ComponentProps<typeof TableHeader>> = {}) {
+  return renderTableHeader(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('TableHeader', () => {
   it('renders [data-slot="table-header"] with its classes', () => {
-    expect(renderTableHeader()).toEqual(expect.arrayContaining([styles.tableHeader]))
+    expect(classesOfTableHeader()).toEqual(expect.arrayContaining([styles.tableHeader]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderTableHeader({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderTableHeader({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })
 
@@ -57,19 +67,25 @@ function renderTableBody(props: Partial<ComponentProps<typeof TableBody>> = {}) 
   cleanup()
   render(
     <Table>
-      <TableBody {...(props as ComponentProps<typeof TableBody>)} />
+      <TableBody data-testid="subject" {...(props as ComponentProps<typeof TableBody>)} />
     </Table>,
   )
-  return document.querySelector('[data-slot="table-body"]')?.getAttribute('class')?.split(' ') ?? []
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-body"]')
+}
+
+function classesOfTableBody(props: Partial<ComponentProps<typeof TableBody>> = {}) {
+  return renderTableBody(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('TableBody', () => {
   it('renders [data-slot="table-body"] with its classes', () => {
-    expect(renderTableBody()).toEqual(expect.arrayContaining([styles.tableBody]))
+    expect(classesOfTableBody()).toEqual(expect.arrayContaining([styles.tableBody]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderTableBody({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderTableBody({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })
 
@@ -77,21 +93,25 @@ function renderTableFooter(props: Partial<ComponentProps<typeof TableFooter>> = 
   cleanup()
   render(
     <Table>
-      <TableFooter {...(props as ComponentProps<typeof TableFooter>)} />
+      <TableFooter data-testid="subject" {...(props as ComponentProps<typeof TableFooter>)} />
     </Table>,
   )
-  return (
-    document.querySelector('[data-slot="table-footer"]')?.getAttribute('class')?.split(' ') ?? []
-  )
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-footer"]')
+}
+
+function classesOfTableFooter(props: Partial<ComponentProps<typeof TableFooter>> = {}) {
+  return renderTableFooter(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('TableFooter', () => {
   it('renders [data-slot="table-footer"] with its classes', () => {
-    expect(renderTableFooter()).toEqual(expect.arrayContaining([styles.tableFooter]))
+    expect(classesOfTableFooter()).toEqual(expect.arrayContaining([styles.tableFooter]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderTableFooter({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderTableFooter({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })
 
@@ -100,20 +120,50 @@ function renderTableRow(props: Partial<ComponentProps<typeof TableRow>> = {}) {
   render(
     <Table>
       <TableHeader>
-        <TableRow {...(props as ComponentProps<typeof TableRow>)} />
+        <TableRow data-testid="subject" {...(props as ComponentProps<typeof TableRow>)} />
       </TableHeader>
     </Table>,
   )
-  return document.querySelector('[data-slot="table-row"]')?.getAttribute('class')?.split(' ') ?? []
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-row"]')
+}
+
+function classesOfTableRow(props: Partial<ComponentProps<typeof TableRow>> = {}) {
+  return renderTableRow(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('TableRow', () => {
   it('renders [data-slot="table-row"] with its classes', () => {
-    expect(renderTableRow()).toEqual(expect.arrayContaining([styles.tableRow]))
+    expect(classesOfTableRow()).toEqual(expect.arrayContaining([styles.tableRow]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderTableRow({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderTableRow({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(
+      <Table>
+        <TableBody>
+          <TableRow data-testid="subject">TableRow</TableRow>
+        </TableBody>
+      </Table>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (3)", () => {
+    cleanup()
+    render(
+      <Table>
+        <TableFooter>
+          <TableRow data-testid="subject">TableRow</TableRow>
+        </TableFooter>
+      </Table>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })
 
@@ -123,21 +173,27 @@ function renderTableHead(props: Partial<ComponentProps<typeof TableHead>> = {}) 
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead {...(props as ComponentProps<typeof TableHead>)} />
+          <TableHead data-testid="subject" {...(props as ComponentProps<typeof TableHead>)} />
         </TableRow>
       </TableHeader>
     </Table>,
   )
-  return document.querySelector('[data-slot="table-head"]')?.getAttribute('class')?.split(' ') ?? []
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-head"]')
+}
+
+function classesOfTableHead(props: Partial<ComponentProps<typeof TableHead>> = {}) {
+  return renderTableHead(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('TableHead', () => {
   it('renders [data-slot="table-head"] with its classes', () => {
-    expect(renderTableHead()).toEqual(expect.arrayContaining([styles.tableHead]))
+    expect(classesOfTableHead()).toEqual(expect.arrayContaining([styles.tableHead]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderTableHead({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderTableHead({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })
 
@@ -147,21 +203,57 @@ function renderTableCell(props: Partial<ComponentProps<typeof TableCell>> = {}) 
     <Table>
       <TableBody>
         <TableRow>
-          <TableCell {...(props as ComponentProps<typeof TableCell>)} />
+          <TableCell data-testid="subject" {...(props as ComponentProps<typeof TableCell>)} />
         </TableRow>
       </TableBody>
     </Table>,
   )
-  return document.querySelector('[data-slot="table-cell"]')?.getAttribute('class')?.split(' ') ?? []
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-cell"]')
+}
+
+function classesOfTableCell(props: Partial<ComponentProps<typeof TableCell>> = {}) {
+  return renderTableCell(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('TableCell', () => {
   it('renders [data-slot="table-cell"] with its classes', () => {
-    expect(renderTableCell()).toEqual(expect.arrayContaining([styles.tableCell]))
+    expect(classesOfTableCell()).toEqual(expect.arrayContaining([styles.tableCell]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderTableCell({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderTableCell({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(
+      <Table>
+        <TableFooter>
+          <TableRow>
+            <TableCell data-testid="subject" colSpan={3}>
+              TableCell
+            </TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (3)", () => {
+    cleanup()
+    render(
+      <Table>
+        <TableFooter>
+          <TableRow>
+            <TableCell data-testid="subject">TableCell</TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })
 
@@ -169,20 +261,24 @@ function renderTableCaption(props: Partial<ComponentProps<typeof TableCaption>> 
   cleanup()
   render(
     <Table>
-      <TableCaption {...(props as ComponentProps<typeof TableCaption>)} />
+      <TableCaption data-testid="subject" {...(props as ComponentProps<typeof TableCaption>)} />
     </Table>,
   )
-  return (
-    document.querySelector('[data-slot="table-caption"]')?.getAttribute('class')?.split(' ') ?? []
-  )
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-caption"]')
+}
+
+function classesOfTableCaption(props: Partial<ComponentProps<typeof TableCaption>> = {}) {
+  return renderTableCaption(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('TableCaption', () => {
   it('renders [data-slot="table-caption"] with its classes', () => {
-    expect(renderTableCaption()).toEqual(expect.arrayContaining([styles.tableCaption]))
+    expect(classesOfTableCaption()).toEqual(expect.arrayContaining([styles.tableCaption]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderTableCaption({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderTableCaption({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })

@@ -8,16 +8,22 @@ import styles from './Skeleton.module.scss'
 
 function renderSkeleton(props: Partial<ComponentProps<typeof Skeleton>> = {}) {
   cleanup()
-  render(<Skeleton {...(props as ComponentProps<typeof Skeleton>)} />)
-  return document.querySelector('[data-slot="skeleton"]')?.getAttribute('class')?.split(' ') ?? []
+  render(<Skeleton data-testid="subject" {...(props as ComponentProps<typeof Skeleton>)} />)
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="skeleton"]')
+}
+
+function classesOfSkeleton(props: Partial<ComponentProps<typeof Skeleton>> = {}) {
+  return renderSkeleton(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('Skeleton', () => {
   it('renders [data-slot="skeleton"] with its classes', () => {
-    expect(renderSkeleton()).toEqual(expect.arrayContaining([styles.skeleton]))
+    expect(classesOfSkeleton()).toEqual(expect.arrayContaining([styles.skeleton]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderSkeleton({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderSkeleton({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })

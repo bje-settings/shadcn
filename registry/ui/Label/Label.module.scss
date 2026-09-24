@@ -4,8 +4,6 @@
 //   --font-weight-medium --spacing --text-sm --text-sm--line-height
 //
 // Dropped rules: needs a group marker, which no mirrored component carries.
-//
-// Dropped rules: needs a peer marker, which no mirrored component carries.
 
 :where(.label) {
   display: flex;
@@ -19,4 +17,8 @@
   font-weight: var(--font-weight-medium);
   -webkit-user-select: none;
   user-select: none;
+  &:is(:where(:is([data-slot="checkbox"], [data-slot="radio-group-item"], [data-slot="switch"])):disabled ~ *) {
+    cursor: not-allowed;
+    opacity: .5;
+  }
 }

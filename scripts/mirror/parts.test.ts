@@ -54,9 +54,9 @@ export { Button }`,
     const types = partTypes('base-vega', prepared)
     expect(types.get('dialog')).toEqual(
       new Map([
-        ['Dialog', { className: false, opens: true }],
-        ['DialogTitle', { className: true, opens: false }],
-        ['DialogClose', { className: true, opens: false }],
+        ['Dialog', { className: false, opens: true, keepMounted: false, required: [] }],
+        ['DialogTitle', { className: true, opens: false, keepMounted: false, required: [] }],
+        ['DialogClose', { className: true, opens: false, keepMounted: false, required: [] }],
       ]),
     )
   }, 30_000)
@@ -68,18 +68,21 @@ describe('scaffolds', () => {
 import { cn } from "cn"
 const chipVariants = cva("flex", { variants: { tone: { soft: "x" } } })
 function Chips({ className }) { return <div data-slot="chips" className={cn("a", className)} /> }
-function Chip({ className, tone }) { return <span data-slot="chip" className={cn(chipVariants({ tone }), className)} /> }
+function Chip({ className, tone, size = "md" }) { return <span data-slot="chip" className={cn(chipVariants({ tone }), className)} /> }
 function ChipInput({ className }) { return <input data-slot="chip-input" className={cn("b", className)} /> }
 function ChipMenu(props) { return <Menu.Root data-slot="chip-menu" {...props} /> }
-export { Chips, Chip, ChipInput, ChipMenu }`,
+function ChipPanel({ className }) { return <div data-slot="chip-panel" className={cn("c", className)} /> }
+export { Chips, Chip, ChipInput, ChipMenu, ChipPanel }`,
     'chip',
     'bje',
   )
+  const part = { className: true, opens: false, keepMounted: false, required: [] }
   const types = new Map([
-    ['Chips', { className: true, opens: false }],
-    ['Chip', { className: true, opens: false }],
-    ['ChipInput', { className: true, opens: false }],
-    ['ChipMenu', { className: false, opens: true }],
+    ['Chips', part],
+    ['Chip', part],
+    ['ChipInput', part],
+    ['ChipMenu', { className: false, opens: true, keepMounted: false, required: [] }],
+    ['ChipPanel', { ...part, keepMounted: true, required: [] }],
   ])
 
   it("nests each part as the example first renders it, with the example's literal props", () => {
@@ -89,7 +92,7 @@ export { Chips, Chip, ChipInput, ChipMenu }`,
       <div className="flex">
         <Chips aria-label="Chips" style={{ gap: 1 }}>
           {"text"}
-          <Chip tone="soft" value="a" disabled>
+          <Chip tone="soft" size="sm" value="a" disabled>
             Label
           </Chip>
           <Chip value="b" />
@@ -101,7 +104,7 @@ export { Chips, Chip, ChipInput, ChipMenu }`,
     </ChipMenu>
   )
 }`
-    const result = scaffolds(example, types, chip)
+    const result = scaffolds('chip', example, types, chip)
     const menu = {
       component: 'ChipMenu',
       props: {
@@ -113,25 +116,44 @@ export { Chips, Chip, ChipInput, ChipMenu }`,
         defaultOpen: true,
       },
     }
+    const chips = { component: 'Chips', props: { 'aria-label': 'Chips' } }
     expect(result.get('Chip')).toEqual({
-      ancestors: [menu, { component: 'Chips', props: { 'aria-label': 'Chips' } }],
+      ancestors: [menu, chips],
       props: { value: 'a' },
       children: true,
+      // The second usage, with the variant and default props the first omits
+      others: [{ ancestors: [menu, chips], props: { value: 'b' }, children: false }],
     })
     expect(result.get('ChipInput')).toEqual({
       ancestors: [menu],
       props: { keyed: { 'b-c': 1 } },
       children: false,
+      others: [],
     })
     expect(result.get('Chips')?.children).toBe(true)
   })
 
-  it('renders a part the example never uses on its own', () => {
-    const withGhost = new Map([...types, ['Ghost', { className: true, opens: false }]])
-    const result = scaffolds(undefined, withGhost, chip)
-    expect(result.get('Ghost')?.children).toBe(true)
-    expect(result.get('Chip')).toEqual({ ancestors: [], props: {}, children: true })
-    expect(result.get('ChipInput')).toEqual({ ancestors: [], props: {}, children: false })
-    expect(result.get('ChipMenu')).toEqual({ ancestors: [], props: {}, children: true })
+  it('renders a part the example never uses on its own, or inside the item root', () => {
+    const withGhost = new Map([...types, ['Ghost', part]])
+    const alone = scaffolds('other', undefined, withGhost, chip)
+    expect(alone.get('Ghost')?.children).toBe(true)
+    expect(alone.get('Chip')).toEqual({ ancestors: [], props: {}, children: true, others: [] })
+    expect(alone.get('ChipInput')).toEqual({
+      ancestors: [],
+      props: {},
+      children: false,
+      others: [],
+    })
+    expect(alone.get('ChipPanel')).toEqual({
+      ancestors: [],
+      props: { keepMounted: true },
+      children: true,
+      others: [],
+    })
+    const inRoot = scaffolds('chip-menu', undefined, types, chip)
+    expect(inRoot.get('Chip')?.ancestors).toEqual([
+      { component: 'ChipMenu', props: { defaultOpen: true } },
+    ])
+    expect(inRoot.get('ChipMenu')?.ancestors).toEqual([])
   })
 })

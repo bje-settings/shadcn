@@ -8,17 +8,23 @@ import styles from './Empty.module.scss'
 
 function renderEmpty(props: Partial<ComponentProps<typeof Empty>> = {}) {
   cleanup()
-  render(<Empty {...(props as ComponentProps<typeof Empty>)} />)
-  return document.querySelector('[data-slot="empty"]')?.getAttribute('class')?.split(' ') ?? []
+  render(<Empty data-testid="subject" {...(props as ComponentProps<typeof Empty>)} />)
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="empty"]')
+}
+
+function classesOfEmpty(props: Partial<ComponentProps<typeof Empty>> = {}) {
+  return renderEmpty(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('Empty', () => {
   it('renders [data-slot="empty"] with its classes', () => {
-    expect(renderEmpty()).toEqual(expect.arrayContaining([styles.empty]))
+    expect(classesOfEmpty()).toEqual(expect.arrayContaining([styles.empty]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderEmpty({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderEmpty({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })
 
@@ -26,21 +32,25 @@ function renderEmptyHeader(props: Partial<ComponentProps<typeof EmptyHeader>> = 
   cleanup()
   render(
     <Empty>
-      <EmptyHeader {...(props as ComponentProps<typeof EmptyHeader>)} />
+      <EmptyHeader data-testid="subject" {...(props as ComponentProps<typeof EmptyHeader>)} />
     </Empty>,
   )
-  return (
-    document.querySelector('[data-slot="empty-header"]')?.getAttribute('class')?.split(' ') ?? []
-  )
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="empty-header"]')
+}
+
+function classesOfEmptyHeader(props: Partial<ComponentProps<typeof EmptyHeader>> = {}) {
+  return renderEmptyHeader(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('EmptyHeader', () => {
   it('renders [data-slot="empty-header"] with its classes', () => {
-    expect(renderEmptyHeader()).toEqual(expect.arrayContaining([styles.emptyHeader]))
+    expect(classesOfEmptyHeader()).toEqual(expect.arrayContaining([styles.emptyHeader]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderEmptyHeader({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderEmptyHeader({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })
 
@@ -49,16 +59,20 @@ function renderEmptyMedia(props: Partial<ComponentProps<typeof EmptyMedia>> = {}
   render(
     <Empty>
       <EmptyHeader>
-        <EmptyMedia {...(props as ComponentProps<typeof EmptyMedia>)} />
+        <EmptyMedia data-testid="subject" {...(props as ComponentProps<typeof EmptyMedia>)} />
       </EmptyHeader>
     </Empty>,
   )
-  return document.querySelector('[data-slot="empty-icon"]')?.getAttribute('class')?.split(' ') ?? []
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="empty-icon"]')
+}
+
+function classesOfEmptyMedia(props: Partial<ComponentProps<typeof EmptyMedia>> = {}) {
+  return renderEmptyMedia(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('EmptyMedia', () => {
   it('renders [data-slot="empty-icon"] with its classes', () => {
-    expect(renderEmptyMedia()).toEqual(
+    expect(classesOfEmptyMedia()).toEqual(
       expect.arrayContaining([styles.emptyMedia, styles.emptyMediaVariantDefault]),
     )
   })
@@ -67,11 +81,11 @@ describe('EmptyMedia', () => {
     ['default', styles.emptyMediaVariantDefault],
     ['icon', styles.emptyMediaVariantIcon],
   ] as const)('variant %s applies its class', (value, className) => {
-    expect(renderEmptyMedia({ variant: value })).toContain(className)
+    expect(classesOfEmptyMedia({ variant: value })).toContain(className)
   })
 
   it('applies no group class for a null group', () => {
-    const classes = renderEmptyMedia({ variant: null })
+    const classes = classesOfEmptyMedia({ variant: null })
     expect(classes).toContain(styles.emptyMedia)
     for (const className of [styles.emptyMediaVariantDefault, styles.emptyMediaVariantIcon]) {
       expect(classes).not.toContain(className)
@@ -79,7 +93,9 @@ describe('EmptyMedia', () => {
   })
 
   it('appends a consumer className last', () => {
-    expect(renderEmptyMedia({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderEmptyMedia({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })
 
@@ -88,22 +104,26 @@ function renderEmptyTitle(props: Partial<ComponentProps<typeof EmptyTitle>> = {}
   render(
     <Empty>
       <EmptyHeader>
-        <EmptyTitle {...(props as ComponentProps<typeof EmptyTitle>)} />
+        <EmptyTitle data-testid="subject" {...(props as ComponentProps<typeof EmptyTitle>)} />
       </EmptyHeader>
     </Empty>,
   )
-  return (
-    document.querySelector('[data-slot="empty-title"]')?.getAttribute('class')?.split(' ') ?? []
-  )
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="empty-title"]')
+}
+
+function classesOfEmptyTitle(props: Partial<ComponentProps<typeof EmptyTitle>> = {}) {
+  return renderEmptyTitle(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('EmptyTitle', () => {
   it('renders [data-slot="empty-title"] with its classes', () => {
-    expect(renderEmptyTitle()).toEqual(expect.arrayContaining([styles.emptyTitle]))
+    expect(classesOfEmptyTitle()).toEqual(expect.arrayContaining([styles.emptyTitle]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderEmptyTitle({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderEmptyTitle({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })
 
@@ -112,23 +132,43 @@ function renderEmptyDescription(props: Partial<ComponentProps<typeof EmptyDescri
   render(
     <Empty>
       <EmptyHeader>
-        <EmptyDescription {...(props as ComponentProps<typeof EmptyDescription>)} />
+        <EmptyDescription
+          data-testid="subject"
+          {...(props as ComponentProps<typeof EmptyDescription>)}
+        />
       </EmptyHeader>
     </Empty>,
   )
-  return (
-    document.querySelector('[data-slot="empty-description"]')?.getAttribute('class')?.split(' ') ??
-    []
-  )
+  return document
+    .querySelector('[data-testid="subject"]')
+    ?.closest('[data-slot="empty-description"]')
+}
+
+function classesOfEmptyDescription(props: Partial<ComponentProps<typeof EmptyDescription>> = {}) {
+  return renderEmptyDescription(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('EmptyDescription', () => {
   it('renders [data-slot="empty-description"] with its classes', () => {
-    expect(renderEmptyDescription()).toEqual(expect.arrayContaining([styles.emptyDescription]))
+    expect(classesOfEmptyDescription()).toEqual(expect.arrayContaining([styles.emptyDescription]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderEmptyDescription({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderEmptyDescription({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(
+      <Empty>
+        <EmptyContent>
+          <EmptyDescription data-testid="subject">EmptyDescription</EmptyDescription>
+        </EmptyContent>
+      </Empty>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })
 
@@ -136,20 +176,24 @@ function renderEmptyContent(props: Partial<ComponentProps<typeof EmptyContent>> 
   cleanup()
   render(
     <Empty>
-      <EmptyContent {...(props as ComponentProps<typeof EmptyContent>)} />
+      <EmptyContent data-testid="subject" {...(props as ComponentProps<typeof EmptyContent>)} />
     </Empty>,
   )
-  return (
-    document.querySelector('[data-slot="empty-content"]')?.getAttribute('class')?.split(' ') ?? []
-  )
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="empty-content"]')
+}
+
+function classesOfEmptyContent(props: Partial<ComponentProps<typeof EmptyContent>> = {}) {
+  return renderEmptyContent(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('EmptyContent', () => {
   it('renders [data-slot="empty-content"] with its classes', () => {
-    expect(renderEmptyContent()).toEqual(expect.arrayContaining([styles.emptyContent]))
+    expect(classesOfEmptyContent()).toEqual(expect.arrayContaining([styles.emptyContent]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderEmptyContent({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderEmptyContent({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })

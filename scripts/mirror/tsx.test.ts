@@ -80,10 +80,16 @@ function Card({ className, extra }) {
   })
 
   it('removes a cva import on the first line', () => {
-    const source = 'import { cva } from "class-variance-authority"\nconst a = 1'
+    const source =
+      'import { cva } from "class-variance-authority"\nconst a = <i data-slot="a" className="x" />'
     expect(transformComponent(source, 'x', 'bje').code).toBe(
-      '\nimport styles from "./X.module.scss"\nconst a = 1',
+      '\nimport styles from "./X.module.scss"\nconst a = <i data-slot="a" className={styles.a} />',
     )
+  })
+
+  it('adds no module import for a component without classes', () => {
+    const source = '"use client"\nexport { Provider } from "@base-ui/react/provider"'
+    expect(transformComponent(source, 'x', 'bje')).toMatchObject({ code: source, slots: [] })
   })
 
   it.each([

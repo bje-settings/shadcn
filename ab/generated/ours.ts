@@ -16,6 +16,21 @@ import * as aspectRatio from '@/registry/bje/ui/AspectRatio/AspectRatio'
 import * as table from '@/registry/bje/ui/Table/Table'
 import * as breadcrumb from '@/registry/bje/ui/Breadcrumb/Breadcrumb'
 import * as empty from '@/registry/bje/ui/Empty/Empty'
+import * as checkbox from '@/registry/bje/ui/Checkbox/Checkbox'
+import * as switchModule from '@/registry/bje/ui/Switch/Switch'
+import * as progress from '@/registry/bje/ui/Progress/Progress'
+import * as slider from '@/registry/bje/ui/Slider/Slider'
+import * as tabs from '@/registry/bje/ui/Tabs/Tabs'
+import * as toggle from '@/registry/bje/ui/Toggle/Toggle'
+import * as toggleGroup from '@/registry/bje/ui/ToggleGroup/ToggleGroup'
+import * as radioGroup from '@/registry/bje/ui/RadioGroup/RadioGroup'
+import * as avatar from '@/registry/bje/ui/Avatar/Avatar'
+import * as collapsible from '@/registry/bje/ui/Collapsible/Collapsible'
+import * as scrollArea from '@/registry/bje/ui/ScrollArea/ScrollArea'
+import * as direction from '@/registry/bje/ui/Direction/Direction'
+import * as nativeSelect from '@/registry/bje/ui/NativeSelect/NativeSelect'
+import * as accordion from '@/registry/bje/ui/Accordion/Accordion'
+import * as inputOtp from '@/registry/bje/ui/InputOtp/InputOtp'
 
 export const ours = {
   button: button,
@@ -34,4 +49,19 @@ export const ours = {
   table: table,
   breadcrumb: breadcrumb,
   empty: empty,
+  checkbox: checkbox,
+  switch: switchModule,
+  progress: progress,
+  slider: slider,
+  tabs: tabs,
+  toggle: toggle,
+  'toggle-group': toggleGroup,
+  'radio-group': radioGroup,
+  avatar: avatar,
+  collapsible: collapsible,
+  'scroll-area': scrollArea,
+  direction: direction,
+  'native-select': nativeSelect,
+  accordion: accordion,
+  'input-otp': inputOtp,
 }

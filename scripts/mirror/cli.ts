@@ -24,6 +24,7 @@ import {
 import { prepareExample } from './examples.ts'
 import { globalStylesheets } from './globals.ts'
 import { type HarnessExample, type HarnessInput, harnessFiles } from './harness.ts'
+import { pascalCase } from './names.ts'
 import { type PartTypes, partTypes, scaffolds } from './parts.ts'
 import { layoutCss, projectCss } from './project-css.ts'
 import { parseRegistry, upsertItems } from './registry.ts'
@@ -209,9 +210,14 @@ async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
       markers: markerSelectors(prepared, component),
       classProbe: probe,
       types: itemTypes,
-      scaffolds: scaffolds(exampleSources.get(name), itemTypes, component.transformed),
+      scaffolds: scaffolds(name, exampleSources.get(name), itemTypes, component.transformed),
     }
     const built = await buildComponent(component, config, compile, context)
+    // The component's folder is all generated: clear it so a file the
+    // pipeline stopped writing (a module for a component that lost its
+    // classes) does not linger.
+    const dir = join(io.root, config.outputDir, pascalCase(name))
+    await rm(dir, { recursive: true, force: true })
     for (const file of built.files) await writeFormatted(io, file.path, file.content)
     for (const c of built.classes) classes.add(c)
     items.push(built.item)

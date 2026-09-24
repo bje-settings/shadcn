@@ -8,16 +8,28 @@ import styles from './Spinner.module.scss'
 
 function renderSpinner(props: Partial<ComponentProps<typeof Spinner>> = {}) {
   cleanup()
-  render(<Spinner {...(props as ComponentProps<typeof Spinner>)} />)
-  return document.querySelector('[data-slot="spinner"]')?.getAttribute('class')?.split(' ') ?? []
+  render(<Spinner data-testid="subject" {...(props as ComponentProps<typeof Spinner>)} />)
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="spinner"]')
+}
+
+function classesOfSpinner(props: Partial<ComponentProps<typeof Spinner>> = {}) {
+  return renderSpinner(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('Spinner', () => {
   it('renders [data-slot="spinner"] with its classes', () => {
-    expect(renderSpinner()).toEqual(expect.arrayContaining([styles.spinner]))
+    expect(classesOfSpinner()).toEqual(expect.arrayContaining([styles.spinner]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderSpinner({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderSpinner({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(<Spinner data-testid="subject" data-icon="inline-start" />)
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })

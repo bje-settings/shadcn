@@ -49,6 +49,12 @@
             "noLabelWithoutControl": "off",
             "useFocusableInteractive": "off",
             "useSemanticElements": "off"
+          },
+          "suspicious": {
+            "noArrayIndexKey": "off"
+          },
+          "correctness": {
+            "noUnusedImports": "off"
           }
         }
       }

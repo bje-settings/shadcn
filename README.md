@@ -92,8 +92,9 @@ Unsupported source shapes fail the build with their line and column rather than 
 output.
 
 Generated files get Biome's formatting and safe fixes (import order, `import type`). They keep
-upstream's markup, so `biome.json` turns off the a11y rules upstream's markup trips for
-`registry/ui/**` (`useSemanticElements`, `useFocusableInteractive`, `noLabelWithoutControl`).
+upstream's code, so `biome.json` turns off the rules upstream's code trips for `registry/ui/**`
+(`useSemanticElements`, `useFocusableInteractive`, `noLabelWithoutControl`, `noArrayIndexKey`,
+`noUnusedImports`).
 Every other rule still applies there. `ab/generated/**` holds upstream's code verbatim for comparison and generated harness
 inputs, so Biome only formats it.
 

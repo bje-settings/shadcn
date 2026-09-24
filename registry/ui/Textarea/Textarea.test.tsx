@@ -10,19 +10,71 @@ function renderTextarea(props: Partial<ComponentProps<typeof Textarea>> = {}) {
   cleanup()
   render(
     <Textarea
-      placeholder="Type your message here."
-      {...(props as ComponentProps<typeof Textarea>)}
+      data-testid="subject"
+      {...({ placeholder: 'Type your message here.', ...props } as ComponentProps<typeof Textarea>)}
     />,
   )
-  return document.querySelector('[data-slot="textarea"]')?.getAttribute('class')?.split(' ') ?? []
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="textarea"]')
+}
+
+function classesOfTextarea(props: Partial<ComponentProps<typeof Textarea>> = {}) {
+  return renderTextarea(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('Textarea', () => {
   it('renders [data-slot="textarea"] with its classes', () => {
-    expect(renderTextarea()).toEqual(expect.arrayContaining([styles.textarea]))
+    expect(classesOfTextarea()).toEqual(expect.arrayContaining([styles.textarea]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderTextarea({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderTextarea({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(
+      <Textarea data-testid="subject" placeholder="Type your message here." aria-invalid="true" />,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (3)", () => {
+    cleanup()
+    render(
+      <Textarea
+        data-testid="subject"
+        id="textarea-demo-message"
+        placeholder="Type your message here."
+        rows={6}
+      />,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (4)", () => {
+    cleanup()
+    render(
+      <Textarea
+        data-testid="subject"
+        id="textarea-demo-message-2"
+        placeholder="Type your message here."
+        rows={6}
+      />,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (5)", () => {
+    cleanup()
+    render(
+      <Textarea
+        data-testid="subject"
+        id="textarea-demo-disabled"
+        placeholder="Type your message here."
+      />,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })

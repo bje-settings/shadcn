@@ -8,32 +8,54 @@ import styles from './Kbd.module.scss'
 
 function renderKbd(props: Partial<ComponentProps<typeof Kbd>> = {}) {
   cleanup()
-  render(<Kbd {...(props as ComponentProps<typeof Kbd>)} />)
-  return document.querySelector('[data-slot="kbd"]')?.getAttribute('class')?.split(' ') ?? []
+  render(<Kbd data-testid="subject" {...(props as ComponentProps<typeof Kbd>)} />)
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="kbd"]')
+}
+
+function classesOfKbd(props: Partial<ComponentProps<typeof Kbd>> = {}) {
+  return renderKbd(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('Kbd', () => {
   it('renders [data-slot="kbd"] with its classes', () => {
-    expect(renderKbd()).toEqual(expect.arrayContaining([styles.kbd]))
+    expect(classesOfKbd()).toEqual(expect.arrayContaining([styles.kbd]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderKbd({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderKbd({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(
+      <KbdGroup>
+        <Kbd data-testid="subject">Kbd</Kbd>
+      </KbdGroup>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })
 
 function renderKbdGroup(props: Partial<ComponentProps<typeof KbdGroup>> = {}) {
   cleanup()
-  render(<KbdGroup {...(props as ComponentProps<typeof KbdGroup>)} />)
-  return document.querySelector('[data-slot="kbd-group"]')?.getAttribute('class')?.split(' ') ?? []
+  render(<KbdGroup data-testid="subject" {...(props as ComponentProps<typeof KbdGroup>)} />)
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="kbd-group"]')
+}
+
+function classesOfKbdGroup(props: Partial<ComponentProps<typeof KbdGroup>> = {}) {
+  return renderKbdGroup(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('KbdGroup', () => {
   it('renders [data-slot="kbd-group"] with its classes', () => {
-    expect(renderKbdGroup()).toEqual(expect.arrayContaining([styles.kbdGroup]))
+    expect(classesOfKbdGroup()).toEqual(expect.arrayContaining([styles.kbdGroup]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderKbdGroup({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderKbdGroup({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })

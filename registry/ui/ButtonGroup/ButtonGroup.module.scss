@@ -20,7 +20,7 @@
     border-top-right-radius: calc(var(--radius) * .8);
     border-bottom-right-radius: calc(var(--radius) * .8);
   }
-  & > [data-slot="select-trigger"]:not([data-slot="alert"], [data-slot="badge"], [data-slot="button"], [data-slot="button-group"], [data-slot="button-group-separator"], [data-slot="button-group-text"], [data-slot="card"], [data-slot="card-action"], [data-slot="empty"], [data-slot="empty-content"], [data-slot="empty-header"], [data-slot="input"], [data-slot="kbd"], [data-slot="separator"], [data-slot="table"], [data-slot="table-container"], [data-slot="textarea"]) {
+  & > [data-slot="select-trigger"]:not([data-slot="accordion"], [data-slot="accordion-content"], [data-slot="alert"], [data-slot="badge"], [data-slot="button"], [data-slot="button-group"], [data-slot="button-group-separator"], [data-slot="button-group-text"], [data-slot="card"], [data-slot="card-action"], [data-slot="checkbox"], [data-slot="empty"], [data-slot="empty-content"], [data-slot="empty-header"], [data-slot="input"], [data-slot="input-otp-slot"], [data-slot="kbd"], [data-slot="native-select"], [data-slot="native-select-wrapper"], [data-slot="progress-track"], [data-slot="radio-group"], [data-slot="scroll-area-scrollbar"], [data-slot="separator"], [data-slot="slider"], [data-slot="slider-range"], [data-slot="slider-thumb"], [data-slot="slider-track"], [data-slot="switch"], [data-slot="table"], [data-slot="table-container"], [data-slot="tabs-list"], [data-slot="tabs-trigger"], [data-slot="textarea"], [data-slot="toggle"], [data-slot="toggle-group"], [data-slot="toggle-group-item"]) {
     width: fit-content;
   }
   & > input {
@@ -81,7 +81,7 @@
   & svg {
     pointer-events: none;
   }
-  & svg:not([data-slot="alert"], [data-slot="badge"], [data-slot="breadcrumb-ellipsis"], [data-slot="breadcrumb-separator"], [data-slot="button"], [data-slot="button-group-text"], [data-slot="empty-icon"], [data-slot="kbd"], [data-slot="spinner"]) {
+  & svg:not([data-slot="accordion-trigger"], [data-slot="alert"], [data-slot="avatar"], [data-slot="avatar-badge"], [data-slot="avatar-fallback"], [data-slot="avatar-group-count"], [data-slot="avatar-image"], [data-slot="badge"], [data-slot="breadcrumb-ellipsis"], [data-slot="breadcrumb-separator"], [data-slot="button"], [data-slot="button-group-text"], [data-slot="checkbox"], [data-slot="checkbox-indicator"], [data-slot="empty-icon"], [data-slot="input-otp-separator"], [data-slot="input-otp-slot"], [data-slot="kbd"], [data-slot="native-select-icon"], [data-slot="radio-group-indicator"], [data-slot="radio-group-item"], [data-slot="scroll-area-viewport"], [data-slot="slider-thumb"], [data-slot="spinner"], [data-slot="switch-thumb"], [data-slot="tabs-trigger"], [data-slot="toggle"]) {
     width: calc(var(--spacing) * 4);
     height: calc(var(--spacing) * 4);
   }

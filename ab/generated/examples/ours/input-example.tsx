@@ -3,6 +3,7 @@
 import { Example } from '@/registry/base-vega/components/example'
 import { Button } from '@/registry/bje/ui/Button/Button'
 import { Input } from '@/registry/bje/ui/Input/Input'
+import { NativeSelect, NativeSelectOption } from '@/registry/bje/ui/NativeSelect/NativeSelect'
 
 function InputBasic() {
   return (
@@ -31,4 +32,19 @@ function InputWithButton() {
   )
 }
 
-export { InputBasic, InputInvalid, InputWithButton }
+function InputWithNativeSelect() {
+  return (
+    <Example title="With Native Select">
+      <div className="flex w-full gap-2">
+        <Input type="tel" placeholder="(555) 123-4567" className="flex-1" />
+        <NativeSelect defaultValue="+1">
+          <NativeSelectOption value="+1">+1</NativeSelectOption>
+          <NativeSelectOption value="+44">+44</NativeSelectOption>
+          <NativeSelectOption value="+46">+46</NativeSelectOption>
+        </NativeSelect>
+      </div>
+    </Example>
+  )
+}
+
+export { InputBasic, InputInvalid, InputWithButton, InputWithNativeSelect }

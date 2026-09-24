@@ -6,24 +6,30 @@ import { describe, expect, it } from 'vitest'
 import { Separator } from './Separator'
 import styles from './Separator.module.scss'
 
+// React's useId output (_r_1_, and :r1: or «r1» before React 19.1), which
+// differs between renders; Base UI puts it in ids and data-id.
+const USE_ID = /_r_[0-9a-z]+_|:r[0-9a-z]+:|«r[0-9a-z]+»/g
+
 function renderSeparator(props: Partial<ComponentProps<typeof Separator>> = {}) {
   cleanup()
-  render(<Separator {...(props as ComponentProps<typeof Separator>)} />)
-  return document.querySelector('[data-slot="separator"]')?.getAttribute('class')?.split(' ') ?? []
+  render(<Separator data-testid="subject" {...(props as ComponentProps<typeof Separator>)} />)
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="separator"]')
+}
+
+function classesOfSeparator(props: Partial<ComponentProps<typeof Separator>> = {}) {
+  return renderSeparator(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 function attributesOfSeparator(props: Partial<ComponentProps<typeof Separator>> = {}) {
-  cleanup()
-  render(<Separator {...(props as ComponentProps<typeof Separator>)} />)
-  const element = document.querySelector('[data-slot="separator"]')
+  const element = renderSeparator(props)
   return Object.fromEntries(
-    [...(element?.attributes ?? [])].filter((a) => a.name !== 'id').map((a) => [a.name, a.value]),
+    [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
   )
 }
 
 describe('Separator', () => {
   it('renders [data-slot="separator"] with its classes', () => {
-    expect(renderSeparator()).toEqual(expect.arrayContaining([styles.separator]))
+    expect(classesOfSeparator()).toEqual(expect.arrayContaining([styles.separator]))
   })
 
   it('renders the same with orientation="horizontal" passed explicitly', () => {
@@ -31,6 +37,14 @@ describe('Separator', () => {
   })
 
   it('appends a consumer className last', () => {
-    expect(renderSeparator({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderSeparator({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(<Separator data-testid="subject" orientation="vertical" />)
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })

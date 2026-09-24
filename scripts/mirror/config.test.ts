@@ -20,6 +20,7 @@ const valid = {
   globalsDir: 'registry/styles',
   harnessDir: 'ab/generated',
   consumerClasses: [{ classes: ['border-b'], reason: 'consumer' }],
+  coverageExclusions: { button: 'why' },
 }
 
 function withChange(change: Record<string, unknown>) {
@@ -34,8 +35,11 @@ describe('parseConfig', () => {
     expect(colorsUrl(config)).toBe('https://example.com/colors/neutral.json')
   })
 
-  it('defaults consumerClasses to none', () => {
-    const config = parseConfig(withChange({ consumerClasses: undefined }))
+  it('defaults consumerClasses and coverageExclusions to none', () => {
+    const config = parseConfig(
+      withChange({ consumerClasses: undefined, coverageExclusions: undefined }),
+    )
+    expect(config.coverageExclusions).toEqual({})
     expect(config.consumerClasses).toEqual([])
     expect(consumerClassReasons(parseConfig(valid))).toEqual(new Map([['border-b', 'consumer']]))
   })
@@ -89,6 +93,11 @@ describe('parseConfig', () => {
       'consumer classes without a reason',
       withChange({ consumerClasses: [{ classes: ['a'] }] }),
       'consumerClasses[0].reason',
+    ],
+    [
+      'a coverage exclusion for an item not configured',
+      withChange({ coverageExclusions: { card: 'why' } }),
+      'coverageExclusions.card is not a configured component',
     ],
     ['a missing namespace', withChange({ namespace: '' }), 'namespace must be'],
     ['a missing typeset', withChange({ typeset: [] }), 'typeset must be an object'],

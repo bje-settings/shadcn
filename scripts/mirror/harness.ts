@@ -80,6 +80,14 @@ export function fixturesFor(input: HarnessInput): Fixture[] {
 
 export type HarnessExample = { name: string; prepared: PreparedExample }
 
+// Words an item's camelCase name cannot be as an identifier.
+const RESERVED = new Set(['switch', 'default', 'import', 'export', 'new', 'delete', 'function'])
+
+function identifier(name: string): string {
+  const id = camelCase(name)
+  return RESERVED.has(id) ? `${id}Module` : id
+}
+
 function moduleMap(
   exportName: string,
   names: string[],
@@ -87,11 +95,11 @@ function moduleMap(
 ): string {
   return [
     ...names.map(
-      (name) => `import * as ${camelCase(name)} from ${JSON.stringify(specifier(name))}`,
+      (name) => `import * as ${identifier(name)} from ${JSON.stringify(specifier(name))}`,
     ),
     '',
     `export const ${exportName} = {`,
-    ...names.map((name) => `  ${JSON.stringify(name)}: ${camelCase(name)},`),
+    ...names.map((name) => `  ${JSON.stringify(name)}: ${identifier(name)},`),
     '}',
   ].join('\n')
 }

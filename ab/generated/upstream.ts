@@ -16,6 +16,21 @@ import * as aspectRatio from './upstream/aspect-ratio'
 import * as table from './upstream/table'
 import * as breadcrumb from './upstream/breadcrumb'
 import * as empty from './upstream/empty'
+import * as checkbox from './upstream/checkbox'
+import * as switchModule from './upstream/switch'
+import * as progress from './upstream/progress'
+import * as slider from './upstream/slider'
+import * as tabs from './upstream/tabs'
+import * as toggle from './upstream/toggle'
+import * as toggleGroup from './upstream/toggle-group'
+import * as radioGroup from './upstream/radio-group'
+import * as avatar from './upstream/avatar'
+import * as collapsible from './upstream/collapsible'
+import * as scrollArea from './upstream/scroll-area'
+import * as direction from './upstream/direction'
+import * as nativeSelect from './upstream/native-select'
+import * as accordion from './upstream/accordion'
+import * as inputOtp from './upstream/input-otp'
 
 export const upstream = {
   button: button,
@@ -34,4 +49,19 @@ export const upstream = {
   table: table,
   breadcrumb: breadcrumb,
   empty: empty,
+  checkbox: checkbox,
+  switch: switchModule,
+  progress: progress,
+  slider: slider,
+  tabs: tabs,
+  toggle: toggle,
+  'toggle-group': toggleGroup,
+  'radio-group': radioGroup,
+  avatar: avatar,
+  collapsible: collapsible,
+  'scroll-area': scrollArea,
+  direction: direction,
+  'native-select': nativeSelect,
+  accordion: accordion,
+  'input-otp': inputOtp,
 }

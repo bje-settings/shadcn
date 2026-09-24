@@ -215,7 +215,9 @@ export async function buildComponent(
       path: `${dir}/${component}.tsx`,
       content: `${generated}\n\n${source.code}`,
     },
-    { path: `${dir}/${component}.module.scss`, content: scss },
+    ...(source.slots.length > 0
+      ? [{ path: `${dir}/${component}.module.scss`, content: scss }]
+      : []),
     {
       path: `${dir}/${component}.test.tsx`,
       content: `${generated}\n\n${test}`,

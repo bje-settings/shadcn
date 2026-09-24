@@ -28,18 +28,19 @@ export { Chip, chipVariants }`)
     expect(test).toContain('import { Chip, chipVariants } from "./Chip"')
     expect(test).toContain('it("renders [data-slot=\\"chip\\"] with its classes", () => {')
     expect(test).toContain(
-      'expect(renderChip()).toEqual(expect.arrayContaining([styles.chip, styles.toneSoft]))',
+      'expect(classesOfChip()).toEqual(expect.arrayContaining([styles.chip, styles.toneSoft]))',
     )
     expect(test).toContain('    ["extra-loud", styles.toneExtraLoud],')
-    expect(test).toContain('const classes = renderChip({ tone: null, size: null })')
+    expect(test).toContain('const classes = classesOfChip({ tone: null, size: null })')
     expect(test).toContain(
       'for (const className of [styles.toneSoft, styles.toneExtraLoud, styles.sizeSm]) {',
     )
     expect(test).toContain(
       'expect(attributesOfChip({ pressed: false })).toEqual(attributesOfChip())',
     )
-    expect(test).toContain('.filter((a) => a.name !== "id")')
-    expect(test).not.toContain('renderChip({ tone: "soft" })).toEqual')
+    expect(test).toContain('a.value.replace(USE_ID, "")')
+    expect(test).toContain('const USE_ID = /_r_[0-9a-z]+_|:r[0-9a-z]+:|«r[0-9a-z]+»/g')
+    expect(test).not.toContain('classesOfChip({ tone: "soft" })).toEqual')
     expect(test).toContain('expect(chipVariants()).toBe([styles.chip, styles.toneSoft].join(" "))')
   })
 
@@ -54,7 +55,7 @@ function ChipLabel({ className, side = "start" }) {
 }
 export { Chip, ChipLabel }`)
     expect(test).toContain('import { Chip, ChipLabel } from "./Chip"')
-    expect(test).toContain('querySelector("[data-slot=\\"chip-label\\"]")')
+    expect(test).toContain('closest("[data-slot=\\"chip-label\\"]")')
     expect(test).toContain('expect.arrayContaining([styles.chipLabel])')
     expect(test).toContain(
       'expect(attributesOfChipLabel({ side: "start" })).toEqual(attributesOfChipLabel())',
@@ -83,6 +84,10 @@ export { Chip, ChipList, ChipItem }`,
               ],
               props: { value: 'a' },
               children: true,
+              others: [
+                { ancestors: [], props: { value: 'b' }, children: true },
+                { ancestors: [], props: {}, children: false },
+              ],
             },
           ],
         ]),
@@ -90,10 +95,19 @@ export { Chip, ChipList, ChipItem }`,
     )
     expect(test).toContain('import { Chip, ChipItem, ChipList } from "./Chip"')
     expect(test).toContain(
-      'render(<Chip defaultOpen value="a" count={2}><ChipList><ChipItem value="a" {...(props as ComponentProps<typeof ChipItem>)} /></ChipList></Chip>)',
+      'render(<Chip defaultOpen value="a" count={2}><ChipList><ChipItem data-testid="subject" {...({ "value": "a", ...props } as ComponentProps<typeof ChipItem>)} /></ChipList></Chip>)',
     )
     expect(test).toContain('  cleanup()\n')
-    expect(test).toContain('return document.querySelector("[data-slot=\\"chip-item\\"]")')
+    expect(test).toContain(
+      'return document.querySelector(\'[data-testid="subject"]\')?.closest("[data-slot=\\"chip-item\\"]")',
+    )
+    expect(test).toContain('const element = document.querySelector(".consumer")')
+    expect(test).toContain('it("renders as upstream\'s example uses it (2)", () => {')
+    expect(test).toContain('render(<ChipItem data-testid="subject" value="b">ChipItem</ChipItem>)')
+    expect(test).toContain('render(<ChipItem data-testid="subject" />)')
+    expect(test).toContain(
+      'expect(document.querySelector("[data-testid=\\"subject\\"]")).not.toBeNull()',
+    )
   })
 
   it('tests a part that renders no element of its own by its children', () => {
@@ -101,15 +115,44 @@ export { Chip, ChipList, ChipItem }`,
       `function Chip(props) { return <Primitive.Root data-slot="chip" {...props} /> }
 export { Chip }`,
       {
-        types: new Map([['Chip', { className: false, opens: true }]]),
-        scaffolds: new Map([['Chip', { ancestors: [], props: { value: 'a' }, children: true }]]),
+        types: new Map([
+          ['Chip', { className: false, opens: true, keepMounted: false, required: [] }],
+        ]),
+        scaffolds: new Map([
+          [
+            'Chip',
+            {
+              ancestors: [],
+              props: { value: 'a' },
+              children: true,
+              others: [{ ancestors: [], props: {}, children: true }],
+            },
+          ],
+        ]),
       },
     )
-    expect(test).toContain('import { render } from "@testing-library/react"')
+    expect(test).toContain('import { cleanup, render } from "@testing-library/react"')
     expect(test).not.toContain('ComponentProps')
     expect(test).not.toContain('styles')
     expect(test).toContain('render(<Chip value="a"><i data-testid="child" /></Chip>)')
     expect(test).toContain('it("renders its children", () => {')
+    expect(test).toContain('render(<Chip><i data-testid="child" /></Chip>)')
+  })
+
+  it('checks what a module re-exports from a package, and nothing else', () => {
+    const test = generate(`"use client"
+export { Provider, useThing as useIt } from "@base-ui/react/provider"
+export type { ProviderProps } from "@base-ui/react/provider"
+export { type Other } from "@base-ui/react/other"
+export * as all from "@base-ui/react/all"
+export { x as "y" } from "@base-ui/react/odd"`)
+    expect(test).toContain('import * as provider from "@base-ui/react/provider"')
+    expect(test).toContain('import { Provider, useIt } from "./Chip"')
+    expect(test).toContain('    expect(Provider).toBe(provider.Provider)')
+    expect(test).toContain('    expect(useIt).toBe(provider.useThing)')
+    expect(test).not.toContain('Other')
+    expect(test).not.toContain('@testing-library/react')
+    expect(test).not.toContain('styles')
   })
 
   it('names the exported components it has no template for', () => {

@@ -11,13 +11,14 @@ import type { JSXElement, Node } from '@babel/types'
 import { Project, ts } from 'ts-morph'
 import { childNodes, parseModule } from './ast.ts'
 import type { PreparedComponent } from './component.ts'
+import { pascalCase } from './names.ts'
 import type { TransformedComponent } from './tsx.ts'
 
 export type Literal = string | number | boolean | Literal[] | { [key: string]: Literal }
 
 export type Part = { component: string; props: Record<string, Literal> }
 
-export type Scaffold = {
+export type Usage = {
   // The same item's components it renders inside, outermost first
   ancestors: Part[]
   // Its own literal props from the example
@@ -27,11 +28,23 @@ export type Scaffold = {
   children: boolean
 }
 
+export type Scaffold = Usage & {
+  // Every other distinct way the example renders it, which reaches branches
+  // of upstream's own logic (Slider's fallback when a controlled value is not
+  // a literal)
+  others: Usage[]
+}
+
 export type PartTypes = {
   // It renders an element and takes className (Dialog's Root does neither)
   className: boolean
   // It opens: rendered with defaultOpen, its popup shows
   opens: boolean
+  // It can stay mounted while closed (Accordion's panel): rendered with
+  // keepMounted, its element exists either way
+  keepMounted: boolean
+  // Props it requires (Progress's value)
+  required: string[]
 }
 
 // This repo's root: upstream's imports resolve against its node_modules
@@ -68,13 +81,18 @@ export function partTypes(
       for (const [name, [declaration]] of file.getExportedDeclarations()) {
         const [param] = declaration?.getType().getCallSignatures()[0]?.getParameters() ?? []
         if (!declaration || !param || !/^[A-Z]/.test(name)) continue
-        const props = new Set(
-          param
-            .getTypeAtLocation(declaration)
+        const type = param.getTypeAtLocation(declaration)
+        const props = new Set(type.getApparentProperties().map((p) => p.getName()))
+        parts.set(name, {
+          className: props.has('className'),
+          opens: props.has('defaultOpen'),
+          keepMounted: props.has('keepMounted'),
+          required: type
             .getApparentProperties()
-            .map((p) => p.getName()),
-        )
-        parts.set(name, { className: props.has('className'), opens: props.has('defaultOpen') })
+            .filter((p) => !p.isOptional())
+            .map((p) => p.getName())
+            .sort(),
+        })
       }
       return [(components[i] as PreparedComponent).upstream.name, parts]
     }),
@@ -136,25 +154,38 @@ function hasChildren(element: JSXElement): boolean {
 const CHILDLESS = new Set(['area', 'br', 'col', 'embed', 'hr', 'img', 'input', 'textarea', 'wbr'])
 
 // Each exported component's scaffold, from the first place the example
-// renders it. `example` is the docs example's source, if upstream has one.
+// renders it, or else inside the item's root component (a ProgressTrack in a
+// Progress). `example` is the docs example's source, if upstream has one.
 export function scaffolds(
+  item: string,
   example: string | undefined,
   types: Map<string, PartTypes>,
   transformed: TransformedComponent,
 ): Map<string, Scaffold> {
   const rendered = new Map(transformed.components.map((c) => [c.name, c]))
   const sets = new Map(transformed.variantSets.map((set) => [set.variable, set]))
-  // A component's own cva() groups are the fixtures' to vary.
+  const root = [...types.keys()].find(
+    (name) => name.toLowerCase() === pascalCase(item).toLowerCase(),
+  )
+  // A component's own cva() groups and prop defaults are its tests' and
+  // fixtures' to vary.
   const omit = (name: string) => {
-    const set = sets.get(rendered.get(name)?.variantSet ?? '')
-    return new Set([...OMIT, ...(set?.groups.map((group) => group.name) ?? [])])
+    const component = rendered.get(name)
+    const set = sets.get(component?.variantSet ?? '')
+    return new Set([
+      ...OMIT,
+      ...(set?.groups.map((group) => group.name) ?? []),
+      ...(component?.defaults.map((d) => d.prop) ?? []),
+    ])
   }
-  const found = new Map<string, JSXElement[]>()
+  // Every path from the example's root to each place it renders a part.
+  const found = new Map<string, JSXElement[][]>()
   if (example !== undefined) {
     const visit = (node: Node, ancestors: JSXElement[]) => {
       const name = node.type === 'JSXElement' ? elementName(node) : undefined
-      if (name && types.has(name) && !found.has(name))
-        found.set(name, [...ancestors, node as JSXElement])
+      if (name && types.has(name)) {
+        found.set(name, [...(found.get(name) ?? []), [...ancestors, node as JSXElement]])
+      }
       const next = node.type === 'JSXElement' ? [...ancestors, node] : ancestors
       for (const child of childNodes(node)) visit(child, next)
     }
@@ -165,23 +196,40 @@ export function scaffolds(
     const { open: _, ...props } = part.props
     return { component: part.component, props: { ...props, defaultOpen: true } }
   }
+  const usage = (name: string, path: JSXElement[] | undefined, skip: Set<string>): Usage => {
+    const element = path?.at(-1)
+    const enclosing = path
+      ? path
+          .slice(0, -1)
+          .filter((ancestor) => types.has(elementName(ancestor) ?? ''))
+          .map((ancestor) => ({
+            component: elementName(ancestor) as string,
+            props: literalProps(ancestor),
+          }))
+      : root && root !== name
+        ? [{ component: root, props: {} }]
+        : []
+    const props = element ? literalProps(element, skip) : {}
+    return {
+      ancestors: enclosing.map(opened),
+      props: types.get(name)?.keepMounted ? { ...props, keepMounted: true } : props,
+      children: element ? hasChildren(element) : !CHILDLESS.has(rendered.get(name)?.tag ?? ''),
+    }
+  }
   return new Map(
     [...types.keys()].map((name) => {
-      const path = found.get(name)
-      const element = path?.at(-1)
-      const ancestors = (path?.slice(0, -1) ?? [])
-        .filter((ancestor) => types.has(elementName(ancestor) ?? ''))
-        .map((ancestor) =>
-          opened({ component: elementName(ancestor) as string, props: literalProps(ancestor) }),
-        )
-      return [
-        name,
-        {
-          ancestors,
-          props: element ? literalProps(element, omit(name)) : {},
-          children: element ? hasChildren(element) : !CHILDLESS.has(rendered.get(name)?.tag ?? ''),
-        },
-      ]
+      const [first, ...rest] = found.get(name) ?? []
+      const scaffold = usage(name, first, omit(name))
+      // The others keep the variant and default props the first leaves to
+      // the tests that vary them.
+      const seen = new Set([JSON.stringify(usage(name, first, OMIT))])
+      const others = rest
+        .map((path) => usage(name, path, OMIT))
+        .filter((other) => {
+          const key = JSON.stringify(other)
+          return !seen.has(key) && seen.add(key)
+        })
+      return [name, { ...scaffold, others }]
     }),
   )
 }

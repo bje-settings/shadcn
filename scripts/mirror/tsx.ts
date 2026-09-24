@@ -640,14 +640,15 @@ export function transformComponent(
 
   const clsx = clsxImport(cvas.size > 0)
   if (cnImport) out.overwrite(...cnImport, clsx)
+  // A component with no classes (a re-export of Base UI) gets no module.
   const added = [
     ...(usesClsx && !cnImport ? [clsx] : []),
-    `import styles from "./${pascalCase(component)}.module.scss"`,
+    ...(slots.length > 0 ? [`import styles from "./${pascalCase(component)}.module.scss"`] : []),
   ].join('\n')
   // With no imports, go after any directive ("use client" must stay first).
   const anchor = lastImportEnd || (ast.program.directives.at(-1)?.end ?? 0)
-  if (anchor === 0) out.prepend(`${added}\n`)
-  else out.appendLeft(anchor, `\n${added}`)
+  if (added !== '' && anchor === 0) out.prepend(`${added}\n`)
+  else if (added !== '') out.appendLeft(anchor, `\n${added}`)
 
   // A cva()'s classes land on every element a component applies it to.
   for (const component of components.values()) {

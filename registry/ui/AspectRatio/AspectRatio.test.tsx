@@ -8,18 +8,22 @@ import styles from './AspectRatio.module.scss'
 
 function renderAspectRatio(props: Partial<ComponentProps<typeof AspectRatio>> = {}) {
   cleanup()
-  render(<AspectRatio {...(props as ComponentProps<typeof AspectRatio>)} />)
-  return (
-    document.querySelector('[data-slot="aspect-ratio"]')?.getAttribute('class')?.split(' ') ?? []
-  )
+  render(<AspectRatio data-testid="subject" {...(props as ComponentProps<typeof AspectRatio>)} />)
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="aspect-ratio"]')
+}
+
+function classesOfAspectRatio(props: Partial<ComponentProps<typeof AspectRatio>> = {}) {
+  return renderAspectRatio(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('AspectRatio', () => {
   it('renders [data-slot="aspect-ratio"] with its classes', () => {
-    expect(renderAspectRatio()).toEqual(expect.arrayContaining([styles.aspectRatio]))
+    expect(classesOfAspectRatio()).toEqual(expect.arrayContaining([styles.aspectRatio]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderAspectRatio({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderAspectRatio({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })

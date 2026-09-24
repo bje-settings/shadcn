@@ -8,16 +8,184 @@ import styles from './Input.module.scss'
 
 function renderInput(props: Partial<ComponentProps<typeof Input>> = {}) {
   cleanup()
-  render(<Input type="email" placeholder="Email" {...(props as ComponentProps<typeof Input>)} />)
-  return document.querySelector('[data-slot="input"]')?.getAttribute('class')?.split(' ') ?? []
+  render(
+    <Input
+      data-testid="subject"
+      {...({ type: 'email', placeholder: 'Email', ...props } as ComponentProps<typeof Input>)}
+    />,
+  )
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="input"]')
+}
+
+function classesOfInput(props: Partial<ComponentProps<typeof Input>> = {}) {
+  return renderInput(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('Input', () => {
   it('renders [data-slot="input"] with its classes', () => {
-    expect(renderInput()).toEqual(expect.arrayContaining([styles.input]))
+    expect(classesOfInput()).toEqual(expect.arrayContaining([styles.input]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderInput({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderInput({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(<Input data-testid="subject" type="text" placeholder="Error" aria-invalid="true" />)
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (3)", () => {
+    cleanup()
+    render(
+      <Input
+        data-testid="subject"
+        id="input-demo-email"
+        type="email"
+        placeholder="name@example.com"
+      />,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (4)", () => {
+    cleanup()
+    render(
+      <Input
+        data-testid="subject"
+        id="input-demo-username"
+        type="text"
+        placeholder="Enter your username"
+      />,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (5)", () => {
+    cleanup()
+    render(
+      <Input data-testid="subject" id="input-demo-disabled" type="email" placeholder="Email" />,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (6)", () => {
+    cleanup()
+    render(
+      <Input
+        data-testid="subject"
+        id="input-demo-password"
+        type="password"
+        placeholder="Password"
+      />,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (7)", () => {
+    cleanup()
+    render(
+      <Input
+        data-testid="subject"
+        id="input-demo-tel"
+        type="tel"
+        placeholder="+1 (555) 123-4567"
+      />,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (8)", () => {
+    cleanup()
+    render(
+      <Input
+        data-testid="subject"
+        id="input-demo-url"
+        type="url"
+        placeholder="https://example.com"
+      />,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (9)", () => {
+    cleanup()
+    render(
+      <Input data-testid="subject" id="input-demo-search" type="search" placeholder="Search" />,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (10)", () => {
+    cleanup()
+    render(<Input data-testid="subject" id="input-demo-number" type="number" placeholder="123" />)
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (11)", () => {
+    cleanup()
+    render(<Input data-testid="subject" id="input-demo-date" type="date" />)
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (12)", () => {
+    cleanup()
+    render(<Input data-testid="subject" id="input-demo-time" type="time" />)
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (13)", () => {
+    cleanup()
+    render(<Input data-testid="subject" id="input-demo-file" type="file" />)
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (14)", () => {
+    cleanup()
+    render(<Input data-testid="subject" type="text" placeholder="Enter amount" />)
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (15)", () => {
+    cleanup()
+    render(<Input data-testid="subject" type="search" placeholder="Search..." />)
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (16)", () => {
+    cleanup()
+    render(<Input data-testid="subject" type="tel" placeholder="(555) 123-4567" />)
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (17)", () => {
+    cleanup()
+    render(<Input data-testid="subject" id="form-name" type="text" placeholder="John Doe" />)
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (18)", () => {
+    cleanup()
+    render(
+      <Input data-testid="subject" id="form-email" type="email" placeholder="john@example.com" />,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (19)", () => {
+    cleanup()
+    render(
+      <Input data-testid="subject" id="form-phone" type="tel" placeholder="+1 (555) 123-4567" />,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (20)", () => {
+    cleanup()
+    render(<Input data-testid="subject" id="form-address" type="text" placeholder="123 Main St" />)
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })

@@ -35,7 +35,7 @@
     translate: var(--tw-translate-x) var(--tw-translate-y);
     color: currentColor;
   }
-  :is(& > *):is(svg:not([data-slot="alert"], [data-slot="badge"], [data-slot="breadcrumb-ellipsis"], [data-slot="breadcrumb-separator"], [data-slot="button"], [data-slot="button-group-text"], [data-slot="empty-icon"], [data-slot="kbd"], [data-slot="spinner"])) {
+  :is(& > *):is(svg:not([data-slot="accordion-trigger"], [data-slot="alert"], [data-slot="avatar"], [data-slot="avatar-badge"], [data-slot="avatar-fallback"], [data-slot="avatar-group-count"], [data-slot="avatar-image"], [data-slot="badge"], [data-slot="breadcrumb-ellipsis"], [data-slot="breadcrumb-separator"], [data-slot="button"], [data-slot="button-group-text"], [data-slot="checkbox"], [data-slot="checkbox-indicator"], [data-slot="empty-icon"], [data-slot="input-otp-separator"], [data-slot="input-otp-slot"], [data-slot="kbd"], [data-slot="native-select-icon"], [data-slot="radio-group-indicator"], [data-slot="radio-group-item"], [data-slot="scroll-area-viewport"], [data-slot="slider-thumb"], [data-slot="spinner"], [data-slot="switch-thumb"], [data-slot="tabs-trigger"], [data-slot="toggle"])) {
     width: calc(var(--spacing) * 4);
     height: calc(var(--spacing) * 4);
   }

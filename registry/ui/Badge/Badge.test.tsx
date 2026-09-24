@@ -8,13 +8,17 @@ import styles from './Badge.module.scss'
 
 function renderBadge(props: Partial<ComponentProps<typeof Badge>> = {}) {
   cleanup()
-  render(<Badge {...(props as ComponentProps<typeof Badge>)} />)
-  return document.querySelector('[data-slot="badge"]')?.getAttribute('class')?.split(' ') ?? []
+  render(<Badge data-testid="subject" {...(props as ComponentProps<typeof Badge>)} />)
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="badge"]')
+}
+
+function classesOfBadge(props: Partial<ComponentProps<typeof Badge>> = {}) {
+  return renderBadge(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('Badge', () => {
   it('renders [data-slot="badge"] with its classes', () => {
-    expect(renderBadge()).toEqual(expect.arrayContaining([styles.badge, styles.variantDefault]))
+    expect(classesOfBadge()).toEqual(expect.arrayContaining([styles.badge, styles.variantDefault]))
   })
 
   it.each([
@@ -25,11 +29,11 @@ describe('Badge', () => {
     ['ghost', styles.variantGhost],
     ['link', styles.variantLink],
   ] as const)('variant %s applies its class', (value, className) => {
-    expect(renderBadge({ variant: value })).toContain(className)
+    expect(classesOfBadge({ variant: value })).toContain(className)
   })
 
   it('applies no group class for a null group', () => {
-    const classes = renderBadge({ variant: null })
+    const classes = classesOfBadge({ variant: null })
     expect(classes).toContain(styles.badge)
     for (const className of [
       styles.variantDefault,
@@ -44,7 +48,83 @@ describe('Badge', () => {
   })
 
   it('appends a consumer className last', () => {
-    expect(renderBadge({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderBadge({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(
+      <Badge data-testid="subject" variant="secondary">
+        Badge
+      </Badge>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (3)", () => {
+    cleanup()
+    render(
+      <Badge data-testid="subject" variant="destructive">
+        Badge
+      </Badge>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (4)", () => {
+    cleanup()
+    render(
+      <Badge data-testid="subject" variant="outline">
+        Badge
+      </Badge>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (5)", () => {
+    cleanup()
+    render(
+      <Badge data-testid="subject" variant="ghost">
+        Badge
+      </Badge>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (6)", () => {
+    cleanup()
+    render(
+      <Badge data-testid="subject" variant="link">
+        Badge
+      </Badge>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (7)", () => {
+    cleanup()
+    render(<Badge data-testid="subject" />)
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (8)", () => {
+    cleanup()
+    render(<Badge data-testid="subject" variant="secondary" />)
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (9)", () => {
+    cleanup()
+    render(<Badge data-testid="subject" variant="destructive" />)
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (10)", () => {
+    cleanup()
+    render(<Badge data-testid="subject" variant="ghost" />)
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })
 

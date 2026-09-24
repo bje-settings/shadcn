@@ -14,24 +14,30 @@ import {
 } from './Card'
 import styles from './Card.module.scss'
 
+// React's useId output (_r_1_, and :r1: or «r1» before React 19.1), which
+// differs between renders; Base UI puts it in ids and data-id.
+const USE_ID = /_r_[0-9a-z]+_|:r[0-9a-z]+:|«r[0-9a-z]+»/g
+
 function renderCard(props: Partial<ComponentProps<typeof Card>> = {}) {
   cleanup()
-  render(<Card {...(props as ComponentProps<typeof Card>)} />)
-  return document.querySelector('[data-slot="card"]')?.getAttribute('class')?.split(' ') ?? []
+  render(<Card data-testid="subject" {...(props as ComponentProps<typeof Card>)} />)
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="card"]')
+}
+
+function classesOfCard(props: Partial<ComponentProps<typeof Card>> = {}) {
+  return renderCard(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 function attributesOfCard(props: Partial<ComponentProps<typeof Card>> = {}) {
-  cleanup()
-  render(<Card {...(props as ComponentProps<typeof Card>)} />)
-  const element = document.querySelector('[data-slot="card"]')
+  const element = renderCard(props)
   return Object.fromEntries(
-    [...(element?.attributes ?? [])].filter((a) => a.name !== 'id').map((a) => [a.name, a.value]),
+    [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
   )
 }
 
 describe('Card', () => {
   it('renders [data-slot="card"] with its classes', () => {
-    expect(renderCard()).toEqual(expect.arrayContaining([styles.card]))
+    expect(classesOfCard()).toEqual(expect.arrayContaining([styles.card]))
   })
 
   it('renders the same with size="default" passed explicitly', () => {
@@ -39,7 +45,29 @@ describe('Card', () => {
   })
 
   it('appends a consumer className last', () => {
-    expect(renderCard({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderCard({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(
+      <Card data-testid="subject" size="default">
+        Card
+      </Card>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (3)", () => {
+    cleanup()
+    render(
+      <Card data-testid="subject" size="sm">
+        Card
+      </Card>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })
 
@@ -47,21 +75,45 @@ function renderCardHeader(props: Partial<ComponentProps<typeof CardHeader>> = {}
   cleanup()
   render(
     <Card>
-      <CardHeader {...(props as ComponentProps<typeof CardHeader>)} />
+      <CardHeader data-testid="subject" {...(props as ComponentProps<typeof CardHeader>)} />
     </Card>,
   )
-  return (
-    document.querySelector('[data-slot="card-header"]')?.getAttribute('class')?.split(' ') ?? []
-  )
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="card-header"]')
+}
+
+function classesOfCardHeader(props: Partial<ComponentProps<typeof CardHeader>> = {}) {
+  return renderCardHeader(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('CardHeader', () => {
   it('renders [data-slot="card-header"] with its classes', () => {
-    expect(renderCardHeader()).toEqual(expect.arrayContaining([styles.cardHeader]))
+    expect(classesOfCardHeader()).toEqual(expect.arrayContaining([styles.cardHeader]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderCardHeader({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderCardHeader({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(
+      <Card size="default">
+        <CardHeader data-testid="subject">CardHeader</CardHeader>
+      </Card>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (3)", () => {
+    cleanup()
+    render(
+      <Card size="sm">
+        <CardHeader data-testid="subject">CardHeader</CardHeader>
+      </Card>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })
 
@@ -70,20 +122,50 @@ function renderCardTitle(props: Partial<ComponentProps<typeof CardTitle>> = {}) 
   render(
     <Card>
       <CardHeader>
-        <CardTitle {...(props as ComponentProps<typeof CardTitle>)} />
+        <CardTitle data-testid="subject" {...(props as ComponentProps<typeof CardTitle>)} />
       </CardHeader>
     </Card>,
   )
-  return document.querySelector('[data-slot="card-title"]')?.getAttribute('class')?.split(' ') ?? []
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="card-title"]')
+}
+
+function classesOfCardTitle(props: Partial<ComponentProps<typeof CardTitle>> = {}) {
+  return renderCardTitle(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('CardTitle', () => {
   it('renders [data-slot="card-title"] with its classes', () => {
-    expect(renderCardTitle()).toEqual(expect.arrayContaining([styles.cardTitle]))
+    expect(classesOfCardTitle()).toEqual(expect.arrayContaining([styles.cardTitle]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderCardTitle({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderCardTitle({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(
+      <Card size="default">
+        <CardHeader>
+          <CardTitle data-testid="subject">CardTitle</CardTitle>
+        </CardHeader>
+      </Card>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (3)", () => {
+    cleanup()
+    render(
+      <Card size="sm">
+        <CardHeader>
+          <CardTitle data-testid="subject">CardTitle</CardTitle>
+        </CardHeader>
+      </Card>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })
 
@@ -92,23 +174,55 @@ function renderCardDescription(props: Partial<ComponentProps<typeof CardDescript
   render(
     <Card>
       <CardHeader>
-        <CardDescription {...(props as ComponentProps<typeof CardDescription>)} />
+        <CardDescription
+          data-testid="subject"
+          {...(props as ComponentProps<typeof CardDescription>)}
+        />
       </CardHeader>
     </Card>,
   )
-  return (
-    document.querySelector('[data-slot="card-description"]')?.getAttribute('class')?.split(' ') ??
-    []
-  )
+  return document
+    .querySelector('[data-testid="subject"]')
+    ?.closest('[data-slot="card-description"]')
+}
+
+function classesOfCardDescription(props: Partial<ComponentProps<typeof CardDescription>> = {}) {
+  return renderCardDescription(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('CardDescription', () => {
   it('renders [data-slot="card-description"] with its classes', () => {
-    expect(renderCardDescription()).toEqual(expect.arrayContaining([styles.cardDescription]))
+    expect(classesOfCardDescription()).toEqual(expect.arrayContaining([styles.cardDescription]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderCardDescription({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderCardDescription({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(
+      <Card size="default">
+        <CardHeader>
+          <CardDescription data-testid="subject">CardDescription</CardDescription>
+        </CardHeader>
+      </Card>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (3)", () => {
+    cleanup()
+    render(
+      <Card size="sm">
+        <CardHeader>
+          <CardDescription data-testid="subject">CardDescription</CardDescription>
+        </CardHeader>
+      </Card>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })
 
@@ -117,22 +231,26 @@ function renderCardAction(props: Partial<ComponentProps<typeof CardAction>> = {}
   render(
     <Card>
       <CardHeader>
-        <CardAction {...(props as ComponentProps<typeof CardAction>)} />
+        <CardAction data-testid="subject" {...(props as ComponentProps<typeof CardAction>)} />
       </CardHeader>
     </Card>,
   )
-  return (
-    document.querySelector('[data-slot="card-action"]')?.getAttribute('class')?.split(' ') ?? []
-  )
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="card-action"]')
+}
+
+function classesOfCardAction(props: Partial<ComponentProps<typeof CardAction>> = {}) {
+  return renderCardAction(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('CardAction', () => {
   it('renders [data-slot="card-action"] with its classes', () => {
-    expect(renderCardAction()).toEqual(expect.arrayContaining([styles.cardAction]))
+    expect(classesOfCardAction()).toEqual(expect.arrayContaining([styles.cardAction]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderCardAction({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderCardAction({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })
 
@@ -140,21 +258,45 @@ function renderCardContent(props: Partial<ComponentProps<typeof CardContent>> = 
   cleanup()
   render(
     <Card>
-      <CardContent {...(props as ComponentProps<typeof CardContent>)} />
+      <CardContent data-testid="subject" {...(props as ComponentProps<typeof CardContent>)} />
     </Card>,
   )
-  return (
-    document.querySelector('[data-slot="card-content"]')?.getAttribute('class')?.split(' ') ?? []
-  )
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="card-content"]')
+}
+
+function classesOfCardContent(props: Partial<ComponentProps<typeof CardContent>> = {}) {
+  return renderCardContent(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('CardContent', () => {
   it('renders [data-slot="card-content"] with its classes', () => {
-    expect(renderCardContent()).toEqual(expect.arrayContaining([styles.cardContent]))
+    expect(classesOfCardContent()).toEqual(expect.arrayContaining([styles.cardContent]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderCardContent({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderCardContent({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(
+      <Card size="default">
+        <CardContent data-testid="subject">CardContent</CardContent>
+      </Card>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (3)", () => {
+    cleanup()
+    render(
+      <Card size="sm">
+        <CardContent data-testid="subject">CardContent</CardContent>
+      </Card>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })
 
@@ -162,20 +304,44 @@ function renderCardFooter(props: Partial<ComponentProps<typeof CardFooter>> = {}
   cleanup()
   render(
     <Card>
-      <CardFooter {...(props as ComponentProps<typeof CardFooter>)} />
+      <CardFooter data-testid="subject" {...(props as ComponentProps<typeof CardFooter>)} />
     </Card>,
   )
-  return (
-    document.querySelector('[data-slot="card-footer"]')?.getAttribute('class')?.split(' ') ?? []
-  )
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="card-footer"]')
+}
+
+function classesOfCardFooter(props: Partial<ComponentProps<typeof CardFooter>> = {}) {
+  return renderCardFooter(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('CardFooter', () => {
   it('renders [data-slot="card-footer"] with its classes', () => {
-    expect(renderCardFooter()).toEqual(expect.arrayContaining([styles.cardFooter]))
+    expect(classesOfCardFooter()).toEqual(expect.arrayContaining([styles.cardFooter]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderCardFooter({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderCardFooter({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(
+      <Card size="default">
+        <CardFooter data-testid="subject">CardFooter</CardFooter>
+      </Card>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+  })
+
+  it("renders as upstream's example uses it (3)", () => {
+    cleanup()
+    render(
+      <Card size="sm">
+        <CardFooter data-testid="subject">CardFooter</CardFooter>
+      </Card>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })

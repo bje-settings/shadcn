@@ -212,7 +212,12 @@ export const fixtures = [
     item: 'button-group',
     component: 'ButtonGroupSeparator',
     slot: 'button-group-separator',
-    ancestors: [],
+    ancestors: [
+      {
+        component: 'ButtonGroup',
+        props: {},
+      },
+    ],
     children: true,
     overlay: false,
     label: 'ButtonGroupSeparator',
@@ -955,6 +960,694 @@ export const fixtures = [
     children: true,
     overlay: false,
     label: 'EmptyContent',
+    props: {},
+  },
+  {
+    item: 'checkbox',
+    component: 'Checkbox',
+    slot: 'checkbox',
+    ancestors: [],
+    children: false,
+    overlay: false,
+    label: 'Checkbox',
+    props: {
+      id: 'terms',
+    },
+  },
+  {
+    item: 'switch',
+    component: 'Switch',
+    slot: 'switch',
+    ancestors: [],
+    children: false,
+    overlay: false,
+    label: 'Switch',
+    props: {
+      id: 'switch-basic',
+    },
+  },
+  {
+    item: 'progress',
+    component: 'Progress',
+    slot: 'progress',
+    ancestors: [],
+    children: false,
+    overlay: false,
+    label: 'Progress',
+    props: {
+      value: 0,
+    },
+  },
+  {
+    item: 'progress',
+    component: 'ProgressTrack',
+    slot: 'progress-track',
+    ancestors: [
+      {
+        component: 'Progress',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'ProgressTrack',
+    props: {},
+  },
+  {
+    item: 'progress',
+    component: 'ProgressIndicator',
+    slot: 'progress-indicator',
+    ancestors: [
+      {
+        component: 'Progress',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'ProgressIndicator',
+    props: {},
+  },
+  {
+    item: 'progress',
+    component: 'ProgressLabel',
+    slot: 'progress-label',
+    ancestors: [
+      {
+        component: 'Progress',
+        props: {
+          value: 56,
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'ProgressLabel',
+    props: {},
+  },
+  {
+    item: 'progress',
+    component: 'ProgressValue',
+    slot: 'progress-value',
+    ancestors: [
+      {
+        component: 'Progress',
+        props: {
+          value: 56,
+        },
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'ProgressValue',
+    props: {},
+  },
+  {
+    item: 'slider',
+    component: 'Slider',
+    slot: 'slider',
+    ancestors: [],
+    children: false,
+    overlay: false,
+    label: 'Slider',
+    props: {
+      defaultValue: 50,
+      step: 1,
+    },
+  },
+  {
+    item: 'tabs',
+    component: 'Tabs',
+    slot: 'tabs',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Tabs',
+    props: {
+      defaultValue: 'home',
+    },
+  },
+  {
+    item: 'tabs',
+    component: 'TabsList',
+    slot: 'tabs-list',
+    ancestors: [
+      {
+        component: 'Tabs',
+        props: {
+          defaultValue: 'home',
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'TabsList variant=default',
+    props: {
+      variant: 'default',
+    },
+  },
+  {
+    item: 'tabs',
+    component: 'TabsList',
+    slot: 'tabs-list',
+    ancestors: [
+      {
+        component: 'Tabs',
+        props: {
+          defaultValue: 'home',
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'TabsList variant=line',
+    props: {
+      variant: 'line',
+    },
+  },
+  {
+    item: 'tabs',
+    component: 'TabsTrigger',
+    slot: 'tabs-trigger',
+    ancestors: [
+      {
+        component: 'Tabs',
+        props: {
+          defaultValue: 'home',
+        },
+      },
+      {
+        component: 'TabsList',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'TabsTrigger',
+    props: {
+      value: 'home',
+    },
+  },
+  {
+    item: 'tabs',
+    component: 'TabsContent',
+    slot: 'tabs-content',
+    ancestors: [
+      {
+        component: 'Tabs',
+        props: {
+          defaultValue: 'account',
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'TabsContent',
+    props: {
+      value: 'account',
+      keepMounted: true,
+    },
+  },
+  {
+    item: 'toggle',
+    component: 'Toggle',
+    slot: 'toggle',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Toggle variant=default',
+    props: {
+      'aria-label': 'Toggle bold',
+      defaultPressed: true,
+      variant: 'default',
+    },
+  },
+  {
+    item: 'toggle',
+    component: 'Toggle',
+    slot: 'toggle',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Toggle variant=outline',
+    props: {
+      'aria-label': 'Toggle bold',
+      defaultPressed: true,
+      variant: 'outline',
+    },
+  },
+  {
+    item: 'toggle',
+    component: 'Toggle',
+    slot: 'toggle',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Toggle size=default',
+    props: {
+      'aria-label': 'Toggle bold',
+      defaultPressed: true,
+      size: 'default',
+    },
+  },
+  {
+    item: 'toggle',
+    component: 'Toggle',
+    slot: 'toggle',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Toggle size=sm',
+    props: {
+      'aria-label': 'Toggle bold',
+      defaultPressed: true,
+      size: 'sm',
+    },
+  },
+  {
+    item: 'toggle',
+    component: 'Toggle',
+    slot: 'toggle',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Toggle size=lg',
+    props: {
+      'aria-label': 'Toggle bold',
+      defaultPressed: true,
+      size: 'lg',
+    },
+  },
+  {
+    item: 'toggle-group',
+    component: 'ToggleGroup',
+    slot: 'toggle-group',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'ToggleGroup',
+    props: {
+      multiple: true,
+    },
+  },
+  {
+    item: 'toggle-group',
+    component: 'ToggleGroupItem',
+    slot: 'toggle-group-item',
+    ancestors: [
+      {
+        component: 'ToggleGroup',
+        props: {
+          multiple: true,
+          spacing: 1,
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'ToggleGroupItem',
+    props: {
+      value: 'bold',
+      'aria-label': 'Toggle bold',
+    },
+  },
+  {
+    item: 'radio-group',
+    component: 'RadioGroup',
+    slot: 'radio-group',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'RadioGroup',
+    props: {
+      defaultValue: 'comfortable',
+    },
+  },
+  {
+    item: 'radio-group',
+    component: 'RadioGroupItem',
+    slot: 'radio-group-item',
+    ancestors: [
+      {
+        component: 'RadioGroup',
+        props: {
+          defaultValue: 'comfortable',
+        },
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'RadioGroupItem',
+    props: {
+      value: 'default',
+      id: 'r1',
+    },
+  },
+  {
+    item: 'avatar',
+    component: 'Avatar',
+    slot: 'avatar',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Avatar',
+    props: {},
+  },
+  {
+    item: 'avatar',
+    component: 'AvatarImage',
+    slot: 'avatar-image',
+    ancestors: [
+      {
+        component: 'Avatar',
+        props: {
+          size: 'sm',
+        },
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'AvatarImage',
+    props: {
+      src: 'https://github.com/shadcn.png',
+      alt: '@shadcn',
+      keepMounted: true,
+    },
+  },
+  {
+    item: 'avatar',
+    component: 'AvatarFallback',
+    slot: 'avatar-fallback',
+    ancestors: [
+      {
+        component: 'Avatar',
+        props: {
+          size: 'sm',
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'AvatarFallback',
+    props: {},
+  },
+  {
+    item: 'avatar',
+    component: 'AvatarBadge',
+    slot: 'avatar-badge',
+    ancestors: [
+      {
+        component: 'Avatar',
+        props: {
+          size: 'sm',
+        },
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'AvatarBadge',
+    props: {},
+  },
+  {
+    item: 'avatar',
+    component: 'AvatarGroup',
+    slot: 'avatar-group',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'AvatarGroup',
+    props: {},
+  },
+  {
+    item: 'avatar',
+    component: 'AvatarGroupCount',
+    slot: 'avatar-group-count',
+    ancestors: [
+      {
+        component: 'AvatarGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'AvatarGroupCount',
+    props: {},
+  },
+  {
+    item: 'collapsible',
+    component: 'Collapsible',
+    slot: 'collapsible',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Collapsible',
+    props: {},
+  },
+  {
+    item: 'collapsible',
+    component: 'CollapsibleTrigger',
+    slot: 'collapsible-trigger',
+    ancestors: [
+      {
+        component: 'Collapsible',
+        props: {
+          defaultOpen: true,
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'CollapsibleTrigger',
+    props: {},
+  },
+  {
+    item: 'collapsible',
+    component: 'CollapsibleContent',
+    slot: 'collapsible-content',
+    ancestors: [
+      {
+        component: 'Collapsible',
+        props: {
+          defaultOpen: true,
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'CollapsibleContent',
+    props: {
+      keepMounted: true,
+    },
+  },
+  {
+    item: 'scroll-area',
+    component: 'ScrollArea',
+    slot: 'scroll-area',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'ScrollArea',
+    props: {},
+  },
+  {
+    item: 'scroll-area',
+    component: 'ScrollBar',
+    slot: 'scroll-area-scrollbar',
+    ancestors: [
+      {
+        component: 'ScrollArea',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'ScrollBar',
+    props: {
+      keepMounted: true,
+    },
+  },
+  {
+    item: 'native-select',
+    component: 'NativeSelect',
+    slot: 'native-select-wrapper',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'NativeSelect',
+    props: {},
+  },
+  {
+    item: 'native-select',
+    component: 'NativeSelectOption',
+    slot: 'native-select-option',
+    ancestors: [
+      {
+        component: 'NativeSelect',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'NativeSelectOption',
+    props: {
+      value: '',
+    },
+  },
+  {
+    item: 'native-select',
+    component: 'NativeSelectOptGroup',
+    slot: 'native-select-optgroup',
+    ancestors: [
+      {
+        component: 'NativeSelect',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'NativeSelectOptGroup',
+    props: {
+      label: 'Fruits',
+    },
+  },
+  {
+    item: 'accordion',
+    component: 'Accordion',
+    slot: 'accordion',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Accordion',
+    props: {
+      keepMounted: true,
+    },
+  },
+  {
+    item: 'accordion',
+    component: 'AccordionItem',
+    slot: 'accordion-item',
+    ancestors: [
+      {
+        component: 'Accordion',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'AccordionItem',
+    props: {},
+  },
+  {
+    item: 'accordion',
+    component: 'AccordionTrigger',
+    slot: 'accordion-trigger',
+    ancestors: [
+      {
+        component: 'Accordion',
+        props: {},
+      },
+      {
+        component: 'AccordionItem',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'AccordionTrigger',
+    props: {},
+  },
+  {
+    item: 'accordion',
+    component: 'AccordionContent',
+    slot: 'accordion-content',
+    ancestors: [
+      {
+        component: 'Accordion',
+        props: {},
+      },
+      {
+        component: 'AccordionItem',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'AccordionContent',
+    props: {
+      keepMounted: true,
+    },
+  },
+  {
+    item: 'input-otp',
+    component: 'InputOTP',
+    slot: 'input-otp',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'InputOTP',
+    props: {
+      id: 'simple',
+      maxLength: 6,
+    },
+  },
+  {
+    item: 'input-otp',
+    component: 'InputOTPGroup',
+    slot: 'input-otp-group',
+    ancestors: [
+      {
+        component: 'InputOTP',
+        props: {
+          id: 'simple',
+          maxLength: 6,
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'InputOTPGroup',
+    props: {},
+  },
+  {
+    item: 'input-otp',
+    component: 'InputOTPSlot',
+    slot: 'input-otp-slot',
+    ancestors: [
+      {
+        component: 'InputOTP',
+        props: {
+          id: 'simple',
+          maxLength: 6,
+        },
+      },
+      {
+        component: 'InputOTPGroup',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'InputOTPSlot',
+    props: {
+      index: 0,
+    },
+  },
+  {
+    item: 'input-otp',
+    component: 'InputOTPSeparator',
+    slot: 'input-otp-separator',
+    ancestors: [
+      {
+        component: 'InputOTP',
+        props: {
+          id: 'simple',
+          maxLength: 6,
+        },
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'InputOTPSeparator',
     props: {},
   },
 ]

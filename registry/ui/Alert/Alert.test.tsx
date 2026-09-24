@@ -8,24 +8,28 @@ import styles from './Alert.module.scss'
 
 function renderAlert(props: Partial<ComponentProps<typeof Alert>> = {}) {
   cleanup()
-  render(<Alert {...(props as ComponentProps<typeof Alert>)} />)
-  return document.querySelector('[data-slot="alert"]')?.getAttribute('class')?.split(' ') ?? []
+  render(<Alert data-testid="subject" {...(props as ComponentProps<typeof Alert>)} />)
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="alert"]')
+}
+
+function classesOfAlert(props: Partial<ComponentProps<typeof Alert>> = {}) {
+  return renderAlert(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('Alert', () => {
   it('renders [data-slot="alert"] with its classes', () => {
-    expect(renderAlert()).toEqual(expect.arrayContaining([styles.alert, styles.variantDefault]))
+    expect(classesOfAlert()).toEqual(expect.arrayContaining([styles.alert, styles.variantDefault]))
   })
 
   it.each([
     ['default', styles.variantDefault],
     ['destructive', styles.variantDestructive],
   ] as const)('variant %s applies its class', (value, className) => {
-    expect(renderAlert({ variant: value })).toContain(className)
+    expect(classesOfAlert({ variant: value })).toContain(className)
   })
 
   it('applies no group class for a null group', () => {
-    const classes = renderAlert({ variant: null })
+    const classes = classesOfAlert({ variant: null })
     expect(classes).toContain(styles.alert)
     for (const className of [styles.variantDefault, styles.variantDestructive]) {
       expect(classes).not.toContain(className)
@@ -33,7 +37,19 @@ describe('Alert', () => {
   })
 
   it('appends a consumer className last', () => {
-    expect(renderAlert({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderAlert({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(
+      <Alert data-testid="subject" variant="destructive">
+        Alert
+      </Alert>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })
 
@@ -41,21 +57,35 @@ function renderAlertTitle(props: Partial<ComponentProps<typeof AlertTitle>> = {}
   cleanup()
   render(
     <Alert>
-      <AlertTitle {...(props as ComponentProps<typeof AlertTitle>)} />
+      <AlertTitle data-testid="subject" {...(props as ComponentProps<typeof AlertTitle>)} />
     </Alert>,
   )
-  return (
-    document.querySelector('[data-slot="alert-title"]')?.getAttribute('class')?.split(' ') ?? []
-  )
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="alert-title"]')
+}
+
+function classesOfAlertTitle(props: Partial<ComponentProps<typeof AlertTitle>> = {}) {
+  return renderAlertTitle(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('AlertTitle', () => {
   it('renders [data-slot="alert-title"] with its classes', () => {
-    expect(renderAlertTitle()).toEqual(expect.arrayContaining([styles.alertTitle]))
+    expect(classesOfAlertTitle()).toEqual(expect.arrayContaining([styles.alertTitle]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderAlertTitle({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderAlertTitle({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(
+      <Alert variant="destructive">
+        <AlertTitle data-testid="subject">AlertTitle</AlertTitle>
+      </Alert>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })
 
@@ -63,22 +93,40 @@ function renderAlertDescription(props: Partial<ComponentProps<typeof AlertDescri
   cleanup()
   render(
     <Alert>
-      <AlertDescription {...(props as ComponentProps<typeof AlertDescription>)} />
+      <AlertDescription
+        data-testid="subject"
+        {...(props as ComponentProps<typeof AlertDescription>)}
+      />
     </Alert>,
   )
-  return (
-    document.querySelector('[data-slot="alert-description"]')?.getAttribute('class')?.split(' ') ??
-    []
-  )
+  return document
+    .querySelector('[data-testid="subject"]')
+    ?.closest('[data-slot="alert-description"]')
+}
+
+function classesOfAlertDescription(props: Partial<ComponentProps<typeof AlertDescription>> = {}) {
+  return renderAlertDescription(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('AlertDescription', () => {
   it('renders [data-slot="alert-description"] with its classes', () => {
-    expect(renderAlertDescription()).toEqual(expect.arrayContaining([styles.alertDescription]))
+    expect(classesOfAlertDescription()).toEqual(expect.arrayContaining([styles.alertDescription]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderAlertDescription({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderAlertDescription({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  })
+
+  it("renders as upstream's example uses it (2)", () => {
+    cleanup()
+    render(
+      <Alert variant="destructive">
+        <AlertDescription data-testid="subject">AlertDescription</AlertDescription>
+      </Alert>,
+    )
+    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
   })
 })
 
@@ -86,20 +134,24 @@ function renderAlertAction(props: Partial<ComponentProps<typeof AlertAction>> = 
   cleanup()
   render(
     <Alert>
-      <AlertAction {...(props as ComponentProps<typeof AlertAction>)} />
+      <AlertAction data-testid="subject" {...(props as ComponentProps<typeof AlertAction>)} />
     </Alert>,
   )
-  return (
-    document.querySelector('[data-slot="alert-action"]')?.getAttribute('class')?.split(' ') ?? []
-  )
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="alert-action"]')
+}
+
+function classesOfAlertAction(props: Partial<ComponentProps<typeof AlertAction>> = {}) {
+  return renderAlertAction(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 describe('AlertAction', () => {
   it('renders [data-slot="alert-action"] with its classes', () => {
-    expect(renderAlertAction()).toEqual(expect.arrayContaining([styles.alertAction]))
+    expect(classesOfAlertAction()).toEqual(expect.arrayContaining([styles.alertAction]))
   })
 
   it('appends a consumer className last', () => {
-    expect(renderAlertAction({ className: 'consumer' }).at(-1)).toBe('consumer')
+    renderAlertAction({ className: 'consumer' })
+    const element = document.querySelector('.consumer')
+    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
 })
