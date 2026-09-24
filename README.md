@@ -33,9 +33,18 @@ Not decided yet. Publishing to the shadcn registry directory is tracked in #1.
 
 `.claude/settings.json` enables the TypeScript LSP plugin and disables auto memory and attribution.
 The `shadcn` skill from [shadcn/ui](https://github.com/shadcn-ui/ui/tree/main/skills/shadcn) is
-vendored in `.claude/skills/shadcn/` and pinned in `skills-lock.json`. It assumes Tailwind;
-`.claude/rules/_no-tailwind.md` overrides that. Update the skill with:
+vendored in `.claude/skills/shadcn/`, with its source pinned in `skills-lock.json`. It assumes
+Tailwind; `.claude/rules/_no-tailwind.md` overrides that.
 
-```bash
-npx skills update shadcn
-```
+The vendored copy differs from upstream to follow the
+[skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices):
+
+- `rules/` renamed to `supporting/`, since these are
+  [supporting files](https://code.claude.com/docs/en/skills#add-supporting-files), not Claude Code rules
+- `agents/` and `assets/` removed (OpenAI Codex metadata)
+- `mcp.md` removed (not referenced from `SKILL.md`, and no shadcn MCP server is configured)
+- `evals/` removed (authoring test cases, never loaded at runtime)
+- Tables of contents added to `registry.md` and `supporting/icons.md` (over 100 lines)
+
+`npx skills update shadcn` replaces the directory with upstream, so reapply these changes after
+updating.

@@ -4,6 +4,12 @@
 
 ---
 
+## Contents
+
+- Icons in Button use data-icon attribute
+- No sizing classes on icons inside components
+- Pass icons as component objects, not string keys
+
 ## Icons in Button use data-icon attribute
 
 Add `data-icon="inline-start"` (prefix) or `data-icon="inline-end"` (suffix) to the icon. No sizing classes on the icon.

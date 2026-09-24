@@ -140,7 +140,7 @@ module.exports = {
 
 ## Customizing Components
 
-See also: [rules/styling.md](./rules/styling.md) for Incorrect/Correct examples.
+See also: [supporting/styling.md](./supporting/styling.md) for Incorrect/Correct examples.
 
 Prefer these approaches in order:
 

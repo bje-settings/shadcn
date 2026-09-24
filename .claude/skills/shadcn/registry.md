@@ -3,6 +3,17 @@
 Use this reference when the user wants to create, fix, publish, or reason about
 a shadcn registry.
 
+## Contents
+
+- Mental Model
+- Root `registry.json`
+- Include
+- Item Definitions
+- Registry Dependencies
+- Address Schemes
+- GitHub Registries
+- Build and Verify
+
 ## Mental Model
 
 A registry has two forms:
