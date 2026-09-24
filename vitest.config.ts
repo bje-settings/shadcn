@@ -3,6 +3,7 @@
 // with a stated reason, never a lowered threshold.
 import { readFileSync } from 'node:fs'
 import { defineConfig } from 'vitest/config'
+import { pascalCase } from './scripts/mirror/names.ts'
 
 const mirror = JSON.parse(readFileSync(new URL('./mirror.config.json', import.meta.url), 'utf8'))
 
@@ -23,6 +24,8 @@ export default defineConfig({
           alias: {
             [`@/registry/${mirror.namespace}/ui`]: new URL('./registry/ui', import.meta.url)
               .pathname,
+            [`@/registry/${mirror.namespace}/hooks`]: new URL('./registry/hooks', import.meta.url)
+              .pathname,
           },
           include: ['registry/**/*.test.{ts,tsx}'],
           environment: 'jsdom',
@@ -40,6 +43,12 @@ export default defineConfig({
       include: ['registry/**/*.{ts,tsx}', 'scripts/**/*.ts'],
       exclude: [
         '**/*.test.{ts,tsx}',
+        // Mirrored components with upstream logic no generated test reaches;
+        // mirror.config.json gives each reason.
+        ...Object.keys(mirror.coverageExclusions ?? {}).flatMap((item) => {
+          const file = pascalCase(item)
+          return [`${mirror.outputDir}/${file}/${file}.tsx`, `${mirror.hooksDir}/${item}.ts`]
+        }),
         // The process entry point: wires cli.ts to the real process, fetch
         // and console, and holds no logic of its own.
         'scripts/mirror/main.ts',

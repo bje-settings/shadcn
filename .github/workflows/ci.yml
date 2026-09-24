@@ -56,6 +56,10 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/node-pnpm
+      # The A/B harness type-checks its generated inputs, which are not
+      # committed.
+      - name: Generate the A/B harness inputs
+        run: pnpm mirror:build
       # Three projects: scripts resolve like node; registry items and the A/B
       # harness like a bundler.
       - name: Type-check the TypeScript
@@ -83,6 +87,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/node-pnpm
+      # `pnpm ab` generates the harness inputs first (preab).
       - name: Compare generated components with upstream
         run: pnpm ab
       - name: Upload the A/B report

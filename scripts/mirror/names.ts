@@ -20,8 +20,13 @@ export function camelCase(name: string): string {
 }
 
 // Where this registry's copy of an item lives, as its components and the A/B
-// harness import it.
-export function registryModule(namespace: string, item: string): string {
+// harness import it: a component in its PascalCase folder, a hook by name.
+export function registryModule(
+  namespace: string,
+  item: string,
+  kind: 'ui' | 'hooks' = 'ui',
+): string {
+  if (kind === 'hooks') return `@/registry/${namespace}/hooks/${item}`
   const file = pascalCase(item)
   return `@/registry/${namespace}/ui/${file}/${file}`
 }

@@ -112,5 +112,29 @@ export function layoutCss(
     '',
     `@source ${JSON.stringify(source)};`,
     '',
+    // Upstream, tailwind-merge drops a component's leading-* when the example
+    // passes a text size, and Tailwind's text-* reads --tw-leading if set. The
+    // component's module still sets it here, so the example's text size
+    // clears it, unless the example passes its own leading-*.
+    `:is(${TEXT_SIZES.map((size) => `.text-${size}`).join(', ')}):not([class*="leading-"]) {`,
+    '  --tw-leading: initial;',
+    '}',
+    '',
   ].join('\n')
 }
+
+const TEXT_SIZES = [
+  'xs',
+  'sm',
+  'base',
+  'lg',
+  'xl',
+  '2xl',
+  '3xl',
+  '4xl',
+  '5xl',
+  '6xl',
+  '7xl',
+  '8xl',
+  '9xl',
+]

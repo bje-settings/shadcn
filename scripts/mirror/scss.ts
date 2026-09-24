@@ -8,12 +8,13 @@
 // cascade order, and only adjacent blocks merge, so no declaration moves past
 // another that could override it.
 //
-// The slot class is wrapped in :where() so a consumer's className always
-// outranks the component's defaults, the job tailwind-merge does upstream.
+// Rules styling the slot's own element nest under :where(.slot), so a
+// consumer's className outranks them, the job tailwind-merge does upstream.
+// Rules styling descendants (`*:w-full`, `& svg`) nest under .slot and keep
+// upstream's specificity.
 
 import postcss, { type AtRule, type Rule } from 'postcss'
 import selectorParser from 'postcss-selector-parser'
-import type { SelectorRewrite } from './config.ts'
 
 export type Slot = {
   // camelCase module class name
@@ -23,12 +24,37 @@ export type Slot = {
 
 export type ScssBlock = {
   scss: string
-  // group/peer marker classes, which have no CSS of their own. Any other class
-  // Tailwind produces no CSS for fails the conversion.
+  // group/peer markers and configured classesWithoutCss, which have no CSS.
+  // Any other class Tailwind produces no CSS for fails the conversion.
   unresolved: string[]
-  // Custom properties the block reads but does not set: the global variables
-  // file has to provide them.
+  // Custom properties the block reads but does not set: global tokens, or
+  // ones an enclosing slot or an inline style sets.
   customProperties: string[]
+  // No rule came out: Sass drops the empty block, so the module exports no
+  // class for it (a slot holding only a group marker).
+  empty: boolean
+  // Why rules were dropped or loosened here: a consumer class, or a class
+  // probe no mirrored element matches.
+  dropped: string[]
+}
+
+export type SlotOptions = {
+  // Selectors for the mirrored elements whose upstream classes contain a
+  // fragment: what upstream's `[class*="size-"]` probes find here.
+  classProbe: (fragment: string) => string[]
+  // Reason each configured consumer class's rules are dropped, by class
+  consumerClasses: Map<string, string>
+  // Classes a selector may name outside the module (`.dark` from the dark
+  // variant), kept as :global() so CSS modules leave them alone. Group and
+  // peer markers become the selector `markers` gives them; any other outside
+  // class would never be on an element here.
+  globalClasses: Set<string>
+  // Upstream classes known to compile to nothing
+  withoutCss: Set<string>
+  // Selector each group/peer marker class becomes: the data-slot of the
+  // elements carrying it (`[data-slot="card"]` for `group/card`), or their
+  // module class when they render none.
+  markers: Map<string, string>
 }
 
 type Item = { decl: string } | Block
@@ -48,28 +74,66 @@ function wrappersOf(rule: Rule, layer: AtRule): string[] {
   return wrappers
 }
 
-// Classes Tailwind variants may name outside the element: `.dark` from the
-// dark variant, marked :global() so CSS modules leave it alone. Any other
-// outside class, like `.group/card` from a group-* variant, names a marker
-// class the mirror drops from the element, so the selector could never match.
-const GLOBAL_CLASSES = new Set(['dark'])
-
 // Tailwind's group and peer marker classes: they have no CSS of their own.
-const MARKER = /^(group|peer)(\/[\w-]+)?$/
+export const MARKER = /^(group|peer)(\/[\w-]+)?$/
+
+// A `:not()` whose every argument probes class names, like upstream's
+// `svg:not([class*="size-"])`: a default for icons that set no size of their
+// own. It becomes `:where(:not())` of the mirrored elements whose upstream
+// classes match, or goes when none do. :where() keeps it from adding
+// specificity, so a consumer's own size class on an icon still wins, as it
+// does upstream where the probe excludes that icon.
+function resolveClassProbes(
+  root: selectorParser.Root,
+  classProbe: SlotOptions['classProbe'],
+  unmatched: Set<string>,
+) {
+  root.walkPseudos((pseudo) => {
+    if (pseudo.value !== ':not') return
+    const probes = pseudo.nodes.map((inner) => {
+      const [only, ...rest] = inner.nodes
+      return only?.type === 'attribute' && only.attribute === 'class' && only.operator === '*='
+        ? rest.length === 0 && only.value
+        : undefined
+    })
+    if (!probes.every((probe) => typeof probe === 'string')) return
+    const selectors = [...new Set(probes.flatMap((probe) => classProbe(probe)))].sort()
+    if (selectors.length === 0) {
+      for (const probe of probes) unmatched.add(probe)
+      pseudo.remove()
+    } else
+      pseudo.replaceWith(
+        selectorParser().astSync(`:where(:not(${selectors.join(', ')}))`).first.first,
+      )
+  })
+}
 
 // The utility's own class becomes `&`; an allowed outside class is marked
 // :global() or CSS modules would rename it and the selector would never match.
-function nestSelector(selector: string, candidates: Set<string>, resolved: Set<string>): string {
+function nestSelector(
+  selector: string,
+  candidates: Set<string>,
+  resolved: Set<string>,
+  options: SlotOptions,
+  unmatched: Set<string>,
+): string {
   return selectorParser((root) => {
+    resolveClassProbes(root, options.classProbe, unmatched)
     root.walkClasses((node) => {
       if (candidates.has(node.value)) {
         resolved.add(node.value)
         node.replaceWith(selectorParser.nesting({ value: '&' }))
         return
       }
-      if (!GLOBAL_CLASSES.has(node.value)) {
+      const marker = options.markers.get(node.value)
+      if (marker !== undefined) {
+        const replacement = selectorParser().astSync(marker).first.first
+        node.replaceWith(replacement)
+        return
+      }
+      if (!options.globalClasses.has(node.value)) {
         throw new Error(
-          `selector ${selector} references class .${node.value} outside the module; group-* and peer-* variants are not supported yet`,
+          `selector ${selector} references class .${node.value} outside the module; list it in consumerClasses if only a consumer adds it`,
         )
       }
       node.replaceWith(
@@ -108,10 +172,63 @@ function print(block: Block, depth: number): string[] {
   return lines
 }
 
-export function slotToScss(css: string, slot: Slot, rewrites: SelectorRewrite[]): ScssBlock {
+function classesIn(selector: string): string[] {
+  const found: string[] = []
+  selectorParser((root) => {
+    root.walkClasses((node) => {
+      found.push(node.value)
+    })
+  }).processSync(selector)
+  return found
+}
+
+// Why a rule is dropped, if it is: besides the slot's own utilities, it needs
+// a configured consumer class, so it never applies. A group/peer marker no
+// mirrored element carries fails the build: the item carrying it must be
+// mirrored too.
+function dropReason(
+  selector: string,
+  candidates: Set<string>,
+  options: SlotOptions,
+): string | undefined {
+  const classes = classesIn(selector).filter((c) => !candidates.has(c))
+  const consumer = classes.find((c) => options.consumerClasses.has(c))
+  if (consumer) return options.consumerClasses.get(consumer)
+  const missing = classes.find((c) => MARKER.test(c) && !options.markers.has(c))
+  if (missing) {
+    throw new Error(
+      `selector ${selector} needs a ${missing} marker, which no mirrored element with a data-slot carries`,
+    )
+  }
+  return undefined
+}
+
+// Whether a nested selector styles another element than the slot's own: a
+// combinator follows `&` (`& svg`, `& > *`, `:is(& > *)`).
+function targetsDescendant(selector: string): boolean {
+  let descendant = false
+  selectorParser((root) => {
+    root.walkNesting((nesting) => {
+      const siblings = (nesting.parent as selectorParser.Selector).nodes
+      if (siblings.slice(siblings.indexOf(nesting) + 1).some((n) => n.type === 'combinator')) {
+        descendant = true
+      }
+    })
+  }).processSync(selector)
+  return descendant
+}
+
+export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssBlock {
   const candidates = new Set(slot.classes)
   const resolved = new Set<string>()
+  const dropped = new Set<string>()
+  const unmatched = new Set<string>()
+  // The slot's own rules sit at zero specificity, so a consumer's className
+  // wins as tailwind-merge makes it win upstream. Rules styling descendants
+  // (Field's `*:w-full`) keep the class's specificity, as upstream's do: a
+  // child's own zero-specificity rules must not outrank them.
   const root: Block = { key: `:where(.${slot.name})`, items: [] }
+  const context: Block = { key: `.${slot.name}`, items: [] }
   const reads = new Set<string>()
   const sets = new Set<string>()
 
@@ -123,42 +240,63 @@ export function slotToScss(css: string, slot: Slot, rewrites: SelectorRewrite[])
     )
 
   layer?.walkRules((rule) => {
-    const selectors = [
-      ...new Set(
-        rule.selectors.map((selector) =>
-          rewrites.reduce(
-            (result, { pattern, replace }) => result.replace(pattern, replace),
-            nestSelector(selector, candidates, resolved),
-          ),
-        ),
-      ),
-    ]
+    const kept = rule.selectors.filter((selector) => {
+      const reason = dropReason(selector, candidates, options)
+      if (reason === undefined) return true
+      dropped.add(reason)
+      for (const c of classesIn(selector)) if (candidates.has(c)) resolved.add(c)
+      return false
+    })
+    if (kept.length === 0) return
+    // A rule gated on a class probe is a default an element's own class
+    // overrides (an icon's size), so it stays at zero specificity even when it
+    // styles descendants.
+    const nested = kept.map((raw) => {
+      const selector = nestSelector(raw, candidates, resolved, options, unmatched)
+      return { selector, context: targetsDescendant(selector) && !/\[class\*=/.test(raw) }
+    })
+    const selectors = [...new Set(nested.map((n) => n.selector))]
     const decls: string[] = []
     rule.walkDecls((decl) => {
       if (decl.prop.startsWith('--')) sets.add(decl.prop)
       for (const [, name] of decl.value.matchAll(/var\((--[\w-]+)/g)) reads.add(name as string)
       decls.push(`${decl.prop}: ${decl.value}${decl.important ? ' !important' : ''}`)
     })
-    const selector = selectors.join(', ')
-    // Upstream selectors that inspect class names look for Tailwind classes no
-    // consumer element will carry: each needs a deliberate selectorRewrites entry.
-    if (/\[class[~|^$*]?=/.test(selector)) {
-      throw new Error(
-        `${slot.name}: selector ${selector} matches class names; add a selectorRewrites entry`,
-      )
-    }
+    // Any other selector inspecting class names looks for Tailwind classes no
+    // element carries here.
+    const probe = selectors.find((selector) => /\[class[~|^$*]?=/.test(selector))
+    if (probe) throw new Error(`${slot.name}: selector ${probe} matches class names outside :not()`)
     const wrappers = wrappersOf(rule, layer)
-    insert(root, selector === '&' ? wrappers : [selector, ...wrappers], decls)
+    for (const [block, inContext] of [
+      [root, false],
+      [context, true],
+    ] as const) {
+      const group = new Set(nested.filter((n) => n.context === inContext).map((n) => n.selector))
+      const selector = [...group].join(', ')
+      if (selector === '') continue
+      insert(block, selector === '&' ? wrappers : [selector, ...wrappers], decls)
+    }
   })
 
   const unresolved = slot.classes.filter((c) => !resolved.has(c))
-  const unknown = unresolved.filter((c) => !MARKER.test(c))
+  const unknown = unresolved.filter((c) => !MARKER.test(c) && !options.withoutCss.has(c))
   if (unknown.length > 0) {
     throw new Error(`${slot.name}: Tailwind produced no CSS for ${unknown.join(' ')}`)
   }
   return {
-    scss: print(root, 0).join('\n'),
+    scss: [root, context]
+      .filter((block) => block === root || block.items.length > 0)
+      .flatMap((block) => print(block, 0))
+      .join('\n'),
     unresolved,
     customProperties: [...reads].filter((name) => !sets.has(name)).sort(),
+    empty: root.items.length === 0 && context.items.length === 0,
+    dropped: [
+      ...dropped,
+      ...[...unmatched].map(
+        (probe) =>
+          `upstream skips elements whose classes contain "${probe}", and no mirrored element does: the default applies to every match.`,
+      ),
+    ],
   }
 }

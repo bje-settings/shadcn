@@ -9,6 +9,13 @@ describe('formatWithBiome', () => {
     expect(formatWithBiome(root, 'a.json', '{"a":[1]}')).toBe('{ "a": [1] }\n')
   })
 
+  it("applies Biome's safe fixes", () => {
+    const code = "import * as React from 'react'\nexport const a: React.FC = () => null\n"
+    expect(formatWithBiome(root, 'a.tsx', code)).toBe(
+      "import type * as React from 'react'\nexport const a: React.FC = () => null\n",
+    )
+  })
+
   it('passes stylesheets through untouched', () => {
     expect(formatWithBiome(root, 'a.module.scss', 'a{b:c}')).toBe('a{b:c}')
     expect(formatWithBiome(root, 'a.css', '@source "./x";')).toBe('@source "./x";')

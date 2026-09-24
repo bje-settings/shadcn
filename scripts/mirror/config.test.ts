@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { colorsUrl, parseConfig, upstreamUrl } from './config.ts'
+import {
+  checkConfiguredParts,
+  colorsUrl,
+  consumerClassReasons,
+  parseConfig,
+  upstreamUrl,
+} from './config.ts'
 
 const valid = {
   namespace: 'bje',
@@ -8,7 +14,7 @@ const valid = {
     colorsUrl: 'https://example.com/colors/{name}.json',
     style: 'base-vega',
   },
-  theme: { baseColor: 'neutral', font: 'inter' },
+  theme: { baseColor: 'neutral', font: 'inter', iconLibrary: 'lucide' },
   components: ['button', 'icon-button'],
   typeset: {
     stylesheet: 'https://example.com/typeset.css',
@@ -17,9 +23,18 @@ const valid = {
   },
   snapshotDir: 'upstream',
   outputDir: 'registry/ui',
+  hooksDir: 'registry/hooks',
   globalsDir: 'registry/styles',
   harnessDir: 'ab/generated',
-  selectorRewrites: [{ pattern: 'a+', replace: '', reason: 'why' }],
+  consumerClasses: [{ classes: ['border-b'], reason: 'consumer' }],
+  coverageExclusions: { button: 'why' },
+  globalClasses: [{ classes: ['dark'], reason: 'dark mode' }],
+  classesWithoutCss: [{ classes: ['xs:flex'], reason: 'no xs breakpoint' }],
+  testSetup: [{ items: ['button'], lines: ['stub()'], reason: 'jsdom' }],
+  unrenderedInTests: { button: { Button: 'why' } },
+  testProps: { button: { Button: { size: 'sm' } } },
+  testExpressions: { button: { Button: { day: 'new Date()' } } },
+  sameRenderInTests: { button: { 'Button.size': 'why' } },
 }
 
 function withChange(change: Record<string, unknown>) {
@@ -29,16 +44,27 @@ function withChange(change: Record<string, unknown>) {
 describe('parseConfig', () => {
   it('accepts a valid config and builds item URLs', () => {
     const config = parseConfig(valid)
-    expect(config).toEqual({
-      ...valid,
-      selectorRewrites: [{ pattern: /a+/g, replace: '', reason: 'why' }],
-    })
+    expect(config).toEqual(valid)
     expect(upstreamUrl(config, 'button')).toBe('https://example.com/base-vega/button.json')
     expect(colorsUrl(config)).toBe('https://example.com/colors/neutral.json')
   })
 
-  it('defaults selectorRewrites to none', () => {
-    expect(parseConfig(withChange({ selectorRewrites: undefined })).selectorRewrites).toEqual([])
+  it('defaults consumerClasses and coverageExclusions to none', () => {
+    const config = parseConfig(
+      withChange({
+        consumerClasses: undefined,
+        coverageExclusions: undefined,
+        testSetup: undefined,
+        unrenderedInTests: undefined,
+        testProps: undefined,
+      }),
+    )
+    expect(config.testProps).toEqual({})
+    expect(config.coverageExclusions).toEqual({})
+    expect(config.testSetup).toEqual([])
+    expect(config.unrenderedInTests).toEqual({})
+    expect(config.consumerClasses).toEqual([])
+    expect(consumerClassReasons(parseConfig(valid))).toEqual(new Map([['border-b', 'consumer']]))
   })
 
   it.each([
@@ -81,32 +107,51 @@ describe('parseConfig', () => {
       'upstream.style must be kebab-case',
     ],
     [
-      'non-array rewrites',
-      withChange({ selectorRewrites: {} }),
-      'selectorRewrites must be an array',
+      'a theme without an icon library',
+      withChange({ theme: { baseColor: 'neutral', font: 'inter' } }),
+      'theme.iconLibrary must be',
     ],
-    ['a non-object rewrite', withChange({ selectorRewrites: ['x'] }), 'selectorRewrites[0] must'],
+    ['non-array consumer classes', withChange({ consumerClasses: {} }), 'consumerClasses must be'],
     [
-      'a rewrite without replace',
-      withChange({ selectorRewrites: [{ pattern: 'a', reason: 'b' }] }),
-      'selectorRewrites[0].replace must be a string',
+      'consumer classes without a reason',
+      withChange({ consumerClasses: [{ classes: ['a'] }] }),
+      'consumerClasses[0].reason',
     ],
+    ['a non-array testSetup', withChange({ testSetup: {} }), 'testSetup must be an array'],
     [
-      'a rewrite without a pattern',
-      withChange({ selectorRewrites: [{ replace: '', reason: 'b' }] }),
-      'selectorRewrites[0].pattern must be',
-    ],
-    [
-      'an invalid rewrite pattern',
-      withChange({
-        selectorRewrites: [{ pattern: '(', replace: '', reason: 'b' }],
-      }),
-      /selectorRewrites\[0\]\.pattern is not a valid regular expression: .+/,
+      'unrendered parts of an item not configured',
+      withChange({ unrenderedInTests: { card: { Card: 'x' } } }),
+      'unrenderedInTests.card is not a configured component',
     ],
     [
-      'a rewrite without a reason',
-      withChange({ selectorRewrites: [{ pattern: 'a', replace: '' }] }),
-      'selectorRewrites[0].reason',
+      'a non-string unrendered reason',
+      withChange({ unrenderedInTests: { button: { Button: 1 } } }),
+      'unrenderedInTests.button.Button must be a non-empty string',
+    ],
+    [
+      'a null test prop',
+      withChange({ testProps: { button: { Button: { size: null } } } }),
+      'testProps.button.Button.size must be a JSON literal without null',
+    ],
+    [
+      'a nested null test prop',
+      withChange({ testProps: { button: { Button: { list: [{ a: null }] } } } }),
+      'testProps.button.Button.list must be a JSON literal without null',
+    ],
+    [
+      'non-object test props',
+      withChange({ testProps: { button: { Button: 'x' } } }),
+      'testProps.button.Button must be an object',
+    ],
+    [
+      'a testSetup item not configured',
+      withChange({ testSetup: [{ items: ['card'], lines: [], reason: 'x' }] }),
+      'testSetup[0].items: card is not a configured component',
+    ],
+    [
+      'a coverage exclusion for an item not configured',
+      withChange({ coverageExclusions: { card: 'why' } }),
+      'coverageExclusions.card is not a configured component',
     ],
     ['a missing namespace', withChange({ namespace: '' }), 'namespace must be'],
     ['a missing typeset', withChange({ typeset: [] }), 'typeset must be an object'],
@@ -128,5 +173,19 @@ describe('parseConfig', () => {
     ['a missing outputDir', withChange({ outputDir: '' }), 'outputDir must be'],
   ])('rejects %s', (_, raw, message) => {
     expect(() => parseConfig(raw)).toThrow(message)
+  })
+})
+
+describe('checkConfiguredParts', () => {
+  const config = parseConfig(valid)
+
+  it('accepts parts the items export, and a Part.prop key by its part', () => {
+    expect(() => checkConfiguredParts(config, () => new Set(['Button']))).not.toThrow()
+  })
+
+  it('names a configured part the item does not export', () => {
+    expect(() => checkConfiguredParts(config, () => new Set(['Other']))).toThrow(
+      'testProps.button.Button is not a part button exports',
+    )
   })
 })

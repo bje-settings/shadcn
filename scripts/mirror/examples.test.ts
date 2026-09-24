@@ -23,6 +23,8 @@ export default function ChipExample() {
       <ChipIcons />
       <ChipHook />
       <ChipOdd />
+      <ChipBorder />
+      <ChipBoth />
     </ExampleWrapper>
   )
 }
@@ -46,6 +48,7 @@ function ChipBasic() {
     <Example title="Basic">
       <Helper size="sm" />
       <IconPlaceholder data-icon="inline-start" />
+      <svg:g className="border-b" />
       {labels.map((label) => <Button key={label.text}>{label.text}</Button>)}
       <React.Fragment />
     </Example>
@@ -68,19 +71,55 @@ function ChipHook() {
 function ChipOdd() {
   return <Odd />
 }
+
+function ChipBorder() {
+  return <Chip className="px-2 border-b" />
+}
+
+function ChipBoth() {
+  return <Menu.Item className={\`border-t\`} />
+}
 `
 
 const mirrored = new Set(['button', 'chip', 'odd'])
 
 describe('prepareExample', () => {
-  const prepared = prepareExample(example, 'base-vega', 'bje', mirrored)
+  it('uses a default export that renders the page itself as the one sub-example', () => {
+    const source = `import { Chip } from "@/registry/base-vega/ui/chip"
+export default function ChipPage() {
+  const items = ["a"]
+  return <div>{items.map((item) => <Chip key={item} />)}</div>
+}`
+    const prepared = prepareExample(source, 'base-vega', 'bje', mirrored, new Set())
+    expect(prepared.kept).toEqual(['ChipPage'])
+    const withIcons = prepareExample(
+      example,
+      'base-vega',
+      'bje',
+      mirrored,
+      new Set(),
+      new Set(['lucide-react']),
+    )
+    expect(withIcons.kept).toContain('ChipIcons')
+    expect(prepared.ours).toContain('\nfunction ChipPage() {')
+    expect(prepared.ours).not.toContain('export default')
+    expect(prepared.ours).toContain('export { ChipPage }')
+  })
+
+  const dropped = new Set(['border-b', 'border-t'])
+  const prepared = prepareExample(example, 'base-vega', 'bje', mirrored, dropped)
 
   it('keeps sub-examples whose reach is available, in the order the page renders them', () => {
     expect(prepared.kept).toEqual(['ChipBasic', 'ChipOdd'])
     expect(prepared.skipped).toEqual([
-      { name: 'ChipMenu', missing: ['menu'] },
-      { name: 'ChipIcons', missing: ['lucide-react'] },
-      { name: 'ChipHook', missing: ['@/registry/base-vega/hooks/use-thing'] },
+      { name: 'ChipMenu', reasons: ['needs menu'] },
+      { name: 'ChipIcons', reasons: ['needs lucide-react'] },
+      { name: 'ChipHook', reasons: ['needs @/registry/base-vega/hooks/use-thing'] },
+      { name: 'ChipBorder', reasons: ['passes border-b, whose styling the mirror drops'] },
+      {
+        name: 'ChipBoth',
+        reasons: ['needs menu', 'passes border-t, whose styling the mirror drops'],
+      },
     ])
   })
 
@@ -111,6 +150,7 @@ function ChipBasic() {
     <Example title="Basic">
       <Helper size="sm" />
       <IconPlaceholder data-icon="inline-start" />
+      <svg:g className="border-b" />
       {labels.map((label) => <Button key={label.text}>{label.text}</Button>)}
       <React.Fragment />
     </Example>
@@ -149,12 +189,17 @@ export { ChipBasic, ChipOdd }
       'unsupported top-level VariableDeclaration at line 3',
     ],
     [
+      'an anonymous default export with no sub-examples',
+      'export default () => <div />',
+      'the default export renders no sub-example functions',
+    ],
+    [
       'a side-effect statement',
       'export default function E() { return <A /> }\nfunction A() {}\nsetup()',
       'unsupported top-level ExpressionStatement at line 3',
     ],
   ])('rejects %s', (_, source, message) => {
-    expect(() => prepareExample(source, 'base-vega', 'bje', mirrored)).toThrow(
+    expect(() => prepareExample(source, 'base-vega', 'bje', mirrored, new Set())).toThrow(
       `example: ${message}`,
     )
   })

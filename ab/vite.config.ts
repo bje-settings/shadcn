@@ -17,13 +17,17 @@ export default defineConfig({
   resolve: {
     alias: {
       [`@/registry/${config.namespace}/ui`]: `${repo}registry/ui`,
+      [`@/registry/${config.namespace}/hooks`]: `${repo}registry/hooks`,
       [`@/registry/${config.upstream.style}/ui`]: `${ab}generated/upstream`,
+      [`@/registry/${config.upstream.style}/hooks`]: `${ab}generated/upstream/hooks`,
       // Docs-only imports in upstream's examples, replaced by stand-ins.
       [`@/registry/${config.upstream.style}/components/example`]: `${ab}stubs/example.tsx`,
       '@/app/(create)/components/icon-placeholder': `${ab}stubs/icon-placeholder.tsx`,
     },
   },
-  server: { fs: { allow: [repo] } },
+  // Console output stays in the browser: the A/B spec reads it there, and
+  // forwarding every page's messages to the server slows a parallel run.
+  server: { fs: { allow: [repo] }, forwardConsole: false },
   build: {
     rollupOptions: {
       input: {

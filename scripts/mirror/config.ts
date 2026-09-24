@@ -3,12 +3,17 @@
 // run with the field name rather than surfacing later as `undefined`.
 
 import { isRecord, KEBAB, Shape } from './parse.ts'
+import type { Literal } from './parts.ts'
 
-export type SelectorRewrite = {
-  // Compiled from the config's pattern source with the g flag; applied to
-  // each generated selector.
-  pattern: RegExp
-  replace: string
+export type TestSetup = {
+  // Mirrored items whose generated test starts with these lines
+  items: string[]
+  lines: string[]
+  reason: string
+}
+
+export type ClassList = {
+  classes: string[]
   reason: string
 }
 
@@ -26,6 +31,8 @@ export type MirrorConfig = {
   theme: {
     baseColor: string
     font: string
+    // Library the shadcn CLI swaps upstream's IconPlaceholder for, e.g. lucide
+    iconLibrary: string
   }
   components: string[]
   // shadcn/typeset: the stylesheet (shipped as @<namespace>/typeset) and the
@@ -37,11 +44,48 @@ export type MirrorConfig = {
   }
   snapshotDir: string
   outputDir: string
+  // Where mirrored hooks go (use-mobile)
+  hooksDir: string
   // Generated global stylesheets (the @<namespace>/globals item)
   globalsDir: string
   // Generated inputs for the A/B harness
   harnessDir: string
-  selectorRewrites: SelectorRewrite[]
+  // Tailwind classes upstream styles gate on when a consumer passes them
+  // (CardHeader pads once given `border-b`). No element carries them here, so
+  // those rules are dropped and listed in the module's header, and A/B skips
+  // the docs examples that pass them.
+  consumerClasses: ClassList[]
+  // Classes upstream's selectors name outside an element that a consumer's
+  // markup carries as they are (`dark` on <html>, a visually hidden
+  // `sr-only`): kept as :global() in the generated modules.
+  globalClasses: ClassList[]
+  // Upstream classes Tailwind compiles to nothing, upstream too (invalid
+  // variant syntax, a breakpoint the theme lacks): dropped like group and peer
+  // markers. Any other class without CSS fails the build.
+  classesWithoutCss: ClassList[]
+  // Mirrored items whose component file is left out of coverage, with the
+  // reason: upstream logic no render the docs example makes reaches (a
+  // controlled value it never passes as a literal). vitest.config.ts reads it.
+  coverageExclusions: Record<string, string>
+  // Props given to a part wherever generated tests and A/B fixtures render
+  // it, by item and part: ones it needs that no example passes as a literal.
+  testProps: Record<string, Record<string, Record<string, Literal>>>
+  // Props given as TypeScript expressions in generated tests, by item and
+  // part: values JSON cannot hold (CalendarDayButton's day, whose date is a
+  // Date). A part given one is left out of the A/B fixtures; its item's docs
+  // examples render it there.
+  testExpressions: Record<string, Record<string, Record<string, string>>>
+  // Props whose other values render the same under a part's scaffold, by
+  // item and `Part.prop`, with the reason (Sidebar's collapsible shows only
+  // once collapsed): their test checks the value renders, not a difference.
+  sameRenderInTests: Record<string, Record<string, string>>
+  // Exported parts jsdom renders nothing for under their scaffold, by item
+  // and part, with the reason: their generated test checks they render
+  // nothing.
+  unrenderedInTests: Record<string, Record<string, string>>
+  // Setup some generated tests need to run under jsdom, like a stub for a
+  // browser API it lacks (cmdk observes resizes).
+  testSetup: TestSetup[]
 }
 
 // Annotated so TypeScript treats shape.fail() as ending control flow.
@@ -88,27 +132,68 @@ export function parseConfig(raw: unknown): MirrorConfig {
     shape.fail('typeset.fixtures must be an array of kebab-case names')
   }
 
-  const rewrites = raw.selectorRewrites ?? []
-  if (!Array.isArray(rewrites)) shape.fail('selectorRewrites must be an array')
-  const selectorRewrites = rewrites.map((value, i) => {
-    const rewrite = shape.record(value, `selectorRewrites[${i}]`)
-    const replace = rewrite.replace
-    if (typeof replace !== 'string') shape.fail(`selectorRewrites[${i}].replace must be a string`)
-    const source = string(rewrite, 'pattern', `selectorRewrites[${i}].`)
-    let pattern: RegExp
-    try {
-      pattern = new RegExp(source, 'g')
-    } catch (error) {
-      shape.fail(
-        `selectorRewrites[${i}].pattern is not a valid regular expression: ${(error as Error).message}`,
-      )
+  const consumerClasses = classLists(raw, 'consumerClasses')
+  const globalClasses = classLists(raw, 'globalClasses')
+  const classesWithoutCss = classLists(raw, 'classesWithoutCss')
+
+  const coverageExclusions =
+    raw.coverageExclusions === undefined
+      ? {}
+      : shape.stringRecord(raw.coverageExclusions, 'coverageExclusions')
+  for (const item of Object.keys(coverageExclusions)) {
+    if (!components.includes(item)) {
+      shape.fail(`coverageExclusions.${item} is not a configured component`)
+    }
+  }
+
+  const setups = raw.testSetup ?? []
+  if (!Array.isArray(setups)) shape.fail('testSetup must be an array')
+  const testSetup = setups.map((value, i) => {
+    const path = `testSetup[${i}]`
+    const record = shape.record(value, path)
+    const items = shape.strings(record.items, `${path}.items`)
+    for (const item of items) {
+      if (!components.includes(item))
+        shape.fail(`${path}.items: ${item} is not a configured component`)
     }
     return {
-      pattern,
-      replace,
-      reason: string(rewrite, 'reason', `selectorRewrites[${i}].`),
+      items,
+      lines: shape.strings(record.lines, `${path}.lines`),
+      reason: string(record, 'reason', `${path}.`),
     }
   })
+
+  // Both are keyed by a configured item, then by one of its parts.
+  const byItem = <T>(key: string, value: (raw: unknown, path: string) => T) => {
+    const record = shape.record(raw[key] ?? {}, key)
+    return Object.fromEntries(
+      Object.entries(record).map(([item, parts]) => {
+        if (!components.includes(item)) shape.fail(`${key}.${item} is not a configured component`)
+        const path = `${key}.${item}`
+        return [
+          item,
+          Object.fromEntries(
+            Object.entries(shape.record(parts, path)).map(([part, v]) => [
+              part,
+              value(v, `${path}.${part}`),
+            ]),
+          ),
+        ]
+      }),
+    )
+  }
+  const testProps = byItem('testProps', (value, path) => {
+    const props = shape.record(value, path)
+    for (const [prop, literal] of Object.entries(props)) {
+      if (!isLiteral(literal)) shape.fail(`${path}.${prop} must be a JSON literal without null`)
+    }
+    return props as Record<string, Literal>
+  })
+  const testExpressions = byItem('testExpressions', (value, path) =>
+    shape.stringRecord(value, path),
+  )
+  const sameRenderInTests = byItem('sameRenderInTests', (value, path) => shape.string(value, path))
+  const unrenderedInTests = byItem('unrenderedInTests', (value, path) => shape.string(value, path))
 
   return {
     namespace: name(raw, 'namespace', ''),
@@ -116,19 +201,79 @@ export function parseConfig(raw: unknown): MirrorConfig {
     theme: {
       baseColor: name(theme, 'baseColor', 'theme.'),
       font: name(theme, 'font', 'theme.'),
+      iconLibrary: name(theme, 'iconLibrary', 'theme.'),
     },
     components,
     typeset: { stylesheet: string(typeset, 'stylesheet', 'typeset.'), fixturesUrl, fixtures },
     snapshotDir: string(raw, 'snapshotDir', ''),
     outputDir: string(raw, 'outputDir', ''),
+    hooksDir: string(raw, 'hooksDir', ''),
     globalsDir: string(raw, 'globalsDir', ''),
     harnessDir: string(raw, 'harnessDir', ''),
-    selectorRewrites,
+    consumerClasses,
+    globalClasses,
+    classesWithoutCss,
+    coverageExclusions,
+    testSetup,
+    unrenderedInTests,
+    sameRenderInTests,
+    testProps,
+    testExpressions,
+  }
+}
+
+// An optional array of { classes, reason } entries.
+function classLists(raw: Record<string, unknown>, key: string): ClassList[] {
+  const lists = raw[key] ?? []
+  if (!Array.isArray(lists)) shape.fail(`${key} must be an array`)
+  return lists.map((value, i) => {
+    const path = `${key}[${i}]`
+    const record = shape.record(value, path)
+    return {
+      classes: shape.strings(record.classes, `${path}.classes`),
+      reason: string(record, 'reason', `${path}.`),
+    }
+  })
+}
+
+function isLiteral(value: unknown): value is Literal {
+  if (['string', 'number', 'boolean'].includes(typeof value)) return true
+  if (Array.isArray(value)) return value.every(isLiteral)
+  return isRecord(value) && Object.values(value).every(isLiteral)
+}
+
+// Every part the test config names, by item, must be one the item exports:
+// an entry for a renamed or removed part would otherwise do nothing.
+export function checkConfiguredParts(
+  config: MirrorConfig,
+  exported: (item: string) => Set<string>,
+): void {
+  const byItem = {
+    testProps: config.testProps,
+    testExpressions: config.testExpressions,
+    unrenderedInTests: config.unrenderedInTests,
+    sameRenderInTests: config.sameRenderInTests,
+  }
+  for (const [key, items] of Object.entries(byItem)) {
+    for (const [item, parts] of Object.entries(items)) {
+      const names = exported(item)
+      // sameRenderInTests keys are `Part.prop`.
+      for (const part of Object.keys(parts).map((k) => k.split('.')[0] as string)) {
+        if (!names.has(part)) shape.fail(`${key}.${item}.${part} is not a part ${item} exports`)
+      }
+    }
   }
 }
 
 export function upstreamUrl(config: MirrorConfig, name: string): string {
   return config.upstream.url.replace('{style}', config.upstream.style).replace('{name}', name)
+}
+
+// The reason each consumer class's rules are dropped, by class.
+export function consumerClassReasons(config: MirrorConfig): Map<string, string> {
+  return new Map(
+    config.consumerClasses.flatMap(({ classes, reason }) => classes.map((c) => [c, reason])),
+  )
 }
 
 export function colorsUrl(config: MirrorConfig): string {

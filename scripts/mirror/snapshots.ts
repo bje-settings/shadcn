@@ -14,6 +14,9 @@ export function parseUpstreamItem(raw: unknown, where: string): UpstreamItem {
   return {
     name: shape.string(item.name, 'name'),
     type: shape.string(item.type, 'type'),
+    ...(item.dependencies === undefined
+      ? {}
+      : { dependencies: shape.strings(item.dependencies, 'dependencies') }),
     ...(item.registryDependencies === undefined
       ? {}
       : { registryDependencies: shape.strings(item.registryDependencies, 'registryDependencies') }),

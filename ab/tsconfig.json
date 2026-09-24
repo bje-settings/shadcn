@@ -8,9 +8,14 @@
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": false,
     "types": ["node", "vite/client"],
+    // Upstream's docs examples, compiled here as written, index arrays
+    // without checking for undefined.
+    "noUncheckedIndexedAccess": false,
     "paths": {
       "@/registry/bje/ui/*": ["../registry/ui/*"],
+      "@/registry/bje/hooks/*": ["../registry/hooks/*"],
       "@/registry/base-vega/ui/*": ["./generated/upstream/*"],
+      "@/registry/base-vega/hooks/*": ["./generated/upstream/hooks/*"],
       "@/registry/base-vega/components/example": ["./stubs/example.tsx"],
       "@/app/(create)/components/icon-placeholder": ["./stubs/icon-placeholder.tsx"]
     }

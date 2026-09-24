@@ -1,10 +1,17 @@
 import { describe, expect, it } from 'vitest'
-import type { SelectorRewrite } from './config.ts'
-import { slotToScss } from './scss.ts'
+import { type SlotOptions, slotToScss } from './scss.ts'
 import { compile } from './test-support.ts'
 
-async function convert(classes: string[], rewrites: SelectorRewrite[] = []) {
-  return slotToScss(await compile(classes), { name: 'root', classes }, rewrites)
+const none: SlotOptions = {
+  consumerClasses: new Map(),
+  markers: new Map(),
+  classProbe: () => [],
+  globalClasses: new Set(['dark']),
+  withoutCss: new Set(),
+}
+
+async function convert(classes: string[], options: Partial<SlotOptions> = {}) {
+  return slotToScss(await compile(classes), { name: 'root', classes }, { ...none, ...options })
 }
 
 describe('slotToScss', () => {
@@ -28,9 +35,41 @@ describe('slotToScss', () => {
     expect(scss).toContain('  &:is(:global(.dark) *) {')
   })
 
-  it('refuses classes outside the module other than .dark', async () => {
-    await expect(convert(['group-hover/card:flex'])).rejects.toThrow(
-      /references class \.group\/card outside the module/,
+  it('replaces group and peer markers with their selectors', async () => {
+    const markers = new Map([
+      ['group/card', '[data-slot="card"]'],
+      ['peer', ':is([data-slot="a"], [data-slot="b"])'],
+    ])
+    const { scss, dropped } = await convert(
+      ['group-data-[size=sm]/card:flex', 'peer-disabled:block'],
+      { markers },
+    )
+    expect(scss).toContain('&:is(:where([data-slot="card"])[data-size="sm"] *)')
+    expect(scss).toContain('&:is(:where(:is([data-slot="a"], [data-slot="b"])):disabled ~ *)')
+    expect(dropped).toEqual([])
+  })
+
+  it('refuses a rule needing a marker no mirrored element carries', async () => {
+    await expect(convert(['flex', 'group-hover/card:block'])).rejects.toThrow(
+      'needs a group/card marker, which no mirrored element with a data-slot carries',
+    )
+  })
+
+  it('drops rules gated on a consumer class', async () => {
+    const { scss, dropped } = await convert(['flex', '[.border-b]:pb-4'], {
+      consumerClasses: new Map([['border-b', 'consumer class']]),
+    })
+    expect(scss).toBe(':where(.root) {\n  display: flex;\n}')
+    expect(dropped).toEqual(['consumer class'])
+    const own = await convert(['border-b'], {
+      consumerClasses: new Map([['border-b', 'consumer class']]),
+    })
+    expect(own.scss).toContain('border-bottom-width: 1px;')
+  })
+
+  it('refuses other classes outside the module', async () => {
+    await expect(convert(['[.border-b]:pb-4'])).rejects.toThrow(
+      /references class \.border-b outside the module; list it in consumerClasses/,
     )
   })
 
@@ -42,7 +81,7 @@ describe('slotToScss', () => {
 
   it('refuses a rule nested in a rule', () => {
     const css = '@layer utilities { .a { .b { color: red } } }'
-    expect(() => slotToScss(css, { name: 'root', classes: ['a', 'b'] }, [])).toThrow(
+    expect(() => slotToScss(css, { name: 'root', classes: ['a', 'b'] }, none)).toThrow(
       'unexpected nested rule in .b',
     )
   })
@@ -52,7 +91,7 @@ describe('slotToScss', () => {
     // future output change; merging across the focus block would reorder it.
     const css =
       '@layer utilities { .a:hover { color: red } .b:focus { color: blue } .c:hover { color: green } }'
-    expect(slotToScss(css, { name: 'root', classes: ['a', 'b', 'c'] }, []).scss).toBe(
+    expect(slotToScss(css, { name: 'root', classes: ['a', 'b', 'c'] }, none).scss).toBe(
       [
         ':where(.root) {',
         '  &:hover {',
@@ -80,28 +119,62 @@ describe('slotToScss', () => {
     expect(scss).toContain('  &::selection {')
   })
 
+  it("styles descendants at the class's specificity and the slot itself at zero", async () => {
+    const { scss } = await convert(['flex', '*:w-full', '[&_svg]:size-4', 'hover:underline'])
+    expect(scss).toBe(
+      [
+        ':where(.root) {',
+        '  display: flex;',
+        '  &:hover {',
+        '    @media (hover: hover) {',
+        '      text-decoration-line: underline;',
+        '    }',
+        '  }',
+        '}',
+        '.root {',
+        '  :is(& > *) {',
+        '    width: 100%;',
+        '  }',
+        '  & svg {',
+        '    width: calc(var(--spacing) * 4);',
+        '    height: calc(var(--spacing) * 4);',
+        '  }',
+        '}',
+      ].join('\n'),
+    )
+  })
+
   it('keeps !important', async () => {
     const { scss } = await convert(['flex!'])
     expect(scss).toContain('display: flex !important;')
   })
 
-  it('applies selector rewrites', async () => {
-    const { scss } = await convert(
-      ["[&_svg:not([class*='size-'])]:size-4"],
-      [
-        {
-          pattern: /:not\(\[class\*="[\w-]+"\]\)/g,
-          replace: '',
-          reason: 'test',
-        },
-      ],
-    )
-    expect(scss).toContain('  & svg {\n')
+  it('turns a class probe into the mirrored elements it finds', async () => {
+    const classProbe = (fragment: string) =>
+      fragment === 'size-' ? ['[data-slot="spinner"]', '[data-slot="icon"]'] : []
+    const { scss } = await convert(["[&_svg:not([class*='size-'])]:size-4"], { classProbe })
+    expect(scss).toContain('  & svg:where(:not([data-slot="icon"], [data-slot="spinner"])) {\n')
+    // A default an icon's own size class overrides: zero specificity.
+    expect(scss).toMatch(/^:where\(\.root\) \{\n {2}& svg/)
   })
 
-  it('refuses a selector that still matches class names', async () => {
-    await expect(convert(["[&_svg:not([class*='size-'])]:size-4"])).rejects.toThrow(
-      'root: selector & svg:not([class*="size-"]) matches class names; add a selectorRewrites entry',
+  it('drops a class probe that finds nothing, and says so', async () => {
+    const { scss, dropped } = await convert(["[&_svg:not([class*='size-'])]:size-4"])
+    expect(scss).toContain('  & svg {\n')
+    expect(dropped).toEqual([
+      'upstream skips elements whose classes contain "size-", and no mirrored element does: the default applies to every match.',
+    ])
+  })
+
+  it('leaves other :not() arguments alone', async () => {
+    const { scss } = await convert(['[&_svg:not([data-x])]:size-4', 'not-first:flex'])
+    expect(scss).toContain('  & svg:not([data-x]) {')
+    expect(scss).toContain('  &:not(:first-child) {')
+  })
+
+  it('refuses a class-name selector outside :not()', async () => {
+    await expect(convert(["[&_[class*='size-']]:flex"])).rejects.toThrow(
+      'root: selector & [class*="size-"] matches class names outside :not()',
     )
   })
 
@@ -110,6 +183,8 @@ describe('slotToScss', () => {
       scss: ':where(.root) {\n}',
       unresolved: ['group/button'],
       customProperties: [],
+      empty: true,
+      dropped: [],
     })
   })
 

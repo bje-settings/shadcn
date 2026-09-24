@@ -7,11 +7,26 @@
 
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
-import { buildComponent, type RegistryItem } from './component.ts'
-import { colorsUrl, type MirrorConfig, parseConfig, upstreamUrl } from './config.ts'
+import {
+  buildComponent,
+  markerSelectors,
+  prepareComponent,
+  type RegistryItem,
+  sharedSlotOptions,
+} from './component.ts'
+import {
+  checkConfiguredParts,
+  colorsUrl,
+  consumerClassReasons,
+  type MirrorConfig,
+  parseConfig,
+  upstreamUrl,
+} from './config.ts'
 import { prepareExample } from './examples.ts'
 import { globalStylesheets } from './globals.ts'
 import { type HarnessExample, type HarnessInput, harnessFiles } from './harness.ts'
+import { pascalCase } from './names.ts'
+import { type PartTypes, partTypes, scaffolds } from './parts.ts'
 import { layoutCss, projectCss } from './project-css.ts'
 import { parseRegistry, upsertItems } from './registry.ts'
 import { parseBaseColor, parseFontItem, parseStyleIndex, parseUpstreamItem } from './snapshots.ts'
@@ -152,6 +167,15 @@ async function readSnapshot<T>(
   return snapshot ?? missingSnapshot(`${config.upstream.style}/${name}`)
 }
 
+// An item's docs example source, or undefined when upstream has none (fetch
+// removes the snapshot of a component upstream has no example for).
+async function readExample(io: Io, config: MirrorConfig, name: string) {
+  const example = `${name}-example`
+  const item = await readOptionalSnapshot(io, config, example, parseUpstreamItem)
+  if (item === undefined) return undefined
+  return item.files[0]?.content ?? missingSnapshot(`${config.upstream.style}/${example} content`)
+}
+
 async function readTypeset(io: Io, config: MirrorConfig, path: string): Promise<string> {
   const text = await readOptional(join(io.root, config.snapshotDir, 'typeset', path))
   return text ?? missingSnapshot(`typeset/${path}`)
@@ -163,27 +187,68 @@ async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
   const index = await readSnapshot(io, config, 'index', parseStyleIndex)
   const colors = await readSnapshot(io, config, `colors-${config.theme.baseColor}`, parseBaseColor)
   const css = projectCss(index, colors, font)
-  await writeText(join(io.root, config.snapshotDir, style, 'index.css'), css)
+  const cssPath = join(io.root, config.snapshotDir, style, 'index.css')
+  await writeText(cssPath, css)
   const compile = (candidates: string[]) => compileCandidates(css, candidates)
+
+  const prepared = []
+  const exampleSources = new Map<string, string | undefined>()
+  for (const name of config.components) {
+    const upstream = await readSnapshot(io, config, name, parseUpstreamItem)
+    prepared.push(await prepareComponent(upstream, config, cssPath))
+    exampleSources.set(name, await readExample(io, config, name))
+  }
+  const types = partTypes(style, prepared)
+  checkConfiguredParts(config, (item) => new Set(types.get(item)?.keys()))
 
   const items: RegistryItem[] = []
   const harness: HarnessInput[] = []
   const classes = new Set<string>()
-  for (const name of config.components) {
-    const upstream = await readSnapshot(io, config, name, parseUpstreamItem)
-    const component = await buildComponent(upstream, config, compile)
-    for (const file of component.files) await writeFormatted(io, file.path, file.content)
-    for (const c of component.classes) classes.add(c)
-    items.push(component.item)
+  const shared = sharedSlotOptions(config, prepared)
+  for (const component of prepared) {
+    const { name } = component.upstream
+    const itemTypes = types.get(name) as Map<string, PartTypes>
+    const context = {
+      slotOptions: { ...shared, markers: markerSelectors(prepared, component) },
+      types: itemTypes,
+      scaffolds: scaffolds(
+        name,
+        exampleSources.get(name),
+        itemTypes,
+        component.transformed,
+        config.testProps[name],
+      ),
+      external: new Map(
+        // Every registry import is a mirrored item, which partTypes covers.
+        component.transformed.registryImports.flatMap((item) => [
+          ...(types.get(item) as Map<string, PartTypes>),
+        ]),
+      ),
+    }
+    const built = await buildComponent(component, config, compile, context)
+    // The component's folder is all generated: clear it so a file the
+    // pipeline stopped writing (a module for a component that lost its
+    // classes) does not linger.
+    if (component.upstream.type === 'registry:ui') {
+      await rm(join(io.root, config.outputDir, pascalCase(name)), { recursive: true, force: true })
+    }
+    for (const file of built.files) await writeFormatted(io, file.path, file.content)
+    for (const c of built.classes) classes.add(c)
+    items.push(built.item)
     harness.push({
       name,
-      upstreamSource: component.upstreamSource,
-      transformed: component.transformed,
+      hook: component.upstream.type === 'registry:hook',
+      upstreamSource: built.upstreamSource,
+      transformed: built.transformed,
+      types: itemTypes,
+      scaffolds: context.scaffolds,
+      expressionParts: Object.keys(config.testExpressions[name] ?? {}),
     })
-    io.log(`built ${name}: ${component.files.map((file) => file.path).join(', ')}`)
-    for (const [slot, unresolved] of Object.entries(component.unresolved)) {
+    io.log(`built ${name}: ${built.files.map((file) => file.path).join(', ')}`)
+    for (const [slot, unresolved] of Object.entries(built.unresolved)) {
       io.log(`  ${slot}: no CSS for ${unresolved.join(' ')}`)
     }
+    for (const reason of built.dropped) io.log(`  dropped rules: ${reason}`)
   }
 
   const header = `// Generated by scripts/mirror from shadcn ${style} (${config.theme.baseColor}, ${config.theme.font}). Do not edit.`
@@ -235,20 +300,26 @@ async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
   io.log(`built typeset: ${typesetFile.path}`)
 
   const mirrored = new Set(config.components)
+  const dropped = new Set(consumerClassReasons(config).keys())
+  // Packages mirrored items import or upstream lists for them (date-fns for
+  // Calendar), without version pins (recharts@3.8.0).
+  const packages = new Set(
+    [
+      ...items.flatMap((item) => item.dependencies),
+      ...prepared.flatMap(({ upstream }) => upstream.dependencies ?? []),
+    ].map((dependency) => dependency.replace(/(?<=.)@[^@]*$/, '')),
+  )
   const examples: HarnessExample[] = []
-  for (const name of config.components) {
+  for (const [name, source] of exampleSources) {
+    if (source === undefined) continue
     const example = `${name}-example`
-    const item = await readOptionalSnapshot(io, config, example, parseUpstreamItem)
-    // fetch removes the snapshot of a component upstream has no example for.
-    if (item === undefined) continue
-    const source = item.files[0]?.content ?? missingSnapshot(`${style}/${example} content`)
-    const prepared = prepareExample(source, style, config.namespace, mirrored)
+    const prepared = prepareExample(source, style, config.namespace, mirrored, dropped, packages)
     examples.push({ name: example, prepared })
     io.log(
       `example ${example}: ${prepared.kept.length} of ${prepared.kept.length + prepared.skipped.length} sub-examples`,
     )
-    for (const { name: sub, missing } of prepared.skipped) {
-      io.log(`  skipped ${sub}: needs ${missing.join(', ')}`)
+    for (const { name: sub, reasons } of prepared.skipped) {
+      io.log(`  skipped ${sub}: ${reasons.join('; ')}`)
     }
   }
 
@@ -266,7 +337,9 @@ async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
   io.log(`built A/B harness inputs in ${config.harnessDir}`)
 
   const registryPath = join(io.root, 'registry.json')
-  const generatedDirs = [config.outputDir, config.globalsDir].map((dir) => `${dir}/`)
+  const generatedDirs = [config.outputDir, config.hooksDir, config.globalsDir].map(
+    (dir) => `${dir}/`,
+  )
   const registry = upsertItems(parseRegistry(await readJson(registryPath), registryPath), items, {
     // Items the mirror generated before and config no longer produces.
     owned: (item) =>

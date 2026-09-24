@@ -17,6 +17,11 @@ export type Case = {
   id: string
   theme: 'light' | 'dark'
   state: 'rest' | 'hover' | 'focus' | 'disabled'
+  // data-slot of the element a state applies to; else the case's first child
+  slot?: string
+  // Renders only when the page is narrowed to it and is compared as the
+  // whole viewport, since its popup portals out of the case
+  overlay: boolean
   render: (side: Side) => ReactNode
 }
 
@@ -30,13 +35,29 @@ export const cases: Case[] = [
         id: `${fixture.label} ${theme} ${state}`,
         theme,
         state,
+        slot: fixture.slot,
+        overlay: fixture.overlay,
         render: ({ ui }: Side) => {
           const Component = pick(ui, fixture.item, fixture.component)
-          return (
+          let element: ReactNode = (
             <Component {...fixture.props} disabled={state === 'disabled' || undefined}>
-              {fixture.component}
+              {fixture.children ? fixture.component : undefined}
             </Component>
           )
+          // Inside its scaffold's ancestors, innermost first.
+          for (const part of [...fixture.ancestors].reverse()) {
+            const Ancestor = pick(ui, fixture.item, part.component)
+            const Trigger = part.trigger && pick(ui, fixture.item, part.trigger.component)
+            element = (
+              <Ancestor {...part.props}>
+                {part.trigger && Trigger && (
+                  <Trigger {...part.trigger.props}>{part.trigger.component}</Trigger>
+                )}
+                {element}
+              </Ancestor>
+            )
+          }
+          return element
         },
       })),
     ),
@@ -46,6 +67,7 @@ export const cases: Case[] = [
       id: `${example.example} ${example.name} ${theme}`,
       theme,
       state: 'rest' as const,
+      overlay: false,
       render: (side: Side) => {
         const Example = pick(side.examples, example.example, example.name)
         return <Example />
@@ -57,6 +79,7 @@ export const cases: Case[] = [
       id: `typeset ${fixture.name} ${theme}`,
       theme,
       state: 'rest' as const,
+      overlay: false,
       render: () => (
         <div
           className="typeset"

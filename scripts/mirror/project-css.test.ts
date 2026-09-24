@@ -56,6 +56,8 @@ describe('layoutCss', () => {
     expect(css).toContain('  --color-background: var(--background);')
     expect(css).not.toContain(':root {')
     expect(css).not.toContain('@layer base')
-    expect(css.trimEnd().endsWith('@source "./examples";')).toBe(true)
+    expect(css).toContain('@source "./examples";')
+    // tailwind-merge's text size over leading, for the examples' own classes
+    expect(css).toContain(':not([class*="leading-"]) {\n  --tw-leading: initial;\n}')
   })
 })
