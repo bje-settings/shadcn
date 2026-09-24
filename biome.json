@@ -12,7 +12,8 @@
       "**/*.ts",
       "**/*.tsx",
       "!.claude/worktrees",
-      "!.claude/skills"
+      "!.claude/skills",
+      "!upstream"
     ]
   },
   "linter": {

@@ -1,0 +1,16 @@
+{
+  "upstream": {
+    "url": "https://ui.shadcn.com/r/styles/{style}/{name}.json",
+    "style": "base-vega"
+  },
+  "components": ["button"],
+  "snapshotDir": "upstream",
+  "outputDir": "registry/ui",
+  "selectorRewrites": [
+    {
+      "find": ":not([class*=\"size-\"])",
+      "replace": "",
+      "reason": "Upstream skips icons that carry a Tailwind size-* class. No consumer class matches that, so the default size applies to every svg; the low-specificity wrapper lets a consumer class override it."
+    }
+  ]
+}

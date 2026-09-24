@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "target": "es2023",
-    "lib": ["es2023"],
+    "lib": ["es2023", "dom", "dom.iterable"],
+    "jsx": "react-jsx",
     // nodenext with explicit `.ts` imports, matching bje-settings/claude.
     "module": "nodenext",
     "moduleResolution": "nodenext",
@@ -16,5 +17,5 @@
     "skipLibCheck": true,
     "types": ["node"]
   },
-  "include": ["registry", "vitest.config.ts"]
+  "include": ["registry", "scripts", "types", "vitest.config.ts"]
 }
