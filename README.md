@@ -128,11 +128,12 @@ same. Biome skips it as a gitignored path.
 ours with CSS modules and the global stylesheets (`ours.html`). Playwright screenshots each case on
 both pages and diffs them with pixelmatch. A differing pixel or size, a page or console error, or a
 state (hover, focus, disabled) that applies on one side only fails the case; a state that applies
-on neither side is skipped.
+on neither side is not compared. Each case is one test, with a step per state it compares.
 
 ```bash
 pnpm ab         # run every case; the HTML report in ab/report has upstream, ours and diff images
 pnpm ab:serve   # browse http://localhost:4400 (side by side), /upstream.html, /ours.html
+pnpm ab:timings # where the last run spent its time, per case kind and per step
 ```
 
 Every case is generated:
@@ -154,13 +155,16 @@ Every case is generated:
   docs-only `Example` wrapper and `IconPlaceholder`.
 
 Each worker opens one page per side and theme and shows its cases one at a time (`showCase()`),
-waiting for fonts, images, animations and a quiet DOM before the screenshot. Images the examples
+waiting for fonts, images, animations and a quiet DOM before the screenshot. A fixture is compared
+at rest, hovered and focused on one render, which is shown again only when a state changed its DOM
+(a hover that opened a card), then rendered disabled if its element honours `disabled`. Images the examples
 load from the web are replaced with one local image on both sides. A case that throws renders its
 error in place and fails alone. Each theme renders on its own page with `.dark` on `<html>`, as shadcn apps toggle it, so variables
 that resolve at the root switch too. `?theme=dark` and `?case=<id>` select the theme and narrow a
 page to one case. Playwright uses the installed Chrome
 (`channel: 'chrome'`); CI runs the `ab` job on the runner's Chrome and uploads the report as an
-artifact.
+artifact, with images for the failed comparisons only. A draft pull request skips the comparison
+until it is marked ready, as does one that changes only docs, unit tests or lint and hook config.
 
 ## Adding an item
 

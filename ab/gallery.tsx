@@ -3,12 +3,13 @@
 // variables that resolve at the root (Tailwind's --color-*) switch too.
 // `?case=<id>` narrows the page to one case, the only way an overlay case
 // renders; index.html passes both through. `window.showCase(id)` switches the
-// narrowed case without a reload: the A/B run shows every case that way.
+// narrowed case without a reload, mounting it afresh: the A/B run shows every
+// case that way.
 // A case that throws renders its error in place, marked data-case-error, so
 // it fails alone rather than blanking the page.
 
 import { Component, type ReactNode, useEffect, useState } from 'react'
-import { cases, type Side } from './cases'
+import { renders, type Side } from './cases'
 
 class CaseBoundary extends Component<{ children: ReactNode }, { error?: Error }> {
   override state: { error?: Error } = {}
@@ -26,21 +27,24 @@ class CaseBoundary extends Component<{ children: ReactNode }, { error?: Error }>
 export function Gallery({ side }: { side: Side }) {
   const params = new URLSearchParams(window.location.search)
   const theme = params.get('theme') === 'dark' ? 'dark' : 'light'
-  const [only, setOnly] = useState(params.get('case'))
+  // Each showCase() mounts its case afresh, even the one already shown.
+  const [shown, setShown] = useState({ only: params.get('case'), mount: 0 })
   useEffect(() => {
-    ;(window as Window & { showCase?: (id: string) => void }).showCase = setOnly
+    ;(window as Window & { showCase?: (id: string) => void }).showCase = (only) =>
+      setShown(({ mount }) => ({ only, mount: mount + 1 }))
   }, [])
+  const { only, mount } = shown
   document.documentElement.classList.toggle('dark', theme === 'dark')
   return (
     <main
       style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 8, padding: 16 }}
     >
-      {cases
+      {renders
         // An overlay case renders only when the page is narrowed to it.
         .filter((c) => c.theme === theme && (only === null ? !c.overlay : c.id === only))
         .map((c) => (
           <div
-            key={c.id}
+            key={`${c.id} ${mount}`}
             data-case={c.id}
             style={{ padding: 12, background: 'var(--background)', color: 'var(--foreground)' }}
           >
