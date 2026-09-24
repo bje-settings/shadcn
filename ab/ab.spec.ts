@@ -5,8 +5,8 @@
 // render is compared at rest, then hovered and focused, then rendered
 // disabled, each state as a step. An overlay case, whose popup portals out of
 // its wrapper, is compared as the whole viewport. The report attaches
-// upstream, ours and diff images for every comparison, and each case records
-// how long its steps took (`pnpm ab:timings`).
+// upstream, ours and diff images for every comparison (in CI, every failed
+// one), and each case records how long its steps took (`pnpm ab:timings`).
 
 import { type Browser, test as base, expect, type Page } from '@playwright/test'
 import pixelmatch from 'pixelmatch'
@@ -321,17 +321,23 @@ for (const c of cases) {
             { threshold: 0.1 },
           ),
         )
-        await timed(timings.test, 'attach', async () => {
-          // The screenshots as taken: only the diff needs encoding.
-          const files = {
-            upstream: upstreamShot.file,
-            ours: oursShot.file,
-            diff: PNG.sync.write(diff),
-          }
-          for (const [name, body] of Object.entries(files)) {
-            await testInfo.attach(`${state} ${name}`, { body, contentType: 'image/png' })
-          }
-        })
+        const matches =
+          pixels === 0 && upstream.width === ours.width && upstream.height === ours.height
+        // CI's report keeps only the comparisons that failed; a local one
+        // keeps every comparison, to browse.
+        if (!matches || !process.env.CI) {
+          await timed(timings.test, 'attach', async () => {
+            // The screenshots as taken: only the diff needs encoding.
+            const files = {
+              upstream: upstreamShot.file,
+              ours: oursShot.file,
+              diff: PNG.sync.write(diff),
+            }
+            for (const [name, body] of Object.entries(files)) {
+              await testInfo.attach(`${state} ${name}`, { body, contentType: 'image/png' })
+            }
+          })
+        }
         compared.push(state)
         // Soft: the case's other states are still compared.
         expect

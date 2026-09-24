@@ -86,15 +86,40 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          # The merge commit and its base, to list what a pull request changes.
+          fetch-depth: 2
+      # A pull request that changes only files no A/B case renders or builds
+      # from (docs, unit tests, lint and hook config) skips the comparison.
+      # The job still reports, as the ruleset requires. Anything else runs
+      # it, as does every push to main.
+      - name: Decide whether the comparison runs
+        id: scope
+        run: |
+          if [ "${{ github.event_name }}" != pull_request ]; then
+            echo run=true >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          relevant=$(git diff --name-only HEAD^1 HEAD | grep -Ev \
+            '(\.md$|^\.claude/|\.test\.tsx?$|^lefthook\.yml$|^biome\.json$|^vitest\.config\.ts$)' || true)
+          if [ -n "$relevant" ]; then
+            echo run=true >> "$GITHUB_OUTPUT"
+          else
+            echo "No change reaches an A/B case: comparison skipped." >> "$GITHUB_STEP_SUMMARY"
+            echo run=false >> "$GITHUB_OUTPUT"
+          fi
       - uses: ./.github/actions/node-pnpm
+        if: steps.scope.outputs.run == 'true'
       # `pnpm ab` generates the harness inputs first (preab).
       - name: Compare generated components with upstream
+        if: steps.scope.outputs.run == 'true'
         run: pnpm ab
       - name: Summarize A/B timings
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.scope.outputs.run == 'true' }}
         run: pnpm -s ab:timings | tee -a "$GITHUB_STEP_SUMMARY"
+      # In CI the report holds only the failed comparisons' images.
       - name: Upload the A/B report
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.scope.outputs.run == 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: ab-report
