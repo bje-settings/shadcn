@@ -60,7 +60,7 @@
       --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
     }
   }
-  &:is(.dark *)[aria-invalid="true"] {
+  &:is(:global(.dark) *)[aria-invalid="true"] {
     border-color: var(--destructive);
     @supports (color: color-mix(in lab, red, red)) {
       border-color: color-mix(in oklab, var(--destructive) 50%, transparent);
@@ -106,14 +106,14 @@
     background-color: var(--muted);
     color: var(--foreground);
   }
-  &:is(.dark *) {
+  &:is(:global(.dark) *) {
     border-color: var(--input);
     background-color: var(--input);
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--input) 30%, transparent);
     }
   }
-  &:is(.dark *):hover {
+  &:is(:global(.dark) *):hover {
     @media (hover: hover) {
       background-color: var(--input);
       @supports (color: color-mix(in lab, red, red)) {
@@ -151,7 +151,7 @@
     background-color: var(--muted);
     color: var(--foreground);
   }
-  &:is(.dark *):hover {
+  &:is(:global(.dark) *):hover {
     @media (hover: hover) {
       background-color: var(--muted);
       @supports (color: color-mix(in lab, red, red)) {
@@ -185,13 +185,13 @@
       --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
     }
   }
-  &:is(.dark *) {
+  &:is(:global(.dark) *) {
     background-color: var(--destructive);
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--destructive) 20%, transparent);
     }
   }
-  &:is(.dark *):hover {
+  &:is(:global(.dark) *):hover {
     @media (hover: hover) {
       background-color: var(--destructive);
       @supports (color: color-mix(in lab, red, red)) {
@@ -199,7 +199,7 @@
       }
     }
   }
-  &:is(.dark *):focus-visible {
+  &:is(:global(.dark) *):focus-visible {
     --tw-ring-color: var(--destructive);
     @supports (color: color-mix(in lab, red, red)) {
       --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);

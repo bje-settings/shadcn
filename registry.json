@@ -22,7 +22,7 @@
       "title": "Button",
       "dependencies": ["@base-ui/react", "clsx"],
       "devDependencies": ["@testing-library/dom", "@testing-library/react", "jsdom", "vitest"],
-      "registryDependencies": [],
+      "registryDependencies": ["@bje/globals"],
       "files": [
         {
           "path": "registry/ui/Button/Button.tsx",
@@ -44,7 +44,7 @@
       "title": "ButtonGroup",
       "dependencies": ["@base-ui/react", "clsx"],
       "devDependencies": ["@testing-library/dom", "@testing-library/react", "jsdom", "vitest"],
-      "registryDependencies": ["@bje/separator"],
+      "registryDependencies": ["@bje/separator", "@bje/globals"],
       "files": [
         {
           "path": "registry/ui/ButtonGroup/ButtonGroup.tsx",
@@ -66,7 +66,7 @@
       "title": "Separator",
       "dependencies": ["@base-ui/react", "clsx"],
       "devDependencies": ["@testing-library/dom", "@testing-library/react", "jsdom", "vitest"],
-      "registryDependencies": [],
+      "registryDependencies": ["@bje/globals"],
       "files": [
         {
           "path": "registry/ui/Separator/Separator.tsx",
@@ -79,6 +79,26 @@
         {
           "path": "registry/ui/Separator/Separator.test.tsx",
           "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "globals",
+      "type": "registry:file",
+      "title": "Globals",
+      "dependencies": ["@fontsource-variable/inter"],
+      "devDependencies": [],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/styles/variables.scss",
+          "type": "registry:file",
+          "target": "@components/styles/variables.scss"
+        },
+        {
+          "path": "registry/styles/base.scss",
+          "type": "registry:file",
+          "target": "@components/styles/base.scss"
         }
       ]
     }
