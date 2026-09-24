@@ -12,6 +12,9 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+# Job names are a contract: the repo ruleset Require CI (23915809) requires
+# build, vitest, types and biome by exact name. A renamed job never reports,
+# and every pull request waits on it forever. Update the ruleset with any rename.
 jobs:
   # `shadcn build` validates registry.json and every item against the schema.
   build:
