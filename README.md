@@ -33,7 +33,8 @@ Not decided yet. Publishing to the shadcn registry directory is tracked in #1.
 
 `.claude/settings.json` enables the TypeScript LSP plugin and disables auto memory and attribution.
 The `shadcn` skill from [shadcn/ui](https://github.com/shadcn-ui/ui/tree/main/skills/shadcn) is
-vendored in `.claude/skills/shadcn/` and pinned in `skills-lock.json`. Update it with:
+vendored in `.claude/skills/shadcn/` and pinned in `skills-lock.json`. It assumes Tailwind;
+`.claude/rules/_no-tailwind.md` overrides that. Update the skill with:
 
 ```bash
 npx skills update shadcn
