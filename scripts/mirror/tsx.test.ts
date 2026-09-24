@@ -89,6 +89,36 @@ function Card({ className, extra }) {
   it.each([
     ['cva in a multi-variable declaration', 'const a = cva("x"), b = 1'],
     ['cva with no base', 'const aVariants = cva()'],
+    ['an exported cva', 'export const aVariants = cva("x")'],
+    ['a cva inside a function', 'function f() { return cva("x") }'],
+    [
+      'a variant group that is not an identifier',
+      'const aVariants = cva("x", { variants: { "data-size": { sm: "h-8" } } })',
+    ],
+    [
+      'a default that is not an option',
+      'const aVariants = cva("x", { variants: { size: { sm: "h-8" } }, defaultVariants: { size: "lg" } })',
+    ],
+    [
+      'a default for no variant group',
+      'const aVariants = cva("x", { defaultVariants: { size: "sm" } })',
+    ],
+    [
+      'a class string constant passed to cn()',
+      'const base = "flex"\nconst c = <div data-slot="a" className={cn(base, className)} />',
+    ],
+    [
+      'a class string constant as className',
+      'const base = `flex`\nconst c = <div data-slot="a" className={base} />',
+    ],
+    [
+      'class strings passed through another function in cn()',
+      'const c = <div data-slot="a" className={cn(twMerge("flex"), className)} />',
+    ],
+    [
+      'class strings passed through another function as className',
+      'const c = <div data-slot="a" className={clsx("flex")} />',
+    ],
     ['cva with extra arguments', 'const aVariants = cva("x", {}, {})'],
     ['a non-string cva base', 'const aVariants = cva(["x"])'],
     ['a non-object cva config', 'const aVariants = cva("x", config)'],
@@ -119,6 +149,24 @@ function Card({ className, extra }) {
     ],
   ])('rejects %s', (_, source) => {
     expect(() => transformComponent(source, 'a', 'bje')).toThrow(/^Unsupported at \d+:\d+: /)
+  })
+})
+
+describe('import placement', () => {
+  it('adds imports after a leading directive when there are no imports', () => {
+    const { code } = transformComponent(
+      '"use client"\nconst c = <i data-slot="a" className="x" />',
+      'a',
+      'bje',
+    )
+    expect(code).toBe(
+      '"use client"\nimport styles from "./A.module.scss"\nconst c = <i data-slot="a" className={styles.a} />',
+    )
+  })
+
+  it('allows calls without class strings, and constants that are not strings', () => {
+    const source = 'const size = 4\nconst c = <i data-slot="a" className={cn(pick(size), size)} />'
+    expect(() => transformComponent(source, 'a', 'bje')).not.toThrow()
   })
 })
 

@@ -1,7 +1,27 @@
 import { describe, expect, it } from 'vitest'
+import { parseConfig } from './config.ts'
 import { fixturesFor, harnessFiles } from './harness.ts'
-import { config } from './test-support.ts'
 import { transformComponent } from './tsx.ts'
+
+const config = parseConfig({
+  namespace: 'bje',
+  upstream: {
+    url: 'https://example.com/{style}/{name}.json',
+    colorsUrl: 'https://example.com/colors/{name}.json',
+    style: 'base-vega',
+  },
+  theme: { baseColor: 'neutral', font: 'inter' },
+  components: ['chip-set'],
+  typeset: {
+    stylesheet: 'https://example.com/typeset.css',
+    fixturesUrl: 'https://example.com/fixtures/{name}.ts',
+    fixtures: [],
+  },
+  snapshotDir: 'upstream',
+  outputDir: 'registry/ui',
+  globalsDir: 'registry/styles',
+  harnessDir: 'ab/generated',
+})
 
 const chip = `import { cva } from "class-variance-authority"
 import { cn } from "cn"

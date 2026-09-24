@@ -39,9 +39,9 @@ export type GeneratedComponent = {
 // Packages consumers already have, which shadcn items never list.
 const IMPLICIT = new Set(['react', 'react-dom'])
 
-// Needed to run the shipped test but never imported by it: Testing Library's
-// peer dependency, and the DOM environment.
-const TEST_RUNTIME = ['@testing-library/dom', 'jsdom']
+// Needed but never imported: Sass to compile the .module.scss, and, to run the
+// shipped test, Testing Library's peer dependency and the DOM environment.
+const BUILD_AND_TEST_RUNTIME = ['sass', '@testing-library/dom', 'jsdom']
 
 function packageName(specifier: string): string {
   const parts = specifier.split('/')
@@ -147,7 +147,7 @@ export async function buildComponent(
       type: 'registry:ui',
       title: component,
       dependencies: dependenciesOf(source.code),
-      devDependencies: [...new Set([...dependenciesOf(test), ...TEST_RUNTIME])].sort(),
+      devDependencies: [...new Set([...dependenciesOf(test), ...BUILD_AND_TEST_RUNTIME])].sort(),
       registryDependencies,
       files: files.map(({ path }) => ({ path, type: 'registry:ui' })),
     },

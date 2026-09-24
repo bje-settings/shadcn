@@ -10,7 +10,7 @@
 // is upstream's code as written.
 
 import { parse } from '@babel/parser'
-import type { Identifier, ImportDeclaration, Node, Statement } from '@babel/types'
+import type { Identifier, ImportDeclaration, Node, SourceLocation, Statement } from '@babel/types'
 import MagicString from 'magic-string'
 import { pascalCase } from './names.ts'
 
@@ -38,8 +38,11 @@ function declared(statement: Statement): string[] {
   ) {
     return [(statement.id as Identifier).name]
   }
-  if (statement.type === 'VariableDeclaration') {
-    return statement.declarations.flatMap((d) => (d.id.type === 'Identifier' ? [d.id.name] : []))
+  if (
+    statement.type === 'VariableDeclaration' &&
+    statement.declarations.every((d) => d.id.type === 'Identifier')
+  ) {
+    return statement.declarations.map((d) => (d.id as Identifier).name)
   }
   return []
 }
@@ -106,10 +109,21 @@ export function prepareExample(
       const listed = references(statement.declaration)
       order = [...listed].filter((name) => /^[A-Z]/.test(name))
     } else {
-      for (const name of declared(statement)) declarations.set(name, statement)
+      // Trimming removes whatever no kept sub-example reaches, so only
+      // statements whose names can be followed are safe to see here.
+      const names = declared(statement)
+      if (names.length === 0) {
+        throw new Error(
+          `example: unsupported top-level ${statement.type} at line ${(statement.loc as SourceLocation).start.line}`,
+        )
+      }
+      for (const name of names) declarations.set(name, statement)
     }
   }
   order = order.filter((name) => declarations.has(name))
+  if (order.length === 0) {
+    throw new Error('example: the default export renders no sub-example functions')
+  }
 
   // Everything a sub-example reaches: top-level declarations and imports.
   const reach = (name: string) => {

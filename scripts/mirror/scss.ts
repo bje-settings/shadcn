@@ -23,7 +23,8 @@ export type Slot = {
 
 export type ScssBlock = {
   scss: string
-  // Classes Tailwind produced no CSS for, e.g. group/peer markers.
+  // group/peer marker classes, which have no CSS of their own. Any other class
+  // Tailwind produces no CSS for fails the conversion.
   unresolved: string[]
   // Custom properties the block reads but does not set: the global variables
   // file has to provide them.
@@ -39,15 +40,24 @@ function isBlock(item: Item | undefined): item is Block {
 
 function wrappersOf(rule: Rule, layer: AtRule): string[] {
   const wrappers: string[] = []
-  // Everything between a utility rule and the utilities layer is an at-rule.
+  // optimize() leaves only at-rules between a utility rule and the layer.
   for (let node = rule.parent as AtRule; node !== layer; node = node.parent as AtRule) {
+    if (node.type !== 'atrule') throw new Error(`unexpected nested rule in ${rule.selector}`)
     wrappers.unshift(`@${node.name} ${node.params}`)
   }
   return wrappers
 }
 
-// The utility's own class becomes `&`. Any other class (e.g. `.dark` from the
-// dark variant) names something outside the module, so it is marked
+// Classes Tailwind variants may name outside the element: `.dark` from the
+// dark variant, marked :global() so CSS modules leave it alone. Any other
+// outside class, like `.group/card` from a group-* variant, names a marker
+// class the mirror drops from the element, so the selector could never match.
+const GLOBAL_CLASSES = new Set(['dark'])
+
+// Tailwind's group and peer marker classes: they have no CSS of their own.
+const MARKER = /^(group|peer)(\/[\w-]+)?$/
+
+// The utility's own class becomes `&`; an allowed outside class is marked
 // :global() or CSS modules would rename it and the selector would never match.
 function nestSelector(selector: string, candidates: Set<string>, resolved: Set<string>): string {
   return selectorParser((root) => {
@@ -56,6 +66,11 @@ function nestSelector(selector: string, candidates: Set<string>, resolved: Set<s
         resolved.add(node.value)
         node.replaceWith(selectorParser.nesting({ value: '&' }))
         return
+      }
+      if (!GLOBAL_CLASSES.has(node.value)) {
+        throw new Error(
+          `selector ${selector} references class .${node.value} outside the module; group-* and peer-* variants are not supported yet`,
+        )
       }
       node.replaceWith(
         selectorParser.pseudo({
@@ -136,9 +151,14 @@ export function slotToScss(css: string, slot: Slot, rewrites: SelectorRewrite[])
     insert(root, selector === '&' ? wrappers : [selector, ...wrappers], decls)
   })
 
+  const unresolved = slot.classes.filter((c) => !resolved.has(c))
+  const unknown = unresolved.filter((c) => !MARKER.test(c))
+  if (unknown.length > 0) {
+    throw new Error(`${slot.name}: Tailwind produced no CSS for ${unknown.join(' ')}`)
+  }
   return {
     scss: print(root, 0).join('\n'),
-    unresolved: slot.classes.filter((c) => !resolved.has(c)),
+    unresolved,
     customProperties: [...reads].filter((name) => !sets.has(name)).sort(),
   }
 }

@@ -1,23 +1,20 @@
-// `mirror fetch` snapshots each configured upstream item into the repo;
-// `mirror build` converts the snapshots and updates registry.json. Build reads
-// only snapshots, so a conversion change is reviewable without upstream
-// moving underneath it.
+// `mirror fetch` snapshots the configured upstream items, their docs examples,
+// the style index, font and base color, and shadcn/typeset into the repo.
+// `mirror build` reads only those snapshots and writes the project CSS,
+// components, global stylesheets, typeset, A/B harness inputs and
+// registry.json, so a conversion change is reviewable without upstream moving
+// underneath it.
 
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
-import { buildComponent, type RegistryItem, type UpstreamItem } from './component.ts'
+import { buildComponent, type RegistryItem } from './component.ts'
 import { colorsUrl, type MirrorConfig, parseConfig, upstreamUrl } from './config.ts'
 import { prepareExample } from './examples.ts'
 import { globalStylesheets } from './globals.ts'
 import { type HarnessExample, type HarnessInput, harnessFiles } from './harness.ts'
-import {
-  type BaseColor,
-  type FontItem,
-  layoutCss,
-  projectCss,
-  type StyleIndex,
-} from './project-css.ts'
-import { type Registry, upsertItems } from './registry.ts'
+import { layoutCss, projectCss } from './project-css.ts'
+import { parseRegistry, upsertItems } from './registry.ts'
+import { parseBaseColor, parseFontItem, parseStyleIndex, parseUpstreamItem } from './snapshots.ts'
 import { compileCandidates } from './tailwind.ts'
 import { fixtureHtml, type TypesetFixture } from './typeset.ts'
 
@@ -33,8 +30,29 @@ export type Io = {
   format: (path: string, content: string) => string
 }
 
+type Parse<T> = (raw: unknown, where: string) => T
+
+// A file's text, or undefined when it does not exist. Any other failure (a
+// permission error, say) propagates.
+async function readOptional(path: string): Promise<string | undefined> {
+  try {
+    return await readFile(path, 'utf8')
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return undefined
+    throw error
+  }
+}
+
+function parseJson(text: string, path: string): unknown {
+  try {
+    return JSON.parse(text)
+  } catch (error) {
+    throw new Error(`${path}: ${(error as Error).message}`)
+  }
+}
+
 async function readJson(path: string): Promise<unknown> {
-  return JSON.parse(await readFile(path, 'utf8'))
+  return parseJson(await readFile(path, 'utf8'), path)
 }
 
 async function writeText(path: string, content: string): Promise<void> {
@@ -50,39 +68,50 @@ function snapshotPath(io: Io, config: MirrorConfig, name: string): string {
   return join(io.root, config.snapshotDir, config.upstream.style, `${name}.json`)
 }
 
-// Snapshot names beside the components: the style's index item, the font
-// item, and the base color theme.
-function themeSnapshots(config: MirrorConfig): [name: string, url: string][] {
+function missingSnapshot(name: string): never {
+  throw new Error(`no snapshot for ${name}; run mirror fetch first`)
+}
+
+type Source = { name: string; url: string; parse: Parse<unknown>; optional?: boolean }
+
+// Everything `fetch` snapshots as JSON: each component, the style's index
+// item, the font, the base color, and each component's docs example (the A/B
+// harness's example cases) when upstream has one.
+function sources(config: MirrorConfig): Source[] {
   const font = `font-${config.theme.font}`
   return [
-    ['index', upstreamUrl(config, 'index')],
-    [font, upstreamUrl(config, font)],
-    [`colors-${config.theme.baseColor}`, colorsUrl(config)],
+    ...config.components.map((name) => ({
+      name,
+      url: upstreamUrl(config, name),
+      parse: parseUpstreamItem,
+    })),
+    { name: 'index', url: upstreamUrl(config, 'index'), parse: parseStyleIndex },
+    { name: font, url: upstreamUrl(config, font), parse: parseFontItem },
+    { name: `colors-${config.theme.baseColor}`, url: colorsUrl(config), parse: parseBaseColor },
+    ...config.components.map((name) => ({
+      name: `${name}-example`,
+      url: upstreamUrl(config, `${name}-example`),
+      parse: parseUpstreamItem,
+      optional: true,
+    })),
   ]
 }
 
 async function fetchAll(io: Io, config: MirrorConfig): Promise<void> {
-  const sources: [string, string][] = [
-    ...config.components.map((name): [string, string] => [name, upstreamUrl(config, name)]),
-    ...themeSnapshots(config),
-  ]
-  // Each component's docs example, when upstream has one: the A/B harness's
-  // generated compositions.
-  const examples = config.components.map((name): [string, string] => [
-    `${name}-example`,
-    upstreamUrl(config, `${name}-example`),
-  ])
-  for (const [name, url] of [...sources, ...examples]) {
+  for (const { name, url, parse, optional } of sources(config)) {
+    const path = snapshotPath(io, config, name)
     const response = await io.fetch(url)
-    if (response.status === 404 && name.endsWith('-example')) {
-      io.log(`no example for ${name.slice(0, -'-example'.length)}`)
+    if (response.status === 404 && optional) {
+      // Drop an older snapshot too, so build does not keep using it.
+      await rm(path, { force: true })
+      io.log(`no ${name} upstream`)
       continue
     }
     if (!response.ok) throw new Error(`GET ${url}: ${response.status}`)
-    await writeText(
-      snapshotPath(io, config, name),
-      `${JSON.stringify(await response.json(), null, 2)}\n`,
-    )
+    const item = await response.json()
+    // A shape change fails here, before it is committed as a snapshot.
+    parse(item, url)
+    await writeText(path, `${JSON.stringify(item, null, 2)}\n`)
     io.log(`fetched ${config.upstream.style}/${name}`)
   }
 
@@ -101,23 +130,38 @@ async function fetchAll(io: Io, config: MirrorConfig): Promise<void> {
   }
 }
 
-async function readSnapshot<T>(io: Io, config: MirrorConfig, name: string): Promise<T> {
-  return (await readJson(snapshotPath(io, config, name)).catch(() => {
-    throw new Error(`no snapshot for ${config.upstream.style}/${name}; run mirror fetch first`)
-  })) as T
+// A snapshot, parsed, or undefined when it does not exist.
+async function readOptionalSnapshot<T>(
+  io: Io,
+  config: MirrorConfig,
+  name: string,
+  parse: Parse<T>,
+): Promise<T | undefined> {
+  const path = snapshotPath(io, config, name)
+  const text = await readOptional(path)
+  return text === undefined ? undefined : parse(parseJson(text, path), path)
+}
+
+async function readSnapshot<T>(
+  io: Io,
+  config: MirrorConfig,
+  name: string,
+  parse: Parse<T>,
+): Promise<T> {
+  const snapshot = await readOptionalSnapshot(io, config, name, parse)
+  return snapshot ?? missingSnapshot(`${config.upstream.style}/${name}`)
 }
 
 async function readTypeset(io: Io, config: MirrorConfig, path: string): Promise<string> {
-  return readFile(join(io.root, config.snapshotDir, 'typeset', path), 'utf8').catch(() => {
-    throw new Error(`no snapshot for typeset/${path}; run mirror fetch first`)
-  })
+  const text = await readOptional(join(io.root, config.snapshotDir, 'typeset', path))
+  return text ?? missingSnapshot(`typeset/${path}`)
 }
 
 async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
   const { style } = config.upstream
-  const font = await readSnapshot<FontItem>(io, config, `font-${config.theme.font}`)
-  const index = await readSnapshot<StyleIndex>(io, config, 'index')
-  const colors = await readSnapshot<BaseColor>(io, config, `colors-${config.theme.baseColor}`)
+  const font = await readSnapshot(io, config, `font-${config.theme.font}`, parseFontItem)
+  const index = await readSnapshot(io, config, 'index', parseStyleIndex)
+  const colors = await readSnapshot(io, config, `colors-${config.theme.baseColor}`, parseBaseColor)
   const css = projectCss(index, colors, font)
   await writeText(join(io.root, config.snapshotDir, style, 'index.css'), css)
   const compile = (candidates: string[]) => compileCandidates(css, candidates)
@@ -126,7 +170,7 @@ async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
   const harness: HarnessInput[] = []
   const classes = new Set<string>()
   for (const name of config.components) {
-    const upstream = await readSnapshot<UpstreamItem>(io, config, name)
+    const upstream = await readSnapshot(io, config, name, parseUpstreamItem)
     const component = await buildComponent(upstream, config, compile)
     for (const file of component.files) await writeFormatted(io, file.path, file.content)
     for (const c of component.classes) classes.add(c)
@@ -172,7 +216,8 @@ async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
       type: 'registry:file',
       title: 'Globals',
       dependencies: [font.font.dependency],
-      devDependencies: [],
+      // Needed to compile the .scss stylesheets.
+      devDependencies: ['sass'],
       registryDependencies: [],
       files: files.map(({ path }) => ({ path, type: 'registry:file', target: target(path) })),
     },
@@ -193,9 +238,10 @@ async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
   const examples: HarnessExample[] = []
   for (const name of config.components) {
     const example = `${name}-example`
-    const item = await readJson(snapshotPath(io, config, example)).catch(() => undefined)
+    const item = await readOptionalSnapshot(io, config, example, parseUpstreamItem)
+    // fetch removes the snapshot of a component upstream has no example for.
     if (item === undefined) continue
-    const source = (item as UpstreamItem).files[0]?.content as string
+    const source = item.files[0]?.content ?? missingSnapshot(`${style}/${example} content`)
     const prepared = prepareExample(source, style, config.namespace, mirrored)
     examples.push({ name: example, prepared })
     io.log(
@@ -222,7 +268,13 @@ async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
   }
   io.log(`built A/B harness inputs in ${config.harnessDir}`)
 
-  const registry = upsertItems((await readJson(join(io.root, 'registry.json'))) as Registry, items)
+  const registryPath = join(io.root, 'registry.json')
+  const generatedDirs = [config.outputDir, config.globalsDir].map((dir) => `${dir}/`)
+  const registry = upsertItems(parseRegistry(await readJson(registryPath), registryPath), items, {
+    // Items the mirror generated before and config no longer produces.
+    owned: (item) =>
+      (item.files ?? []).some(({ path }) => generatedDirs.some((dir) => path.startsWith(dir))),
+  })
   await writeFormatted(io, 'registry.json', `${JSON.stringify(registry, null, 2)}\n`)
 }
 

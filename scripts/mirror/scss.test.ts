@@ -28,6 +28,47 @@ describe('slotToScss', () => {
     expect(scss).toContain('  &:is(:global(.dark) *) {')
   })
 
+  it('refuses classes outside the module other than .dark', async () => {
+    await expect(convert(['group-hover/card:flex'])).rejects.toThrow(
+      /references class \.group\/card outside the module/,
+    )
+  })
+
+  it('refuses classes Tailwind produces no CSS for, other than group and peer markers', async () => {
+    await expect(convert(['group', 'peer/x', 'not-a-utility'])).rejects.toThrow(
+      'root: Tailwind produced no CSS for not-a-utility',
+    )
+  })
+
+  it('refuses a rule nested in a rule', () => {
+    const css = '@layer utilities { .a { .b { color: red } } }'
+    expect(() => slotToScss(css, { name: 'root', classes: ['a', 'b'] }, [])).toThrow(
+      'unexpected nested rule in .b',
+    )
+  })
+
+  it('keeps non-adjacent blocks with the same selector apart, in cascade order', () => {
+    // Tailwind groups utilities by variant, so this order only arises from a
+    // future output change; merging across the focus block would reorder it.
+    const css =
+      '@layer utilities { .a:hover { color: red } .b:focus { color: blue } .c:hover { color: green } }'
+    expect(slotToScss(css, { name: 'root', classes: ['a', 'b', 'c'] }, []).scss).toBe(
+      [
+        ':where(.root) {',
+        '  &:hover {',
+        '    color: red;',
+        '  }',
+        '  &:focus {',
+        '    color: blue;',
+        '  }',
+        '  &:hover {',
+        '    color: green;',
+        '  }',
+        '}',
+      ].join('\n'),
+    )
+  })
+
   it('merges adjacent blocks that share a selector', async () => {
     const { scss } = await convert(['disabled:opacity-50', 'disabled:pointer-events-none'])
     expect(scss.match(/&:disabled/g)).toHaveLength(1)

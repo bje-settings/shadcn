@@ -1,7 +1,10 @@
 // Coverage is 100 on all four buckets. 95 is the floor the enterprise Code
 // Coverage ruleset holds every repository to; relief is exclusion by file name
 // with a stated reason, never a lowered threshold.
+import { readFileSync } from 'node:fs'
 import { defineConfig } from 'vitest/config'
+
+const mirror = JSON.parse(readFileSync(new URL('./mirror.config.json', import.meta.url), 'utf8'))
 
 export default defineConfig({
   test: {
@@ -17,7 +20,10 @@ export default defineConfig({
         test: {
           name: 'registry',
           // Cross-component imports, as mapped in registry/tsconfig.json.
-          alias: { '@/registry/bje/ui': new URL('./registry/ui', import.meta.url).pathname },
+          alias: {
+            [`@/registry/${mirror.namespace}/ui`]: new URL('./registry/ui', import.meta.url)
+              .pathname,
+          },
           include: ['registry/**/*.test.{ts,tsx}'],
           environment: 'jsdom',
           // Compile CSS modules with Sass and keep class names as written, the
@@ -30,6 +36,7 @@ export default defineConfig({
       provider: 'v8',
       // Named, not discovered: a configuration that finds its own inputs can
       // find zero of them and still report 100%.
+      // ab/ is the Playwright A/B harness: exercised by `pnpm ab`, not vitest.
       include: ['registry/**/*.{ts,tsx}', 'scripts/**/*.ts'],
       exclude: [
         '**/*.test.{ts,tsx}',

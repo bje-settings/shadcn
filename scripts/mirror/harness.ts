@@ -1,8 +1,11 @@
-// Generates the A/B harness inputs (ab/generated): each component's upstream
-// source verbatim, maps from item name to upstream and mirrored modules, the
-// Tailwind entry for the upstream page, and one fixture per exported
-// component and cva() option, so every mirrored component is compared without
-// hand-written cases. Hand-written compositions live in ab/compositions.tsx.
+// Generates the A/B harness inputs (ab/generated), so every case is generated:
+// - each component's upstream source verbatim, and maps from item name to the
+//   upstream and mirrored modules;
+// - one fixture per exported component and cva() option;
+// - each docs example trimmed twice (upstream and ours imports), their module
+//   maps and the list of kept sub-examples;
+// - Typeset's content fixtures;
+// - the upstream page's Tailwind entry and the ours page's example layout CSS.
 
 import { relative } from 'node:path'
 import type { MirrorConfig } from './config.ts'

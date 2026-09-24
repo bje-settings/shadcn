@@ -49,7 +49,13 @@ describe('buildComponent', () => {
       type: 'registry:ui',
       title: 'Badge',
       dependencies: ['clsx'],
-      devDependencies: ['@testing-library/dom', '@testing-library/react', 'jsdom', 'vitest'],
+      devDependencies: [
+        '@testing-library/dom',
+        '@testing-library/react',
+        'jsdom',
+        'sass',
+        'vitest',
+      ],
       registryDependencies: ['@bje/globals'],
       files: [
         { path: 'registry/ui/Badge/Badge.tsx', type: 'registry:ui' },

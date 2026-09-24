@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
@@ -43,8 +43,9 @@ const example = {
   ],
 }
 
-// What each upstream URL serves: the component and its example above, and the
-// real style index, font and base color snapshots. Anything else is a 404.
+// What each upstream URL serves: the component and its example above, the
+// real style index, font and base color snapshots, and a small Typeset
+// stylesheet and fixture. Anything else is a 404.
 let responses: Record<string, unknown>
 const allResponses = {
   'https://example.com/base-vega/badge.json': upstream,
@@ -140,6 +141,14 @@ describe('mirror fetch', () => {
     )
   })
 
+  it('refuses an upstream item whose shape changed, before snapshotting it', async () => {
+    responses['https://example.com/base-vega/font-inter.json'] = { font: { family: 'x' } }
+    await expect(run(['fetch'], io())).rejects.toThrow(
+      'https://example.com/base-vega/font-inter.json: font.variable must be a non-empty string',
+    )
+    await expect(stat(join(root, 'upstream/base-vega/font-inter.json'))).rejects.toThrow('ENOENT')
+  })
+
   it('fails on a typeset HTTP error', async () => {
     delete responses['https://example.com/fixtures/docs.ts']
     await expect(run(['fetch'], io())).rejects.toThrow(
@@ -147,10 +156,14 @@ describe('mirror fetch', () => {
     )
   })
 
-  it('skips a component with no example, and builds without one', async () => {
+  it('skips a component with no example, drops its old snapshot, and builds without one', async () => {
+    await run(['fetch'], io())
     delete responses['https://example.com/base-vega/badge-example.json']
     await run(['fetch'], io())
-    expect(logs).toContain('no example for badge')
+    expect(logs).toContain('no badge-example upstream')
+    await expect(stat(join(root, 'upstream/base-vega/badge-example.json'))).rejects.toThrow(
+      'ENOENT',
+    )
     await run(['build'], io())
     expect(await read('ab/generated/examples.ts')).toContain('export const examples = []')
   })
@@ -196,7 +209,7 @@ describe('mirror build', () => {
       type: 'registry:file',
       title: 'Globals',
       dependencies: ['@fontsource-variable/inter'],
-      devDependencies: [],
+      devDependencies: ['sass'],
       registryDependencies: [],
       files: [
         {
@@ -249,6 +262,54 @@ describe('mirror build', () => {
     await expect(run(['build'], io())).rejects.toThrow(
       'no snapshot for base-vega/font-inter; run mirror fetch first',
     )
+  })
+
+  it('names a corrupt snapshot rather than asking for a fetch', async () => {
+    await run(['fetch'], io())
+    await writeFile(join(root, 'upstream/base-vega/badge-example.json'), '{ nope')
+    await expect(run(['build'], io())).rejects.toThrow(
+      /upstream\/base-vega\/badge-example\.json: .*JSON/,
+    )
+  })
+
+  it('refuses an example snapshot without content', async () => {
+    await run(['fetch'], io())
+    const path = join(root, 'upstream/base-vega/badge-example.json')
+    await writeFile(path, JSON.stringify({ ...example, files: [{ path: 'x', type: 'y' }] }))
+    await expect(run(['build'], io())).rejects.toThrow(
+      'no snapshot for base-vega/badge-example content',
+    )
+  })
+
+  it('propagates read errors other than a missing file', async () => {
+    await run(['fetch'], io())
+    await rm(join(root, 'upstream/typeset/typeset.css'))
+    await mkdir(join(root, 'upstream/typeset/typeset.css'))
+    await expect(run(['build'], io())).rejects.toThrow('EISDIR')
+  })
+
+  it('drops the registry item of a component no longer configured', async () => {
+    await writeFile(
+      join(root, 'registry.json'),
+      JSON.stringify({
+        name: 'bje',
+        items: [
+          { name: 'cn', files: [{ path: 'registry/lib/cn.ts' }] },
+          { name: 'old', files: [{ path: 'registry/ui/Old/Old.tsx' }] },
+          { name: 'bare' },
+        ],
+      }),
+    )
+    await run(['fetch'], io())
+    await run(['build'], io())
+    const registry = JSON.parse(await read('registry.json'))
+    expect(registry.items.map((item: { name: string }) => item.name)).toEqual([
+      'cn',
+      'bare',
+      'badge',
+      'globals',
+      'typeset',
+    ])
   })
 
   it('asks for a fetch when the typeset snapshot is missing', async () => {

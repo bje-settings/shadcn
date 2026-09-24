@@ -10,7 +10,7 @@ await run(process.argv.slice(2), {
   fetch: (url) => fetch(url),
   log: (message) => console.log(message),
   format: (path, content) => formatWithBiome(root, path, content),
-}).catch((error: Error) => {
-  console.error(error.message)
+}).catch((error: unknown) => {
+  console.error(error instanceof Error ? (error.stack ?? error.message) : String(error))
   process.exitCode = 1
 })

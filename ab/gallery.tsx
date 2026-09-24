@@ -1,7 +1,7 @@
 // Renders every case for one theme, each in its own wrapper keyed by
 // data-case. `?theme=dark` puts `.dark` on <html>, as shadcn apps do, so
 // variables that resolve at the root (Tailwind's --color-*) switch too.
-// `?case=<id>` narrows the page to one case (the compare page uses it).
+// `?case=<id>` narrows the page to one case; index.html passes both through.
 
 import { cases, type Side } from './cases'
 

@@ -30,7 +30,6 @@ export default function ChipExample() {
 type Label = { text: string }
 interface Sizes { sm: string }
 const labels: Label[] = [{ text: "a" }]
-const { unused } = { unused: 1 }
 
 function Helper({ size }: { size: keyof Sizes }) {
   const [on] = useState(false)
@@ -137,9 +136,26 @@ export { ChipBasic, ChipOdd }
     )
   })
 
-  it('keeps nothing without a default export', () => {
-    const { kept, upstream } = prepareExample('function A() {}', 'base-vega', 'bje', mirrored)
-    expect(kept).toEqual([])
-    expect(upstream).toBe('\nexport {  }\n')
+  it.each([
+    ['no default export', 'function A() {}', 'the default export renders no sub-example'],
+    [
+      'an exported sub-example',
+      'export default function E() { return <A /> }\nexport function A() {}',
+      'unsupported top-level ExportNamedDeclaration at line 2',
+    ],
+    [
+      'a destructured declaration',
+      'export default function E() { return <A /> }\nfunction A() {}\nconst { b } = c',
+      'unsupported top-level VariableDeclaration at line 3',
+    ],
+    [
+      'a side-effect statement',
+      'export default function E() { return <A /> }\nfunction A() {}\nsetup()',
+      'unsupported top-level ExpressionStatement at line 3',
+    ],
+  ])('rejects %s', (_, source, message) => {
+    expect(() => prepareExample(source, 'base-vega', 'bje', mirrored)).toThrow(
+      `example: ${message}`,
+    )
   })
 })

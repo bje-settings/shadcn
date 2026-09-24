@@ -19,7 +19,8 @@ export function fixtureHtml(name: string, source: string): TypesetFixture[] {
       const init = d.init
       if (init?.type === 'StringLiteral') return [init.value]
       if (init?.type === 'TemplateLiteral' && init.expressions.length === 0) {
-        // One quasi with no expressions; `cooked` is set for valid escapes.
+        // One quasi with no expressions. `cooked` is only null in a tagged
+        // template; an invalid escape here is already a parse error.
         return [(init.quasis[0] as TemplateElement).value.cooked as string]
       }
       throw new Error(`typeset fixture ${name}: ${d.id.name} is not a plain string`)

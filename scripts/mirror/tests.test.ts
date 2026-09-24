@@ -28,7 +28,10 @@ export { Chip, chipVariants }`)
     expect(test).toContain(
       'for (const className of [styles.toneSoft, styles.toneExtraLoud, styles.sizeSm]) {',
     )
-    expect(test).toContain('expect(renderChip({ pressed: false })).toEqual(renderChip())')
+    expect(test).toContain(
+      'expect(attributesOfChip({ pressed: false })).toEqual(attributesOfChip())',
+    )
+    expect(test).toContain('.filter((a) => a.name !== "id")')
     expect(test).not.toContain('renderChip({ tone: "soft" })).toEqual')
     expect(test).toContain('expect(chipVariants()).toBe([styles.chip, styles.toneSoft].join(" "))')
   })
@@ -46,7 +49,10 @@ export { Chip, ChipLabel }`)
     expect(test).toContain('import { Chip, ChipLabel } from "./Chip"')
     expect(test).toContain('querySelector("[data-slot=\\"chip-label\\"]")')
     expect(test).toContain('expect.arrayContaining([styles.chipLabel])')
-    expect(test).toContain('expect(renderChipLabel({ side: "start" })).toEqual(renderChipLabel())')
+    expect(test).toContain(
+      'expect(attributesOfChipLabel({ side: "start" })).toEqual(attributesOfChipLabel())',
+    )
+    expect(test).not.toContain('function attributesOfChip(')
     expect(test).not.toContain('null group')
     expect(test).not.toContain('describe("chipVariants"')
   })

@@ -86,13 +86,32 @@ function componentTests(component: RenderedComponent, set: VariantSet | undefine
       '  })',
     )
   }
-  for (const { prop, value } of component.defaults.filter((d) => !groupNames.has(d.prop))) {
-    lines.push(
+  // A default can set attributes rather than classes (Separator's
+  // orientation becomes data-orientation), so compare every attribute except
+  // id, which React's useId makes differ between renders.
+  const explicit = component.defaults.filter((d) => !groupNames.has(d.prop))
+  if (explicit.length > 0) {
+    const attributes = `attributesOf${component.name}`
+    lines.splice(
+      5,
+      0,
+      `function ${attributes}(props: ComponentProps<typeof ${component.name}> = {}) {`,
+      `  const { container } = render(<${component.name} {...props} />)`,
+      `  const element = container.querySelector(${q(`[data-slot="${component.dataSlot}"]`)})`,
+      '  return Object.fromEntries(',
+      '    [...(element?.attributes ?? [])].filter((a) => a.name !== "id").map((a) => [a.name, a.value]),',
+      '  )',
+      '}',
       '',
-      `  it(${q(`renders the same with ${prop}=${value} passed explicitly`)}, () => {`,
-      `    expect(${render}({ ${prop}: ${value} })).toEqual(${render}())`,
-      '  })',
     )
+    for (const { prop, value } of explicit) {
+      lines.push(
+        '',
+        `  it(${q(`renders the same with ${prop}=${value} passed explicitly`)}, () => {`,
+        `    expect(${attributes}({ ${prop}: ${value} })).toEqual(${attributes}())`,
+        '  })',
+      )
+    }
   }
   lines.push(
     '',

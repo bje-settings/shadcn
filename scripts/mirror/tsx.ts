@@ -8,7 +8,8 @@
 //   `xVariants({ variant, size, className })` and `VariantProps<typeof
 //   xVariants>` call sites keep working.
 // - `className="..."` on an element with `data-slot`.
-// - `cn("...", ...)` inside such an element's className, and `cn(xVariants(...))`.
+// - `cn("...", ...)` inside such an element's className, or inside a Base UI
+//   `useRender()` whose `state.slot` names the slot; and `cn(xVariants(...))`.
 
 import { parse } from '@babel/parser'
 import type {
@@ -117,8 +118,10 @@ function stringValue(node: Node): StringLiteral {
   return node
 }
 
+const IDENTIFIER = /^[A-Za-z_$][\w$]*$/
+
 function key(name: string): string {
-  return /^[A-Za-z_$][\w$]*$/.test(name) ? name : JSON.stringify(name)
+  return IDENTIFIER.test(name) ? name : JSON.stringify(name)
 }
 
 type Cva = {
@@ -159,14 +162,22 @@ function convertCva(
   )
 
   const groups = variants.map(([group, options]) => {
+    // Group names become prop and parameter names.
+    if (!IDENTIFIER.test(group)) unsupported(options, `cva variant group ${JSON.stringify(group)}`)
     const choices = objectEntries(options).map(([option, value]) => {
       const name = `${short ? group : `${prefix}${pascalCase(group)}`}${pascalCase(option)}`
       slots.push({ name, classes: classList(stringValue(value)) })
       return { value: option, slot: name }
     })
     const lines = choices.map(({ value, slot }) => `    ${key(value)}: styles.${slot},`)
-    return { group, choices, lines: [`  ${key(group)}: {`, ...lines, '  },'] }
+    return { group, choices, lines: [`  ${group}: {`, ...lines, '  },'] }
   })
+  for (const [group, value] of defaults) {
+    const choices = groups.find((g) => g.group === group)?.choices ?? []
+    if (!choices.some((choice) => choice.value === value)) {
+      unsupported(call, `defaultVariants ${group}=${JSON.stringify(value)} is not a variant option`)
+    }
+  }
 
   const params = groups.map(({ group }) =>
     defaults.has(group) ? `  ${group} = ${JSON.stringify(defaults.get(group))},` : `  ${group},`,
@@ -282,6 +293,9 @@ export function transformComponent(
   let usesClsx = false
   let cnImport: [number, number] | undefined
   let lastImportEnd = 0
+  // cva() calls pass 1 converted, and top-level constants holding a string.
+  const converted = new Set<Node>()
+  const constants = new Set<string>()
 
   // Records, per top-level component function, the element its classes land
   // on. Only the first data-slot a function styles counts as its own.
@@ -317,6 +331,25 @@ export function transformComponent(
     }
   }
 
+  // Class strings reaching className some other way would ship as Tailwind
+  // classes with no CSS: through a string constant, or through a call other
+  // than cn() or a converted cva().
+  const refuseRawClasses = (node: Node) => {
+    if (node.type === 'Identifier' && constants.has(node.name)) {
+      unsupported(node, `class string constant ${node.name}`)
+    }
+    if (
+      node.type === 'CallExpression' &&
+      !(
+        node.callee.type === 'Identifier' &&
+        (node.callee.name === 'cn' || cvas.has(node.callee.name))
+      ) &&
+      node.arguments.some((arg) => arg.type === 'StringLiteral')
+    ) {
+      unsupported(node, 'class strings passed to a function other than cn() or a cva()')
+    }
+  }
+
   // Pass 1: imports and cva declarations.
   for (const statement of ast.program.body) {
     if (statement.type === 'ImportDeclaration') {
@@ -347,6 +380,14 @@ export function transformComponent(
       }
     }
     if (statement.type === 'VariableDeclaration') {
+      for (const d of statement.declarations) {
+        if (
+          d.id.type === 'Identifier' &&
+          (d.init?.type === 'StringLiteral' || d.init?.type === 'TemplateLiteral')
+        ) {
+          constants.add(d.id.name)
+        }
+      }
       const [declarator] = statement.declarations
       const init = declarator?.init
       if (
@@ -357,6 +398,7 @@ export function transformComponent(
       ) {
         const cva = convertCva(statement, init, declarator.id.name, component)
         cvas.set(declarator.id.name, cva)
+        converted.add(init)
         for (const slot of cva.slots) addSlot(init, slot)
         out.overwrite(...span(statement), cva.code)
         usesClsx = true
@@ -366,6 +408,15 @@ export function transformComponent(
 
   // Pass 2: VariantProps references, cn() calls, className literals.
   walk(ast.program, (node, ancestors) => {
+    if (
+      node.type === 'CallExpression' &&
+      node.callee.type === 'Identifier' &&
+      node.callee.name === 'cva' &&
+      !converted.has(node)
+    ) {
+      unsupported(node, 'cva() outside a top-level `const xVariants = cva(...)`')
+    }
+
     if (
       node.type === 'TSTypeReference' &&
       node.typeName.type === 'Identifier' &&
@@ -403,6 +454,7 @@ export function transformComponent(
         ) {
           unsupported(arg, `cn() argument ${arg.type}`)
         }
+        refuseRawClasses(arg)
         trackCva(arg, ancestors)
       }
       const literals = node.arguments.filter((arg) => arg.type === 'StringLiteral')
@@ -440,7 +492,10 @@ export function transformComponent(
       ) {
         unsupported(expression, `className expression ${expression.type}`)
       }
-      if (expression) trackCva(expression, [...ancestors, node])
+      if (expression) {
+        refuseRawClasses(expression)
+        trackCva(expression, [...ancestors, node])
+      }
     }
     return true
   })
@@ -451,8 +506,10 @@ export function transformComponent(
     ...(usesClsx && !cnImport ? [clsx] : []),
     `import styles from "./${pascalCase(component)}.module.scss"`,
   ].join('\n')
-  if (lastImportEnd === 0) out.prepend(`${added}\n`)
-  else out.appendLeft(lastImportEnd, `\n${added}`)
+  // With no imports, go after any directive ("use client" must stay first).
+  const anchor = lastImportEnd || (ast.program.directives.at(-1)?.end ?? 0)
+  if (anchor === 0) out.prepend(`${added}\n`)
+  else out.appendLeft(anchor, `\n${added}`)
 
   return {
     code: out.toString(),

@@ -93,8 +93,8 @@ export function projectCss(index: StyleIndex, color: BaseColor, font: FontItem):
 }
 
 // Tailwind for the A/B harness's ours page: utilities for the classes in the
-// example files under `source` only. No preflight or variables (ours brings
-// its own), and unlayered, so a class an example passes to one of our
+// example files under `source` only. No preflight and no base color variables
+// (ours brings its own), and unlayered, so a class an example passes to one of our
 // components outranks its :where() defaults, as tailwind-merge makes it win
 // upstream.
 export function layoutCss(

@@ -73,6 +73,13 @@ describe('parseConfig', () => {
     ['non-array components', withChange({ components: 'button' }), 'components must be'],
     ['empty components', withChange({ components: [] }), 'components must be'],
     ['non-kebab components', withChange({ components: ['Button'] }), 'components must be'],
+    ['repeated components', withChange({ components: ['a', 'a'] }), 'components must not repeat'],
+    ['a non-kebab namespace', withChange({ namespace: 'Bje' }), 'namespace must be kebab-case'],
+    [
+      'a non-kebab style',
+      withChange({ upstream: { ...valid.upstream, style: 'base/vega' } }),
+      'upstream.style must be kebab-case',
+    ],
     [
       'non-array rewrites',
       withChange({ selectorRewrites: {} }),
@@ -94,7 +101,7 @@ describe('parseConfig', () => {
       withChange({
         selectorRewrites: [{ pattern: '(', replace: '', reason: 'b' }],
       }),
-      'selectorRewrites[0].pattern is not a valid regular expression',
+      /selectorRewrites\[0\]\.pattern is not a valid regular expression: .+/,
     ],
     [
       'a rewrite without a reason',

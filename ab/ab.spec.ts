@@ -11,11 +11,21 @@ import { PORT } from './playwright.config'
 type Theme = Case['theme']
 type Pages = Record<'upstream' | 'ours', Record<Theme, Page>>
 
+// Errors each open page has reported: runtime exceptions and console errors.
+// Any of them fails the case that was running.
+const errors = new Map<Page, string[]>()
+
 const test = base.extend<object, { pages: Pages }>({
   pages: [
     async ({ browser }, use) => {
       const open = async (side: string, theme: Theme) => {
         const page = await browser.newPage({ viewport: { width: 1280, height: 800 } })
+        const reported: string[] = []
+        errors.set(page, reported)
+        page.on('pageerror', (error) => reported.push(error.message))
+        page.on('console', (message) => {
+          if (message.type() === 'error') reported.push(message.text())
+        })
         await page.goto(`http://localhost:${PORT}/${side}.html?theme=${theme}`)
         await page.locator('[data-case]').first().waitFor()
         await page.evaluate(() => document.fonts.ready)
@@ -35,21 +45,40 @@ const test = base.extend<object, { pages: Pages }>({
   ],
 })
 
+function target(page: Page, c: Case) {
+  return page.locator(`[data-case="${c.id}"] > *`).first()
+}
+
+// Whether a state can change how the case's element renders: anything can be
+// hovered, but only focusable elements take focus and only form controls
+// honour `disabled`. Other combinations would only repeat the rest case.
+async function applies(page: Page, c: Case): Promise<boolean> {
+  if (c.state === 'rest' || c.state === 'hover') return true
+  return target(page, c).evaluate(
+    (element, state) =>
+      state === 'focus' ? (element as HTMLElement).tabIndex >= 0 : 'disabled' in element,
+    c.state,
+  )
+}
+
 async function capture(page: Page, c: Case): Promise<PNG> {
-  const wrapper = page.locator(`[data-case="${c.id}"]`)
-  const target = wrapper.locator(':scope > *').first()
-  if (c.state === 'hover') await target.hover()
-  if (c.state === 'focus') {
-    // Tab away and back, so the element holds keyboard focus and matches
-    // :focus-visible (programmatic focus after mouse use does not).
-    await target.focus()
-    await page.keyboard.press('Tab')
-    await page.keyboard.press('Shift+Tab')
+  const element = target(page, c)
+  try {
+    if (c.state === 'hover') await element.hover()
+    if (c.state === 'focus') {
+      // Tab away and back, so the element holds keyboard focus and matches
+      // :focus-visible (programmatic focus after mouse use does not).
+      await element.focus()
+      await page.keyboard.press('Tab')
+      await page.keyboard.press('Shift+Tab')
+      expect(await element.evaluate((el) => el.matches(':focus-visible'))).toBe(true)
+    }
+    const wrapper = page.locator(`[data-case="${c.id}"]`)
+    return PNG.sync.read(await wrapper.screenshot({ animations: 'disabled', caret: 'hide' }))
+  } finally {
+    await page.mouse.move(0, 0)
+    await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur())
   }
-  const png = PNG.sync.read(await wrapper.screenshot({ animations: 'disabled', caret: 'hide' }))
-  await page.mouse.move(0, 0)
-  await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur())
-  return png
 }
 
 function padTo(png: PNG, width: number, height: number): PNG {
@@ -63,6 +92,9 @@ test.describe.configure({ mode: 'parallel' })
 
 for (const c of cases) {
   test(c.id, async ({ pages }, testInfo) => {
+    const sides = [pages.upstream[c.theme], pages.ours[c.theme]]
+    test.skip(!(await applies(sides[0] as Page, c)), `${c.state} does not apply to this element`)
+    for (const page of sides) errors.get(page)?.splice(0)
     const [upstream, ours] = await Promise.all([
       capture(pages.upstream[c.theme], c),
       capture(pages.ours[c.theme], c),
@@ -85,5 +117,6 @@ for (const c of cases) {
       size: `${upstream.width}x${upstream.height}`,
       pixels: 0,
     })
+    expect(sides.flatMap((page) => errors.get(page) ?? [])).toEqual([])
   })
 }

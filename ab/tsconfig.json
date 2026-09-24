@@ -1,6 +1,7 @@
 {
   // The harness is bundled by Vite, so it resolves like a bundler, with both
-  // sides' registry aliases.
+  // sides' registry aliases. The paths must match mirror.config.json
+  // (namespace, upstream.style); ab/vite.config.ts reads them from it.
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "module": "preserve",

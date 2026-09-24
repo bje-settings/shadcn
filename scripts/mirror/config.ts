@@ -2,8 +2,11 @@
 // converts, and where it writes them. Validated by hand so a typo fails the
 // run with the field name rather than surfacing later as `undefined`.
 
+import { isRecord, KEBAB, Shape } from './parse.ts'
+
 export type SelectorRewrite = {
-  // Regular expression source, applied globally to each generated selector.
+  // Compiled from the config's pattern source with the g flag; applied to
+  // each generated selector.
   pattern: RegExp
   replace: string
   reason: string
@@ -41,17 +44,20 @@ export type MirrorConfig = {
   selectorRewrites: SelectorRewrite[]
 }
 
-function fail(message: string): never {
-  throw new Error(`mirror.config.json: ${message}`)
-}
+const shape = new Shape('mirror.config.json')
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value)
+function fail(message: string): never {
+  return shape.fail(message)
 }
 
 function string(record: Record<string, unknown>, key: string, path: string): string {
-  const value = record[key]
-  if (typeof value !== 'string' || value === '') fail(`${path}${key} must be a non-empty string`)
+  return shape.string(record[key], `${path}${key}`)
+}
+
+// Names that end up in paths, URLs and import specifiers.
+function name(record: Record<string, unknown>, key: string, path: string): string {
+  const value = string(record, key, path)
+  if (!KEBAB.test(value)) fail(`${path}${key} must be kebab-case`)
   return value
 }
 
@@ -73,20 +79,18 @@ export function parseConfig(raw: unknown): MirrorConfig {
   if (
     !Array.isArray(components) ||
     components.length === 0 ||
-    !components.every((c) => typeof c === 'string' && /^[a-z0-9-]+$/.test(c))
+    !components.every((c) => typeof c === 'string' && KEBAB.test(c))
   ) {
     fail('components must be a non-empty array of kebab-case item names')
   }
+  if (new Set(components).size !== components.length) fail('components must not repeat')
 
   const typeset = raw.typeset
   if (!isRecord(typeset)) fail('typeset must be an object')
   const fixturesUrl = string(typeset, 'fixturesUrl', 'typeset.')
   if (!fixturesUrl.includes('{name}')) fail('typeset.fixturesUrl must contain {name}')
   const fixtures = typeset.fixtures
-  if (
-    !Array.isArray(fixtures) ||
-    !fixtures.every((f) => typeof f === 'string' && /^[a-z0-9-]+$/.test(f))
-  ) {
+  if (!Array.isArray(fixtures) || !fixtures.every((f) => typeof f === 'string' && KEBAB.test(f))) {
     fail('typeset.fixtures must be an array of kebab-case names')
   }
 
@@ -100,8 +104,10 @@ export function parseConfig(raw: unknown): MirrorConfig {
     let pattern: RegExp
     try {
       pattern = new RegExp(source, 'g')
-    } catch {
-      fail(`selectorRewrites[${i}].pattern is not a valid regular expression`)
+    } catch (error) {
+      fail(
+        `selectorRewrites[${i}].pattern is not a valid regular expression: ${(error as Error).message}`,
+      )
     }
     return {
       pattern,
@@ -111,11 +117,11 @@ export function parseConfig(raw: unknown): MirrorConfig {
   })
 
   return {
-    namespace: string(raw, 'namespace', ''),
-    upstream: { url, colorsUrl, style: string(upstream, 'style', 'upstream.') },
+    namespace: name(raw, 'namespace', ''),
+    upstream: { url, colorsUrl, style: name(upstream, 'style', 'upstream.') },
     theme: {
-      baseColor: string(theme, 'baseColor', 'theme.'),
-      font: string(theme, 'font', 'theme.'),
+      baseColor: name(theme, 'baseColor', 'theme.'),
+      font: name(theme, 'font', 'theme.'),
     },
     components,
     typeset: { stylesheet: string(typeset, 'stylesheet', 'typeset.'), fixturesUrl, fixtures },
