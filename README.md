@@ -24,7 +24,8 @@ pnpm test      # vitest with 100% coverage thresholds, generated components incl
 ## Mirror
 
 Components under `registry/ui/` are shadcn's own, with Tailwind utilities converted to SCSS modules.
-`mirror.config.json` sets the upstream style (currently `base-vega`) and the components to convert.
+`mirror.config.json` sets the upstream style (currently `base-vega`), the components to convert, this
+registry's namespace, and the selector rewrites applied to generated SCSS.
 
 ```bash
 pnpm mirror:fetch   # snapshot each configured upstream item into upstream/<style>/
@@ -34,19 +35,28 @@ pnpm mirror:build   # convert the snapshots into registry/ui/<Name>/ and update 
 For each component, the build:
 
 1. Rewrites the TSX: `cva()` becomes a lookup object plus a same-named function, `cn()` becomes
-   `clsx()`, and class strings become `styles.<slot>` references named from `data-slot`.
+   `clsx()`, and class strings become `styles.<slot>` references named from `data-slot` (or Base
+   UI `useRender`'s `state.slot`). Imports of other upstream components point at this registry's
+   copies, and each upstream `registryDependencies` entry becomes `@bje/<item>`; a dependency not
+   listed in `mirror.config.json` fails the build.
 2. Compiles each slot's classes with Tailwind itself (`scripts/mirror/tailwind.css` holds the
    shadcn theme mapping), then nests the output under `:where(.<slot>)` so a consumer's
-   `className` always wins.
+   `className` always wins. A selector that still inspects class names after the configured
+   rewrites fails the build.
 3. Lists in the module's header the custom properties it expects globally and any upstream
    classes that produced no CSS.
-4. Generates `<Name>.test.tsx` from the `cva()` variants: base and default classes, every option of
-   every group, null groups, and consumer `className`. It asserts through the `styles` import, so it
+4. Generates `<Name>.test.tsx` covering every exported component: its `data-slot` and classes,
+   every option of every `cva()` group, null groups, literal prop defaults, and consumer
+   `className`. It asserts through the `styles` import, so it
    passes under any CSS module naming. Consumers need Vitest with `environment: 'jsdom'` and Sass;
    the item lists the test's devDependencies.
 
 Unsupported source shapes fail the build with their line and column rather than producing partial
 output.
+
+Generated components keep upstream's markup, so `biome.json` turns off `a11y/useSemanticElements`
+for `registry/ui/**` (upstream's Button Group uses `role="group"` on a `div`). Every other rule still
+applies there.
 
 ## Adding an item
 
