@@ -11,8 +11,15 @@ const upstream = {
     {
       path: 'registry/base-vega/ui/badge.tsx',
       type: 'registry:ui',
-      content:
-        'import { cn } from "cn"\nconst b = <i data-slot="badge" className={cn("group flex", c)} />',
+      content: [
+        'import { cva } from "class-variance-authority"',
+        'import { cn } from "cn"',
+        'const badgeVariants = cva("group flex")',
+        'function Badge({ c }) {',
+        '  return <i data-slot="badge" className={cn(badgeVariants({ className: c }))} />',
+        '}',
+        'export { Badge }',
+      ].join('\n'),
     },
   ],
 }
@@ -77,12 +84,13 @@ describe('mirror build', () => {
   it('generates files from snapshots and upserts registry.json', async () => {
     await run(['fetch'], io())
     await run(['build'], io())
-    expect(await read('registry/ui/Badge/Badge.tsx')).toContain('className={clsx(styles.badge, c)}')
+    expect(await read('registry/ui/Badge/Badge.tsx')).toContain('badgeVariants({ className: c })')
+    expect(await read('registry/ui/Badge/Badge.test.tsx')).toContain('describe("Badge"')
     expect(await read('registry/ui/Badge/Badge.module.scss')).toContain(':where(.badge) {')
     const registry = JSON.parse(await read('registry.json'))
     expect(registry.items.map((item: { name: string }) => item.name)).toEqual(['cn', 'badge'])
     expect(logs.slice(1)).toEqual([
-      'built badge: registry/ui/Badge/Badge.tsx, registry/ui/Badge/Badge.module.scss',
+      'built badge: registry/ui/Badge/Badge.tsx, registry/ui/Badge/Badge.module.scss, registry/ui/Badge/Badge.test.tsx',
       '  badge: no CSS for group',
     ])
   })

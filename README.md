@@ -18,7 +18,7 @@ Source for the `@bje` [shadcn registry](https://ui.shadcn.com/docs/registry).
 ```bash
 pnpm install   # also installs the lefthook pre-commit hooks
 pnpm build     # shadcn build: validates registry.json and writes public/r/
-pnpm test      # vitest with 100% coverage thresholds
+pnpm test      # vitest with 100% coverage thresholds, generated components included
 ```
 
 ## Mirror
@@ -40,6 +40,10 @@ For each component, the build:
    `className` always wins.
 3. Lists in the module's header the custom properties it expects globally and any upstream
    classes that produced no CSS.
+4. Generates `<Name>.test.tsx` from the `cva()` variants: base and default classes, every option of
+   every group, null groups, and consumer `className`. It asserts through the `styles` import, so it
+   passes under any CSS module naming. Consumers need Vitest with `environment: 'jsdom'` and Sass;
+   the item lists the test's devDependencies.
 
 Unsupported source shapes fail the build with their line and column rather than producing partial
 output.

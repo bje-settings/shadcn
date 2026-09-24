@@ -27,9 +27,25 @@ import type { Slot } from './scss.ts'
 // ignores) Base UI's function form of className.
 const CLSX_IMPORT = 'import { type ClassValue, clsx } from "clsx"'
 
+// What the test generator needs to know about one cva() call.
+export type VariantSet = {
+  // The generated function, e.g. buttonVariants
+  variable: string
+  // Module class of the base slot
+  base: string
+  groups: {
+    name: string
+    default?: string
+    options: { value: string; slot: string }[]
+  }[]
+  // The component function and data-slot whose className the set styles.
+  renderedBy?: { component: string; dataSlot: string }
+}
+
 export type TransformedComponent = {
   code: string
   slots: Slot[]
+  variantSets: VariantSet[]
 }
 
 // Babel sets loc on every node it parses.
@@ -88,10 +104,10 @@ function key(name: string): string {
 }
 
 type Cva = {
-  prefix: string
   typeName: string
   slots: Slot[]
   code: string
+  set: VariantSet
 }
 
 function convertCva(
@@ -125,12 +141,13 @@ function convertCva(
   )
 
   const groups = variants.map(([group, options]) => {
-    const entries = objectEntries(options).map(([option, value]) => {
+    const choices = objectEntries(options).map(([option, value]) => {
       const name = `${short ? group : `${prefix}${pascalCase(group)}`}${pascalCase(option)}`
       slots.push({ name, classes: classList(stringValue(value)) })
-      return `    ${key(option)}: styles.${name},`
+      return { value: option, slot: name }
     })
-    return { group, lines: [`  ${key(group)}: {`, ...entries, '  },'] }
+    const lines = choices.map(({ value, slot }) => `    ${key(value)}: styles.${slot},`)
+    return { group, choices, lines: [`  ${key(group)}: {`, ...lines, '  },'] }
   })
 
   const params = groups.map(({ group }) =>
@@ -159,9 +176,19 @@ function convertCva(
     '}',
   ].join('\n')
 
-  return { prefix, typeName, slots, code }
+  const set: VariantSet = {
+    variable,
+    base: prefix,
+    groups: groups.map(({ group, choices }) => ({
+      name: group,
+      ...(defaults.has(group) ? { default: defaults.get(group) } : {}),
+      options: choices,
+    })),
+  }
+  return { typeName, slots, code, set }
 }
 
+// The raw data-slot of the nearest enclosing JSX element, if it is a string.
 function dataSlot(ancestors: Node[]): string | undefined {
   const opening = ancestors.findLast((node) => node.type === 'JSXOpeningElement')
   if (opening?.type !== 'JSXOpeningElement') return undefined
@@ -171,10 +198,15 @@ function dataSlot(ancestors: Node[]): string | undefined {
       attribute.name.name === 'data-slot' &&
       attribute.value?.type === 'StringLiteral'
     ) {
-      return camelCase(attribute.value.value)
+      return attribute.value.value
     }
   }
   return undefined
+}
+
+function slotName(ancestors: Node[]): string | undefined {
+  const slot = dataSlot(ancestors)
+  return slot === undefined ? undefined : camelCase(slot)
 }
 
 export function transformComponent(source: string, component: string): TransformedComponent {
@@ -185,6 +217,17 @@ export function transformComponent(source: string, component: string): Transform
   let usesClsx = false
   let importsClsx = false
   let lastImportEnd = 0
+
+  // Records which component and data-slot render a cva() variable's classes.
+  const recordUse = (call: Node, ancestors: Node[]) => {
+    if (call.type !== 'CallExpression' || call.callee.type !== 'Identifier') return
+    const cva = cvas.get(call.callee.name)
+    const slot = dataSlot(ancestors)
+    const fn = ancestors.findLast((node) => node.type === 'FunctionDeclaration')
+    if (cva && slot && fn?.type === 'FunctionDeclaration' && fn.id) {
+      cva.set.renderedBy = { component: fn.id.name, dataSlot: slot }
+    }
+  }
 
   const addSlot = (node: Node, slot: Slot) => {
     const existing = slots.find((s) => s.name === slot.name)
@@ -261,6 +304,7 @@ export function transformComponent(source: string, component: string): Transform
         cvas.has(only.callee.name)
       ) {
         out.overwrite(...span(node), source.slice(...span(only)))
+        recordUse(only, ancestors)
         return false
       }
       for (const arg of node.arguments) {
@@ -273,7 +317,7 @@ export function transformComponent(source: string, component: string): Transform
       const literals = node.arguments.filter((arg) => arg.type === 'StringLiteral')
       const [first, ...others] = literals
       if (first) {
-        const slot = dataSlot(ancestors)
+        const slot = slotName(ancestors)
         if (!slot) unsupported(node, 'cn() with class strings outside an element with data-slot')
         addSlot(node, { name: slot, classes: literals.flatMap(classList) })
         out.overwrite(...span(first), `styles.${slot}`)
@@ -290,7 +334,7 @@ export function transformComponent(source: string, component: string): Transform
     if (node.type === 'JSXAttribute' && node.name.name === 'className') {
       const value = node.value
       if (value?.type === 'StringLiteral') {
-        const slot = dataSlot(ancestors)
+        const slot = slotName(ancestors)
         if (!slot) unsupported(node, 'className string on an element without data-slot')
         addSlot(node, { name: slot, classes: classList(value) })
         out.overwrite(...span(value), `{styles.${slot}}`)
@@ -303,6 +347,7 @@ export function transformComponent(source: string, component: string): Transform
       ) {
         unsupported(expression, `className expression ${expression.type}`)
       }
+      if (expression) recordUse(expression, [...ancestors, node])
     }
     return true
   })
@@ -314,5 +359,9 @@ export function transformComponent(source: string, component: string): Transform
   if (lastImportEnd === 0) out.prepend(`${added}\n`)
   else out.appendLeft(lastImportEnd, `\n${added}`)
 
-  return { code: out.toString(), slots }
+  return {
+    code: out.toString(),
+    slots,
+    variantSets: [...cvas.values()].map((cva) => cva.set),
+  }
 }

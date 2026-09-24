@@ -7,6 +7,7 @@ const item = (name: string, title: string): RegistryItem => ({
   type: 'registry:ui',
   title,
   dependencies: [],
+  devDependencies: [],
   files: [],
 })
 

@@ -21,6 +21,7 @@
       "type": "registry:ui",
       "title": "Button",
       "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": ["@testing-library/dom", "@testing-library/react", "jsdom", "vitest"],
       "files": [
         {
           "path": "registry/ui/Button/Button.tsx",
@@ -28,6 +29,10 @@
         },
         {
           "path": "registry/ui/Button/Button.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Button/Button.test.tsx",
           "type": "registry:ui"
         }
       ]

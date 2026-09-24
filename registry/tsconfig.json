@@ -1,0 +1,11 @@
+{
+  // Registry items are copied into consumer projects, which resolve imports
+  // like a bundler: extensionless relative imports and CSS module imports.
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": false
+  },
+  "include": [".", "../types"]
+}

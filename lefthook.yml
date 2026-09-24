@@ -13,7 +13,7 @@ pre-commit:
     # that was not staged.
     types:
       glob: '{*.ts,*.tsx,tsconfig.json}'
-      run: pnpm exec tsc -p tsconfig.json
+      run: pnpm exec tsc -p tsconfig.json && pnpm exec tsc -p registry/tsconfig.json
 
     vitest-related:
       glob: '*.{ts,tsx}'

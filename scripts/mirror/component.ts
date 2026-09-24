@@ -5,6 +5,7 @@ import type { MirrorConfig } from './config.ts'
 import { pascalCase } from './names.ts'
 import { slotToScss } from './scss.ts'
 import { compileCandidates } from './tailwind.ts'
+import { generateTest } from './tests.ts'
 import { transformComponent } from './tsx.ts'
 
 export type UpstreamItem = {
@@ -19,6 +20,7 @@ export type RegistryItem = {
   type: 'registry:ui'
   title: string
   dependencies: string[]
+  devDependencies: string[]
   files: { path: string; type: 'registry:ui' }[]
 }
 
@@ -31,6 +33,10 @@ export type GeneratedComponent = {
 
 // Packages consumers already have, which shadcn items never list.
 const IMPLICIT = new Set(['react', 'react-dom'])
+
+// Needed to run the shipped test but never imported by it: Testing Library's
+// peer dependency, and the DOM environment.
+const TEST_RUNTIME = ['@testing-library/dom', 'jsdom']
 
 function packageName(specifier: string): string {
   const parts = specifier.split('/')
@@ -104,7 +110,12 @@ export async function buildComponent(
     blocks.join('\n\n'),
     '',
   ].join('\n')
-  const tsx = `${generated}\n\n${source.code}`
+  const test = generateTest(upstream.name, source)
+  const files = [
+    { path: `${dir}/${component}.tsx`, content: `${generated}\n\n${source.code}` },
+    { path: `${dir}/${component}.module.scss`, content: scss },
+    { path: `${dir}/${component}.test.tsx`, content: `${generated}\n\n${test}` },
+  ]
 
   return {
     item: {
@@ -112,15 +123,10 @@ export async function buildComponent(
       type: 'registry:ui',
       title: component,
       dependencies: dependenciesOf(source.code),
-      files: [
-        { path: `${dir}/${component}.tsx`, type: 'registry:ui' },
-        { path: `${dir}/${component}.module.scss`, type: 'registry:ui' },
-      ],
+      devDependencies: [...new Set([...dependenciesOf(test), ...TEST_RUNTIME])].sort(),
+      files: files.map(({ path }) => ({ path, type: 'registry:ui' })),
     },
-    files: [
-      { path: `${dir}/${component}.tsx`, content: tsx },
-      { path: `${dir}/${component}.module.scss`, content: scss },
-    ],
+    files,
     unresolved,
   }
 }

@@ -56,8 +56,12 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/node-pnpm
+      # Two projects: scripts resolve like node, registry items like the
+      # bundler in a consumer's project.
       - name: Type-check the TypeScript
-        run: pnpm exec tsc -p tsconfig.json
+        run: |
+          pnpm exec tsc -p tsconfig.json
+          pnpm exec tsc -p registry/tsconfig.json
 
   biome:
     name: biome
