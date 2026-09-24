@@ -10,7 +10,7 @@
 import { relative } from 'node:path'
 import type { MirrorConfig } from './config.ts'
 import type { PreparedExample } from './examples.ts'
-import { camelCase, pascalCase } from './names.ts'
+import { camelCase, registryModule } from './names.ts'
 import { exportedNames } from './tests.ts'
 import type { TransformedComponent, VariantSet } from './tsx.ts'
 import type { TypesetFixture } from './typeset.ts'
@@ -107,12 +107,7 @@ export function harnessFiles(
     },
     {
       path: `${dir}/ours.ts`,
-      content: ts(
-        moduleMap('ours', components, (name) => {
-          const file = pascalCase(name)
-          return `@/registry/${config.namespace}/ui/${file}/${file}`
-        }),
-      ),
+      content: ts(moduleMap('ours', components, (name) => registryModule(config.namespace, name))),
     },
     {
       path: `${dir}/examples-upstream.ts`,

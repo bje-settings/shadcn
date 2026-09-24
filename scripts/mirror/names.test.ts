@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { camelCase, pascalCase } from './names.ts'
+import { camelCase, pascalCase, registryModule } from './names.ts'
 
 describe('names', () => {
   it('converts kebab-case to PascalCase and camelCase', () => {
@@ -11,5 +11,9 @@ describe('names', () => {
   it('keeps existing capitals and digits', () => {
     expect(pascalCase('variantDefault')).toBe('VariantDefault')
     expect(pascalCase('chart-1')).toBe('Chart1')
+  })
+
+  it('points an item at its PascalCase module in this registry', () => {
+    expect(registryModule('bje', 'button-group')).toBe('@/registry/bje/ui/ButtonGroup/ButtonGroup')
   })
 })

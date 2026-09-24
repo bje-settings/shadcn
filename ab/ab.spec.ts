@@ -18,7 +18,7 @@ const errors = new Map<Page, string[]>()
 const test = base.extend<object, { pages: Pages }>({
   pages: [
     async ({ browser }, use) => {
-      const open = async (side: string, theme: Theme) => {
+      const open = async (side: keyof Pages, theme: Theme) => {
         const page = await browser.newPage({ viewport: { width: 1280, height: 800 } })
         const reported: string[] = []
         errors.set(page, reported)
@@ -31,7 +31,7 @@ const test = base.extend<object, { pages: Pages }>({
         await page.evaluate(() => document.fonts.ready)
         return page
       }
-      const both = async (side: string) => ({
+      const both = async (side: keyof Pages) => ({
         light: await open(side, 'light'),
         dark: await open(side, 'dark'),
       })
@@ -92,13 +92,12 @@ test.describe.configure({ mode: 'parallel' })
 
 for (const c of cases) {
   test(c.id, async ({ pages }, testInfo) => {
-    const sides = [pages.upstream[c.theme], pages.ours[c.theme]]
-    test.skip(!(await applies(sides[0] as Page, c)), `${c.state} does not apply to this element`)
+    const upstreamPage = pages.upstream[c.theme]
+    const oursPage = pages.ours[c.theme]
+    const sides = [upstreamPage, oursPage]
+    test.skip(!(await applies(upstreamPage, c)), `${c.state} does not apply to this element`)
     for (const page of sides) errors.get(page)?.splice(0)
-    const [upstream, ours] = await Promise.all([
-      capture(pages.upstream[c.theme], c),
-      capture(pages.ours[c.theme], c),
-    ])
+    const [upstream, ours] = await Promise.all([capture(upstreamPage, c), capture(oursPage, c)])
     const width = Math.max(upstream.width, ours.width)
     const height = Math.max(upstream.height, ours.height)
     const diff = new PNG({ width, height })

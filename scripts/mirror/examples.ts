@@ -9,10 +9,10 @@
 // ours points registry imports at this registry's components. Everything else
 // is upstream's code as written.
 
-import { parse } from '@babel/parser'
 import type { Identifier, ImportDeclaration, Node, SourceLocation, Statement } from '@babel/types'
 import MagicString from 'magic-string'
-import { pascalCase } from './names.ts'
+import { childNodes, parseModule, span } from './ast.ts'
+import { registryModule } from './names.ts'
 
 // Imports the harness provides stand-ins for (ab/stubs).
 export const STUBBED = new Set(['components/example', '@/app/(create)/components/icon-placeholder'])
@@ -22,10 +22,6 @@ export type PreparedExample = {
   ours: string
   kept: string[]
   skipped: { name: string; missing: string[] }[]
-}
-
-function span(node: Node): [number, number] {
-  return [node.start as number, node.end as number]
 }
 
 // Names a statement declares at the top level. A top-level function
@@ -59,13 +55,7 @@ function references(node: Node): Set<string> {
         parent?.type === 'JSXAttribute'
       if (!key) names.add(current.name)
     }
-    for (const [field, value] of Object.entries(current)) {
-      if (field === 'loc' || field === 'extra' || field.endsWith('Comments')) continue
-      for (const child of Array.isArray(value) ? value : [value]) {
-        if (child && typeof child === 'object' && typeof child.type === 'string')
-          visit(child, current)
-      }
-    }
+    for (const child of childNodes(current)) visit(child, current)
   }
   visit(node, undefined)
   return names
@@ -96,7 +86,7 @@ export function prepareExample(
   namespace: string,
   mirrored: Set<string>,
 ): PreparedExample {
-  const ast = parse(source, { sourceType: 'module', plugins: ['typescript', 'jsx'] })
+  const ast = parseModule(source)
   const registry = `@/registry/${style}/`
   const imports = new Map<string, ImportDeclaration>()
   const declarations = new Map<string, Statement>()
@@ -140,12 +130,15 @@ export function prepareExample(
     return seen
   }
 
-  const available = (from: string): string | undefined => {
+  // What an import needs that the harness lacks, or undefined when it has it:
+  // an unmirrored item by name, anything else by specifier.
+  const unavailable = (from: string): string | undefined => {
     if (from === 'react') return undefined
     const local = from.startsWith(registry) ? from.slice(registry.length) : from
     if (STUBBED.has(local)) return undefined
-    const item = local.startsWith('ui/') ? local.slice(3) : undefined
-    return item !== undefined && mirrored.has(item) ? undefined : (item ?? from)
+    if (!local.startsWith('ui/')) return from
+    const item = local.slice(3)
+    return mirrored.has(item) ? undefined : item
   }
 
   const kept: string[] = []
@@ -158,7 +151,7 @@ export function prepareExample(
         [...reached]
           .filter((ref) => imports.has(ref))
           .flatMap((ref) => {
-            const gap = available((imports.get(ref) as ImportDeclaration).source.value)
+            const gap = unavailable((imports.get(ref) as ImportDeclaration).source.value)
             return gap === undefined ? [] : [gap]
           }),
       ),
@@ -189,11 +182,7 @@ export function prepareExample(
         const from = statement.source.value
         const item = from.startsWith(`${registry}ui/`) ? from.slice(registry.length + 3) : undefined
         if (rewrite && item) {
-          const file = pascalCase(item)
-          out.overwrite(
-            ...span(statement.source),
-            JSON.stringify(`@/registry/${namespace}/ui/${file}/${file}`),
-          )
+          out.overwrite(...span(statement.source), JSON.stringify(registryModule(namespace, item)))
         }
       } else if (!declared(statement).some((name) => keep.has(name))) {
         remove(statement)

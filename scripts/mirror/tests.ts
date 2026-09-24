@@ -5,15 +5,12 @@
 // import, so they hold whatever class names the consumer's CSS module setup
 // produces.
 
-import { parse } from '@babel/parser'
+import { parseModule } from './ast.ts'
 import { pascalCase } from './names.ts'
 import type { RenderedComponent, TransformedComponent, VariantSet } from './tsx.ts'
 
 export function exportedNames(code: string): Set<string> {
-  const ast = parse(code, {
-    sourceType: 'module',
-    plugins: ['typescript', 'jsx'],
-  })
+  const ast = parseModule(code)
   const names = new Set<string>()
   for (const statement of ast.program.body) {
     if (statement.type !== 'ExportNamedDeclaration') continue
@@ -43,24 +40,44 @@ function defaultClasses(set: VariantSet): string[] {
 
 function componentTests(component: RenderedComponent, set: VariantSet | undefined): string[] {
   const render = `render${component.name}`
+  const attributes = `attributesOf${component.name}`
+  const element = q(`[data-slot="${component.dataSlot}"]`)
   const expected = [
     ...(component.slot ? [`styles.${component.slot}`] : []),
     ...(set ? defaultClasses(set) : []),
   ]
   const groups = set?.groups ?? []
   const groupNames = new Set(groups.map((group) => group.name))
+  // A default can set attributes rather than classes (Separator's
+  // orientation becomes data-orientation), so compare every attribute except
+  // id, which React's useId makes differ between renders.
+  const explicit = component.defaults.filter((d) => !groupNames.has(d.prop))
 
   const lines = [
     `function ${render}(props: ComponentProps<typeof ${component.name}> = {}) {`,
     `  const { container } = render(<${component.name} {...props} />)`,
-    `  return container.querySelector(${q(`[data-slot="${component.dataSlot}"]`)})?.className.split(" ") ?? []`,
+    `  return container.querySelector(${element})?.className.split(" ") ?? []`,
     '}',
     '',
+  ]
+  if (explicit.length > 0) {
+    lines.push(
+      `function ${attributes}(props: ComponentProps<typeof ${component.name}> = {}) {`,
+      `  const { container } = render(<${component.name} {...props} />)`,
+      `  const element = container.querySelector(${element})`,
+      '  return Object.fromEntries(',
+      '    [...(element?.attributes ?? [])].filter((a) => a.name !== "id").map((a) => [a.name, a.value]),',
+      '  )',
+      '}',
+      '',
+    )
+  }
+  lines.push(
     `describe(${q(component.name)}, () => {`,
     `  it(${q(`renders [data-slot="${component.dataSlot}"] with its classes`)}, () => {`,
     `    expect(${render}()).toEqual(expect.arrayContaining([${expected.join(', ')}]))`,
     '  })',
-  ]
+  )
 
   for (const group of groups) {
     lines.push(
@@ -86,32 +103,13 @@ function componentTests(component: RenderedComponent, set: VariantSet | undefine
       '  })',
     )
   }
-  // A default can set attributes rather than classes (Separator's
-  // orientation becomes data-orientation), so compare every attribute except
-  // id, which React's useId makes differ between renders.
-  const explicit = component.defaults.filter((d) => !groupNames.has(d.prop))
-  if (explicit.length > 0) {
-    const attributes = `attributesOf${component.name}`
-    lines.splice(
-      5,
-      0,
-      `function ${attributes}(props: ComponentProps<typeof ${component.name}> = {}) {`,
-      `  const { container } = render(<${component.name} {...props} />)`,
-      `  const element = container.querySelector(${q(`[data-slot="${component.dataSlot}"]`)})`,
-      '  return Object.fromEntries(',
-      '    [...(element?.attributes ?? [])].filter((a) => a.name !== "id").map((a) => [a.name, a.value]),',
-      '  )',
-      '}',
+  for (const { prop, value } of explicit) {
+    lines.push(
       '',
+      `  it(${q(`renders the same with ${prop}=${value} passed explicitly`)}, () => {`,
+      `    expect(${attributes}({ ${prop}: ${value} })).toEqual(${attributes}())`,
+      '  })',
     )
-    for (const { prop, value } of explicit) {
-      lines.push(
-        '',
-        `  it(${q(`renders the same with ${prop}=${value} passed explicitly`)}, () => {`,
-        `    expect(${attributes}({ ${prop}: ${value} })).toEqual(${attributes}())`,
-        '  })',
-      )
-    }
   }
   lines.push(
     '',

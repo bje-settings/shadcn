@@ -11,10 +11,10 @@
 // - `cn("...", ...)` inside such an element's className, or inside a Base UI
 //   `useRender()` whose `state.slot` names the slot; and `cn(xVariants(...))`.
 
-import { parse } from '@babel/parser'
 import type {
   CallExpression,
   FunctionDeclaration,
+  Identifier,
   Node,
   ObjectExpression,
   SourceLocation,
@@ -22,7 +22,8 @@ import type {
   VariableDeclaration,
 } from '@babel/types'
 import MagicString from 'magic-string'
-import { camelCase, pascalCase } from './names.ts'
+import { childNodes, parseModule, span } from './ast.ts'
+import { camelCase, pascalCase, registryModule } from './names.ts'
 import type { Slot } from './scss.ts'
 
 // ClassValue types the className of generated cva() replacements, matching
@@ -73,10 +74,6 @@ function unsupported(node: Node, message: string): never {
   throw new Error(`Unsupported at ${line}:${column + 1}: ${message}`)
 }
 
-function span(node: Node): [number, number] {
-  return [node.start as number, node.end as number]
-}
-
 // visit returns false to skip the node's children.
 function walk(
   node: Node,
@@ -85,14 +82,19 @@ function walk(
 ): void {
   if (!visit(node, ancestors)) return
   const next = [...ancestors, node]
-  for (const [key, value] of Object.entries(node)) {
-    if (key === 'loc' || key === 'extra' || key.endsWith('Comments')) continue
-    for (const child of Array.isArray(value) ? value : [value]) {
-      if (child && typeof child === 'object' && typeof child.type === 'string') {
-        walk(child as Node, visit, next)
-      }
-    }
-  }
+  for (const child of childNodes(node)) walk(child, visit, next)
+}
+
+type NamedCall = CallExpression & { callee: Identifier }
+
+// A call to a plain identifier (`cn(...)`, `buttonVariants(...)`), optionally
+// a specific one.
+function isCallTo(node: Node | null | undefined, name?: string): node is NamedCall {
+  return (
+    node?.type === 'CallExpression' &&
+    node.callee.type === 'Identifier' &&
+    (name === undefined || node.callee.name === name)
+  )
 }
 
 function classList(literal: StringLiteral): string[] {
@@ -113,8 +115,9 @@ function objectEntries(object: Node): [string, Node][] {
 }
 
 function stringValue(node: Node): StringLiteral {
-  if (node.type !== 'StringLiteral')
+  if (node.type !== 'StringLiteral') {
     unsupported(node, `expected a string literal, got ${node.type}`)
+  }
   return node
 }
 
@@ -234,12 +237,7 @@ function dataSlot(ancestors: Node[]): string | undefined {
     }
     return undefined
   }
-  const render = ancestors.findLast(
-    (node) =>
-      node.type === 'CallExpression' &&
-      node.callee.type === 'Identifier' &&
-      node.callee.name === 'useRender',
-  )
+  const render = ancestors.findLast((node) => isCallTo(node, 'useRender'))
   // A class string inside useRender() is inside its options argument.
   if (render?.type !== 'CallExpression') return undefined
   const options = render.arguments[0] as Node
@@ -281,10 +279,7 @@ export function transformComponent(
   component: string,
   namespace: string,
 ): TransformedComponent {
-  const ast = parse(source, {
-    sourceType: 'module',
-    plugins: ['typescript', 'jsx'],
-  })
+  const ast = parseModule(source)
   const out = new MagicString(source)
   const cvas = new Map<string, Cva>()
   const slots: Slot[] = []
@@ -313,14 +308,11 @@ export function transformComponent(
     if (record.dataSlot === slot) Object.assign(record, update)
   }
 
-  const trackCva = (call: Node, ancestors: Node[]) => {
-    if (
-      call.type === 'CallExpression' &&
-      call.callee.type === 'Identifier' &&
-      cvas.has(call.callee.name)
-    ) {
-      track(ancestors, { variantSet: call.callee.name })
-    }
+  const isCvaCall = (node: Node | undefined): node is NamedCall =>
+    isCallTo(node) && cvas.has(node.callee.name)
+
+  const trackCva = (node: Node, ancestors: Node[]) => {
+    if (isCvaCall(node)) track(ancestors, { variantSet: node.callee.name })
   }
 
   const addSlot = (node: Node, slot: Slot) => {
@@ -340,10 +332,8 @@ export function transformComponent(
     }
     if (
       node.type === 'CallExpression' &&
-      !(
-        node.callee.type === 'Identifier' &&
-        (node.callee.name === 'cn' || cvas.has(node.callee.name))
-      ) &&
+      !isCallTo(node, 'cn') &&
+      !isCvaCall(node) &&
       node.arguments.some((arg) => arg.type === 'StringLiteral')
     ) {
       unsupported(node, 'class strings passed to a function other than cn() or a cva()')
@@ -365,11 +355,7 @@ export function transformComponent(
       const item = REGISTRY_IMPORT.exec(statement.source.value)?.[1]
       if (item) {
         registryImports.push(item)
-        const file = pascalCase(item)
-        out.overwrite(
-          ...span(statement.source),
-          JSON.stringify(`@/registry/${namespace}/ui/${file}/${file}`),
-        )
+        out.overwrite(...span(statement.source), JSON.stringify(registryModule(namespace, item)))
         continue
       }
       if (names.includes('cn')) {
@@ -390,12 +376,7 @@ export function transformComponent(
       }
       const [declarator] = statement.declarations
       const init = declarator?.init
-      if (
-        declarator?.id.type === 'Identifier' &&
-        init?.type === 'CallExpression' &&
-        init.callee.type === 'Identifier' &&
-        init.callee.name === 'cva'
-      ) {
+      if (declarator?.id.type === 'Identifier' && isCallTo(init, 'cva')) {
         const cva = convertCva(statement, init, declarator.id.name, component)
         cvas.set(declarator.id.name, cva)
         converted.add(init)
@@ -408,12 +389,7 @@ export function transformComponent(
 
   // Pass 2: VariantProps references, cn() calls, className literals.
   walk(ast.program, (node, ancestors) => {
-    if (
-      node.type === 'CallExpression' &&
-      node.callee.type === 'Identifier' &&
-      node.callee.name === 'cva' &&
-      !converted.has(node)
-    ) {
+    if (isCallTo(node, 'cva') && !converted.has(node)) {
       unsupported(node, 'cva() outside a top-level `const xVariants = cva(...)`')
     }
 
@@ -432,18 +408,9 @@ export function transformComponent(
       return false
     }
 
-    if (
-      node.type === 'CallExpression' &&
-      node.callee.type === 'Identifier' &&
-      node.callee.name === 'cn'
-    ) {
+    if (isCallTo(node, 'cn')) {
       const [only] = node.arguments
-      if (
-        node.arguments.length === 1 &&
-        only?.type === 'CallExpression' &&
-        only.callee.type === 'Identifier' &&
-        cvas.has(only.callee.name)
-      ) {
+      if (node.arguments.length === 1 && isCvaCall(only)) {
         out.overwrite(...span(node), source.slice(...span(only)))
         trackCva(only, ancestors)
         return false

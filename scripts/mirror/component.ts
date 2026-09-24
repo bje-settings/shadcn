@@ -1,6 +1,6 @@
 // One upstream registry item in, the mirror's files and registry entry out.
 
-import { parse } from '@babel/parser'
+import { parseModule } from './ast.ts'
 import type { MirrorConfig } from './config.ts'
 import { pascalCase } from './names.ts'
 import { slotToScss } from './scss.ts'
@@ -49,10 +49,7 @@ function packageName(specifier: string): string {
 }
 
 export function dependenciesOf(code: string): string[] {
-  const ast = parse(code, {
-    sourceType: 'module',
-    plugins: ['typescript', 'jsx'],
-  })
+  const ast = parseModule(code)
   const packages = new Set<string>()
   for (const statement of ast.program.body) {
     if (statement.type !== 'ImportDeclaration') continue
@@ -85,8 +82,9 @@ export async function buildComponent(
   compile: (candidates: string[]) => Promise<string>,
 ): Promise<GeneratedComponent> {
   const where = `${config.upstream.style}/${upstream.name}`
-  if (upstream.type !== 'registry:ui')
+  if (upstream.type !== 'registry:ui') {
     throw new Error(`${where}: type ${upstream.type} is not supported yet`)
+  }
   const [file, ...extra] = upstream.files
   if (!file?.content || extra.length > 0) {
     throw new Error(`${where}: expected exactly one file with content`)
