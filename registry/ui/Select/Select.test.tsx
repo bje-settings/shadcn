@@ -31,13 +31,13 @@ function renderSelectGroup(
       <SelectTrigger>SelectTrigger</SelectTrigger>
       <SelectContent>
         <SelectGroup
-          data-testid="subject"
+          data-subject
           {...({ children: 'SelectGroup', ...props } as ComponentProps<typeof SelectGroup>)}
         />
       </SelectContent>
     </Select>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="select-group"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="select-group"]')
 }
 
 function classesOfSelectGroup(
@@ -63,11 +63,11 @@ describe('SelectGroup', () => {
       <Select defaultOpen>
         <SelectTrigger>SelectTrigger</SelectTrigger>
         <SelectContent alignItemWithTrigger={false}>
-          <SelectGroup data-testid="subject">SelectGroup</SelectGroup>
+          <SelectGroup data-subject>SelectGroup</SelectGroup>
         </SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -76,11 +76,11 @@ describe('SelectGroup', () => {
       <Select defaultOpen>
         <SelectTrigger size="sm">SelectTrigger</SelectTrigger>
         <SelectContent>
-          <SelectGroup data-testid="subject">SelectGroup</SelectGroup>
+          <SelectGroup data-subject>SelectGroup</SelectGroup>
         </SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -89,11 +89,11 @@ describe('SelectGroup', () => {
       <Select defaultOpen>
         <SelectTrigger size="default">SelectTrigger</SelectTrigger>
         <SelectContent>
-          <SelectGroup data-testid="subject">SelectGroup</SelectGroup>
+          <SelectGroup data-subject>SelectGroup</SelectGroup>
         </SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -102,11 +102,11 @@ describe('SelectGroup', () => {
       <Select defaultOpen>
         <SelectTrigger>SelectTrigger</SelectTrigger>
         <SelectContent alignItemWithTrigger>
-          <SelectGroup data-testid="subject">SelectGroup</SelectGroup>
+          <SelectGroup data-subject>SelectGroup</SelectGroup>
         </SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -115,11 +115,11 @@ describe('SelectGroup', () => {
       <Select defaultOpen>
         <SelectTrigger id="select-fruit">SelectTrigger</SelectTrigger>
         <SelectContent>
-          <SelectGroup data-testid="subject">SelectGroup</SelectGroup>
+          <SelectGroup data-subject>SelectGroup</SelectGroup>
         </SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -128,11 +128,11 @@ describe('SelectGroup', () => {
       <Select defaultOpen>
         <SelectTrigger aria-invalid="true">SelectTrigger</SelectTrigger>
         <SelectContent>
-          <SelectGroup data-testid="subject">SelectGroup</SelectGroup>
+          <SelectGroup data-subject>SelectGroup</SelectGroup>
         </SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -143,11 +143,11 @@ describe('SelectGroup', () => {
           SelectTrigger
         </SelectTrigger>
         <SelectContent>
-          <SelectGroup data-testid="subject">SelectGroup</SelectGroup>
+          <SelectGroup data-subject>SelectGroup</SelectGroup>
         </SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -156,11 +156,11 @@ describe('SelectGroup', () => {
       <Select multiple defaultValue={[]} defaultOpen>
         <SelectTrigger>SelectTrigger</SelectTrigger>
         <SelectContent>
-          <SelectGroup data-testid="subject">SelectGroup</SelectGroup>
+          <SelectGroup data-subject>SelectGroup</SelectGroup>
         </SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -172,11 +172,11 @@ function renderSelectValue(
     <Select defaultOpen>
       <SelectTrigger>SelectTrigger</SelectTrigger>
       <SelectTrigger>
-        <SelectValue data-testid="subject" {...(props as ComponentProps<typeof SelectValue>)} />
+        <SelectValue data-subject {...(props as ComponentProps<typeof SelectValue>)} />
       </SelectTrigger>
     </Select>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="select-value"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="select-value"]')
 }
 
 function classesOfSelectValue(
@@ -202,11 +202,11 @@ describe('SelectValue', () => {
       <Select defaultOpen>
         <SelectTrigger size="sm">SelectTrigger</SelectTrigger>
         <SelectTrigger size="sm">
-          <SelectValue data-testid="subject" />
+          <SelectValue data-subject />
         </SelectTrigger>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -215,11 +215,11 @@ describe('SelectValue', () => {
       <Select defaultOpen>
         <SelectTrigger size="default">SelectTrigger</SelectTrigger>
         <SelectTrigger size="default">
-          <SelectValue data-testid="subject" />
+          <SelectValue data-subject />
         </SelectTrigger>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -228,11 +228,11 @@ describe('SelectValue', () => {
       <Select defaultOpen>
         <SelectTrigger id="select-fruit">SelectTrigger</SelectTrigger>
         <SelectTrigger id="select-fruit">
-          <SelectValue data-testid="subject" />
+          <SelectValue data-subject />
         </SelectTrigger>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -241,11 +241,11 @@ describe('SelectValue', () => {
       <Select defaultOpen>
         <SelectTrigger aria-invalid="true">SelectTrigger</SelectTrigger>
         <SelectTrigger aria-invalid="true">
-          <SelectValue data-testid="subject" />
+          <SelectValue data-subject />
         </SelectTrigger>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -256,11 +256,11 @@ describe('SelectValue', () => {
           SelectTrigger
         </SelectTrigger>
         <SelectTrigger id="select-fruit-invalid" aria-invalid>
-          <SelectValue data-testid="subject" />
+          <SelectValue data-subject />
         </SelectTrigger>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -269,11 +269,11 @@ describe('SelectValue', () => {
       <Select defaultOpen>
         <SelectTrigger>SelectTrigger</SelectTrigger>
         <SelectTrigger>
-          <SelectValue data-testid="subject">SelectValue</SelectValue>
+          <SelectValue data-subject>SelectValue</SelectValue>
         </SelectTrigger>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -282,11 +282,11 @@ describe('SelectValue', () => {
       <Select multiple defaultValue={[]} defaultOpen>
         <SelectTrigger>SelectTrigger</SelectTrigger>
         <SelectTrigger>
-          <SelectValue data-testid="subject">SelectValue</SelectValue>
+          <SelectValue data-subject>SelectValue</SelectValue>
         </SelectTrigger>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -298,12 +298,12 @@ function renderSelectTrigger(
     <Select defaultOpen>
       <SelectTrigger>SelectTrigger</SelectTrigger>
       <SelectTrigger
-        data-testid="subject"
+        data-subject
         {...({ children: 'SelectTrigger', ...props } as ComponentProps<typeof SelectTrigger>)}
       />
     </Select>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="select-trigger"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="select-trigger"]')
 }
 
 function classesOfSelectTrigger(
@@ -331,6 +331,10 @@ describe('SelectTrigger', () => {
     expect(attributesOfSelectTrigger({ size: 'default' })).toEqual(attributesOfSelectTrigger())
   })
 
+  it('renders with size="sm"', () => {
+    expect(renderSelectTrigger({ size: 'sm' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderSelectTrigger({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -342,12 +346,12 @@ describe('SelectTrigger', () => {
     render(
       <Select defaultOpen>
         <SelectTrigger size="sm">SelectTrigger</SelectTrigger>
-        <SelectTrigger data-testid="subject" size="sm">
+        <SelectTrigger data-subject size="sm">
           SelectTrigger
         </SelectTrigger>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -355,12 +359,12 @@ describe('SelectTrigger', () => {
     render(
       <Select defaultOpen>
         <SelectTrigger size="default">SelectTrigger</SelectTrigger>
-        <SelectTrigger data-testid="subject" size="default">
+        <SelectTrigger data-subject size="default">
           SelectTrigger
         </SelectTrigger>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -368,12 +372,12 @@ describe('SelectTrigger', () => {
     render(
       <Select defaultOpen>
         <SelectTrigger id="select-fruit">SelectTrigger</SelectTrigger>
-        <SelectTrigger data-testid="subject" id="select-fruit">
+        <SelectTrigger data-subject id="select-fruit">
           SelectTrigger
         </SelectTrigger>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -381,12 +385,12 @@ describe('SelectTrigger', () => {
     render(
       <Select defaultOpen>
         <SelectTrigger aria-invalid="true">SelectTrigger</SelectTrigger>
-        <SelectTrigger data-testid="subject" aria-invalid="true">
+        <SelectTrigger data-subject aria-invalid="true">
           SelectTrigger
         </SelectTrigger>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -396,12 +400,12 @@ describe('SelectTrigger', () => {
         <SelectTrigger id="select-fruit-invalid" aria-invalid>
           SelectTrigger
         </SelectTrigger>
-        <SelectTrigger data-testid="subject" id="select-fruit-invalid" aria-invalid>
+        <SelectTrigger data-subject id="select-fruit-invalid" aria-invalid>
           SelectTrigger
         </SelectTrigger>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -409,10 +413,10 @@ describe('SelectTrigger', () => {
     render(
       <Select multiple defaultValue={[]} defaultOpen>
         <SelectTrigger>SelectTrigger</SelectTrigger>
-        <SelectTrigger data-testid="subject">SelectTrigger</SelectTrigger>
+        <SelectTrigger data-subject>SelectTrigger</SelectTrigger>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -424,12 +428,12 @@ function renderSelectContent(
     <Select defaultOpen>
       <SelectTrigger>SelectTrigger</SelectTrigger>
       <SelectContent
-        data-testid="subject"
+        data-subject
         {...({ children: 'SelectContent', ...props } as ComponentProps<typeof SelectContent>)}
       />
     </Select>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="select-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="select-content"]')
 }
 
 function classesOfSelectContent(
@@ -475,6 +479,34 @@ describe('SelectContent', () => {
     )
   })
 
+  it('renders with side="left"', () => {
+    expect(renderSelectContent({ side: 'left' })).toBeTruthy()
+  })
+
+  it('renders with side="right"', () => {
+    expect(renderSelectContent({ side: 'right' })).toBeTruthy()
+  })
+
+  it('renders with side="top"', () => {
+    expect(renderSelectContent({ side: 'top' })).toBeTruthy()
+  })
+
+  it('renders with side="inline-start"', () => {
+    expect(renderSelectContent({ side: 'inline-start' })).toBeTruthy()
+  })
+
+  it('renders with side="inline-end"', () => {
+    expect(renderSelectContent({ side: 'inline-end' })).toBeTruthy()
+  })
+
+  it('renders with align="start"', () => {
+    expect(renderSelectContent({ align: 'start' })).toBeTruthy()
+  })
+
+  it('renders with align="end"', () => {
+    expect(renderSelectContent({ align: 'end' })).toBeTruthy()
+  })
+
   it('renders with alignItemWithTrigger=false', () => {
     expect(renderSelectContent({ alignItemWithTrigger: false })).toBeTruthy()
   })
@@ -490,12 +522,12 @@ describe('SelectContent', () => {
     render(
       <Select defaultOpen>
         <SelectTrigger>SelectTrigger</SelectTrigger>
-        <SelectContent data-testid="subject" alignItemWithTrigger={false}>
+        <SelectContent data-subject alignItemWithTrigger={false}>
           SelectContent
         </SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -503,10 +535,10 @@ describe('SelectContent', () => {
     render(
       <Select defaultOpen>
         <SelectTrigger size="sm">SelectTrigger</SelectTrigger>
-        <SelectContent data-testid="subject">SelectContent</SelectContent>
+        <SelectContent data-subject>SelectContent</SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -514,10 +546,10 @@ describe('SelectContent', () => {
     render(
       <Select defaultOpen>
         <SelectTrigger size="default">SelectTrigger</SelectTrigger>
-        <SelectContent data-testid="subject">SelectContent</SelectContent>
+        <SelectContent data-subject>SelectContent</SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -525,12 +557,12 @@ describe('SelectContent', () => {
     render(
       <Select defaultOpen>
         <SelectTrigger>SelectTrigger</SelectTrigger>
-        <SelectContent data-testid="subject" alignItemWithTrigger>
+        <SelectContent data-subject alignItemWithTrigger>
           SelectContent
         </SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -538,10 +570,10 @@ describe('SelectContent', () => {
     render(
       <Select defaultOpen>
         <SelectTrigger id="select-fruit">SelectTrigger</SelectTrigger>
-        <SelectContent data-testid="subject">SelectContent</SelectContent>
+        <SelectContent data-subject>SelectContent</SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -549,10 +581,10 @@ describe('SelectContent', () => {
     render(
       <Select defaultOpen>
         <SelectTrigger aria-invalid="true">SelectTrigger</SelectTrigger>
-        <SelectContent data-testid="subject">SelectContent</SelectContent>
+        <SelectContent data-subject>SelectContent</SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -562,10 +594,10 @@ describe('SelectContent', () => {
         <SelectTrigger id="select-fruit-invalid" aria-invalid>
           SelectTrigger
         </SelectTrigger>
-        <SelectContent data-testid="subject">SelectContent</SelectContent>
+        <SelectContent data-subject>SelectContent</SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -573,10 +605,10 @@ describe('SelectContent', () => {
     render(
       <Select multiple defaultValue={[]} defaultOpen>
         <SelectTrigger>SelectTrigger</SelectTrigger>
-        <SelectContent data-testid="subject">SelectContent</SelectContent>
+        <SelectContent data-subject>SelectContent</SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -590,14 +622,14 @@ function renderSelectLabel(
       <SelectContent>
         <SelectGroup>
           <SelectLabel
-            data-testid="subject"
+            data-subject
             {...({ children: 'SelectLabel', ...props } as ComponentProps<typeof SelectLabel>)}
           />
         </SelectGroup>
       </SelectContent>
     </Select>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="select-label"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="select-label"]')
 }
 
 function classesOfSelectLabel(
@@ -628,14 +660,14 @@ function renderSelectItem(
       <SelectContent>
         <SelectGroup>
           <SelectItem
-            data-testid="subject"
+            data-subject
             {...({ children: 'SelectItem', ...props } as ComponentProps<typeof SelectItem>)}
           />
         </SelectGroup>
       </SelectContent>
     </Select>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="select-item"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="select-item"]')
 }
 
 function classesOfSelectItem(
@@ -662,12 +694,12 @@ describe('SelectItem', () => {
         <SelectTrigger>SelectTrigger</SelectTrigger>
         <SelectContent alignItemWithTrigger={false}>
           <SelectGroup>
-            <SelectItem data-testid="subject">SelectItem</SelectItem>
+            <SelectItem data-subject>SelectItem</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -677,12 +709,12 @@ describe('SelectItem', () => {
         <SelectTrigger size="sm">SelectTrigger</SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem data-testid="subject">SelectItem</SelectItem>
+            <SelectItem data-subject>SelectItem</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -692,12 +724,12 @@ describe('SelectItem', () => {
         <SelectTrigger size="default">SelectTrigger</SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem data-testid="subject">SelectItem</SelectItem>
+            <SelectItem data-subject>SelectItem</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -707,12 +739,12 @@ describe('SelectItem', () => {
         <SelectTrigger>SelectTrigger</SelectTrigger>
         <SelectContent alignItemWithTrigger>
           <SelectGroup>
-            <SelectItem data-testid="subject">SelectItem</SelectItem>
+            <SelectItem data-subject>SelectItem</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -722,12 +754,12 @@ describe('SelectItem', () => {
         <SelectTrigger id="select-fruit">SelectTrigger</SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem data-testid="subject">SelectItem</SelectItem>
+            <SelectItem data-subject>SelectItem</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -737,12 +769,12 @@ describe('SelectItem', () => {
         <SelectTrigger aria-invalid="true">SelectTrigger</SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem data-testid="subject">SelectItem</SelectItem>
+            <SelectItem data-subject>SelectItem</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -754,12 +786,12 @@ describe('SelectItem', () => {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem data-testid="subject">SelectItem</SelectItem>
+            <SelectItem data-subject>SelectItem</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -769,12 +801,12 @@ describe('SelectItem', () => {
         <SelectTrigger>SelectTrigger</SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem data-testid="subject">SelectItem</SelectItem>
+            <SelectItem data-subject>SelectItem</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -786,16 +818,11 @@ function renderSelectSeparator(
     <Select defaultOpen>
       <SelectTrigger>SelectTrigger</SelectTrigger>
       <SelectContent>
-        <SelectSeparator
-          data-testid="subject"
-          {...(props as ComponentProps<typeof SelectSeparator>)}
-        />
+        <SelectSeparator data-subject {...(props as ComponentProps<typeof SelectSeparator>)} />
       </SelectContent>
     </Select>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="select-separator"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="select-separator"]')
 }
 
 function classesOfSelectSeparator(
@@ -825,17 +852,13 @@ function renderSelectScrollUpButton(
       <SelectTrigger>SelectTrigger</SelectTrigger>
       <SelectContent>
         <SelectScrollUpButton
-          data-testid="subject"
-          {...({ keepMounted: true, children: 'SelectScrollUpButton', ...props } as ComponentProps<
-            typeof SelectScrollUpButton
-          >)}
+          data-subject
+          {...({ keepMounted: true, ...props } as ComponentProps<typeof SelectScrollUpButton>)}
         />
       </SelectContent>
     </Select>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="select-scroll-up-button"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="select-scroll-up-button"]')
 }
 
 function classesOfSelectScrollUpButton(
@@ -867,18 +890,14 @@ function renderSelectScrollDownButton(
       <SelectTrigger>SelectTrigger</SelectTrigger>
       <SelectContent>
         <SelectScrollDownButton
-          data-testid="subject"
-          {...({
-            keepMounted: true,
-            children: 'SelectScrollDownButton',
-            ...props,
-          } as ComponentProps<typeof SelectScrollDownButton>)}
+          data-subject
+          {...({ keepMounted: true, ...props } as ComponentProps<typeof SelectScrollDownButton>)}
         />
       </SelectContent>
     </Select>,
   )
   return document
-    .querySelector('[data-testid="subject"]')
+    .querySelector('[data-subject]')
     ?.closest('[data-slot="select-scroll-down-button"]')
 }
 

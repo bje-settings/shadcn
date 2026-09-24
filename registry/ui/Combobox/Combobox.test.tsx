@@ -67,14 +67,12 @@ function renderComboboxTrigger(
     <Combobox defaultOpen>
       <ComboboxTrigger>ComboboxTrigger</ComboboxTrigger>
       <ComboboxTrigger
-        data-testid="subject"
+        data-subject
         {...({ children: 'ComboboxTrigger', ...props } as ComponentProps<typeof ComboboxTrigger>)}
       />
     </Combobox>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="combobox-trigger"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="combobox-trigger"]')
 }
 
 function classesOfComboboxTrigger(
@@ -102,14 +100,14 @@ function renderComboboxInput(
   render(
     <Combobox defaultOpen>
       <ComboboxInput
-        data-testid="subject"
+        data-subject
         {...({ placeholder: 'Select a framework', ...props } as ComponentProps<
           typeof ComboboxInput
         >)}
       />
     </Combobox>,
   )
-  return document.querySelector('[data-testid="subject"]')
+  return document.querySelector('[data-subject]')
 }
 
 function attributesOfComboboxInput(
@@ -157,20 +155,20 @@ describe('ComboboxInput', () => {
     cleanup()
     render(
       <Combobox defaultOpen>
-        <ComboboxInput data-testid="subject" />
+        <ComboboxInput data-subject />
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Combobox defaultOpen>
-        <ComboboxInput data-testid="subject" placeholder="Select a framework" aria-invalid="true" />
+        <ComboboxInput data-subject placeholder="Select a framework" aria-invalid="true" />
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -178,34 +176,34 @@ describe('ComboboxInput', () => {
     render(
       <Combobox defaultOpen>
         <ComboboxInput
-          data-testid="subject"
+          data-subject
           id="combobox-framework-invalid"
           placeholder="Select a framework"
           aria-invalid
         />
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <Combobox defaultOpen>
-        <ComboboxInput data-testid="subject" placeholder="Select a framework" showClear />
+        <ComboboxInput data-subject placeholder="Select a framework" showClear />
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
       <Combobox defaultOpen>
-        <ComboboxInput data-testid="subject" placeholder="Select a timezone" />
+        <ComboboxInput data-subject placeholder="Select a timezone" />
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -213,7 +211,7 @@ describe('ComboboxInput', () => {
     render(
       <Combobox defaultOpen>
         <ComboboxInput
-          data-testid="subject"
+          data-subject
           id="framework"
           name="framework"
           placeholder="Select a framework"
@@ -221,39 +219,39 @@ describe('ComboboxInput', () => {
         />
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
     render(
       <Combobox defaultOpen>
-        <ComboboxInput data-testid="subject" placeholder="Search from 100 items" />
+        <ComboboxInput data-subject placeholder="Search from 100 items" />
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
     cleanup()
     render(
       <Combobox autoHighlight defaultOpen>
-        <ComboboxInput data-testid="subject" placeholder="Select a framework" />
+        <ComboboxInput data-subject placeholder="Select a framework" />
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
     cleanup()
     render(
       <Combobox defaultOpen>
-        <ComboboxInput data-testid="subject" placeholder="Select a timezone">
+        <ComboboxInput data-subject placeholder="Select a timezone">
           ComboboxInput
         </ComboboxInput>
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
@@ -262,35 +260,31 @@ describe('ComboboxInput', () => {
       <Combobox defaultOpen>
         <ComboboxTrigger>ComboboxTrigger</ComboboxTrigger>
         <ComboboxContent>
-          <ComboboxInput data-testid="subject" showTrigger={false} placeholder="Search" />
+          <ComboboxInput data-subject showTrigger={false} placeholder="Search" />
         </ComboboxContent>
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
     cleanup()
     render(
       <Combobox defaultOpen>
-        <ComboboxInput data-testid="subject" placeholder="Search countries..." />
+        <ComboboxInput data-subject placeholder="Search countries..." />
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
     cleanup()
     render(
       <Combobox defaultOpen>
-        <ComboboxInput
-          data-testid="subject"
-          id="framework-dialog"
-          placeholder="Select a framework"
-        />
+        <ComboboxInput data-subject id="framework-dialog" placeholder="Select a framework" />
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -301,14 +295,12 @@ function renderComboboxContent(
   render(
     <Combobox defaultOpen>
       <ComboboxContent
-        data-testid="subject"
+        data-subject
         {...({ children: 'ComboboxContent', ...props } as ComponentProps<typeof ComboboxContent>)}
       />
     </Combobox>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="combobox-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="combobox-content"]')
 }
 
 function classesOfComboboxContent(
@@ -348,6 +340,34 @@ describe('ComboboxContent', () => {
     expect(attributesOfComboboxContent({ alignOffset: 0 })).toEqual(attributesOfComboboxContent())
   })
 
+  it('renders with side="left"', () => {
+    expect(renderComboboxContent({ side: 'left' })).toBeTruthy()
+  })
+
+  it('renders with side="right"', () => {
+    expect(renderComboboxContent({ side: 'right' })).toBeTruthy()
+  })
+
+  it('renders with side="top"', () => {
+    expect(renderComboboxContent({ side: 'top' })).toBeTruthy()
+  })
+
+  it('renders with side="inline-start"', () => {
+    expect(renderComboboxContent({ side: 'inline-start' })).toBeTruthy()
+  })
+
+  it('renders with side="inline-end"', () => {
+    expect(renderComboboxContent({ side: 'inline-end' })).toBeTruthy()
+  })
+
+  it('renders with align="center"', () => {
+    expect(renderComboboxContent({ align: 'center' })).toBeTruthy()
+  })
+
+  it('renders with align="end"', () => {
+    expect(renderComboboxContent({ align: 'end' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderComboboxContent({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -358,10 +378,10 @@ describe('ComboboxContent', () => {
     cleanup()
     render(
       <Combobox autoHighlight defaultOpen>
-        <ComboboxContent data-testid="subject">ComboboxContent</ComboboxContent>
+        <ComboboxContent data-subject>ComboboxContent</ComboboxContent>
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -369,20 +389,20 @@ describe('ComboboxContent', () => {
     render(
       <Combobox defaultOpen>
         <ComboboxTrigger>ComboboxTrigger</ComboboxTrigger>
-        <ComboboxContent data-testid="subject">ComboboxContent</ComboboxContent>
+        <ComboboxContent data-subject>ComboboxContent</ComboboxContent>
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <Combobox multiple autoHighlight defaultOpen>
-        <ComboboxContent data-testid="subject">ComboboxContent</ComboboxContent>
+        <ComboboxContent data-subject>ComboboxContent</ComboboxContent>
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -394,13 +414,13 @@ function renderComboboxList(
     <Combobox defaultOpen>
       <ComboboxContent>
         <ComboboxList
-          data-testid="subject"
+          data-subject
           {...({ children: 'ComboboxList', ...props } as ComponentProps<typeof ComboboxList>)}
         />
       </ComboboxContent>
     </Combobox>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="combobox-list"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="combobox-list"]')
 }
 
 function classesOfComboboxList(
@@ -425,11 +445,11 @@ describe('ComboboxList', () => {
     render(
       <Combobox autoHighlight defaultOpen>
         <ComboboxContent>
-          <ComboboxList data-testid="subject">ComboboxList</ComboboxList>
+          <ComboboxList data-subject>ComboboxList</ComboboxList>
         </ComboboxContent>
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -438,11 +458,11 @@ describe('ComboboxList', () => {
       <Combobox defaultOpen>
         <ComboboxTrigger>ComboboxTrigger</ComboboxTrigger>
         <ComboboxContent>
-          <ComboboxList data-testid="subject">ComboboxList</ComboboxList>
+          <ComboboxList data-subject>ComboboxList</ComboboxList>
         </ComboboxContent>
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -450,11 +470,11 @@ describe('ComboboxList', () => {
     render(
       <Combobox multiple autoHighlight defaultOpen>
         <ComboboxContent>
-          <ComboboxList data-testid="subject">ComboboxList</ComboboxList>
+          <ComboboxList data-subject>ComboboxList</ComboboxList>
         </ComboboxContent>
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -467,14 +487,14 @@ function renderComboboxItem(
       <ComboboxContent>
         <ComboboxList>
           <ComboboxItem
-            data-testid="subject"
+            data-subject
             {...({ children: 'ComboboxItem', ...props } as ComponentProps<typeof ComboboxItem>)}
           />
         </ComboboxList>
       </ComboboxContent>
     </Combobox>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="combobox-item"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="combobox-item"]')
 }
 
 function classesOfComboboxItem(
@@ -500,12 +520,12 @@ describe('ComboboxItem', () => {
       <Combobox autoHighlight defaultOpen>
         <ComboboxContent>
           <ComboboxList>
-            <ComboboxItem data-testid="subject">ComboboxItem</ComboboxItem>
+            <ComboboxItem data-subject>ComboboxItem</ComboboxItem>
           </ComboboxList>
         </ComboboxContent>
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -515,12 +535,12 @@ describe('ComboboxItem', () => {
         <ComboboxTrigger>ComboboxTrigger</ComboboxTrigger>
         <ComboboxContent>
           <ComboboxList>
-            <ComboboxItem data-testid="subject">ComboboxItem</ComboboxItem>
+            <ComboboxItem data-subject>ComboboxItem</ComboboxItem>
           </ComboboxList>
         </ComboboxContent>
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -529,12 +549,12 @@ describe('ComboboxItem', () => {
       <Combobox multiple autoHighlight defaultOpen>
         <ComboboxContent>
           <ComboboxList>
-            <ComboboxItem data-testid="subject">ComboboxItem</ComboboxItem>
+            <ComboboxItem data-subject>ComboboxItem</ComboboxItem>
           </ComboboxList>
         </ComboboxContent>
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -547,14 +567,14 @@ function renderComboboxGroup(
       <ComboboxContent>
         <ComboboxList>
           <ComboboxGroup
-            data-testid="subject"
+            data-subject
             {...({ children: 'ComboboxGroup', ...props } as ComponentProps<typeof ComboboxGroup>)}
           />
         </ComboboxList>
       </ComboboxContent>
     </Combobox>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="combobox-group"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="combobox-group"]')
 }
 
 describe('ComboboxGroup', () => {
@@ -575,7 +595,7 @@ function renderComboboxLabel(
         <ComboboxList>
           <ComboboxGroup>
             <ComboboxLabel
-              data-testid="subject"
+              data-subject
               {...({ children: 'ComboboxLabel', ...props } as ComponentProps<typeof ComboboxLabel>)}
             />
           </ComboboxGroup>
@@ -583,7 +603,7 @@ function renderComboboxLabel(
       </ComboboxContent>
     </Combobox>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="combobox-label"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="combobox-label"]')
 }
 
 function classesOfComboboxLabel(
@@ -631,13 +651,13 @@ function renderComboboxEmpty(
     <Combobox defaultOpen>
       <ComboboxContent>
         <ComboboxEmpty
-          data-testid="subject"
+          data-subject
           {...({ children: 'ComboboxEmpty', ...props } as ComponentProps<typeof ComboboxEmpty>)}
         />
       </ComboboxContent>
     </Combobox>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="combobox-empty"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="combobox-empty"]')
 }
 
 function classesOfComboboxEmpty(
@@ -662,11 +682,11 @@ describe('ComboboxEmpty', () => {
     render(
       <Combobox autoHighlight defaultOpen>
         <ComboboxContent>
-          <ComboboxEmpty data-testid="subject">ComboboxEmpty</ComboboxEmpty>
+          <ComboboxEmpty data-subject>ComboboxEmpty</ComboboxEmpty>
         </ComboboxContent>
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -675,11 +695,11 @@ describe('ComboboxEmpty', () => {
       <Combobox defaultOpen>
         <ComboboxTrigger>ComboboxTrigger</ComboboxTrigger>
         <ComboboxContent>
-          <ComboboxEmpty data-testid="subject">ComboboxEmpty</ComboboxEmpty>
+          <ComboboxEmpty data-subject>ComboboxEmpty</ComboboxEmpty>
         </ComboboxContent>
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -687,11 +707,11 @@ describe('ComboboxEmpty', () => {
     render(
       <Combobox multiple autoHighlight defaultOpen>
         <ComboboxContent>
-          <ComboboxEmpty data-testid="subject">ComboboxEmpty</ComboboxEmpty>
+          <ComboboxEmpty data-subject>ComboboxEmpty</ComboboxEmpty>
         </ComboboxContent>
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -705,7 +725,7 @@ function renderComboboxSeparator(
         <ComboboxList>
           <ComboboxGroup>
             <ComboboxSeparator
-              data-testid="subject"
+              data-subject
               {...(props as ComponentProps<typeof ComboboxSeparator>)}
             />
           </ComboboxGroup>
@@ -713,9 +733,7 @@ function renderComboboxSeparator(
       </ComboboxContent>
     </Combobox>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="combobox-separator"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="combobox-separator"]')
 }
 
 function classesOfComboboxSeparator(
@@ -743,12 +761,12 @@ function renderComboboxChips(
   render(
     <Combobox multiple autoHighlight defaultOpen>
       <ComboboxChips
-        data-testid="subject"
+        data-subject
         {...({ children: 'ComboboxChips', ...props } as ComponentProps<typeof ComboboxChips>)}
       />
     </Combobox>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="combobox-chips"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="combobox-chips"]')
 }
 
 function classesOfComboboxChips(
@@ -778,14 +796,14 @@ function renderComboboxChip(
       <ComboboxChips>
         <ComboboxValue>
           <ComboboxChip
-            data-testid="subject"
+            data-subject
             {...({ children: 'ComboboxChip', ...props } as ComponentProps<typeof ComboboxChip>)}
           />
         </ComboboxValue>
       </ComboboxChips>
     </Combobox>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="combobox-chip"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="combobox-chip"]')
 }
 
 function classesOfComboboxChip(
@@ -829,14 +847,14 @@ describe('ComboboxChip', () => {
       <Combobox multiple autoHighlight defaultOpen>
         <ComboboxChips>
           <ComboboxValue>
-            <ComboboxChip data-testid="subject" showRemove={false}>
+            <ComboboxChip data-subject showRemove={false}>
               ComboboxChip
             </ComboboxChip>
           </ComboboxValue>
         </ComboboxChips>
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -849,16 +867,14 @@ function renderComboboxChipsInput(
       <ComboboxChips>
         <ComboboxValue>
           <ComboboxChipsInput
-            data-testid="subject"
+            data-subject
             {...(props as ComponentProps<typeof ComboboxChipsInput>)}
           />
         </ComboboxValue>
       </ComboboxChips>
     </Combobox>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="combobox-chip-input"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="combobox-chip-input"]')
 }
 
 function classesOfComboboxChipsInput(
@@ -886,12 +902,12 @@ describe('ComboboxChipsInput', () => {
       <Combobox multiple autoHighlight defaultOpen>
         <ComboboxChips>
           <ComboboxValue>
-            <ComboboxChipsInput data-testid="subject" aria-invalid="true" />
+            <ComboboxChipsInput data-subject aria-invalid="true" />
           </ComboboxValue>
         </ComboboxChips>
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -900,12 +916,12 @@ describe('ComboboxChipsInput', () => {
       <Combobox multiple autoHighlight defaultOpen>
         <ComboboxChips>
           <ComboboxValue>
-            <ComboboxChipsInput data-testid="subject" id="combobox-multiple-invalid" aria-invalid />
+            <ComboboxChipsInput data-subject id="combobox-multiple-invalid" aria-invalid />
           </ComboboxValue>
         </ComboboxChips>
       </Combobox>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 

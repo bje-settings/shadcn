@@ -12,13 +12,13 @@ function renderInputOTP(
   cleanup()
   render(
     <InputOTP
-      data-testid="subject"
+      data-subject
       {...({ id: 'simple', maxLength: 6, children: 'InputOTP', ...props } as ComponentProps<
         typeof InputOTP
       >)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="input-otp"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="input-otp"]')
 }
 
 function classesOfInputOTP(
@@ -41,71 +41,71 @@ describe('InputOTP', () => {
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
     render(
-      <InputOTP data-testid="subject" id="digits-only" maxLength={6}>
+      <InputOTP data-subject id="digits-only" maxLength={6}>
         InputOTP
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
-      <InputOTP data-testid="subject" id="with-separator" maxLength={6}>
+      <InputOTP data-subject id="with-separator" maxLength={6}>
         InputOTP
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
-      <InputOTP data-testid="subject" id="alphanumeric" maxLength={6}>
+      <InputOTP data-subject id="alphanumeric" maxLength={6}>
         InputOTP
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
-      <InputOTP data-testid="subject" id="disabled" maxLength={6} value="123456">
+      <InputOTP data-subject id="disabled" maxLength={6} value="123456">
         InputOTP
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
-      <InputOTP data-testid="subject" id="four-digits" maxLength={4}>
+      <InputOTP data-subject id="four-digits" maxLength={4}>
         InputOTP
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
-      <InputOTP data-testid="subject" id="invalid" maxLength={6}>
+      <InputOTP data-subject id="invalid" maxLength={6}>
         InputOTP
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
     render(
-      <InputOTP data-testid="subject" maxLength={6} id="otp-verification" required>
+      <InputOTP data-subject maxLength={6} id="otp-verification" required>
         InputOTP
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -116,12 +116,12 @@ function renderInputOTPGroup(
   render(
     <InputOTP id="simple" maxLength={6}>
       <InputOTPGroup
-        data-testid="subject"
+        data-subject
         {...({ children: 'InputOTPGroup', ...props } as ComponentProps<typeof InputOTPGroup>)}
       />
     </InputOTP>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="input-otp-group"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="input-otp-group"]')
 }
 
 function classesOfInputOTPGroup(
@@ -145,70 +145,70 @@ describe('InputOTPGroup', () => {
     cleanup()
     render(
       <InputOTP id="digits-only" maxLength={6}>
-        <InputOTPGroup data-testid="subject">InputOTPGroup</InputOTPGroup>
+        <InputOTPGroup data-subject>InputOTPGroup</InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <InputOTP id="with-separator" maxLength={6}>
-        <InputOTPGroup data-testid="subject">InputOTPGroup</InputOTPGroup>
+        <InputOTPGroup data-subject>InputOTPGroup</InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <InputOTP id="alphanumeric" maxLength={6}>
-        <InputOTPGroup data-testid="subject">InputOTPGroup</InputOTPGroup>
+        <InputOTPGroup data-subject>InputOTPGroup</InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <InputOTP id="disabled" maxLength={6} value="123456">
-        <InputOTPGroup data-testid="subject">InputOTPGroup</InputOTPGroup>
+        <InputOTPGroup data-subject>InputOTPGroup</InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
       <InputOTP id="four-digits" maxLength={4}>
-        <InputOTPGroup data-testid="subject">InputOTPGroup</InputOTPGroup>
+        <InputOTPGroup data-subject>InputOTPGroup</InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
       <InputOTP id="invalid" maxLength={6}>
-        <InputOTPGroup data-testid="subject">InputOTPGroup</InputOTPGroup>
+        <InputOTPGroup data-subject>InputOTPGroup</InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
     render(
       <InputOTP maxLength={6} id="otp-verification" required>
-        <InputOTPGroup data-testid="subject">InputOTPGroup</InputOTPGroup>
+        <InputOTPGroup data-subject>InputOTPGroup</InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -220,13 +220,13 @@ function renderInputOTPSlot(
     <InputOTP id="simple" maxLength={6}>
       <InputOTPGroup>
         <InputOTPSlot
-          data-testid="subject"
+          data-subject
           {...({ index: 0, ...props } as ComponentProps<typeof InputOTPSlot>)}
         />
       </InputOTPGroup>
     </InputOTP>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="input-otp-slot"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="input-otp-slot"]')
 }
 
 function classesOfInputOTPSlot(
@@ -251,11 +251,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="simple" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={1} />
+          <InputOTPSlot data-subject index={1} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -263,11 +263,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="simple" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={2} />
+          <InputOTPSlot data-subject index={2} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -275,11 +275,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="simple" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={3} />
+          <InputOTPSlot data-subject index={3} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -287,11 +287,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="simple" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={4} />
+          <InputOTPSlot data-subject index={4} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -299,11 +299,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="simple" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={5} />
+          <InputOTPSlot data-subject index={5} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -311,11 +311,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="digits-only" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={0} />
+          <InputOTPSlot data-subject index={0} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -323,11 +323,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="digits-only" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={1} />
+          <InputOTPSlot data-subject index={1} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -335,11 +335,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="digits-only" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={2} />
+          <InputOTPSlot data-subject index={2} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
@@ -347,11 +347,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="digits-only" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={3} />
+          <InputOTPSlot data-subject index={3} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
@@ -359,11 +359,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="digits-only" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={4} />
+          <InputOTPSlot data-subject index={4} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
@@ -371,11 +371,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="digits-only" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={5} />
+          <InputOTPSlot data-subject index={5} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
@@ -383,11 +383,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="with-separator" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={0} />
+          <InputOTPSlot data-subject index={0} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
@@ -395,11 +395,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="with-separator" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={1} />
+          <InputOTPSlot data-subject index={1} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (15)", () => {
@@ -407,11 +407,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="with-separator" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={2} />
+          <InputOTPSlot data-subject index={2} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (16)", () => {
@@ -419,11 +419,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="with-separator" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={3} />
+          <InputOTPSlot data-subject index={3} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (17)", () => {
@@ -431,11 +431,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="with-separator" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={4} />
+          <InputOTPSlot data-subject index={4} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (18)", () => {
@@ -443,11 +443,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="with-separator" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={5} />
+          <InputOTPSlot data-subject index={5} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (19)", () => {
@@ -455,11 +455,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="alphanumeric" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={0} />
+          <InputOTPSlot data-subject index={0} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (20)", () => {
@@ -467,11 +467,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="alphanumeric" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={1} />
+          <InputOTPSlot data-subject index={1} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (21)", () => {
@@ -479,11 +479,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="alphanumeric" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={2} />
+          <InputOTPSlot data-subject index={2} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (22)", () => {
@@ -491,11 +491,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="alphanumeric" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={3} />
+          <InputOTPSlot data-subject index={3} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (23)", () => {
@@ -503,11 +503,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="alphanumeric" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={4} />
+          <InputOTPSlot data-subject index={4} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (24)", () => {
@@ -515,11 +515,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="alphanumeric" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={5} />
+          <InputOTPSlot data-subject index={5} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (25)", () => {
@@ -527,11 +527,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="disabled" maxLength={6} value="123456">
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={0} />
+          <InputOTPSlot data-subject index={0} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (26)", () => {
@@ -539,11 +539,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="disabled" maxLength={6} value="123456">
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={1} />
+          <InputOTPSlot data-subject index={1} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (27)", () => {
@@ -551,11 +551,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="disabled" maxLength={6} value="123456">
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={2} />
+          <InputOTPSlot data-subject index={2} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (28)", () => {
@@ -563,11 +563,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="disabled" maxLength={6} value="123456">
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={3} />
+          <InputOTPSlot data-subject index={3} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (29)", () => {
@@ -575,11 +575,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="disabled" maxLength={6} value="123456">
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={4} />
+          <InputOTPSlot data-subject index={4} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (30)", () => {
@@ -587,11 +587,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="disabled" maxLength={6} value="123456">
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={5} />
+          <InputOTPSlot data-subject index={5} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (31)", () => {
@@ -599,11 +599,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="four-digits" maxLength={4}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={0} />
+          <InputOTPSlot data-subject index={0} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (32)", () => {
@@ -611,11 +611,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="four-digits" maxLength={4}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={1} />
+          <InputOTPSlot data-subject index={1} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (33)", () => {
@@ -623,11 +623,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="four-digits" maxLength={4}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={2} />
+          <InputOTPSlot data-subject index={2} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (34)", () => {
@@ -635,11 +635,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="four-digits" maxLength={4}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={3} />
+          <InputOTPSlot data-subject index={3} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (35)", () => {
@@ -647,11 +647,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="invalid" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={0} aria-invalid />
+          <InputOTPSlot data-subject index={0} aria-invalid />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (36)", () => {
@@ -659,11 +659,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="invalid" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={1} aria-invalid />
+          <InputOTPSlot data-subject index={1} aria-invalid />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (37)", () => {
@@ -671,11 +671,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="invalid" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={2} aria-invalid />
+          <InputOTPSlot data-subject index={2} aria-invalid />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (38)", () => {
@@ -683,11 +683,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="invalid" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={3} aria-invalid />
+          <InputOTPSlot data-subject index={3} aria-invalid />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (39)", () => {
@@ -695,11 +695,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="invalid" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={4} aria-invalid />
+          <InputOTPSlot data-subject index={4} aria-invalid />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (40)", () => {
@@ -707,11 +707,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP id="invalid" maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={5} aria-invalid />
+          <InputOTPSlot data-subject index={5} aria-invalid />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (41)", () => {
@@ -719,11 +719,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP maxLength={6} id="otp-verification" required>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={0} />
+          <InputOTPSlot data-subject index={0} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (42)", () => {
@@ -731,11 +731,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP maxLength={6} id="otp-verification" required>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={1} />
+          <InputOTPSlot data-subject index={1} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (43)", () => {
@@ -743,11 +743,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP maxLength={6} id="otp-verification" required>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={2} />
+          <InputOTPSlot data-subject index={2} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (44)", () => {
@@ -755,11 +755,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP maxLength={6} id="otp-verification" required>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={3} />
+          <InputOTPSlot data-subject index={3} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (45)", () => {
@@ -767,11 +767,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP maxLength={6} id="otp-verification" required>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={4} />
+          <InputOTPSlot data-subject index={4} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (46)", () => {
@@ -779,11 +779,11 @@ describe('InputOTPSlot', () => {
     render(
       <InputOTP maxLength={6} id="otp-verification" required>
         <InputOTPGroup>
-          <InputOTPSlot data-testid="subject" index={5} />
+          <InputOTPSlot data-subject index={5} />
         </InputOTPGroup>
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -793,15 +793,10 @@ function renderInputOTPSeparator(
   cleanup()
   render(
     <InputOTP id="simple" maxLength={6}>
-      <InputOTPSeparator
-        data-testid="subject"
-        {...(props as ComponentProps<typeof InputOTPSeparator>)}
-      />
+      <InputOTPSeparator data-subject {...(props as ComponentProps<typeof InputOTPSeparator>)} />
     </InputOTP>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="input-otp-separator"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="input-otp-separator"]')
 }
 
 function classesOfInputOTPSeparator(
@@ -825,49 +820,49 @@ describe('InputOTPSeparator', () => {
     cleanup()
     render(
       <InputOTP id="with-separator" maxLength={6}>
-        <InputOTPSeparator data-testid="subject" />
+        <InputOTPSeparator data-subject />
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <InputOTP id="alphanumeric" maxLength={6}>
-        <InputOTPSeparator data-testid="subject" />
+        <InputOTPSeparator data-subject />
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <InputOTP id="disabled" maxLength={6} value="123456">
-        <InputOTPSeparator data-testid="subject" />
+        <InputOTPSeparator data-subject />
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <InputOTP id="invalid" maxLength={6}>
-        <InputOTPSeparator data-testid="subject" />
+        <InputOTPSeparator data-subject />
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
       <InputOTP maxLength={6} id="otp-verification" required>
-        <InputOTPSeparator data-testid="subject" />
+        <InputOTPSeparator data-subject />
       </InputOTP>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

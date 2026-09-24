@@ -17,8 +17,8 @@ import styles from './Table.module.scss'
 
 function renderTable(props: Partial<Record<keyof ComponentProps<typeof Table>, unknown>> = {}) {
   cleanup()
-  render(<Table data-testid="subject" {...(props as ComponentProps<typeof Table>)} />)
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table"]')
+  render(<Table data-subject {...(props as ComponentProps<typeof Table>)} />)
+  return document.querySelector('[data-subject]')?.closest('[data-slot="table"]')
 }
 
 function classesOfTable(props: Partial<Record<keyof ComponentProps<typeof Table>, unknown>> = {}) {
@@ -43,10 +43,10 @@ function renderTableHeader(
   cleanup()
   render(
     <Table>
-      <TableHeader data-testid="subject" {...(props as ComponentProps<typeof TableHeader>)} />
+      <TableHeader data-subject {...(props as ComponentProps<typeof TableHeader>)} />
     </Table>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-header"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="table-header"]')
 }
 
 function classesOfTableHeader(
@@ -73,10 +73,10 @@ function renderTableBody(
   cleanup()
   render(
     <Table>
-      <TableBody data-testid="subject" {...(props as ComponentProps<typeof TableBody>)} />
+      <TableBody data-subject {...(props as ComponentProps<typeof TableBody>)} />
     </Table>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-body"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="table-body"]')
 }
 
 function classesOfTableBody(
@@ -103,10 +103,10 @@ function renderTableFooter(
   cleanup()
   render(
     <Table>
-      <TableFooter data-testid="subject" {...(props as ComponentProps<typeof TableFooter>)} />
+      <TableFooter data-subject {...(props as ComponentProps<typeof TableFooter>)} />
     </Table>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-footer"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="table-footer"]')
 }
 
 function classesOfTableFooter(
@@ -134,11 +134,11 @@ function renderTableRow(
   render(
     <Table>
       <TableHeader>
-        <TableRow data-testid="subject" {...(props as ComponentProps<typeof TableRow>)} />
+        <TableRow data-subject {...(props as ComponentProps<typeof TableRow>)} />
       </TableHeader>
     </Table>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-row"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="table-row"]')
 }
 
 function classesOfTableRow(
@@ -163,11 +163,11 @@ describe('TableRow', () => {
     render(
       <Table>
         <TableBody>
-          <TableRow data-testid="subject" />
+          <TableRow data-subject />
         </TableBody>
       </Table>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -175,11 +175,11 @@ describe('TableRow', () => {
     render(
       <Table>
         <TableFooter>
-          <TableRow data-testid="subject" />
+          <TableRow data-subject />
         </TableFooter>
       </Table>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -192,14 +192,14 @@ function renderTableHead(
       <TableHeader>
         <TableRow>
           <TableHead
-            data-testid="subject"
+            data-subject
             {...({ children: 'TableHead', ...props } as ComponentProps<typeof TableHead>)}
           />
         </TableRow>
       </TableHeader>
     </Table>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-head"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="table-head"]')
 }
 
 function classesOfTableHead(
@@ -229,14 +229,14 @@ function renderTableCell(
       <TableBody>
         <TableRow>
           <TableCell
-            data-testid="subject"
+            data-subject
             {...({ children: 'TableCell', ...props } as ComponentProps<typeof TableCell>)}
           />
         </TableRow>
       </TableBody>
     </Table>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-cell"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="table-cell"]')
 }
 
 function classesOfTableCell(
@@ -262,14 +262,14 @@ describe('TableCell', () => {
       <Table>
         <TableFooter>
           <TableRow>
-            <TableCell data-testid="subject" colSpan={3}>
+            <TableCell data-subject colSpan={3}>
               TableCell
             </TableCell>
           </TableRow>
         </TableFooter>
       </Table>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -278,12 +278,12 @@ describe('TableCell', () => {
       <Table>
         <TableFooter>
           <TableRow>
-            <TableCell data-testid="subject">TableCell</TableCell>
+            <TableCell data-subject>TableCell</TableCell>
           </TableRow>
         </TableFooter>
       </Table>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -294,12 +294,12 @@ function renderTableCaption(
   render(
     <Table>
       <TableCaption
-        data-testid="subject"
+        data-subject
         {...({ children: 'TableCaption', ...props } as ComponentProps<typeof TableCaption>)}
       />
     </Table>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-caption"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="table-caption"]')
 }
 
 function classesOfTableCaption(

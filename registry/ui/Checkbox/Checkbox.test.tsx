@@ -11,12 +11,9 @@ function renderCheckbox(
 ) {
   cleanup()
   render(
-    <Checkbox
-      data-testid="subject"
-      {...({ id: 'terms', ...props } as ComponentProps<typeof Checkbox>)}
-    />,
+    <Checkbox data-subject {...({ id: 'terms', ...props } as ComponentProps<typeof Checkbox>)} />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="checkbox"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="checkbox"]')
 }
 
 function classesOfCheckbox(
@@ -38,67 +35,67 @@ describe('Checkbox', () => {
 
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
-    render(<Checkbox data-testid="subject" id="terms-2" defaultChecked />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Checkbox data-subject id="terms-2" defaultChecked />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
-    render(<Checkbox data-testid="subject" id="terms-3" aria-invalid />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Checkbox data-subject id="terms-3" aria-invalid />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
-    render(<Checkbox data-testid="subject" id="toggle" />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Checkbox data-subject id="toggle" />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
-    render(<Checkbox data-testid="subject" id="toggle-2" defaultChecked />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Checkbox data-subject id="toggle-2" defaultChecked />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
-    render(<Checkbox data-testid="subject" id="toggle-4" />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Checkbox data-subject id="toggle-4" />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
-    render(<Checkbox data-testid="subject" id="select-all" />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Checkbox data-subject id="select-all" />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
-    render(<Checkbox data-testid="subject" />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Checkbox data-subject />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
     cleanup()
-    render(<Checkbox data-testid="subject" id="finder-pref-9k2-hard-disks-ljj" />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Checkbox data-subject id="finder-pref-9k2-hard-disks-ljj" />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
     cleanup()
-    render(<Checkbox data-testid="subject" id="finder-pref-9k2-external-disks-1yg" />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Checkbox data-subject id="finder-pref-9k2-external-disks-1yg" />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
     cleanup()
-    render(<Checkbox data-testid="subject" id="finder-pref-9k2-cds-dvds-fzt" />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Checkbox data-subject id="finder-pref-9k2-cds-dvds-fzt" />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
     cleanup()
-    render(<Checkbox data-testid="subject" id="finder-pref-9k2-connected-servers-6l2" />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Checkbox data-subject id="finder-pref-9k2-connected-servers-6l2" />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

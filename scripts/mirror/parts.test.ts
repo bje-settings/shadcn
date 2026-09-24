@@ -26,7 +26,7 @@ function DialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
 function DialogClose(props: React.ComponentProps<typeof Button>) {
   return <Button data-slot="dialog-close" {...props} />
 }
-function DialogMeter(props: { value: number; className?: string; children?: undefined }) {
+function DialogMeter(props: { value: number; tone?: "soft" | "loud"; className?: string; children?: undefined }) {
   return <div data-slot="dialog-meter" {...props} />
 }
 const helper = 1
@@ -54,55 +54,22 @@ export { Button }`,
       await prepareComponent(dialog, config, cssPath),
       await prepareComponent(button, config, cssPath),
     ]
-    const types = partTypes('base-vega', prepared)
-    expect(types.get('dialog')).toEqual(
+    const types = partTypes('base-vega', prepared).get('dialog')
+    // Every field but the option lists, which hold each DOM attribute union.
+    const summary = new Map(
+      [...(types ?? [])].map(([name, { options: _, ...rest }]) => [name, rest]),
+    )
+    const part = { className: true, opens: false, keepMounted: false, required: [], text: true }
+    expect(summary).toEqual(
       new Map([
-        [
-          'Dialog',
-          {
-            className: false,
-            opens: true,
-            keepMounted: false,
-            required: [],
-            text: true,
-            childrenFunction: false,
-          },
-        ],
-        [
-          'DialogTitle',
-          {
-            className: true,
-            opens: false,
-            keepMounted: false,
-            required: [],
-            text: true,
-            childrenFunction: false,
-          },
-        ],
-        [
-          'DialogClose',
-          {
-            className: true,
-            opens: false,
-            keepMounted: false,
-            required: [],
-            text: true,
-            childrenFunction: false,
-          },
-        ],
-        [
-          'DialogMeter',
-          {
-            className: true,
-            opens: false,
-            keepMounted: false,
-            required: ['value'],
-            text: false,
-            childrenFunction: false,
-          },
-        ],
+        ['Dialog', { ...part, className: false, opens: true, childrenFunction: false }],
+        ['DialogTitle', { ...part, childrenFunction: false }],
+        ['DialogClose', { ...part, childrenFunction: false }],
+        ['DialogMeter', { ...part, required: ['value'], text: false, childrenFunction: false }],
       ]),
     )
+    expect(types?.get('DialogMeter')?.options.tone).toEqual(['soft', 'loud'])
+    expect(types?.get('DialogMeter')?.options.value).toBeUndefined()
   }, 30_000)
 })
 
@@ -127,9 +94,10 @@ export { Chips, Chip, ChipInput, ChipMenu, ChipPanel }`,
     required: [],
     text: true,
     childrenFunction: false,
+    options: {},
   }
   const types = new Map([
-    ['Chips', { ...part, text: false, childrenFunction: false }],
+    ['Chips', { ...part, text: false, childrenFunction: false, options: {} }],
     ['Chip', part],
     ['ChipInput', part],
     [
@@ -141,11 +109,19 @@ export { Chips, Chip, ChipInput, ChipMenu, ChipPanel }`,
         required: [],
         text: true,
         childrenFunction: false,
+        options: {},
       },
     ],
     [
       'ChipPanel',
-      { ...part, keepMounted: true, required: [], text: true, childrenFunction: false },
+      {
+        ...part,
+        keepMounted: true,
+        required: [],
+        text: true,
+        childrenFunction: false,
+        options: {},
+      },
     ],
   ])
 

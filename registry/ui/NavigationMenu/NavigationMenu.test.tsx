@@ -26,11 +26,11 @@ function renderNavigationMenu(
   cleanup()
   render(
     <NavigationMenu
-      data-testid="subject"
+      data-subject
       {...({ children: 'NavigationMenu', ...props } as ComponentProps<typeof NavigationMenu>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="navigation-menu"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="navigation-menu"]')
 }
 
 function classesOfNavigationMenu(
@@ -58,6 +58,14 @@ describe('NavigationMenu', () => {
     expect(attributesOfNavigationMenu({ align: 'start' })).toEqual(attributesOfNavigationMenu())
   })
 
+  it('renders with align="center"', () => {
+    expect(renderNavigationMenu({ align: 'center' })).toBeTruthy()
+  })
+
+  it('renders with align="end"', () => {
+    expect(renderNavigationMenu({ align: 'end' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderNavigationMenu({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -72,16 +80,14 @@ function renderNavigationMenuList(
   render(
     <NavigationMenu>
       <NavigationMenuList
-        data-testid="subject"
+        data-subject
         {...({ children: 'NavigationMenuList', ...props } as ComponentProps<
           typeof NavigationMenuList
         >)}
       />
     </NavigationMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="navigation-menu-list"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="navigation-menu-list"]')
 }
 
 function classesOfNavigationMenuList(
@@ -112,7 +118,7 @@ function renderNavigationMenuItem(
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem
-          data-testid="subject"
+          data-subject
           {...({ children: 'NavigationMenuItem', ...props } as ComponentProps<
             typeof NavigationMenuItem
           >)}
@@ -120,9 +126,7 @@ function renderNavigationMenuItem(
       </NavigationMenuList>
     </NavigationMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="navigation-menu-item"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="navigation-menu-item"]')
 }
 
 function classesOfNavigationMenuItem(
@@ -154,7 +158,7 @@ function renderNavigationMenuTrigger(
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger
-            data-testid="subject"
+            data-subject
             {...({ children: 'NavigationMenuTrigger', ...props } as ComponentProps<
               typeof NavigationMenuTrigger
             >)}
@@ -163,9 +167,7 @@ function renderNavigationMenuTrigger(
       </NavigationMenuList>
     </NavigationMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="navigation-menu-trigger"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="navigation-menu-trigger"]')
 }
 
 function classesOfNavigationMenuTrigger(
@@ -197,7 +199,7 @@ function renderNavigationMenuContent(
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuContent
-            data-testid="subject"
+            data-subject
             {...({
               keepMounted: true,
               children: 'NavigationMenuContent',
@@ -208,9 +210,7 @@ function renderNavigationMenuContent(
       </NavigationMenuList>
     </NavigationMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="navigation-menu-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="navigation-menu-content"]')
 }
 
 function classesOfNavigationMenuContent(
@@ -238,10 +238,10 @@ describe('NavigationMenuPositioner', () => {
     cleanup()
     render(
       <NavigationMenu>
-        <NavigationMenuPositioner data-testid="subject" />
+        <NavigationMenuPositioner data-subject />
       </NavigationMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).toBeNull()
+    expect(document.querySelector('[data-subject]')).toBeNull()
   })
 })
 
@@ -255,7 +255,7 @@ function renderNavigationMenuLink(
         <NavigationMenuItem>
           <NavigationMenuContent keepMounted>
             <NavigationMenuLink
-              data-testid="subject"
+              data-subject
               {...({ children: 'NavigationMenuLink', ...props } as ComponentProps<
                 typeof NavigationMenuLink
               >)}
@@ -265,9 +265,7 @@ function renderNavigationMenuLink(
       </NavigationMenuList>
     </NavigationMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="navigation-menu-link"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="navigation-menu-link"]')
 }
 
 function classesOfNavigationMenuLink(
@@ -295,12 +293,12 @@ describe('NavigationMenuLink', () => {
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
-            <NavigationMenuLink data-testid="subject">NavigationMenuLink</NavigationMenuLink>
+            <NavigationMenuLink data-subject>NavigationMenuLink</NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -314,7 +312,7 @@ function renderNavigationMenuIndicator(
         <NavigationMenuItem>
           <NavigationMenuContent keepMounted>
             <NavigationMenuIndicator
-              data-testid="subject"
+              data-subject
               {...({ children: 'NavigationMenuIndicator', ...props } as ComponentProps<
                 typeof NavigationMenuIndicator
               >)}
@@ -325,7 +323,7 @@ function renderNavigationMenuIndicator(
     </NavigationMenu>,
   )
   return document
-    .querySelector('[data-testid="subject"]')
+    .querySelector('[data-subject]')
     ?.closest('[data-slot="navigation-menu-indicator"]')
 }
 

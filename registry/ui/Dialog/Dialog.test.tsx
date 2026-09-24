@@ -40,12 +40,12 @@ function renderDialogTrigger(
   render(
     <Dialog defaultOpen>
       <DialogTrigger
-        data-testid="subject"
+        data-subject
         {...({ children: 'DialogTrigger', ...props } as ComponentProps<typeof DialogTrigger>)}
       />
     </Dialog>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="dialog-trigger"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="dialog-trigger"]')
 }
 
 describe('DialogTrigger', () => {
@@ -60,10 +60,10 @@ describe('DialogTrigger', () => {
     render(
       <Dialog defaultOpen>
         <DialogTrigger>DialogTrigger</DialogTrigger>
-        <DialogTrigger data-testid="subject">DialogTrigger</DialogTrigger>
+        <DialogTrigger data-subject>DialogTrigger</DialogTrigger>
       </Dialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -75,7 +75,7 @@ function renderDialogPortal(
     <Dialog defaultOpen>
       <DialogContent>
         <DialogPortal
-          data-testid="subject"
+          data-subject
           {...({ keepMounted: true, children: 'DialogPortal', ...props } as ComponentProps<
             typeof DialogPortal
           >)}
@@ -83,7 +83,7 @@ function renderDialogPortal(
       </DialogContent>
     </Dialog>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="dialog-portal"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="dialog-portal"]')
 }
 
 describe('DialogPortal', () => {
@@ -103,14 +103,14 @@ function renderDialogClose(
       <DialogContent>
         <DialogFooter>
           <DialogClose
-            data-testid="subject"
+            data-subject
             {...({ children: 'DialogClose', ...props } as ComponentProps<typeof DialogClose>)}
           />
         </DialogFooter>
       </DialogContent>
     </Dialog>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="dialog-close"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="dialog-close"]')
 }
 
 describe('DialogClose', () => {
@@ -127,12 +127,12 @@ describe('DialogClose', () => {
         <DialogTrigger>DialogTrigger</DialogTrigger>
         <DialogContent>
           <DialogFooter>
-            <DialogClose data-testid="subject">DialogClose</DialogClose>
+            <DialogClose data-subject>DialogClose</DialogClose>
           </DialogFooter>
         </DialogContent>
       </Dialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -142,12 +142,12 @@ describe('DialogClose', () => {
         <DialogTrigger>DialogTrigger</DialogTrigger>
         <DialogContent showCloseButton={false}>
           <DialogFooter>
-            <DialogClose data-testid="subject">DialogClose</DialogClose>
+            <DialogClose data-subject>DialogClose</DialogClose>
           </DialogFooter>
         </DialogContent>
       </Dialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -158,14 +158,13 @@ function renderDialogOverlay(
   render(
     <Dialog defaultOpen>
       <DialogContent>
-        <DialogOverlay
-          data-testid="subject"
-          {...({ children: 'DialogOverlay', ...props } as ComponentProps<typeof DialogOverlay>)}
-        />
+        <DialogPortal keepMounted>
+          <DialogOverlay data-subject {...(props as ComponentProps<typeof DialogOverlay>)} />
+        </DialogPortal>
       </DialogContent>
     </Dialog>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="dialog-overlay"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="dialog-overlay"]')
 }
 
 function classesOfDialogOverlay(
@@ -193,12 +192,12 @@ function renderDialogContent(
   render(
     <Dialog defaultOpen>
       <DialogContent
-        data-testid="subject"
+        data-subject
         {...({ children: 'DialogContent', ...props } as ComponentProps<typeof DialogContent>)}
       />
     </Dialog>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="dialog-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="dialog-content"]')
 }
 
 function classesOfDialogContent(
@@ -243,10 +242,10 @@ describe('DialogContent', () => {
     render(
       <Dialog defaultOpen>
         <DialogTrigger>DialogTrigger</DialogTrigger>
-        <DialogContent data-testid="subject">DialogContent</DialogContent>
+        <DialogContent data-subject>DialogContent</DialogContent>
       </Dialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -254,12 +253,12 @@ describe('DialogContent', () => {
     render(
       <Dialog defaultOpen>
         <DialogTrigger>DialogTrigger</DialogTrigger>
-        <DialogContent data-testid="subject" showCloseButton={false}>
+        <DialogContent data-subject showCloseButton={false}>
           DialogContent
         </DialogContent>
       </Dialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -271,13 +270,13 @@ function renderDialogHeader(
     <Dialog defaultOpen>
       <DialogContent>
         <DialogHeader
-          data-testid="subject"
+          data-subject
           {...({ children: 'DialogHeader', ...props } as ComponentProps<typeof DialogHeader>)}
         />
       </DialogContent>
     </Dialog>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="dialog-header"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="dialog-header"]')
 }
 
 function classesOfDialogHeader(
@@ -303,11 +302,11 @@ describe('DialogHeader', () => {
       <Dialog defaultOpen>
         <DialogTrigger>DialogTrigger</DialogTrigger>
         <DialogContent>
-          <DialogHeader data-testid="subject">DialogHeader</DialogHeader>
+          <DialogHeader data-subject>DialogHeader</DialogHeader>
         </DialogContent>
       </Dialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -316,11 +315,11 @@ describe('DialogHeader', () => {
       <Dialog defaultOpen>
         <DialogTrigger>DialogTrigger</DialogTrigger>
         <DialogContent showCloseButton={false}>
-          <DialogHeader data-testid="subject">DialogHeader</DialogHeader>
+          <DialogHeader data-subject>DialogHeader</DialogHeader>
         </DialogContent>
       </Dialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -332,13 +331,13 @@ function renderDialogFooter(
     <Dialog defaultOpen>
       <DialogContent>
         <DialogFooter
-          data-testid="subject"
+          data-subject
           {...({ children: 'DialogFooter', ...props } as ComponentProps<typeof DialogFooter>)}
         />
       </DialogContent>
     </Dialog>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="dialog-footer"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="dialog-footer"]')
 }
 
 function classesOfDialogFooter(
@@ -382,11 +381,11 @@ describe('DialogFooter', () => {
       <Dialog defaultOpen>
         <DialogTrigger>DialogTrigger</DialogTrigger>
         <DialogContent>
-          <DialogFooter data-testid="subject">DialogFooter</DialogFooter>
+          <DialogFooter data-subject>DialogFooter</DialogFooter>
         </DialogContent>
       </Dialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -395,11 +394,11 @@ describe('DialogFooter', () => {
       <Dialog defaultOpen>
         <DialogTrigger>DialogTrigger</DialogTrigger>
         <DialogContent showCloseButton={false}>
-          <DialogFooter data-testid="subject">DialogFooter</DialogFooter>
+          <DialogFooter data-subject>DialogFooter</DialogFooter>
         </DialogContent>
       </Dialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -412,14 +411,14 @@ function renderDialogTitle(
       <DialogContent>
         <DialogHeader>
           <DialogTitle
-            data-testid="subject"
+            data-subject
             {...({ children: 'DialogTitle', ...props } as ComponentProps<typeof DialogTitle>)}
           />
         </DialogHeader>
       </DialogContent>
     </Dialog>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="dialog-title"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="dialog-title"]')
 }
 
 function classesOfDialogTitle(
@@ -446,12 +445,12 @@ describe('DialogTitle', () => {
         <DialogTrigger>DialogTrigger</DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle data-testid="subject">DialogTitle</DialogTitle>
+            <DialogTitle data-subject>DialogTitle</DialogTitle>
           </DialogHeader>
         </DialogContent>
       </Dialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -461,12 +460,12 @@ describe('DialogTitle', () => {
         <DialogTrigger>DialogTrigger</DialogTrigger>
         <DialogContent showCloseButton={false}>
           <DialogHeader>
-            <DialogTitle data-testid="subject">DialogTitle</DialogTitle>
+            <DialogTitle data-subject>DialogTitle</DialogTitle>
           </DialogHeader>
         </DialogContent>
       </Dialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -479,7 +478,7 @@ function renderDialogDescription(
       <DialogContent>
         <DialogHeader>
           <DialogDescription
-            data-testid="subject"
+            data-subject
             {...({ children: 'DialogDescription', ...props } as ComponentProps<
               typeof DialogDescription
             >)}
@@ -488,9 +487,7 @@ function renderDialogDescription(
       </DialogContent>
     </Dialog>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="dialog-description"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="dialog-description"]')
 }
 
 function classesOfDialogDescription(
@@ -517,12 +514,12 @@ describe('DialogDescription', () => {
         <DialogTrigger>DialogTrigger</DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogDescription data-testid="subject">DialogDescription</DialogDescription>
+            <DialogDescription data-subject>DialogDescription</DialogDescription>
           </DialogHeader>
         </DialogContent>
       </Dialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -532,11 +529,11 @@ describe('DialogDescription', () => {
         <DialogTrigger>DialogTrigger</DialogTrigger>
         <DialogContent showCloseButton={false}>
           <DialogHeader>
-            <DialogDescription data-testid="subject">DialogDescription</DialogDescription>
+            <DialogDescription data-subject>DialogDescription</DialogDescription>
           </DialogHeader>
         </DialogContent>
       </Dialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

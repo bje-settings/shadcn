@@ -39,12 +39,12 @@ function renderSheetTrigger(
     <Sheet defaultOpen>
       <SheetTrigger>SheetTrigger</SheetTrigger>
       <SheetTrigger
-        data-testid="subject"
+        data-subject
         {...({ children: 'SheetTrigger', ...props } as ComponentProps<typeof SheetTrigger>)}
       />
     </Sheet>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="sheet-trigger"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="sheet-trigger"]')
 }
 
 describe('SheetTrigger', () => {
@@ -65,14 +65,14 @@ function renderSheetClose(
       <SheetContent>
         <SheetFooter>
           <SheetClose
-            data-testid="subject"
+            data-subject
             {...({ children: 'SheetClose', ...props } as ComponentProps<typeof SheetClose>)}
           />
         </SheetFooter>
       </SheetContent>
     </Sheet>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="sheet-close"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="sheet-close"]')
 }
 
 describe('SheetClose', () => {
@@ -91,12 +91,12 @@ function renderSheetContent(
     <Sheet defaultOpen>
       <SheetTrigger>SheetTrigger</SheetTrigger>
       <SheetContent
-        data-testid="subject"
+        data-subject
         {...({ children: 'SheetContent', ...props } as ComponentProps<typeof SheetContent>)}
       />
     </Sheet>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="sheet-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="sheet-content"]')
 }
 
 function classesOfSheetContent(
@@ -128,6 +128,18 @@ describe('SheetContent', () => {
     expect(attributesOfSheetContent({ showCloseButton: true })).toEqual(attributesOfSheetContent())
   })
 
+  it('renders with side="left"', () => {
+    expect(renderSheetContent({ side: 'left' })).toBeTruthy()
+  })
+
+  it('renders with side="top"', () => {
+    expect(renderSheetContent({ side: 'top' })).toBeTruthy()
+  })
+
+  it('renders with side="bottom"', () => {
+    expect(renderSheetContent({ side: 'bottom' })).toBeTruthy()
+  })
+
   it('renders with showCloseButton=false', () => {
     expect(renderSheetContent({ showCloseButton: false })).toBeTruthy()
   })
@@ -143,12 +155,12 @@ describe('SheetContent', () => {
     render(
       <Sheet defaultOpen>
         <SheetTrigger>SheetTrigger</SheetTrigger>
-        <SheetContent data-testid="subject" showCloseButton={false}>
+        <SheetContent data-subject showCloseButton={false}>
           SheetContent
         </SheetContent>
       </Sheet>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -161,13 +173,13 @@ function renderSheetHeader(
       <SheetTrigger>SheetTrigger</SheetTrigger>
       <SheetContent>
         <SheetHeader
-          data-testid="subject"
+          data-subject
           {...({ children: 'SheetHeader', ...props } as ComponentProps<typeof SheetHeader>)}
         />
       </SheetContent>
     </Sheet>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="sheet-header"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="sheet-header"]')
 }
 
 function classesOfSheetHeader(
@@ -193,11 +205,11 @@ describe('SheetHeader', () => {
       <Sheet defaultOpen>
         <SheetTrigger>SheetTrigger</SheetTrigger>
         <SheetContent showCloseButton={false}>
-          <SheetHeader data-testid="subject">SheetHeader</SheetHeader>
+          <SheetHeader data-subject>SheetHeader</SheetHeader>
         </SheetContent>
       </Sheet>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -210,13 +222,13 @@ function renderSheetFooter(
       <SheetTrigger>SheetTrigger</SheetTrigger>
       <SheetContent>
         <SheetFooter
-          data-testid="subject"
+          data-subject
           {...({ children: 'SheetFooter', ...props } as ComponentProps<typeof SheetFooter>)}
         />
       </SheetContent>
     </Sheet>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="sheet-footer"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="sheet-footer"]')
 }
 
 function classesOfSheetFooter(
@@ -247,14 +259,14 @@ function renderSheetTitle(
       <SheetContent>
         <SheetHeader>
           <SheetTitle
-            data-testid="subject"
+            data-subject
             {...({ children: 'SheetTitle', ...props } as ComponentProps<typeof SheetTitle>)}
           />
         </SheetHeader>
       </SheetContent>
     </Sheet>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="sheet-title"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="sheet-title"]')
 }
 
 function classesOfSheetTitle(
@@ -281,12 +293,12 @@ describe('SheetTitle', () => {
         <SheetTrigger>SheetTrigger</SheetTrigger>
         <SheetContent showCloseButton={false}>
           <SheetHeader>
-            <SheetTitle data-testid="subject">SheetTitle</SheetTitle>
+            <SheetTitle data-subject>SheetTitle</SheetTitle>
           </SheetHeader>
         </SheetContent>
       </Sheet>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -300,7 +312,7 @@ function renderSheetDescription(
       <SheetContent>
         <SheetHeader>
           <SheetDescription
-            data-testid="subject"
+            data-subject
             {...({ children: 'SheetDescription', ...props } as ComponentProps<
               typeof SheetDescription
             >)}
@@ -309,9 +321,7 @@ function renderSheetDescription(
       </SheetContent>
     </Sheet>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="sheet-description"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="sheet-description"]')
 }
 
 function classesOfSheetDescription(
@@ -338,11 +348,11 @@ describe('SheetDescription', () => {
         <SheetTrigger>SheetTrigger</SheetTrigger>
         <SheetContent showCloseButton={false}>
           <SheetHeader>
-            <SheetDescription data-testid="subject">SheetDescription</SheetDescription>
+            <SheetDescription data-subject>SheetDescription</SheetDescription>
           </SheetHeader>
         </SheetContent>
       </Sheet>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

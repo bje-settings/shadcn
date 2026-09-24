@@ -9,12 +9,9 @@ import styles from './Alert.module.scss'
 function renderAlert(props: Partial<Record<keyof ComponentProps<typeof Alert>, unknown>> = {}) {
   cleanup()
   render(
-    <Alert
-      data-testid="subject"
-      {...({ children: 'Alert', ...props } as ComponentProps<typeof Alert>)}
-    />,
+    <Alert data-subject {...({ children: 'Alert', ...props } as ComponentProps<typeof Alert>)} />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="alert"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="alert"]')
 }
 
 function classesOfAlert(props: Partial<Record<keyof ComponentProps<typeof Alert>, unknown>> = {}) {
@@ -50,11 +47,11 @@ describe('Alert', () => {
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
     render(
-      <Alert data-testid="subject" variant="destructive">
+      <Alert data-subject variant="destructive">
         Alert
       </Alert>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -65,12 +62,12 @@ function renderAlertTitle(
   render(
     <Alert>
       <AlertTitle
-        data-testid="subject"
+        data-subject
         {...({ children: 'AlertTitle', ...props } as ComponentProps<typeof AlertTitle>)}
       />
     </Alert>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="alert-title"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="alert-title"]')
 }
 
 function classesOfAlertTitle(
@@ -94,10 +91,10 @@ describe('AlertTitle', () => {
     cleanup()
     render(
       <Alert variant="destructive">
-        <AlertTitle data-testid="subject">AlertTitle</AlertTitle>
+        <AlertTitle data-subject>AlertTitle</AlertTitle>
       </Alert>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -108,14 +105,12 @@ function renderAlertDescription(
   render(
     <Alert>
       <AlertDescription
-        data-testid="subject"
+        data-subject
         {...({ children: 'AlertDescription', ...props } as ComponentProps<typeof AlertDescription>)}
       />
     </Alert>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="alert-description"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="alert-description"]')
 }
 
 function classesOfAlertDescription(
@@ -139,10 +134,10 @@ describe('AlertDescription', () => {
     cleanup()
     render(
       <Alert variant="destructive">
-        <AlertDescription data-testid="subject">AlertDescription</AlertDescription>
+        <AlertDescription data-subject>AlertDescription</AlertDescription>
       </Alert>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -153,12 +148,12 @@ function renderAlertAction(
   render(
     <Alert>
       <AlertAction
-        data-testid="subject"
+        data-subject
         {...({ children: 'AlertAction', ...props } as ComponentProps<typeof AlertAction>)}
       />
     </Alert>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="alert-action"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="alert-action"]')
 }
 
 function classesOfAlertAction(

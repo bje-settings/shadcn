@@ -3,6 +3,7 @@
 // run with the field name rather than surfacing later as `undefined`.
 
 import { isRecord, KEBAB, Shape } from './parse.ts'
+import type { Literal } from './parts.ts'
 
 export type TestSetup = {
   // Mirrored items whose generated test starts with these lines
@@ -64,9 +65,13 @@ export type MirrorConfig = {
   // reason: upstream logic no render the docs example makes reaches (a
   // controlled value it never passes as a literal). vitest.config.ts reads it.
   coverageExclusions: Record<string, string>
-  // Exported parts jsdom renders nothing for under their scaffold, by name,
-  // with the reason: their generated test checks they render nothing.
-  unrenderedInTests: Record<string, string>
+  // Props given to a part wherever generated tests and A/B fixtures render
+  // it, by item and part: ones it needs that no example passes as a literal.
+  testProps: Record<string, Record<string, Record<string, Literal>>>
+  // Exported parts jsdom renders nothing for under their scaffold, by item
+  // and part, with the reason: their generated test checks they render
+  // nothing.
+  unrenderedInTests: Record<string, Record<string, string>>
   // Setup some generated tests need to run under jsdom, like a stub for a
   // browser API it lacks (cmdk observes resizes).
   testSetup: TestSetup[]
@@ -147,10 +152,30 @@ export function parseConfig(raw: unknown): MirrorConfig {
     }
   })
 
-  const unrenderedInTests =
-    raw.unrenderedInTests === undefined
-      ? {}
-      : shape.stringRecord(raw.unrenderedInTests, 'unrenderedInTests')
+  // Both are keyed by a configured item, then by one of its parts.
+  const byItem = <T>(key: string, value: (raw: unknown, path: string) => T) => {
+    const record = shape.record(raw[key] ?? {}, key)
+    return Object.fromEntries(
+      Object.entries(record).map(([item, parts]) => {
+        if (!components.includes(item)) shape.fail(`${key}.${item} is not a configured component`)
+        const path = `${key}.${item}`
+        return [
+          item,
+          Object.fromEntries(
+            Object.entries(shape.record(parts, path)).map(([part, v]) => [
+              part,
+              value(v, `${path}.${part}`),
+            ]),
+          ),
+        ]
+      }),
+    )
+  }
+  const testProps = byItem(
+    'testProps',
+    (value, path) => shape.record(value, path) as Record<string, Literal>,
+  )
+  const unrenderedInTests = byItem('unrenderedInTests', (value, path) => shape.string(value, path))
 
   return {
     namespace: name(raw, 'namespace', ''),
@@ -172,6 +197,7 @@ export function parseConfig(raw: unknown): MirrorConfig {
     coverageExclusions,
     testSetup,
     unrenderedInTests,
+    testProps,
   }
 }
 

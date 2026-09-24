@@ -16,11 +16,11 @@ function renderNativeSelect(
   cleanup()
   render(
     <NativeSelect
-      data-testid="subject"
+      data-subject
       {...({ children: 'NativeSelect', ...props } as ComponentProps<typeof NativeSelect>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="native-select"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="native-select"]')
 }
 
 function classesOfNativeSelect(
@@ -48,6 +48,10 @@ describe('NativeSelect', () => {
     expect(attributesOfNativeSelect({ size: 'default' })).toEqual(attributesOfNativeSelect())
   })
 
+  it('renders with size="sm"', () => {
+    expect(renderNativeSelect({ size: 'sm' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderNativeSelect({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -57,41 +61,41 @@ describe('NativeSelect', () => {
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
     render(
-      <NativeSelect data-testid="subject" size="sm">
+      <NativeSelect data-subject size="sm">
         NativeSelect
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
-      <NativeSelect data-testid="subject" size="default">
+      <NativeSelect data-subject size="default">
         NativeSelect
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
-      <NativeSelect data-testid="subject" id="native-select-country">
+      <NativeSelect data-subject id="native-select-country">
         NativeSelect
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
-      <NativeSelect data-testid="subject" aria-invalid="true">
+      <NativeSelect data-subject aria-invalid="true">
         NativeSelect
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -102,16 +106,14 @@ function renderNativeSelectOption(
   render(
     <NativeSelect>
       <NativeSelectOption
-        data-testid="subject"
+        data-subject
         {...({ value: '', children: 'NativeSelectOption', ...props } as ComponentProps<
           typeof NativeSelectOption
         >)}
       />
     </NativeSelect>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="native-select-option"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="native-select-option"]')
 }
 
 function classesOfNativeSelectOption(
@@ -137,60 +139,60 @@ describe('NativeSelectOption', () => {
     cleanup()
     render(
       <NativeSelect>
-        <NativeSelectOption data-testid="subject" value="apple">
+        <NativeSelectOption data-subject value="apple">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <NativeSelect>
-        <NativeSelectOption data-testid="subject" value="banana">
+        <NativeSelectOption data-subject value="banana">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <NativeSelect>
-        <NativeSelectOption data-testid="subject" value="blueberry">
+        <NativeSelectOption data-subject value="blueberry">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <NativeSelect>
-        <NativeSelectOption data-testid="subject" value="grapes">
+        <NativeSelectOption data-subject value="grapes">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
       <NativeSelect>
-        <NativeSelectOption data-testid="subject" value="pineapple">
+        <NativeSelectOption data-subject value="pineapple">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -198,13 +200,13 @@ describe('NativeSelectOption', () => {
     render(
       <NativeSelect>
         <NativeSelectOptGroup label="Fruits">
-          <NativeSelectOption data-testid="subject" value="apple">
+          <NativeSelectOption data-subject value="apple">
             NativeSelectOption
           </NativeSelectOption>
         </NativeSelectOptGroup>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -212,13 +214,13 @@ describe('NativeSelectOption', () => {
     render(
       <NativeSelect>
         <NativeSelectOptGroup label="Fruits">
-          <NativeSelectOption data-testid="subject" value="banana">
+          <NativeSelectOption data-subject value="banana">
             NativeSelectOption
           </NativeSelectOption>
         </NativeSelectOptGroup>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -226,13 +228,13 @@ describe('NativeSelectOption', () => {
     render(
       <NativeSelect>
         <NativeSelectOptGroup label="Fruits">
-          <NativeSelectOption data-testid="subject" value="blueberry">
+          <NativeSelectOption data-subject value="blueberry">
             NativeSelectOption
           </NativeSelectOption>
         </NativeSelectOptGroup>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
@@ -240,13 +242,13 @@ describe('NativeSelectOption', () => {
     render(
       <NativeSelect>
         <NativeSelectOptGroup label="Vegetables">
-          <NativeSelectOption data-testid="subject" value="carrot">
+          <NativeSelectOption data-subject value="carrot">
             NativeSelectOption
           </NativeSelectOption>
         </NativeSelectOptGroup>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
@@ -254,13 +256,13 @@ describe('NativeSelectOption', () => {
     render(
       <NativeSelect>
         <NativeSelectOptGroup label="Vegetables">
-          <NativeSelectOption data-testid="subject" value="broccoli">
+          <NativeSelectOption data-subject value="broccoli">
             NativeSelectOption
           </NativeSelectOption>
         </NativeSelectOptGroup>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
@@ -268,217 +270,217 @@ describe('NativeSelectOption', () => {
     render(
       <NativeSelect>
         <NativeSelectOptGroup label="Vegetables">
-          <NativeSelectOption data-testid="subject" value="spinach">
+          <NativeSelectOption data-subject value="spinach">
             NativeSelectOption
           </NativeSelectOption>
         </NativeSelectOptGroup>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
     cleanup()
     render(
       <NativeSelect size="sm">
-        <NativeSelectOption data-testid="subject" value="">
+        <NativeSelectOption data-subject value="">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
     cleanup()
     render(
       <NativeSelect size="sm">
-        <NativeSelectOption data-testid="subject" value="apple">
+        <NativeSelectOption data-subject value="apple">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (15)", () => {
     cleanup()
     render(
       <NativeSelect size="sm">
-        <NativeSelectOption data-testid="subject" value="banana">
+        <NativeSelectOption data-subject value="banana">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (16)", () => {
     cleanup()
     render(
       <NativeSelect size="sm">
-        <NativeSelectOption data-testid="subject" value="blueberry">
+        <NativeSelectOption data-subject value="blueberry">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (17)", () => {
     cleanup()
     render(
       <NativeSelect size="default">
-        <NativeSelectOption data-testid="subject" value="">
+        <NativeSelectOption data-subject value="">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (18)", () => {
     cleanup()
     render(
       <NativeSelect size="default">
-        <NativeSelectOption data-testid="subject" value="apple">
+        <NativeSelectOption data-subject value="apple">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (19)", () => {
     cleanup()
     render(
       <NativeSelect size="default">
-        <NativeSelectOption data-testid="subject" value="banana">
+        <NativeSelectOption data-subject value="banana">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (20)", () => {
     cleanup()
     render(
       <NativeSelect size="default">
-        <NativeSelectOption data-testid="subject" value="blueberry">
+        <NativeSelectOption data-subject value="blueberry">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (21)", () => {
     cleanup()
     render(
       <NativeSelect id="native-select-country">
-        <NativeSelectOption data-testid="subject" value="">
+        <NativeSelectOption data-subject value="">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (22)", () => {
     cleanup()
     render(
       <NativeSelect id="native-select-country">
-        <NativeSelectOption data-testid="subject" value="us">
+        <NativeSelectOption data-subject value="us">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (23)", () => {
     cleanup()
     render(
       <NativeSelect id="native-select-country">
-        <NativeSelectOption data-testid="subject" value="uk">
+        <NativeSelectOption data-subject value="uk">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (24)", () => {
     cleanup()
     render(
       <NativeSelect id="native-select-country">
-        <NativeSelectOption data-testid="subject" value="ca">
+        <NativeSelectOption data-subject value="ca">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (25)", () => {
     cleanup()
     render(
       <NativeSelect id="native-select-country">
-        <NativeSelectOption data-testid="subject" value="au">
+        <NativeSelectOption data-subject value="au">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (26)", () => {
     cleanup()
     render(
       <NativeSelect aria-invalid="true">
-        <NativeSelectOption data-testid="subject" value="">
+        <NativeSelectOption data-subject value="">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (27)", () => {
     cleanup()
     render(
       <NativeSelect aria-invalid="true">
-        <NativeSelectOption data-testid="subject" value="apple">
+        <NativeSelectOption data-subject value="apple">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (28)", () => {
     cleanup()
     render(
       <NativeSelect aria-invalid="true">
-        <NativeSelectOption data-testid="subject" value="banana">
+        <NativeSelectOption data-subject value="banana">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (29)", () => {
     cleanup()
     render(
       <NativeSelect aria-invalid="true">
-        <NativeSelectOption data-testid="subject" value="blueberry">
+        <NativeSelectOption data-subject value="blueberry">
           NativeSelectOption
         </NativeSelectOption>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -489,16 +491,14 @@ function renderNativeSelectOptGroup(
   render(
     <NativeSelect>
       <NativeSelectOptGroup
-        data-testid="subject"
+        data-subject
         {...({ label: 'Fruits', children: 'NativeSelectOptGroup', ...props } as ComponentProps<
           typeof NativeSelectOptGroup
         >)}
       />
     </NativeSelect>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="native-select-optgroup"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="native-select-optgroup"]')
 }
 
 function classesOfNativeSelectOptGroup(
@@ -524,11 +524,11 @@ describe('NativeSelectOptGroup', () => {
     cleanup()
     render(
       <NativeSelect>
-        <NativeSelectOptGroup data-testid="subject" label="Vegetables">
+        <NativeSelectOptGroup data-subject label="Vegetables">
           NativeSelectOptGroup
         </NativeSelectOptGroup>
       </NativeSelect>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

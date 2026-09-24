@@ -11,13 +11,13 @@ function renderCollapsible(
   cleanup()
   render(
     <Collapsible
-      data-testid="subject"
+      data-subject
       {...({ defaultOpen: true, children: 'Collapsible', ...props } as ComponentProps<
         typeof Collapsible
       >)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="collapsible"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="collapsible"]')
 }
 
 describe('Collapsible', () => {
@@ -36,16 +36,14 @@ function renderCollapsibleTrigger(
     <Collapsible defaultOpen>
       <CollapsibleTrigger>CollapsibleTrigger</CollapsibleTrigger>
       <CollapsibleTrigger
-        data-testid="subject"
+        data-subject
         {...({ children: 'CollapsibleTrigger', ...props } as ComponentProps<
           typeof CollapsibleTrigger
         >)}
       />
     </Collapsible>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="collapsible-trigger"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="collapsible-trigger"]')
 }
 
 describe('CollapsibleTrigger', () => {
@@ -64,16 +62,14 @@ function renderCollapsibleContent(
     <Collapsible defaultOpen>
       <CollapsibleTrigger>CollapsibleTrigger</CollapsibleTrigger>
       <CollapsibleContent
-        data-testid="subject"
+        data-subject
         {...({ keepMounted: true, children: 'CollapsibleContent', ...props } as ComponentProps<
           typeof CollapsibleContent
         >)}
       />
     </Collapsible>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="collapsible-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="collapsible-content"]')
 }
 
 describe('CollapsibleContent', () => {

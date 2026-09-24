@@ -21,11 +21,11 @@ function renderAvatar(props: Partial<Record<keyof ComponentProps<typeof Avatar>,
   cleanup()
   render(
     <Avatar
-      data-testid="subject"
+      data-subject
       {...({ children: 'Avatar', ...props } as ComponentProps<typeof Avatar>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="avatar"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="avatar"]')
 }
 
 function classesOfAvatar(
@@ -53,6 +53,14 @@ describe('Avatar', () => {
     expect(attributesOfAvatar({ size: 'default' })).toEqual(attributesOfAvatar())
   })
 
+  it('renders with size="sm"', () => {
+    expect(renderAvatar({ size: 'sm' })).toBeTruthy()
+  })
+
+  it('renders with size="lg"', () => {
+    expect(renderAvatar({ size: 'lg' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderAvatar({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -61,52 +69,52 @@ describe('Avatar', () => {
 
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
-    render(<Avatar data-testid="subject">Avatar</Avatar>)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Avatar data-subject>Avatar</Avatar>)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
-      <Avatar data-testid="subject" size="lg">
+      <Avatar data-subject size="lg">
         Avatar
       </Avatar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <AvatarGroup>
-        <Avatar data-testid="subject" size="sm">
+        <Avatar data-subject size="sm">
           Avatar
         </Avatar>
       </AvatarGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <AvatarGroup>
-        <Avatar data-testid="subject">Avatar</Avatar>
+        <Avatar data-subject>Avatar</Avatar>
       </AvatarGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
       <AvatarGroup>
-        <Avatar data-testid="subject" size="lg">
+        <Avatar data-subject size="lg">
           Avatar
         </Avatar>
       </AvatarGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -117,7 +125,7 @@ function renderAvatarImage(
   render(
     <Avatar size="sm">
       <AvatarImage
-        data-testid="subject"
+        data-subject
         {...({
           src: 'https://github.com/shadcn.png',
           alt: '@shadcn',
@@ -127,7 +135,7 @@ function renderAvatarImage(
       />
     </Avatar>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="avatar-image"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="avatar-image"]')
 }
 
 function classesOfAvatarImage(
@@ -151,30 +159,20 @@ describe('AvatarImage', () => {
     cleanup()
     render(
       <Avatar>
-        <AvatarImage
-          data-testid="subject"
-          src="https://github.com/shadcn.png"
-          alt="@shadcn"
-          keepMounted
-        />
+        <AvatarImage data-subject src="https://github.com/shadcn.png" alt="@shadcn" keepMounted />
       </Avatar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Avatar size="lg">
-        <AvatarImage
-          data-testid="subject"
-          src="https://github.com/shadcn.png"
-          alt="@shadcn"
-          keepMounted
-        />
+        <AvatarImage data-subject src="https://github.com/shadcn.png" alt="@shadcn" keepMounted />
       </Avatar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -182,14 +180,14 @@ describe('AvatarImage', () => {
     render(
       <Avatar size="sm">
         <AvatarImage
-          data-testid="subject"
+          data-subject
           src="https://github.com/jorgezreik.png"
           alt="@jorgezreik"
           keepMounted
         />
       </Avatar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -197,14 +195,14 @@ describe('AvatarImage', () => {
     render(
       <Avatar>
         <AvatarImage
-          data-testid="subject"
+          data-subject
           src="https://github.com/jorgezreik.png"
           alt="@jorgezreik"
           keepMounted
         />
       </Avatar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -212,14 +210,14 @@ describe('AvatarImage', () => {
     render(
       <Avatar size="lg">
         <AvatarImage
-          data-testid="subject"
+          data-subject
           src="https://github.com/jorgezreik.png"
           alt="@jorgezreik"
           keepMounted
         />
       </Avatar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -227,14 +225,14 @@ describe('AvatarImage', () => {
     render(
       <Avatar size="sm">
         <AvatarImage
-          data-testid="subject"
+          data-subject
           src="https://github.com/pranathip.png"
           alt="@pranathip"
           keepMounted
         />
       </Avatar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -242,14 +240,14 @@ describe('AvatarImage', () => {
     render(
       <Avatar>
         <AvatarImage
-          data-testid="subject"
+          data-subject
           src="https://github.com/pranathip.png"
           alt="@pranathip"
           keepMounted
         />
       </Avatar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -257,14 +255,14 @@ describe('AvatarImage', () => {
     render(
       <Avatar size="lg">
         <AvatarImage
-          data-testid="subject"
+          data-subject
           src="https://github.com/pranathip.png"
           alt="@pranathip"
           keepMounted
         />
       </Avatar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
@@ -272,16 +270,11 @@ describe('AvatarImage', () => {
     render(
       <AvatarGroup>
         <Avatar size="sm">
-          <AvatarImage
-            data-testid="subject"
-            src="https://github.com/shadcn.png"
-            alt="@shadcn"
-            keepMounted
-          />
+          <AvatarImage data-subject src="https://github.com/shadcn.png" alt="@shadcn" keepMounted />
         </Avatar>
       </AvatarGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
@@ -290,7 +283,7 @@ describe('AvatarImage', () => {
       <AvatarGroup>
         <Avatar size="sm">
           <AvatarImage
-            data-testid="subject"
+            data-subject
             src="https://github.com/maxleiter.png"
             alt="@maxleiter"
             keepMounted
@@ -298,7 +291,7 @@ describe('AvatarImage', () => {
         </Avatar>
       </AvatarGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
@@ -307,7 +300,7 @@ describe('AvatarImage', () => {
       <AvatarGroup>
         <Avatar size="sm">
           <AvatarImage
-            data-testid="subject"
+            data-subject
             src="https://github.com/evilrabbit.png"
             alt="@evilrabbit"
             keepMounted
@@ -315,7 +308,7 @@ describe('AvatarImage', () => {
         </Avatar>
       </AvatarGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
@@ -323,16 +316,11 @@ describe('AvatarImage', () => {
     render(
       <AvatarGroup>
         <Avatar>
-          <AvatarImage
-            data-testid="subject"
-            src="https://github.com/shadcn.png"
-            alt="@shadcn"
-            keepMounted
-          />
+          <AvatarImage data-subject src="https://github.com/shadcn.png" alt="@shadcn" keepMounted />
         </Avatar>
       </AvatarGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
@@ -341,7 +329,7 @@ describe('AvatarImage', () => {
       <AvatarGroup>
         <Avatar>
           <AvatarImage
-            data-testid="subject"
+            data-subject
             src="https://github.com/maxleiter.png"
             alt="@maxleiter"
             keepMounted
@@ -349,7 +337,7 @@ describe('AvatarImage', () => {
         </Avatar>
       </AvatarGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (15)", () => {
@@ -358,7 +346,7 @@ describe('AvatarImage', () => {
       <AvatarGroup>
         <Avatar>
           <AvatarImage
-            data-testid="subject"
+            data-subject
             src="https://github.com/evilrabbit.png"
             alt="@evilrabbit"
             keepMounted
@@ -366,7 +354,7 @@ describe('AvatarImage', () => {
         </Avatar>
       </AvatarGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (16)", () => {
@@ -374,16 +362,11 @@ describe('AvatarImage', () => {
     render(
       <AvatarGroup>
         <Avatar size="lg">
-          <AvatarImage
-            data-testid="subject"
-            src="https://github.com/shadcn.png"
-            alt="@shadcn"
-            keepMounted
-          />
+          <AvatarImage data-subject src="https://github.com/shadcn.png" alt="@shadcn" keepMounted />
         </Avatar>
       </AvatarGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (17)", () => {
@@ -392,7 +375,7 @@ describe('AvatarImage', () => {
       <AvatarGroup>
         <Avatar size="lg">
           <AvatarImage
-            data-testid="subject"
+            data-subject
             src="https://github.com/maxleiter.png"
             alt="@maxleiter"
             keepMounted
@@ -400,7 +383,7 @@ describe('AvatarImage', () => {
         </Avatar>
       </AvatarGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (18)", () => {
@@ -409,7 +392,7 @@ describe('AvatarImage', () => {
       <AvatarGroup>
         <Avatar size="lg">
           <AvatarImage
-            data-testid="subject"
+            data-subject
             src="https://github.com/evilrabbit.png"
             alt="@evilrabbit"
             keepMounted
@@ -417,7 +400,7 @@ describe('AvatarImage', () => {
         </Avatar>
       </AvatarGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -428,12 +411,12 @@ function renderAvatarFallback(
   render(
     <Avatar size="sm">
       <AvatarFallback
-        data-testid="subject"
+        data-subject
         {...({ children: 'AvatarFallback', ...props } as ComponentProps<typeof AvatarFallback>)}
       />
     </Avatar>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="avatar-fallback"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="avatar-fallback"]')
 }
 
 function classesOfAvatarFallback(
@@ -457,20 +440,20 @@ describe('AvatarFallback', () => {
     cleanup()
     render(
       <Avatar>
-        <AvatarFallback data-testid="subject">AvatarFallback</AvatarFallback>
+        <AvatarFallback data-subject>AvatarFallback</AvatarFallback>
       </Avatar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Avatar size="lg">
-        <AvatarFallback data-testid="subject">AvatarFallback</AvatarFallback>
+        <AvatarFallback data-subject>AvatarFallback</AvatarFallback>
       </Avatar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -478,11 +461,11 @@ describe('AvatarFallback', () => {
     render(
       <AvatarGroup>
         <Avatar size="sm">
-          <AvatarFallback data-testid="subject">AvatarFallback</AvatarFallback>
+          <AvatarFallback data-subject>AvatarFallback</AvatarFallback>
         </Avatar>
       </AvatarGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -490,11 +473,11 @@ describe('AvatarFallback', () => {
     render(
       <AvatarGroup>
         <Avatar>
-          <AvatarFallback data-testid="subject">AvatarFallback</AvatarFallback>
+          <AvatarFallback data-subject>AvatarFallback</AvatarFallback>
         </Avatar>
       </AvatarGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -502,11 +485,11 @@ describe('AvatarFallback', () => {
     render(
       <AvatarGroup>
         <Avatar size="lg">
-          <AvatarFallback data-testid="subject">AvatarFallback</AvatarFallback>
+          <AvatarFallback data-subject>AvatarFallback</AvatarFallback>
         </Avatar>
       </AvatarGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -516,10 +499,10 @@ function renderAvatarBadge(
   cleanup()
   render(
     <Avatar size="sm">
-      <AvatarBadge data-testid="subject" {...(props as ComponentProps<typeof AvatarBadge>)} />
+      <AvatarBadge data-subject {...(props as ComponentProps<typeof AvatarBadge>)} />
     </Avatar>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="avatar-badge"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="avatar-badge"]')
 }
 
 function classesOfAvatarBadge(
@@ -543,50 +526,50 @@ describe('AvatarBadge', () => {
     cleanup()
     render(
       <Avatar>
-        <AvatarBadge data-testid="subject" />
+        <AvatarBadge data-subject />
       </Avatar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Avatar size="lg">
-        <AvatarBadge data-testid="subject" />
+        <AvatarBadge data-subject />
       </Avatar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <Avatar size="sm">
-        <AvatarBadge data-testid="subject">AvatarBadge</AvatarBadge>
+        <AvatarBadge data-subject>AvatarBadge</AvatarBadge>
       </Avatar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <Avatar>
-        <AvatarBadge data-testid="subject">AvatarBadge</AvatarBadge>
+        <AvatarBadge data-subject>AvatarBadge</AvatarBadge>
       </Avatar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
       <Avatar size="lg">
-        <AvatarBadge data-testid="subject">AvatarBadge</AvatarBadge>
+        <AvatarBadge data-subject>AvatarBadge</AvatarBadge>
       </Avatar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -596,11 +579,11 @@ function renderAvatarGroup(
   cleanup()
   render(
     <AvatarGroup
-      data-testid="subject"
+      data-subject
       {...({ children: 'AvatarGroup', ...props } as ComponentProps<typeof AvatarGroup>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="avatar-group"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="avatar-group"]')
 }
 
 function classesOfAvatarGroup(
@@ -628,14 +611,12 @@ function renderAvatarGroupCount(
   render(
     <AvatarGroup>
       <AvatarGroupCount
-        data-testid="subject"
+        data-subject
         {...({ children: 'AvatarGroupCount', ...props } as ComponentProps<typeof AvatarGroupCount>)}
       />
     </AvatarGroup>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="avatar-group-count"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="avatar-group-count"]')
 }
 
 function classesOfAvatarGroupCount(

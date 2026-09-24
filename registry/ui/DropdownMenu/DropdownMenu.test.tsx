@@ -50,7 +50,7 @@ function renderDropdownMenuPortal(
           <DropdownMenuSub defaultOpen>
             <DropdownMenuSubTrigger>DropdownMenuSubTrigger</DropdownMenuSubTrigger>
             <DropdownMenuPortal
-              data-testid="subject"
+              data-subject
               {...({
                 keepMounted: true,
                 children: 'DropdownMenuPortal',
@@ -62,9 +62,7 @@ function renderDropdownMenuPortal(
       </DropdownMenuContent>
     </DropdownMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="dropdown-menu-portal"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="dropdown-menu-portal"]')
 }
 
 describe('DropdownMenuPortal', () => {
@@ -82,14 +80,14 @@ describe('DropdownMenuPortal', () => {
         <DropdownMenuContent>
           <DropdownMenuSub defaultOpen>
             <DropdownMenuSubTrigger>DropdownMenuSubTrigger</DropdownMenuSubTrigger>
-            <DropdownMenuPortal data-testid="subject" keepMounted>
+            <DropdownMenuPortal data-subject keepMounted>
               DropdownMenuPortal
             </DropdownMenuPortal>
           </DropdownMenuSub>
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -100,14 +98,14 @@ describe('DropdownMenuPortal', () => {
         <DropdownMenuContent>
           <DropdownMenuSub defaultOpen>
             <DropdownMenuSubTrigger inset>DropdownMenuSubTrigger</DropdownMenuSubTrigger>
-            <DropdownMenuPortal data-testid="subject" keepMounted>
+            <DropdownMenuPortal data-subject keepMounted>
               DropdownMenuPortal
             </DropdownMenuPortal>
           </DropdownMenuSub>
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -119,16 +117,14 @@ function renderDropdownMenuTrigger(
     <DropdownMenu defaultOpen>
       <DropdownMenuTrigger>DropdownMenuTrigger</DropdownMenuTrigger>
       <DropdownMenuTrigger
-        data-testid="subject"
+        data-subject
         {...({ children: 'DropdownMenuTrigger', ...props } as ComponentProps<
           typeof DropdownMenuTrigger
         >)}
       />
     </DropdownMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="dropdown-menu-trigger"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="dropdown-menu-trigger"]')
 }
 
 describe('DropdownMenuTrigger', () => {
@@ -147,16 +143,14 @@ function renderDropdownMenuContent(
     <DropdownMenu defaultOpen>
       <DropdownMenuTrigger>DropdownMenuTrigger</DropdownMenuTrigger>
       <DropdownMenuContent
-        data-testid="subject"
+        data-subject
         {...({ children: 'DropdownMenuContent', ...props } as ComponentProps<
           typeof DropdownMenuContent
         >)}
       />
     </DropdownMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="dropdown-menu-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="dropdown-menu-content"]')
 }
 
 function classesOfDropdownMenuContent(
@@ -206,6 +200,34 @@ describe('DropdownMenuContent', () => {
     )
   })
 
+  it('renders with align="center"', () => {
+    expect(renderDropdownMenuContent({ align: 'center' })).toBeTruthy()
+  })
+
+  it('renders with align="end"', () => {
+    expect(renderDropdownMenuContent({ align: 'end' })).toBeTruthy()
+  })
+
+  it('renders with side="left"', () => {
+    expect(renderDropdownMenuContent({ side: 'left' })).toBeTruthy()
+  })
+
+  it('renders with side="right"', () => {
+    expect(renderDropdownMenuContent({ side: 'right' })).toBeTruthy()
+  })
+
+  it('renders with side="top"', () => {
+    expect(renderDropdownMenuContent({ side: 'top' })).toBeTruthy()
+  })
+
+  it('renders with side="inline-start"', () => {
+    expect(renderDropdownMenuContent({ side: 'inline-start' })).toBeTruthy()
+  })
+
+  it('renders with side="inline-end"', () => {
+    expect(renderDropdownMenuContent({ side: 'inline-end' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderDropdownMenuContent({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -217,12 +239,12 @@ describe('DropdownMenuContent', () => {
     render(
       <DropdownMenu defaultOpen>
         <DropdownMenuTrigger>DropdownMenuTrigger</DropdownMenuTrigger>
-        <DropdownMenuContent data-testid="subject" align="end" side="top">
+        <DropdownMenuContent data-subject align="end" side="top">
           DropdownMenuContent
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -235,7 +257,7 @@ function renderDropdownMenuGroup(
       <DropdownMenuTrigger>DropdownMenuTrigger</DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuGroup
-          data-testid="subject"
+          data-subject
           {...({ children: 'DropdownMenuGroup', ...props } as ComponentProps<
             typeof DropdownMenuGroup
           >)}
@@ -243,9 +265,7 @@ function renderDropdownMenuGroup(
       </DropdownMenuContent>
     </DropdownMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="dropdown-menu-group"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="dropdown-menu-group"]')
 }
 
 describe('DropdownMenuGroup', () => {
@@ -265,14 +285,14 @@ describe('DropdownMenuGroup', () => {
             <DropdownMenuSubTrigger inset>DropdownMenuSubTrigger</DropdownMenuSubTrigger>
             <DropdownMenuPortal keepMounted>
               <DropdownMenuSubContent>
-                <DropdownMenuGroup data-testid="subject">DropdownMenuGroup</DropdownMenuGroup>
+                <DropdownMenuGroup data-subject>DropdownMenuGroup</DropdownMenuGroup>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -286,7 +306,7 @@ describe('DropdownMenuGroup', () => {
               <DropdownMenuSubTrigger>DropdownMenuSubTrigger</DropdownMenuSubTrigger>
               <DropdownMenuPortal keepMounted>
                 <DropdownMenuSubContent>
-                  <DropdownMenuGroup data-testid="subject">DropdownMenuGroup</DropdownMenuGroup>
+                  <DropdownMenuGroup data-subject>DropdownMenuGroup</DropdownMenuGroup>
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
@@ -294,7 +314,7 @@ describe('DropdownMenuGroup', () => {
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -308,7 +328,7 @@ function renderDropdownMenuLabel(
       <DropdownMenuContent>
         <DropdownMenuGroup>
           <DropdownMenuLabel
-            data-testid="subject"
+            data-subject
             {...({ children: 'DropdownMenuLabel', ...props } as ComponentProps<
               typeof DropdownMenuLabel
             >)}
@@ -317,9 +337,7 @@ function renderDropdownMenuLabel(
       </DropdownMenuContent>
     </DropdownMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="dropdown-menu-label"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="dropdown-menu-label"]')
 }
 
 function classesOfDropdownMenuLabel(
@@ -346,14 +364,14 @@ describe('DropdownMenuLabel', () => {
         <DropdownMenuTrigger>DropdownMenuTrigger</DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuGroup>
-            <DropdownMenuLabel data-testid="subject" inset>
+            <DropdownMenuLabel data-subject inset>
               DropdownMenuLabel
             </DropdownMenuLabel>
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -367,7 +385,7 @@ function renderDropdownMenuItem(
       <DropdownMenuContent>
         <DropdownMenuGroup>
           <DropdownMenuItem
-            data-testid="subject"
+            data-subject
             {...({ children: 'DropdownMenuItem', ...props } as ComponentProps<
               typeof DropdownMenuItem
             >)}
@@ -376,9 +394,7 @@ function renderDropdownMenuItem(
       </DropdownMenuContent>
     </DropdownMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="dropdown-menu-item"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="dropdown-menu-item"]')
 }
 
 function classesOfDropdownMenuItem(
@@ -408,6 +424,10 @@ describe('DropdownMenuItem', () => {
     )
   })
 
+  it('renders with variant="destructive"', () => {
+    expect(renderDropdownMenuItem({ variant: 'destructive' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderDropdownMenuItem({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -420,11 +440,11 @@ describe('DropdownMenuItem', () => {
       <DropdownMenu defaultOpen>
         <DropdownMenuTrigger>DropdownMenuTrigger</DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem data-testid="subject">DropdownMenuItem</DropdownMenuItem>
+          <DropdownMenuItem data-subject>DropdownMenuItem</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -433,13 +453,13 @@ describe('DropdownMenuItem', () => {
       <DropdownMenu defaultOpen>
         <DropdownMenuTrigger>DropdownMenuTrigger</DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem data-testid="subject" variant="destructive">
+          <DropdownMenuItem data-subject variant="destructive">
             DropdownMenuItem
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -453,7 +473,7 @@ describe('DropdownMenuItem', () => {
               <DropdownMenuSubTrigger>DropdownMenuSubTrigger</DropdownMenuSubTrigger>
               <DropdownMenuPortal keepMounted>
                 <DropdownMenuSubContent>
-                  <DropdownMenuItem data-testid="subject">DropdownMenuItem</DropdownMenuItem>
+                  <DropdownMenuItem data-subject>DropdownMenuItem</DropdownMenuItem>
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
@@ -461,7 +481,7 @@ describe('DropdownMenuItem', () => {
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -474,14 +494,14 @@ describe('DropdownMenuItem', () => {
             <DropdownMenuSubTrigger>DropdownMenuSubTrigger</DropdownMenuSubTrigger>
             <DropdownMenuPortal keepMounted>
               <DropdownMenuSubContent>
-                <DropdownMenuItem data-testid="subject">DropdownMenuItem</DropdownMenuItem>
+                <DropdownMenuItem data-subject>DropdownMenuItem</DropdownMenuItem>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -491,14 +511,14 @@ describe('DropdownMenuItem', () => {
         <DropdownMenuTrigger>DropdownMenuTrigger</DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuGroup>
-            <DropdownMenuItem data-testid="subject" inset>
+            <DropdownMenuItem data-subject inset>
               DropdownMenuItem
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -512,7 +532,7 @@ describe('DropdownMenuItem', () => {
             <DropdownMenuPortal keepMounted>
               <DropdownMenuSubContent>
                 <DropdownMenuGroup>
-                  <DropdownMenuItem data-testid="subject">DropdownMenuItem</DropdownMenuItem>
+                  <DropdownMenuItem data-subject>DropdownMenuItem</DropdownMenuItem>
                 </DropdownMenuGroup>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
@@ -520,7 +540,7 @@ describe('DropdownMenuItem', () => {
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -535,7 +555,7 @@ describe('DropdownMenuItem', () => {
               <DropdownMenuPortal keepMounted>
                 <DropdownMenuSubContent>
                   <DropdownMenuGroup>
-                    <DropdownMenuItem data-testid="subject">DropdownMenuItem</DropdownMenuItem>
+                    <DropdownMenuItem data-subject>DropdownMenuItem</DropdownMenuItem>
                   </DropdownMenuGroup>
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
@@ -544,7 +564,7 @@ describe('DropdownMenuItem', () => {
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -554,14 +574,14 @@ describe('DropdownMenuItem', () => {
         <DropdownMenuTrigger>DropdownMenuTrigger</DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuGroup>
-            <DropdownMenuItem data-testid="subject" variant="destructive">
+            <DropdownMenuItem data-subject variant="destructive">
               DropdownMenuItem
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -611,7 +631,7 @@ function renderDropdownMenuSubTrigger(
           <DropdownMenuSub defaultOpen>
             <DropdownMenuSubTrigger>DropdownMenuSubTrigger</DropdownMenuSubTrigger>
             <DropdownMenuSubTrigger
-              data-testid="subject"
+              data-subject
               {...({ children: 'DropdownMenuSubTrigger', ...props } as ComponentProps<
                 typeof DropdownMenuSubTrigger
               >)}
@@ -622,7 +642,7 @@ function renderDropdownMenuSubTrigger(
     </DropdownMenu>,
   )
   return document
-    .querySelector('[data-testid="subject"]')
+    .querySelector('[data-subject]')
     ?.closest('[data-slot="dropdown-menu-sub-trigger"]')
 }
 
@@ -653,14 +673,12 @@ describe('DropdownMenuSubTrigger', () => {
         <DropdownMenuContent>
           <DropdownMenuSub defaultOpen>
             <DropdownMenuSubTrigger>DropdownMenuSubTrigger</DropdownMenuSubTrigger>
-            <DropdownMenuSubTrigger data-testid="subject">
-              DropdownMenuSubTrigger
-            </DropdownMenuSubTrigger>
+            <DropdownMenuSubTrigger data-subject>DropdownMenuSubTrigger</DropdownMenuSubTrigger>
           </DropdownMenuSub>
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -671,14 +689,14 @@ describe('DropdownMenuSubTrigger', () => {
         <DropdownMenuContent>
           <DropdownMenuSub defaultOpen>
             <DropdownMenuSubTrigger inset>DropdownMenuSubTrigger</DropdownMenuSubTrigger>
-            <DropdownMenuSubTrigger data-testid="subject" inset>
+            <DropdownMenuSubTrigger data-subject inset>
               DropdownMenuSubTrigger
             </DropdownMenuSubTrigger>
           </DropdownMenuSub>
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -695,7 +713,7 @@ function renderDropdownMenuSubContent(
             <DropdownMenuSubTrigger>DropdownMenuSubTrigger</DropdownMenuSubTrigger>
             <DropdownMenuPortal keepMounted>
               <DropdownMenuSubContent
-                data-testid="subject"
+                data-subject
                 {...({ children: 'DropdownMenuSubContent', ...props } as ComponentProps<
                   typeof DropdownMenuSubContent
                 >)}
@@ -707,7 +725,7 @@ function renderDropdownMenuSubContent(
     </DropdownMenu>,
   )
   return document
-    .querySelector('[data-testid="subject"]')
+    .querySelector('[data-subject]')
     ?.closest('[data-slot="dropdown-menu-sub-content"]')
 }
 
@@ -752,6 +770,34 @@ describe('DropdownMenuSubContent', () => {
     )
   })
 
+  it('renders with align="center"', () => {
+    expect(renderDropdownMenuSubContent({ align: 'center' })).toBeTruthy()
+  })
+
+  it('renders with align="end"', () => {
+    expect(renderDropdownMenuSubContent({ align: 'end' })).toBeTruthy()
+  })
+
+  it('renders with side="left"', () => {
+    expect(renderDropdownMenuSubContent({ side: 'left' })).toBeTruthy()
+  })
+
+  it('renders with side="top"', () => {
+    expect(renderDropdownMenuSubContent({ side: 'top' })).toBeTruthy()
+  })
+
+  it('renders with side="bottom"', () => {
+    expect(renderDropdownMenuSubContent({ side: 'bottom' })).toBeTruthy()
+  })
+
+  it('renders with side="inline-start"', () => {
+    expect(renderDropdownMenuSubContent({ side: 'inline-start' })).toBeTruthy()
+  })
+
+  it('renders with side="inline-end"', () => {
+    expect(renderDropdownMenuSubContent({ side: 'inline-end' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderDropdownMenuSubContent({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -767,15 +813,13 @@ describe('DropdownMenuSubContent', () => {
           <DropdownMenuSub defaultOpen>
             <DropdownMenuSubTrigger>DropdownMenuSubTrigger</DropdownMenuSubTrigger>
             <DropdownMenuPortal keepMounted>
-              <DropdownMenuSubContent data-testid="subject">
-                DropdownMenuSubContent
-              </DropdownMenuSubContent>
+              <DropdownMenuSubContent data-subject>DropdownMenuSubContent</DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -787,15 +831,13 @@ describe('DropdownMenuSubContent', () => {
           <DropdownMenuSub defaultOpen>
             <DropdownMenuSubTrigger inset>DropdownMenuSubTrigger</DropdownMenuSubTrigger>
             <DropdownMenuPortal keepMounted>
-              <DropdownMenuSubContent data-testid="subject">
-                DropdownMenuSubContent
-              </DropdownMenuSubContent>
+              <DropdownMenuSubContent data-subject>DropdownMenuSubContent</DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -809,7 +851,7 @@ function renderDropdownMenuCheckboxItem(
       <DropdownMenuContent>
         <DropdownMenuGroup>
           <DropdownMenuCheckboxItem
-            data-testid="subject"
+            data-subject
             {...({ children: 'DropdownMenuCheckboxItem', ...props } as ComponentProps<
               typeof DropdownMenuCheckboxItem
             >)}
@@ -819,7 +861,7 @@ function renderDropdownMenuCheckboxItem(
     </DropdownMenu>,
   )
   return document
-    .querySelector('[data-testid="subject"]')
+    .querySelector('[data-subject]')
     ?.closest('[data-slot="dropdown-menu-checkbox-item"]')
 }
 
@@ -849,14 +891,14 @@ describe('DropdownMenuCheckboxItem', () => {
         <DropdownMenuTrigger>DropdownMenuTrigger</DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuGroup>
-            <DropdownMenuCheckboxItem data-testid="subject" inset>
+            <DropdownMenuCheckboxItem data-subject inset>
               DropdownMenuCheckboxItem
             </DropdownMenuCheckboxItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -870,7 +912,7 @@ function renderDropdownMenuRadioGroup(
       <DropdownMenuContent>
         <DropdownMenuGroup>
           <DropdownMenuRadioGroup
-            data-testid="subject"
+            data-subject
             {...({ children: 'DropdownMenuRadioGroup', ...props } as ComponentProps<
               typeof DropdownMenuRadioGroup
             >)}
@@ -880,7 +922,7 @@ function renderDropdownMenuRadioGroup(
     </DropdownMenu>,
   )
   return document
-    .querySelector('[data-testid="subject"]')
+    .querySelector('[data-subject]')
     ?.closest('[data-slot="dropdown-menu-radio-group"]')
 }
 
@@ -903,7 +945,7 @@ function renderDropdownMenuRadioItem(
         <DropdownMenuGroup>
           <DropdownMenuRadioGroup>
             <DropdownMenuRadioItem
-              data-testid="subject"
+              data-subject
               {...({ value: 'top', children: 'DropdownMenuRadioItem', ...props } as ComponentProps<
                 typeof DropdownMenuRadioItem
               >)}
@@ -913,9 +955,7 @@ function renderDropdownMenuRadioItem(
       </DropdownMenuContent>
     </DropdownMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="dropdown-menu-radio-item"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="dropdown-menu-radio-item"]')
 }
 
 function classesOfDropdownMenuRadioItem(
@@ -945,7 +985,7 @@ describe('DropdownMenuRadioItem', () => {
         <DropdownMenuContent>
           <DropdownMenuGroup>
             <DropdownMenuRadioGroup>
-              <DropdownMenuRadioItem data-testid="subject" value="bottom">
+              <DropdownMenuRadioItem data-subject value="bottom">
                 DropdownMenuRadioItem
               </DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
@@ -953,7 +993,7 @@ describe('DropdownMenuRadioItem', () => {
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -964,7 +1004,7 @@ describe('DropdownMenuRadioItem', () => {
         <DropdownMenuContent>
           <DropdownMenuGroup>
             <DropdownMenuRadioGroup>
-              <DropdownMenuRadioItem data-testid="subject" value="right">
+              <DropdownMenuRadioItem data-subject value="right">
                 DropdownMenuRadioItem
               </DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
@@ -972,7 +1012,7 @@ describe('DropdownMenuRadioItem', () => {
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -983,7 +1023,7 @@ describe('DropdownMenuRadioItem', () => {
         <DropdownMenuContent>
           <DropdownMenuGroup>
             <DropdownMenuRadioGroup>
-              <DropdownMenuRadioItem data-testid="subject" value="card">
+              <DropdownMenuRadioItem data-subject value="card">
                 DropdownMenuRadioItem
               </DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
@@ -991,7 +1031,7 @@ describe('DropdownMenuRadioItem', () => {
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -1002,7 +1042,7 @@ describe('DropdownMenuRadioItem', () => {
         <DropdownMenuContent>
           <DropdownMenuGroup>
             <DropdownMenuRadioGroup>
-              <DropdownMenuRadioItem data-testid="subject" value="paypal">
+              <DropdownMenuRadioItem data-subject value="paypal">
                 DropdownMenuRadioItem
               </DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
@@ -1010,7 +1050,7 @@ describe('DropdownMenuRadioItem', () => {
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -1021,7 +1061,7 @@ describe('DropdownMenuRadioItem', () => {
         <DropdownMenuContent>
           <DropdownMenuGroup>
             <DropdownMenuRadioGroup>
-              <DropdownMenuRadioItem data-testid="subject" value="bank">
+              <DropdownMenuRadioItem data-subject value="bank">
                 DropdownMenuRadioItem
               </DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
@@ -1029,7 +1069,7 @@ describe('DropdownMenuRadioItem', () => {
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -1040,7 +1080,7 @@ describe('DropdownMenuRadioItem', () => {
         <DropdownMenuContent>
           <DropdownMenuGroup>
             <DropdownMenuRadioGroup>
-              <DropdownMenuRadioItem data-testid="subject" inset value="light">
+              <DropdownMenuRadioItem data-subject inset value="light">
                 DropdownMenuRadioItem
               </DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
@@ -1048,7 +1088,7 @@ describe('DropdownMenuRadioItem', () => {
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -1059,7 +1099,7 @@ describe('DropdownMenuRadioItem', () => {
         <DropdownMenuContent>
           <DropdownMenuGroup>
             <DropdownMenuRadioGroup>
-              <DropdownMenuRadioItem data-testid="subject" inset value="dark">
+              <DropdownMenuRadioItem data-subject inset value="dark">
                 DropdownMenuRadioItem
               </DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
@@ -1067,7 +1107,7 @@ describe('DropdownMenuRadioItem', () => {
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -1078,7 +1118,7 @@ describe('DropdownMenuRadioItem', () => {
         <DropdownMenuContent>
           <DropdownMenuGroup>
             <DropdownMenuRadioGroup>
-              <DropdownMenuRadioItem data-testid="subject" inset value="system">
+              <DropdownMenuRadioItem data-subject inset value="system">
                 DropdownMenuRadioItem
               </DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
@@ -1086,7 +1126,7 @@ describe('DropdownMenuRadioItem', () => {
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -1099,15 +1139,13 @@ function renderDropdownMenuSeparator(
       <DropdownMenuTrigger>DropdownMenuTrigger</DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuSeparator
-          data-testid="subject"
+          data-subject
           {...(props as ComponentProps<typeof DropdownMenuSeparator>)}
         />
       </DropdownMenuContent>
     </DropdownMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="dropdown-menu-separator"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="dropdown-menu-separator"]')
 }
 
 function classesOfDropdownMenuSeparator(
@@ -1140,7 +1178,7 @@ describe('DropdownMenuSeparator', () => {
               <DropdownMenuSubTrigger>DropdownMenuSubTrigger</DropdownMenuSubTrigger>
               <DropdownMenuPortal keepMounted>
                 <DropdownMenuSubContent>
-                  <DropdownMenuSeparator data-testid="subject" />
+                  <DropdownMenuSeparator data-subject />
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
@@ -1148,7 +1186,7 @@ describe('DropdownMenuSeparator', () => {
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -1161,14 +1199,14 @@ describe('DropdownMenuSeparator', () => {
             <DropdownMenuSubTrigger>DropdownMenuSubTrigger</DropdownMenuSubTrigger>
             <DropdownMenuPortal keepMounted>
               <DropdownMenuSubContent>
-                <DropdownMenuSeparator data-testid="subject" />
+                <DropdownMenuSeparator data-subject />
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -1183,7 +1221,7 @@ function renderDropdownMenuShortcut(
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <DropdownMenuShortcut
-              data-testid="subject"
+              data-subject
               {...({ children: 'DropdownMenuShortcut', ...props } as ComponentProps<
                 typeof DropdownMenuShortcut
               >)}
@@ -1193,9 +1231,7 @@ function renderDropdownMenuShortcut(
       </DropdownMenuContent>
     </DropdownMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="dropdown-menu-shortcut"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="dropdown-menu-shortcut"]')
 }
 
 function classesOfDropdownMenuShortcut(
@@ -1224,12 +1260,12 @@ describe('DropdownMenuShortcut', () => {
         <DropdownMenuTrigger>DropdownMenuTrigger</DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem>
-            <DropdownMenuShortcut data-testid="subject">DropdownMenuShortcut</DropdownMenuShortcut>
+            <DropdownMenuShortcut data-subject>DropdownMenuShortcut</DropdownMenuShortcut>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -1240,14 +1276,12 @@ describe('DropdownMenuShortcut', () => {
         <DropdownMenuContent>
           <DropdownMenuGroup>
             <DropdownMenuItem variant="destructive">
-              <DropdownMenuShortcut data-testid="subject">
-                DropdownMenuShortcut
-              </DropdownMenuShortcut>
+              <DropdownMenuShortcut data-subject>DropdownMenuShortcut</DropdownMenuShortcut>
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

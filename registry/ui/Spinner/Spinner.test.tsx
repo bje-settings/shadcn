@@ -8,8 +8,8 @@ import styles from './Spinner.module.scss'
 
 function renderSpinner(props: Partial<Record<keyof ComponentProps<typeof Spinner>, unknown>> = {}) {
   cleanup()
-  render(<Spinner data-testid="subject" {...(props as ComponentProps<typeof Spinner>)} />)
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="spinner"]')
+  render(<Spinner data-subject {...(props as ComponentProps<typeof Spinner>)} />)
+  return document.querySelector('[data-subject]')?.closest('[data-slot="spinner"]')
 }
 
 function classesOfSpinner(
@@ -31,7 +31,7 @@ describe('Spinner', () => {
 
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
-    render(<Spinner data-testid="subject" data-icon="inline-start" />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Spinner data-subject data-icon="inline-start" />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

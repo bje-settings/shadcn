@@ -32,7 +32,7 @@ function renderHoverCardTrigger(
         HoverCardTrigger
       </HoverCardTrigger>
       <HoverCardTrigger
-        data-testid="subject"
+        data-subject
         {...({
           delay: 100,
           closeDelay: 100,
@@ -42,9 +42,7 @@ function renderHoverCardTrigger(
       />
     </HoverCard>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="hover-card-trigger"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="hover-card-trigger"]')
 }
 
 describe('HoverCardTrigger', () => {
@@ -65,14 +63,12 @@ function renderHoverCardContent(
         HoverCardTrigger
       </HoverCardTrigger>
       <HoverCardContent
-        data-testid="subject"
+        data-subject
         {...({ children: 'HoverCardContent', ...props } as ComponentProps<typeof HoverCardContent>)}
       />
     </HoverCard>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="hover-card-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="hover-card-content"]')
 }
 
 function classesOfHoverCardContent(
@@ -112,6 +108,34 @@ describe('HoverCardContent', () => {
 
   it('renders the same with alignOffset=4 passed explicitly', () => {
     expect(attributesOfHoverCardContent({ alignOffset: 4 })).toEqual(attributesOfHoverCardContent())
+  })
+
+  it('renders with side="left"', () => {
+    expect(renderHoverCardContent({ side: 'left' })).toBeTruthy()
+  })
+
+  it('renders with side="right"', () => {
+    expect(renderHoverCardContent({ side: 'right' })).toBeTruthy()
+  })
+
+  it('renders with side="top"', () => {
+    expect(renderHoverCardContent({ side: 'top' })).toBeTruthy()
+  })
+
+  it('renders with side="inline-start"', () => {
+    expect(renderHoverCardContent({ side: 'inline-start' })).toBeTruthy()
+  })
+
+  it('renders with side="inline-end"', () => {
+    expect(renderHoverCardContent({ side: 'inline-end' })).toBeTruthy()
+  })
+
+  it('renders with align="start"', () => {
+    expect(renderHoverCardContent({ align: 'start' })).toBeTruthy()
+  })
+
+  it('renders with align="end"', () => {
+    expect(renderHoverCardContent({ align: 'end' })).toBeTruthy()
   })
 
   it('appends a consumer className last', () => {

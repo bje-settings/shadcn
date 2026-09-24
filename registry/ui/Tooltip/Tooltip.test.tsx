@@ -45,12 +45,12 @@ function renderTooltipTrigger(
     <Tooltip defaultOpen>
       <TooltipTrigger>TooltipTrigger</TooltipTrigger>
       <TooltipTrigger
-        data-testid="subject"
+        data-subject
         {...({ children: 'TooltipTrigger', ...props } as ComponentProps<typeof TooltipTrigger>)}
       />
     </Tooltip>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="tooltip-trigger"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="tooltip-trigger"]')
 }
 
 describe('TooltipTrigger', () => {
@@ -69,12 +69,12 @@ function renderTooltipContent(
     <Tooltip defaultOpen>
       <TooltipTrigger>TooltipTrigger</TooltipTrigger>
       <TooltipContent
-        data-testid="subject"
+        data-subject
         {...({ children: 'TooltipContent', ...props } as ComponentProps<typeof TooltipContent>)}
       />
     </Tooltip>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="tooltip-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="tooltip-content"]')
 }
 
 function classesOfTooltipContent(
@@ -112,6 +112,34 @@ describe('TooltipContent', () => {
 
   it('renders the same with alignOffset=0 passed explicitly', () => {
     expect(attributesOfTooltipContent({ alignOffset: 0 })).toEqual(attributesOfTooltipContent())
+  })
+
+  it('renders with side="left"', () => {
+    expect(renderTooltipContent({ side: 'left' })).toBeTruthy()
+  })
+
+  it('renders with side="right"', () => {
+    expect(renderTooltipContent({ side: 'right' })).toBeTruthy()
+  })
+
+  it('renders with side="bottom"', () => {
+    expect(renderTooltipContent({ side: 'bottom' })).toBeTruthy()
+  })
+
+  it('renders with side="inline-start"', () => {
+    expect(renderTooltipContent({ side: 'inline-start' })).toBeTruthy()
+  })
+
+  it('renders with side="inline-end"', () => {
+    expect(renderTooltipContent({ side: 'inline-end' })).toBeTruthy()
+  })
+
+  it('renders with align="start"', () => {
+    expect(renderTooltipContent({ align: 'start' })).toBeTruthy()
+  })
+
+  it('renders with align="end"', () => {
+    expect(renderTooltipContent({ align: 'end' })).toBeTruthy()
   })
 
   it('appends a consumer className last', () => {

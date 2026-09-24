@@ -14,8 +14,8 @@ function renderSeparator(
   props: Partial<Record<keyof ComponentProps<typeof Separator>, unknown>> = {},
 ) {
   cleanup()
-  render(<Separator data-testid="subject" {...(props as ComponentProps<typeof Separator>)} />)
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="separator"]')
+  render(<Separator data-subject {...(props as ComponentProps<typeof Separator>)} />)
+  return document.querySelector('[data-subject]')?.closest('[data-slot="separator"]')
 }
 
 function classesOfSeparator(
@@ -43,6 +43,10 @@ describe('Separator', () => {
     expect(attributesOfSeparator({ orientation: 'horizontal' })).toEqual(attributesOfSeparator())
   })
 
+  it('renders with orientation="vertical"', () => {
+    expect(renderSeparator({ orientation: 'vertical' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderSeparator({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -51,7 +55,7 @@ describe('Separator', () => {
 
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
-    render(<Separator data-testid="subject" orientation="vertical" />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Separator data-subject orientation="vertical" />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

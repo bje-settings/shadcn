@@ -193,13 +193,13 @@ function unrenderedTest(
   attributes: Attributes,
   reason: string,
 ): string[] {
-  const element = `<${component.name} data-testid="subject"${attributes(component.name, scaffold.props)} />`
+  const element = `<${component.name} data-subject${attributes(component.name, scaffold.props)} />`
   return [
     `describe(${q(component.name)}, () => {`,
     `  it(${q(`renders nothing in jsdom: ${reason}`)}, () => {`,
     '    cleanup()',
     `    render(${scaffolded(scaffold.ancestors, element, attributes)})`,
-    '    expect(document.querySelector(\'[data-testid="subject"]\')).toBeNull()',
+    "    expect(document.querySelector('[data-subject]')).toBeNull()",
     '  })',
     '})',
   ]
@@ -236,6 +236,8 @@ function componentTests(
   // (CommandDialog spreads them onto Dialog's root): only its className,
   // passed on to an element, can be checked.
   detached: boolean,
+  // Its props' string-literal union values
+  options: Record<string, string[]>,
 ): string[] {
   const render = `render${component.name}`
   const classes = `classesOf${component.name}`
@@ -272,14 +274,14 @@ function componentTests(
   const spread = Object.keys(own).length > 0 ? objectLiteral(own, 'props') : 'props'
   const rendered = scaffolded(
     scaffold.ancestors,
-    `<${component.name} data-testid="subject" {...(${spread} as ${props})} />`,
+    `<${component.name} data-subject {...(${spread} as ${props})} />`,
     attributes,
   )
-  // The component under test carries data-testid="subject", so a copy of
+  // The component under test carries data-subject, so a copy of
   // the same part its scaffold renders (Progress renders its own
   // ProgressTrack) is never the one checked. Its data-slot element is the
   // subject or encloses it (NativeSelect's wrapper around the select).
-  const subject = `document.querySelector('[data-testid="subject"]')`
+  const subject = `document.querySelector('[data-subject]')`
   const found =
     component.dataSlot === undefined
       ? subject
@@ -362,14 +364,28 @@ function componentTests(
       '  })',
     )
   }
-  // A boolean default switches something on or off (DialogFooter's close
-  // button): the other value renders too.
-  for (const { prop, value } of explicit.filter((d) => d.value === 'true' || d.value === 'false')) {
-    const flipped = value === 'true' ? 'false' : 'true'
+  // A default switches something on or off (DialogFooter's close button) or
+  // picks one of a union's values (MessageScrollerButton's direction): the
+  // other values render too.
+  for (const { prop, value } of explicit) {
+    const others =
+      value === 'true' || value === 'false'
+        ? [value === 'true' ? 'false' : 'true']
+        : (options[prop] ?? []).map(q).filter((option) => option !== value)
+    for (const other of others) {
+      lines.push(
+        '',
+        `  it(${q(`renders with ${prop}=${other}`)}, () => {`,
+        `    expect(${render}({ ${prop}: ${other} })).toBeTruthy()`,
+        '  })',
+      )
+    }
+  }
+  if (component.defaultChildren && scaffold.children) {
     lines.push(
       '',
-      `  it(${q(`renders with ${prop}=${flipped}`)}, () => {`,
-      `    expect(${render}({ ${prop}: ${flipped} })).toBeTruthy()`,
+      '  it("renders its default content without children", () => {',
+      `    expect(${render}({ children: undefined })).toBeTruthy()`,
       '  })',
     )
   }
@@ -394,10 +410,10 @@ function componentTests(
     ...usageTests(
       detached ? [] : scaffold.others,
       (usage) => {
-        const open = `<${component.name} data-testid="subject"${attributes(component.name, usage.props)}`
+        const open = `<${component.name} data-subject${attributes(component.name, usage.props)}`
         return usage.children ? `${open}>${component.name}</${component.name}>` : `${open} />`
       },
-      '[data-testid="subject"]',
+      '[data-subject]',
       attributes,
     ),
     '})',
@@ -492,6 +508,7 @@ export function generateTest(
                 attributes,
                 parts.unstyled,
                 parts.external.get(component.tag ?? '')?.className === false,
+                parts.types.get(component.name)?.options ?? {},
               )),
     ]),
     ...(forwarded.length > 0

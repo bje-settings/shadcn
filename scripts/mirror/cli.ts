@@ -210,7 +210,13 @@ async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
       markers: markerSelectors(prepared, component),
       classProbe: probe,
       types: itemTypes,
-      scaffolds: scaffolds(name, exampleSources.get(name), itemTypes, component.transformed),
+      scaffolds: scaffolds(
+        name,
+        exampleSources.get(name),
+        itemTypes,
+        component.transformed,
+        config.testProps[name],
+      ),
       external: new Map(
         // Every registry import is a mirrored item, which partTypes covers.
         component.transformed.registryImports.flatMap((item) => [

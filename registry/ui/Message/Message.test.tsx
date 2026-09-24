@@ -23,11 +23,11 @@ function renderMessageGroup(
   cleanup()
   render(
     <MessageGroup
-      data-testid="subject"
+      data-subject
       {...({ children: 'MessageGroup', ...props } as ComponentProps<typeof MessageGroup>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="message-group"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="message-group"]')
 }
 
 function classesOfMessageGroup(
@@ -52,11 +52,11 @@ function renderMessage(props: Partial<Record<keyof ComponentProps<typeof Message
   cleanup()
   render(
     <Message
-      data-testid="subject"
+      data-subject
       {...({ children: 'Message', ...props } as ComponentProps<typeof Message>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="message"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="message"]')
 }
 
 function classesOfMessage(
@@ -84,6 +84,10 @@ describe('Message', () => {
     expect(attributesOfMessage({ align: 'start' })).toEqual(attributesOfMessage())
   })
 
+  it('renders with align="end"', () => {
+    expect(renderMessage({ align: 'end' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderMessage({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -92,40 +96,40 @@ describe('Message', () => {
 
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
-    render(<Message data-testid="subject">Message</Message>)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Message data-subject>Message</Message>)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <MessageGroup>
-        <Message data-testid="subject">Message</Message>
+        <Message data-subject>Message</Message>
       </MessageGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <MessageGroup>
-        <Message data-testid="subject" align="end">
+        <Message data-subject align="end">
           Message
         </Message>
       </MessageGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
-      <Message data-testid="subject" align="start">
+      <Message data-subject align="start">
         Message
       </Message>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -136,12 +140,12 @@ function renderMessageAvatar(
   render(
     <Message>
       <MessageAvatar
-        data-testid="subject"
+        data-subject
         {...({ children: 'MessageAvatar', ...props } as ComponentProps<typeof MessageAvatar>)}
       />
     </Message>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="message-avatar"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="message-avatar"]')
 }
 
 function classesOfMessageAvatar(
@@ -165,10 +169,10 @@ describe('MessageAvatar', () => {
     cleanup()
     render(
       <Message align="end">
-        <MessageAvatar data-testid="subject">MessageAvatar</MessageAvatar>
+        <MessageAvatar data-subject>MessageAvatar</MessageAvatar>
       </Message>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -176,11 +180,11 @@ describe('MessageAvatar', () => {
     render(
       <MessageGroup>
         <Message align="end">
-          <MessageAvatar data-testid="subject" />
+          <MessageAvatar data-subject />
         </Message>
       </MessageGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -188,11 +192,11 @@ describe('MessageAvatar', () => {
     render(
       <MessageGroup>
         <Message align="end">
-          <MessageAvatar data-testid="subject">MessageAvatar</MessageAvatar>
+          <MessageAvatar data-subject>MessageAvatar</MessageAvatar>
         </Message>
       </MessageGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -200,11 +204,11 @@ describe('MessageAvatar', () => {
     render(
       <MessageGroup>
         <Message>
-          <MessageAvatar data-testid="subject" />
+          <MessageAvatar data-subject />
         </Message>
       </MessageGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -212,11 +216,11 @@ describe('MessageAvatar', () => {
     render(
       <MessageGroup>
         <Message>
-          <MessageAvatar data-testid="subject">MessageAvatar</MessageAvatar>
+          <MessageAvatar data-subject>MessageAvatar</MessageAvatar>
         </Message>
       </MessageGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -227,12 +231,12 @@ function renderMessageContent(
   render(
     <Message align="end">
       <MessageContent
-        data-testid="subject"
+        data-subject
         {...({ children: 'MessageContent', ...props } as ComponentProps<typeof MessageContent>)}
       />
     </Message>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="message-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="message-content"]')
 }
 
 function classesOfMessageContent(
@@ -256,10 +260,10 @@ describe('MessageContent', () => {
     cleanup()
     render(
       <Message>
-        <MessageContent data-testid="subject">MessageContent</MessageContent>
+        <MessageContent data-subject>MessageContent</MessageContent>
       </Message>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -267,11 +271,11 @@ describe('MessageContent', () => {
     render(
       <MessageGroup>
         <Message>
-          <MessageContent data-testid="subject">MessageContent</MessageContent>
+          <MessageContent data-subject>MessageContent</MessageContent>
         </Message>
       </MessageGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -279,21 +283,21 @@ describe('MessageContent', () => {
     render(
       <MessageGroup>
         <Message align="end">
-          <MessageContent data-testid="subject">MessageContent</MessageContent>
+          <MessageContent data-subject>MessageContent</MessageContent>
         </Message>
       </MessageGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <Message align="start">
-        <MessageContent data-testid="subject">MessageContent</MessageContent>
+        <MessageContent data-subject>MessageContent</MessageContent>
       </Message>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -305,13 +309,13 @@ function renderMessageHeader(
     <Message>
       <MessageContent>
         <MessageHeader
-          data-testid="subject"
+          data-subject
           {...({ children: 'MessageHeader', ...props } as ComponentProps<typeof MessageHeader>)}
         />
       </MessageContent>
     </Message>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="message-header"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="message-header"]')
 }
 
 function classesOfMessageHeader(
@@ -336,11 +340,11 @@ describe('MessageHeader', () => {
     render(
       <Message align="end">
         <MessageContent>
-          <MessageHeader data-testid="subject">MessageHeader</MessageHeader>
+          <MessageHeader data-subject>MessageHeader</MessageHeader>
         </MessageContent>
       </Message>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -348,11 +352,11 @@ describe('MessageHeader', () => {
     render(
       <Message align="start">
         <MessageContent>
-          <MessageHeader data-testid="subject">MessageHeader</MessageHeader>
+          <MessageHeader data-subject>MessageHeader</MessageHeader>
         </MessageContent>
       </Message>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -364,13 +368,13 @@ function renderMessageFooter(
     <Message align="end">
       <MessageContent>
         <MessageFooter
-          data-testid="subject"
+          data-subject
           {...({ children: 'MessageFooter', ...props } as ComponentProps<typeof MessageFooter>)}
         />
       </MessageContent>
     </Message>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="message-footer"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="message-footer"]')
 }
 
 function classesOfMessageFooter(
@@ -395,11 +399,11 @@ describe('MessageFooter', () => {
     render(
       <Message align="start">
         <MessageContent>
-          <MessageFooter data-testid="subject">MessageFooter</MessageFooter>
+          <MessageFooter data-subject>MessageFooter</MessageFooter>
         </MessageContent>
       </Message>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -407,10 +411,10 @@ describe('MessageFooter', () => {
     render(
       <Message>
         <MessageContent>
-          <MessageFooter data-testid="subject">MessageFooter</MessageFooter>
+          <MessageFooter data-subject>MessageFooter</MessageFooter>
         </MessageContent>
       </Message>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

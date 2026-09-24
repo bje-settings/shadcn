@@ -1527,6 +1527,147 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "sonner",
+      "type": "registry:ui",
+      "title": "Sonner",
+      "dependencies": ["lucide-react", "next-themes", "sonner"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Sonner/Sonner.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Sonner/Sonner.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Sonner/Sonner.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "toast",
+      "type": "registry:ui",
+      "title": "Toast",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@base-ui/react",
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Toast/Toast.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Toast/Toast.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Toast/Toast.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "resizable",
+      "type": "registry:ui",
+      "title": "Resizable",
+      "dependencies": ["clsx", "react-resizable-panels"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Resizable/Resizable.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Resizable/Resizable.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Resizable/Resizable.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "questionnaire",
+      "type": "registry:ui",
+      "title": "Questionnaire",
+      "dependencies": ["@shadcn/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Questionnaire/Questionnaire.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Questionnaire/Questionnaire.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Questionnaire/Questionnaire.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "message-scroller",
+      "type": "registry:ui",
+      "title": "MessageScroller",
+      "dependencies": ["@shadcn/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/MessageScroller/MessageScroller.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/MessageScroller/MessageScroller.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/MessageScroller/MessageScroller.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

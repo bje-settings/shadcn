@@ -12,13 +12,13 @@ function renderRadioGroup(
   cleanup()
   render(
     <RadioGroup
-      data-testid="subject"
+      data-subject
       {...({ defaultValue: 'comfortable', children: 'RadioGroup', ...props } as ComponentProps<
         typeof RadioGroup
       >)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="radio-group"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="radio-group"]')
 }
 
 function classesOfRadioGroup(
@@ -41,41 +41,41 @@ describe('RadioGroup', () => {
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
     render(
-      <RadioGroup data-testid="subject" defaultValue="plus">
+      <RadioGroup data-subject defaultValue="plus">
         RadioGroup
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
-      <RadioGroup data-testid="subject" defaultValue="medium">
+      <RadioGroup data-subject defaultValue="medium">
         RadioGroup
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
-      <RadioGroup data-testid="subject" defaultValue="option2">
+      <RadioGroup data-subject defaultValue="option2">
         RadioGroup
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
-      <RadioGroup data-testid="subject" defaultValue="email">
+      <RadioGroup data-subject defaultValue="email">
         RadioGroup
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -86,14 +86,12 @@ function renderRadioGroupItem(
   render(
     <RadioGroup defaultValue="comfortable">
       <RadioGroupItem
-        data-testid="subject"
+        data-subject
         {...({ value: 'default', id: 'r1', ...props } as ComponentProps<typeof RadioGroupItem>)}
       />
     </RadioGroup>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="radio-group-item"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="radio-group-item"]')
 }
 
 function classesOfRadioGroupItem(
@@ -117,179 +115,179 @@ describe('RadioGroupItem', () => {
     cleanup()
     render(
       <RadioGroup defaultValue="comfortable">
-        <RadioGroupItem data-testid="subject" value="comfortable" id="r2" />
+        <RadioGroupItem data-subject value="comfortable" id="r2" />
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <RadioGroup defaultValue="comfortable">
-        <RadioGroupItem data-testid="subject" value="compact" id="r3" />
+        <RadioGroupItem data-subject value="compact" id="r3" />
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <RadioGroup defaultValue="plus">
-        <RadioGroupItem data-testid="subject" value="plus" id="plus-plan" />
+        <RadioGroupItem data-subject value="plus" id="plus-plan" />
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <RadioGroup defaultValue="plus">
-        <RadioGroupItem data-testid="subject" value="pro" id="pro-plan" />
+        <RadioGroupItem data-subject value="pro" id="pro-plan" />
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
       <RadioGroup defaultValue="plus">
-        <RadioGroupItem data-testid="subject" value="enterprise" id="enterprise-plan" />
+        <RadioGroupItem data-subject value="enterprise" id="enterprise-plan" />
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
       <RadioGroup defaultValue="medium">
-        <RadioGroupItem data-testid="subject" value="high" id="battery-high" />
+        <RadioGroupItem data-subject value="high" id="battery-high" />
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
     render(
       <RadioGroup defaultValue="medium">
-        <RadioGroupItem data-testid="subject" value="medium" id="battery-medium" />
+        <RadioGroupItem data-subject value="medium" id="battery-medium" />
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
     cleanup()
     render(
       <RadioGroup defaultValue="medium">
-        <RadioGroupItem data-testid="subject" value="low" id="battery-low" />
+        <RadioGroupItem data-subject value="low" id="battery-low" />
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
     cleanup()
     render(
       <RadioGroup defaultValue="medium">
-        <RadioGroupItem data-testid="subject" value="small" id="size-small" />
+        <RadioGroupItem data-subject value="small" id="size-small" />
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
     cleanup()
     render(
       <RadioGroup defaultValue="medium">
-        <RadioGroupItem data-testid="subject" value="medium" id="size-medium" />
+        <RadioGroupItem data-subject value="medium" id="size-medium" />
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
     cleanup()
     render(
       <RadioGroup defaultValue="medium">
-        <RadioGroupItem data-testid="subject" value="large" id="size-large" />
+        <RadioGroupItem data-subject value="large" id="size-large" />
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
     cleanup()
     render(
       <RadioGroup defaultValue="medium">
-        <RadioGroupItem data-testid="subject" value="xlarge" id="size-xlarge" />
+        <RadioGroupItem data-subject value="xlarge" id="size-xlarge" />
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
     cleanup()
     render(
       <RadioGroup defaultValue="option2">
-        <RadioGroupItem data-testid="subject" value="option1" id="disabled-1" />
+        <RadioGroupItem data-subject value="option1" id="disabled-1" />
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (15)", () => {
     cleanup()
     render(
       <RadioGroup defaultValue="option2">
-        <RadioGroupItem data-testid="subject" value="option2" id="disabled-2" />
+        <RadioGroupItem data-subject value="option2" id="disabled-2" />
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (16)", () => {
     cleanup()
     render(
       <RadioGroup defaultValue="option2">
-        <RadioGroupItem data-testid="subject" value="option3" id="disabled-3" />
+        <RadioGroupItem data-subject value="option3" id="disabled-3" />
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (17)", () => {
     cleanup()
     render(
       <RadioGroup defaultValue="email">
-        <RadioGroupItem data-testid="subject" value="email" id="invalid-email" aria-invalid />
+        <RadioGroupItem data-subject value="email" id="invalid-email" aria-invalid />
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (18)", () => {
     cleanup()
     render(
       <RadioGroup defaultValue="email">
-        <RadioGroupItem data-testid="subject" value="sms" id="invalid-sms" aria-invalid />
+        <RadioGroupItem data-subject value="sms" id="invalid-sms" aria-invalid />
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (19)", () => {
     cleanup()
     render(
       <RadioGroup defaultValue="email">
-        <RadioGroupItem data-testid="subject" value="both" id="invalid-both" aria-invalid />
+        <RadioGroupItem data-subject value="both" id="invalid-both" aria-invalid />
       </RadioGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

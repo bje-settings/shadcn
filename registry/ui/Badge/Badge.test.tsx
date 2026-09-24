@@ -9,12 +9,9 @@ import styles from './Badge.module.scss'
 function renderBadge(props: Partial<Record<keyof ComponentProps<typeof Badge>, unknown>> = {}) {
   cleanup()
   render(
-    <Badge
-      data-testid="subject"
-      {...({ children: 'Badge', ...props } as ComponentProps<typeof Badge>)}
-    />,
+    <Badge data-subject {...({ children: 'Badge', ...props } as ComponentProps<typeof Badge>)} />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="badge"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="badge"]')
 }
 
 function classesOfBadge(props: Partial<Record<keyof ComponentProps<typeof Badge>, unknown>> = {}) {
@@ -61,75 +58,75 @@ describe('Badge', () => {
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
     render(
-      <Badge data-testid="subject" variant="secondary">
+      <Badge data-subject variant="secondary">
         Badge
       </Badge>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
-      <Badge data-testid="subject" variant="destructive">
+      <Badge data-subject variant="destructive">
         Badge
       </Badge>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
-      <Badge data-testid="subject" variant="outline">
+      <Badge data-subject variant="outline">
         Badge
       </Badge>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
-      <Badge data-testid="subject" variant="ghost">
+      <Badge data-subject variant="ghost">
         Badge
       </Badge>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
-      <Badge data-testid="subject" variant="link">
+      <Badge data-subject variant="link">
         Badge
       </Badge>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
-    render(<Badge data-testid="subject" />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Badge data-subject />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
-    render(<Badge data-testid="subject" variant="secondary" />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Badge data-subject variant="secondary" />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
     cleanup()
-    render(<Badge data-testid="subject" variant="destructive" />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Badge data-subject variant="destructive" />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
     cleanup()
-    render(<Badge data-testid="subject" variant="ghost" />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Badge data-subject variant="ghost" />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 

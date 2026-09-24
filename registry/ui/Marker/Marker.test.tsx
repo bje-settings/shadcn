@@ -10,11 +10,11 @@ function renderMarker(props: Partial<Record<keyof ComponentProps<typeof Marker>,
   cleanup()
   render(
     <Marker
-      data-testid="subject"
+      data-subject
       {...({ children: 'Marker', ...props } as ComponentProps<typeof Marker>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="marker"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="marker"]')
 }
 
 function classesOfMarker(
@@ -52,41 +52,41 @@ describe('Marker', () => {
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
     render(
-      <Marker data-testid="subject" role="status">
+      <Marker data-subject role="status">
         Marker
       </Marker>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
-      <Marker data-testid="subject" variant="border">
+      <Marker data-subject variant="border">
         Marker
       </Marker>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
-      <Marker data-testid="subject" variant="separator">
+      <Marker data-subject variant="separator">
         Marker
       </Marker>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
-      <Marker data-testid="subject" variant="separator" role="status">
+      <Marker data-subject variant="separator" role="status">
         Marker
       </Marker>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -97,12 +97,12 @@ function renderMarkerIcon(
   render(
     <Marker>
       <MarkerIcon
-        data-testid="subject"
+        data-subject
         {...({ children: 'MarkerIcon', ...props } as ComponentProps<typeof MarkerIcon>)}
       />
     </Marker>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="marker-icon"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="marker-icon"]')
 }
 
 function classesOfMarkerIcon(
@@ -126,40 +126,40 @@ describe('MarkerIcon', () => {
     cleanup()
     render(
       <Marker role="status">
-        <MarkerIcon data-testid="subject">MarkerIcon</MarkerIcon>
+        <MarkerIcon data-subject>MarkerIcon</MarkerIcon>
       </Marker>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Marker variant="border">
-        <MarkerIcon data-testid="subject">MarkerIcon</MarkerIcon>
+        <MarkerIcon data-subject>MarkerIcon</MarkerIcon>
       </Marker>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <Marker variant="separator" role="status">
-        <MarkerIcon data-testid="subject">MarkerIcon</MarkerIcon>
+        <MarkerIcon data-subject>MarkerIcon</MarkerIcon>
       </Marker>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <Marker variant="separator">
-        <MarkerIcon data-testid="subject">MarkerIcon</MarkerIcon>
+        <MarkerIcon data-subject>MarkerIcon</MarkerIcon>
       </Marker>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -170,12 +170,12 @@ function renderMarkerContent(
   render(
     <Marker>
       <MarkerContent
-        data-testid="subject"
+        data-subject
         {...({ children: 'MarkerContent', ...props } as ComponentProps<typeof MarkerContent>)}
       />
     </Marker>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="marker-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="marker-content"]')
 }
 
 function classesOfMarkerContent(
@@ -199,40 +199,40 @@ describe('MarkerContent', () => {
     cleanup()
     render(
       <Marker role="status">
-        <MarkerContent data-testid="subject">MarkerContent</MarkerContent>
+        <MarkerContent data-subject>MarkerContent</MarkerContent>
       </Marker>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Marker variant="border">
-        <MarkerContent data-testid="subject">MarkerContent</MarkerContent>
+        <MarkerContent data-subject>MarkerContent</MarkerContent>
       </Marker>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <Marker variant="separator">
-        <MarkerContent data-testid="subject">MarkerContent</MarkerContent>
+        <MarkerContent data-subject>MarkerContent</MarkerContent>
       </Marker>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <Marker variant="separator" role="status">
-        <MarkerContent data-testid="subject">MarkerContent</MarkerContent>
+        <MarkerContent data-subject>MarkerContent</MarkerContent>
       </Marker>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 

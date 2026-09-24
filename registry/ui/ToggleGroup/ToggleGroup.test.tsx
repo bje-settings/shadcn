@@ -16,13 +16,13 @@ function renderToggleGroup(
   cleanup()
   render(
     <ToggleGroup
-      data-testid="subject"
+      data-subject
       {...({ multiple: true, children: 'ToggleGroup', ...props } as ComponentProps<
         typeof ToggleGroup
       >)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="toggle-group"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="toggle-group"]')
 }
 
 function classesOfToggleGroup(
@@ -56,6 +56,10 @@ describe('ToggleGroup', () => {
     )
   })
 
+  it('renders with orientation="vertical"', () => {
+    expect(renderToggleGroup({ orientation: 'vertical' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderToggleGroup({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -65,124 +69,118 @@ describe('ToggleGroup', () => {
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
     render(
-      <ToggleGroup data-testid="subject" variant="outline" defaultValue={['all']}>
+      <ToggleGroup data-subject variant="outline" defaultValue={['all']}>
         ToggleGroup
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
-      <ToggleGroup data-testid="subject" variant="outline" multiple size="sm">
+      <ToggleGroup data-subject variant="outline" multiple size="sm">
         ToggleGroup
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
-      <ToggleGroup data-testid="subject" size="sm" defaultValue={['top']} variant="outline">
+      <ToggleGroup data-subject size="sm" defaultValue={['top']} variant="outline">
         ToggleGroup
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
-      <ToggleGroup data-testid="subject" defaultValue={['top']} variant="outline">
+      <ToggleGroup data-subject defaultValue={['top']} variant="outline">
         ToggleGroup
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
-      <ToggleGroup data-testid="subject" size="sm" defaultValue={['top']} spacing={2}>
+      <ToggleGroup data-subject size="sm" defaultValue={['top']} spacing={2}>
         ToggleGroup
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
-      <ToggleGroup data-testid="subject" multiple variant="outline" spacing={2} size="sm">
+      <ToggleGroup data-subject multiple variant="outline" spacing={2} size="sm">
         ToggleGroup
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
     render(
-      <ToggleGroup data-testid="subject" defaultValue={['all']} variant="outline" size="sm">
+      <ToggleGroup data-subject defaultValue={['all']} variant="outline" size="sm">
         ToggleGroup
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
     cleanup()
     render(
-      <ToggleGroup
-        data-testid="subject"
-        defaultValue={['today']}
-        variant="outline"
-        size="sm"
-        spacing={2}
-      >
+      <ToggleGroup data-subject defaultValue={['today']} variant="outline" size="sm" spacing={2}>
         ToggleGroup
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
     cleanup()
     render(
-      <ToggleGroup data-testid="subject" defaultValue={['newest']} variant="outline" size="sm">
+      <ToggleGroup data-subject defaultValue={['newest']} variant="outline" size="sm">
         ToggleGroup
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
     cleanup()
     render(
-      <ToggleGroup data-testid="subject" defaultValue={['grid']} variant="outline">
+      <ToggleGroup data-subject defaultValue={['grid']} variant="outline">
         ToggleGroup
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
     cleanup()
     render(
-      <ToggleGroup data-testid="subject" multiple orientation="vertical" spacing={1}>
+      <ToggleGroup data-subject multiple orientation="vertical" spacing={1}>
         ToggleGroup
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
     cleanup()
     render(
       <ToggleGroup
-        data-testid="subject"
+        data-subject
         variant="outline"
         defaultValue={['all']}
         orientation="vertical"
@@ -191,49 +189,37 @@ describe('ToggleGroup', () => {
         ToggleGroup
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
     cleanup()
     render(
-      <ToggleGroup
-        data-testid="subject"
-        variant="outline"
-        multiple
-        orientation="vertical"
-        size="sm"
-      >
+      <ToggleGroup data-subject variant="outline" multiple orientation="vertical" size="sm">
         ToggleGroup
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (15)", () => {
     cleanup()
     render(
-      <ToggleGroup data-testid="subject" variant="outline" spacing={2} size="lg">
+      <ToggleGroup data-subject variant="outline" spacing={2} size="lg">
         ToggleGroup
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (16)", () => {
     cleanup()
     render(
-      <ToggleGroup
-        data-testid="subject"
-        size="sm"
-        defaultValue={['top']}
-        orientation="vertical"
-        spacing={1}
-      >
+      <ToggleGroup data-subject size="sm" defaultValue={['top']} orientation="vertical" spacing={1}>
         ToggleGroup
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -244,7 +230,7 @@ function renderToggleGroupItem(
   render(
     <ToggleGroup multiple spacing={1}>
       <ToggleGroupItem
-        data-testid="subject"
+        data-subject
         {...({
           value: 'bold',
           'aria-label': 'Toggle bold',
@@ -254,9 +240,7 @@ function renderToggleGroupItem(
       />
     </ToggleGroup>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="toggle-group-item"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="toggle-group-item"]')
 }
 
 function classesOfToggleGroupItem(
@@ -300,635 +284,635 @@ describe('ToggleGroupItem', () => {
     cleanup()
     render(
       <ToggleGroup multiple spacing={1}>
-        <ToggleGroupItem data-testid="subject" value="italic" aria-label="Toggle italic">
+        <ToggleGroupItem data-subject value="italic" aria-label="Toggle italic">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <ToggleGroup multiple spacing={1}>
-        <ToggleGroupItem data-testid="subject" value="underline" aria-label="Toggle underline">
+        <ToggleGroupItem data-subject value="underline" aria-label="Toggle underline">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <ToggleGroup variant="outline" defaultValue={['all']}>
-        <ToggleGroupItem data-testid="subject" value="all" aria-label="Toggle all">
+        <ToggleGroupItem data-subject value="all" aria-label="Toggle all">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <ToggleGroup variant="outline" defaultValue={['all']}>
-        <ToggleGroupItem data-testid="subject" value="missed" aria-label="Toggle missed">
+        <ToggleGroupItem data-subject value="missed" aria-label="Toggle missed">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
       <ToggleGroup variant="outline" multiple size="sm">
-        <ToggleGroupItem data-testid="subject" value="bold" aria-label="Toggle bold">
+        <ToggleGroupItem data-subject value="bold" aria-label="Toggle bold">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
       <ToggleGroup variant="outline" multiple size="sm">
-        <ToggleGroupItem data-testid="subject" value="italic" aria-label="Toggle italic">
+        <ToggleGroupItem data-subject value="italic" aria-label="Toggle italic">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
     render(
       <ToggleGroup variant="outline" multiple size="sm">
-        <ToggleGroupItem data-testid="subject" value="underline" aria-label="Toggle underline">
+        <ToggleGroupItem data-subject value="underline" aria-label="Toggle underline">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
     cleanup()
     render(
       <ToggleGroup size="sm" defaultValue={['top']} variant="outline">
-        <ToggleGroupItem data-testid="subject" value="top" aria-label="Toggle top">
+        <ToggleGroupItem data-subject value="top" aria-label="Toggle top">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
     cleanup()
     render(
       <ToggleGroup size="sm" defaultValue={['top']} variant="outline">
-        <ToggleGroupItem data-testid="subject" value="bottom" aria-label="Toggle bottom">
+        <ToggleGroupItem data-subject value="bottom" aria-label="Toggle bottom">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
     cleanup()
     render(
       <ToggleGroup size="sm" defaultValue={['top']} variant="outline">
-        <ToggleGroupItem data-testid="subject" value="left" aria-label="Toggle left">
+        <ToggleGroupItem data-subject value="left" aria-label="Toggle left">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
     cleanup()
     render(
       <ToggleGroup size="sm" defaultValue={['top']} variant="outline">
-        <ToggleGroupItem data-testid="subject" value="right" aria-label="Toggle right">
+        <ToggleGroupItem data-subject value="right" aria-label="Toggle right">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
     cleanup()
     render(
       <ToggleGroup defaultValue={['top']} variant="outline">
-        <ToggleGroupItem data-testid="subject" value="top" aria-label="Toggle top">
+        <ToggleGroupItem data-subject value="top" aria-label="Toggle top">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
     cleanup()
     render(
       <ToggleGroup defaultValue={['top']} variant="outline">
-        <ToggleGroupItem data-testid="subject" value="bottom" aria-label="Toggle bottom">
+        <ToggleGroupItem data-subject value="bottom" aria-label="Toggle bottom">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (15)", () => {
     cleanup()
     render(
       <ToggleGroup defaultValue={['top']} variant="outline">
-        <ToggleGroupItem data-testid="subject" value="left" aria-label="Toggle left">
+        <ToggleGroupItem data-subject value="left" aria-label="Toggle left">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (16)", () => {
     cleanup()
     render(
       <ToggleGroup defaultValue={['top']} variant="outline">
-        <ToggleGroupItem data-testid="subject" value="right" aria-label="Toggle right">
+        <ToggleGroupItem data-subject value="right" aria-label="Toggle right">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (17)", () => {
     cleanup()
     render(
       <ToggleGroup size="sm" defaultValue={['top']} spacing={2}>
-        <ToggleGroupItem data-testid="subject" value="top" aria-label="Toggle top">
+        <ToggleGroupItem data-subject value="top" aria-label="Toggle top">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (18)", () => {
     cleanup()
     render(
       <ToggleGroup size="sm" defaultValue={['top']} spacing={2}>
-        <ToggleGroupItem data-testid="subject" value="bottom" aria-label="Toggle bottom">
+        <ToggleGroupItem data-subject value="bottom" aria-label="Toggle bottom">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (19)", () => {
     cleanup()
     render(
       <ToggleGroup size="sm" defaultValue={['top']} spacing={2}>
-        <ToggleGroupItem data-testid="subject" value="left" aria-label="Toggle left">
+        <ToggleGroupItem data-subject value="left" aria-label="Toggle left">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (20)", () => {
     cleanup()
     render(
       <ToggleGroup size="sm" defaultValue={['top']} spacing={2}>
-        <ToggleGroupItem data-testid="subject" value="right" aria-label="Toggle right">
+        <ToggleGroupItem data-subject value="right" aria-label="Toggle right">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (21)", () => {
     cleanup()
     render(
       <ToggleGroup multiple variant="outline" spacing={2} size="sm">
-        <ToggleGroupItem data-testid="subject" value="star" aria-label="Toggle star">
+        <ToggleGroupItem data-subject value="star" aria-label="Toggle star">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (22)", () => {
     cleanup()
     render(
       <ToggleGroup multiple variant="outline" spacing={2} size="sm">
-        <ToggleGroupItem data-testid="subject" value="heart" aria-label="Toggle heart">
+        <ToggleGroupItem data-subject value="heart" aria-label="Toggle heart">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (23)", () => {
     cleanup()
     render(
       <ToggleGroup multiple variant="outline" spacing={2} size="sm">
-        <ToggleGroupItem data-testid="subject" value="bookmark" aria-label="Toggle bookmark">
+        <ToggleGroupItem data-subject value="bookmark" aria-label="Toggle bookmark">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (24)", () => {
     cleanup()
     render(
       <ToggleGroup defaultValue={['all']} variant="outline" size="sm">
-        <ToggleGroupItem data-testid="subject" value="all" aria-label="All">
+        <ToggleGroupItem data-subject value="all" aria-label="All">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (25)", () => {
     cleanup()
     render(
       <ToggleGroup defaultValue={['all']} variant="outline" size="sm">
-        <ToggleGroupItem data-testid="subject" value="active" aria-label="Active">
+        <ToggleGroupItem data-subject value="active" aria-label="Active">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (26)", () => {
     cleanup()
     render(
       <ToggleGroup defaultValue={['all']} variant="outline" size="sm">
-        <ToggleGroupItem data-testid="subject" value="completed" aria-label="Completed">
+        <ToggleGroupItem data-subject value="completed" aria-label="Completed">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (27)", () => {
     cleanup()
     render(
       <ToggleGroup defaultValue={['all']} variant="outline" size="sm">
-        <ToggleGroupItem data-testid="subject" value="archived" aria-label="Archived">
+        <ToggleGroupItem data-subject value="archived" aria-label="Archived">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (28)", () => {
     cleanup()
     render(
       <ToggleGroup defaultValue={['today']} variant="outline" size="sm" spacing={2}>
-        <ToggleGroupItem data-testid="subject" value="today" aria-label="Today">
+        <ToggleGroupItem data-subject value="today" aria-label="Today">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (29)", () => {
     cleanup()
     render(
       <ToggleGroup defaultValue={['today']} variant="outline" size="sm" spacing={2}>
-        <ToggleGroupItem data-testid="subject" value="week" aria-label="This Week">
+        <ToggleGroupItem data-subject value="week" aria-label="This Week">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (30)", () => {
     cleanup()
     render(
       <ToggleGroup defaultValue={['today']} variant="outline" size="sm" spacing={2}>
-        <ToggleGroupItem data-testid="subject" value="month" aria-label="This Month">
+        <ToggleGroupItem data-subject value="month" aria-label="This Month">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (31)", () => {
     cleanup()
     render(
       <ToggleGroup defaultValue={['today']} variant="outline" size="sm" spacing={2}>
-        <ToggleGroupItem data-testid="subject" value="year" aria-label="This Year">
+        <ToggleGroupItem data-subject value="year" aria-label="This Year">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (32)", () => {
     cleanup()
     render(
       <ToggleGroup defaultValue={['newest']} variant="outline" size="sm">
-        <ToggleGroupItem data-testid="subject" value="newest" aria-label="Newest">
+        <ToggleGroupItem data-subject value="newest" aria-label="Newest">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (33)", () => {
     cleanup()
     render(
       <ToggleGroup defaultValue={['newest']} variant="outline" size="sm">
-        <ToggleGroupItem data-testid="subject" value="oldest" aria-label="Oldest">
+        <ToggleGroupItem data-subject value="oldest" aria-label="Oldest">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (34)", () => {
     cleanup()
     render(
       <ToggleGroup defaultValue={['newest']} variant="outline" size="sm">
-        <ToggleGroupItem data-testid="subject" value="popular" aria-label="Popular">
+        <ToggleGroupItem data-subject value="popular" aria-label="Popular">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (35)", () => {
     cleanup()
     render(
       <ToggleGroup defaultValue={['grid']} variant="outline">
-        <ToggleGroupItem data-testid="subject" value="grid" aria-label="Grid view">
+        <ToggleGroupItem data-subject value="grid" aria-label="Grid view">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (36)", () => {
     cleanup()
     render(
       <ToggleGroup defaultValue={['grid']} variant="outline">
-        <ToggleGroupItem data-testid="subject" value="list" aria-label="List view">
+        <ToggleGroupItem data-subject value="list" aria-label="List view">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (37)", () => {
     cleanup()
     render(
       <ToggleGroup multiple orientation="vertical" spacing={1}>
-        <ToggleGroupItem data-testid="subject" value="bold" aria-label="Toggle bold">
+        <ToggleGroupItem data-subject value="bold" aria-label="Toggle bold">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (38)", () => {
     cleanup()
     render(
       <ToggleGroup multiple orientation="vertical" spacing={1}>
-        <ToggleGroupItem data-testid="subject" value="italic" aria-label="Toggle italic">
+        <ToggleGroupItem data-subject value="italic" aria-label="Toggle italic">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (39)", () => {
     cleanup()
     render(
       <ToggleGroup multiple orientation="vertical" spacing={1}>
-        <ToggleGroupItem data-testid="subject" value="underline" aria-label="Toggle underline">
+        <ToggleGroupItem data-subject value="underline" aria-label="Toggle underline">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (40)", () => {
     cleanup()
     render(
       <ToggleGroup variant="outline" defaultValue={['all']} orientation="vertical" size="sm">
-        <ToggleGroupItem data-testid="subject" value="all" aria-label="Toggle all">
+        <ToggleGroupItem data-subject value="all" aria-label="Toggle all">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (41)", () => {
     cleanup()
     render(
       <ToggleGroup variant="outline" defaultValue={['all']} orientation="vertical" size="sm">
-        <ToggleGroupItem data-testid="subject" value="active" aria-label="Toggle active">
+        <ToggleGroupItem data-subject value="active" aria-label="Toggle active">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (42)", () => {
     cleanup()
     render(
       <ToggleGroup variant="outline" defaultValue={['all']} orientation="vertical" size="sm">
-        <ToggleGroupItem data-testid="subject" value="completed" aria-label="Toggle completed">
+        <ToggleGroupItem data-subject value="completed" aria-label="Toggle completed">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (43)", () => {
     cleanup()
     render(
       <ToggleGroup variant="outline" defaultValue={['all']} orientation="vertical" size="sm">
-        <ToggleGroupItem data-testid="subject" value="archived" aria-label="Toggle archived">
+        <ToggleGroupItem data-subject value="archived" aria-label="Toggle archived">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (44)", () => {
     cleanup()
     render(
       <ToggleGroup variant="outline" multiple orientation="vertical" size="sm">
-        <ToggleGroupItem data-testid="subject" value="bold" aria-label="Toggle bold">
+        <ToggleGroupItem data-subject value="bold" aria-label="Toggle bold">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (45)", () => {
     cleanup()
     render(
       <ToggleGroup variant="outline" multiple orientation="vertical" size="sm">
-        <ToggleGroupItem data-testid="subject" value="italic" aria-label="Toggle italic">
+        <ToggleGroupItem data-subject value="italic" aria-label="Toggle italic">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (46)", () => {
     cleanup()
     render(
       <ToggleGroup variant="outline" multiple orientation="vertical" size="sm">
-        <ToggleGroupItem data-testid="subject" value="underline" aria-label="Toggle underline">
+        <ToggleGroupItem data-subject value="underline" aria-label="Toggle underline">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (47)", () => {
     cleanup()
     render(
       <ToggleGroup variant="outline" spacing={2} size="lg">
-        <ToggleGroupItem data-testid="subject" value="light" aria-label="Light">
+        <ToggleGroupItem data-subject value="light" aria-label="Light">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (48)", () => {
     cleanup()
     render(
       <ToggleGroup variant="outline" spacing={2} size="lg">
-        <ToggleGroupItem data-testid="subject" value="normal" aria-label="Normal">
+        <ToggleGroupItem data-subject value="normal" aria-label="Normal">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (49)", () => {
     cleanup()
     render(
       <ToggleGroup variant="outline" spacing={2} size="lg">
-        <ToggleGroupItem data-testid="subject" value="medium" aria-label="Medium">
+        <ToggleGroupItem data-subject value="medium" aria-label="Medium">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (50)", () => {
     cleanup()
     render(
       <ToggleGroup variant="outline" spacing={2} size="lg">
-        <ToggleGroupItem data-testid="subject" value="bold" aria-label="Bold">
+        <ToggleGroupItem data-subject value="bold" aria-label="Bold">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (51)", () => {
     cleanup()
     render(
       <ToggleGroup size="sm" defaultValue={['top']} orientation="vertical" spacing={1}>
-        <ToggleGroupItem data-testid="subject" value="top" aria-label="Toggle top">
+        <ToggleGroupItem data-subject value="top" aria-label="Toggle top">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (52)", () => {
     cleanup()
     render(
       <ToggleGroup size="sm" defaultValue={['top']} orientation="vertical" spacing={1}>
-        <ToggleGroupItem data-testid="subject" value="bottom" aria-label="Toggle bottom">
+        <ToggleGroupItem data-subject value="bottom" aria-label="Toggle bottom">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (53)", () => {
     cleanup()
     render(
       <ToggleGroup size="sm" defaultValue={['top']} orientation="vertical" spacing={1}>
-        <ToggleGroupItem data-testid="subject" value="left" aria-label="Toggle left">
+        <ToggleGroupItem data-subject value="left" aria-label="Toggle left">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (54)", () => {
     cleanup()
     render(
       <ToggleGroup size="sm" defaultValue={['top']} orientation="vertical" spacing={1}>
-        <ToggleGroupItem data-testid="subject" value="right" aria-label="Toggle right">
+        <ToggleGroupItem data-subject value="right" aria-label="Toggle right">
           ToggleGroupItem
         </ToggleGroupItem>
       </ToggleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

@@ -9,12 +9,9 @@ import styles from './Empty.module.scss'
 function renderEmpty(props: Partial<Record<keyof ComponentProps<typeof Empty>, unknown>> = {}) {
   cleanup()
   render(
-    <Empty
-      data-testid="subject"
-      {...({ children: 'Empty', ...props } as ComponentProps<typeof Empty>)}
-    />,
+    <Empty data-subject {...({ children: 'Empty', ...props } as ComponentProps<typeof Empty>)} />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="empty"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="empty"]')
 }
 
 function classesOfEmpty(props: Partial<Record<keyof ComponentProps<typeof Empty>, unknown>> = {}) {
@@ -40,12 +37,12 @@ function renderEmptyHeader(
   render(
     <Empty>
       <EmptyHeader
-        data-testid="subject"
+        data-subject
         {...({ children: 'EmptyHeader', ...props } as ComponentProps<typeof EmptyHeader>)}
       />
     </Empty>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="empty-header"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="empty-header"]')
 }
 
 function classesOfEmptyHeader(
@@ -74,13 +71,13 @@ function renderEmptyMedia(
     <Empty>
       <EmptyHeader>
         <EmptyMedia
-          data-testid="subject"
+          data-subject
           {...({ children: 'EmptyMedia', ...props } as ComponentProps<typeof EmptyMedia>)}
         />
       </EmptyHeader>
     </Empty>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="empty-icon"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="empty-icon"]')
 }
 
 function classesOfEmptyMedia(
@@ -126,13 +123,13 @@ function renderEmptyTitle(
     <Empty>
       <EmptyHeader>
         <EmptyTitle
-          data-testid="subject"
+          data-subject
           {...({ children: 'EmptyTitle', ...props } as ComponentProps<typeof EmptyTitle>)}
         />
       </EmptyHeader>
     </Empty>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="empty-title"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="empty-title"]')
 }
 
 function classesOfEmptyTitle(
@@ -161,7 +158,7 @@ function renderEmptyDescription(
     <Empty>
       <EmptyHeader>
         <EmptyDescription
-          data-testid="subject"
+          data-subject
           {...({ children: 'EmptyDescription', ...props } as ComponentProps<
             typeof EmptyDescription
           >)}
@@ -169,9 +166,7 @@ function renderEmptyDescription(
       </EmptyHeader>
     </Empty>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="empty-description"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="empty-description"]')
 }
 
 function classesOfEmptyDescription(
@@ -196,11 +191,11 @@ describe('EmptyDescription', () => {
     render(
       <Empty>
         <EmptyContent>
-          <EmptyDescription data-testid="subject">EmptyDescription</EmptyDescription>
+          <EmptyDescription data-subject>EmptyDescription</EmptyDescription>
         </EmptyContent>
       </Empty>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -211,12 +206,12 @@ function renderEmptyContent(
   render(
     <Empty>
       <EmptyContent
-        data-testid="subject"
+        data-subject
         {...({ children: 'EmptyContent', ...props } as ComponentProps<typeof EmptyContent>)}
       />
     </Empty>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="empty-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="empty-content"]')
 }
 
 function classesOfEmptyContent(

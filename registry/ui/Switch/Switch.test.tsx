@@ -14,11 +14,11 @@ function renderSwitch(props: Partial<Record<keyof ComponentProps<typeof Switch>,
   cleanup()
   render(
     <Switch
-      data-testid="subject"
+      data-subject
       {...({ id: 'switch-basic', ...props } as ComponentProps<typeof Switch>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="switch"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="switch"]')
 }
 
 function classesOfSwitch(
@@ -46,6 +46,10 @@ describe('Switch', () => {
     expect(attributesOfSwitch({ size: 'default' })).toEqual(attributesOfSwitch())
   })
 
+  it('renders with size="sm"', () => {
+    expect(renderSwitch({ size: 'sm' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderSwitch({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -54,37 +58,37 @@ describe('Switch', () => {
 
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
-    render(<Switch data-testid="subject" id="switch-bluetooth" defaultChecked />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Switch data-subject id="switch-bluetooth" defaultChecked />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
-    render(<Switch data-testid="subject" id="switch-focus-mode" />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Switch data-subject id="switch-focus-mode" />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
-    render(<Switch data-testid="subject" id="switch-disabled-unchecked" />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Switch data-subject id="switch-disabled-unchecked" />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
-    render(<Switch data-testid="subject" id="switch-disabled-checked" defaultChecked />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Switch data-subject id="switch-disabled-checked" defaultChecked />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
-    render(<Switch data-testid="subject" id="switch-size-sm" size="sm" />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Switch data-subject id="switch-size-sm" size="sm" />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
-    render(<Switch data-testid="subject" id="switch-size-default" size="default" />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Switch data-subject id="switch-size-default" size="default" />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

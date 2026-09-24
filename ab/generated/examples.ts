@@ -1445,4 +1445,32 @@ export const examples = [
     example: 'command-example',
     name: 'CommandManyItems',
   },
+  {
+    example: 'toast-example',
+    name: 'ToastBasic',
+  },
+  {
+    example: 'toast-example',
+    name: 'ToastWithAction',
+  },
+  {
+    example: 'toast-example',
+    name: 'ToastPromise',
+  },
+  {
+    example: 'resizable-example',
+    name: 'ResizableHorizontal',
+  },
+  {
+    example: 'resizable-example',
+    name: 'ResizableVertical',
+  },
+  {
+    example: 'resizable-example',
+    name: 'ResizableWithHandle',
+  },
+  {
+    example: 'resizable-example',
+    name: 'ResizableNested',
+  },
 ]

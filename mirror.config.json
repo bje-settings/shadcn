@@ -63,7 +63,12 @@
     "select",
     "combobox",
     "navigation-menu",
-    "command"
+    "command",
+    "sonner",
+    "toast",
+    "resizable",
+    "questionnaire",
+    "message-scroller"
   ],
   "typeset": {
     "stylesheet": "https://ui.shadcn.com/typeset.css",
@@ -86,7 +91,8 @@
     "field": "FieldError's handling of an errors list (none, one, or several with duplicates) is logic no render the docs example makes reaches.",
     "input-group": "InputGroupAddon focuses the input when clicked outside a button: an interaction, not a render.",
     "input-otp": "InputOTPSlot's fake caret shows only while the input has focus, and its fallback for a missing OTPInput context only outside InputOTP; the docs example renders neither.",
-    "slider": "Slider's branch for a controlled value needs a literal value, which the docs example never passes."
+    "slider": "Slider's branch for a controlled value needs a literal value, which the docs example never passes.",
+    "toast": "Toasts render from the toast manager's state: ToastIcon's per-type icons and the list the Toaster maps need toasts added at runtime, not rendered from props."
   },
   "globalClasses": [
     {
@@ -111,6 +117,10 @@
     {
       "classes": ["data-[ending-style]:easing-[ease]", "xs:w-(--popup-width)"],
       "reason": "NavigationMenu's popup: easing-* is not a Tailwind utility, and the theme defines no xs breakpoint."
+    },
+    {
+      "classes": ["toaster"],
+      "reason": "Sonner's Toaster: a name for the toaster element, not a Tailwind utility."
     }
   ],
   "testSetup": [
@@ -125,9 +135,47 @@
         "Element.prototype.scrollIntoView ??= () => {}"
       ],
       "reason": "jsdom has no ResizeObserver or scrollIntoView, which cmdk uses to track and reveal the selected item."
+    },
+    {
+      "items": ["resizable"],
+      "lines": [
+        "globalThis.ResizeObserver ??= class {",
+        "  observe() {}",
+        "  unobserve() {}",
+        "  disconnect() {}",
+        "}"
+      ],
+      "reason": "jsdom has no ResizeObserver, which react-resizable-panels measures panels with."
+    },
+    {
+      "items": ["sonner"],
+      "lines": [
+        "window.matchMedia ??= (query) =>",
+        "  ({ matches: false, media: query, addEventListener() {}, removeEventListener() {} }) as unknown as MediaQueryList"
+      ],
+      "reason": "jsdom has no matchMedia, which Sonner reads the color scheme with."
     }
   ],
   "unrenderedInTests": {
-    "NavigationMenuPositioner": "Base UI mounts it only while a menu item is open, which takes the item's value on NavigationMenu."
+    "navigation-menu": {
+      "NavigationMenuPositioner": "Base UI mounts it only while a menu item is open, which takes the item's value on NavigationMenu."
+    },
+    "sonner": {
+      "Toaster": "Sonner renders its toaster list, which takes the className, only while a toast shows."
+    }
+  },
+  "testProps": {
+    "toast": {
+      "Toast": {
+        "toast": {
+          "id": "toast",
+          "title": "Toast",
+          "description": "Toast description",
+          "actionProps": {
+            "children": "Undo"
+          }
+        }
+      }
+    }
   }
 }

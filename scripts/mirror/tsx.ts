@@ -12,8 +12,10 @@
 //   `useRender()` whose `state.slot` names the slot; and `cn(xVariants(...))`.
 
 import type {
+  ArrowFunctionExpression,
   CallExpression,
   FunctionDeclaration,
+  FunctionExpression,
   Identifier,
   Node,
   ObjectExpression,
@@ -65,6 +67,8 @@ export type RenderedComponent = {
   // The error it throws outside its root, from a hook of this module it
   // calls (DrawerContent's useDrawer)
   throwsOutside?: string
+  // It renders default content without children (`children ?? "Next"`)
+  defaultChildren?: true
 }
 
 // A hook the module declares, and the error it throws, if it throws one
@@ -278,7 +282,27 @@ function dataSlot(ancestors: Node[]): string | undefined {
   return slot ? stringValue(slot).value : undefined
 }
 
-function literalDefaults(fn: FunctionDeclaration, source: string): RenderedComponent['defaults'] {
+// A function component or hook, declared or assigned to a const.
+type Fn = FunctionDeclaration | ArrowFunctionExpression | FunctionExpression
+
+// The function a top-level statement declares, with its name: `function X()`
+// or `const X = () => ...` (Sonner's Toaster), exported or not.
+function topLevelFunction(statement: Node | undefined): { name: string; fn: Fn } | undefined {
+  const node = statement?.type === 'ExportNamedDeclaration' ? statement.declaration : statement
+  if (node?.type === 'FunctionDeclaration' && node.id) return { name: node.id.name, fn: node }
+  if (node?.type !== 'VariableDeclaration' || node.declarations.length !== 1) return undefined
+  const [declarator] = node.declarations
+  const init = declarator?.init
+  if (
+    declarator?.id.type === 'Identifier' &&
+    (init?.type === 'ArrowFunctionExpression' || init?.type === 'FunctionExpression')
+  ) {
+    return { name: declarator.id.name, fn: init }
+  }
+  return undefined
+}
+
+function literalDefaults(fn: Fn, source: string): RenderedComponent['defaults'] {
   const [param] = fn.params
   if (param?.type !== 'ObjectPattern') return []
   return param.properties.flatMap((property) => {
@@ -359,7 +383,7 @@ function conditionName(test: Node): string {
 
 // Whether an element takes the function's remaining props: `{...props}` of
 // its rest parameter, or of its only parameter.
-function spreadsProps(element: Node, fn: FunctionDeclaration): boolean {
+function spreadsProps(element: Node, fn: Fn): boolean {
   const [param] = fn.params
   const rest =
     param?.type === 'ObjectPattern'
@@ -429,13 +453,13 @@ export function transformComponent(
     update: Pick<RenderedComponent, 'slot' | 'variantSet'>,
     consumer: boolean,
   ) => {
-    const fn = ancestors.find((node) => node.type === 'FunctionDeclaration')
+    const owner = topLevelFunction(ancestors[1])
     // A JSX element, or a Base UI useRender() call rendering one.
     const element = ancestors.findLast(
       (node) => node.type === 'JSXOpeningElement' || isCallTo(node, 'useRender'),
     )
-    if (fn?.type !== 'FunctionDeclaration' || !fn.id || !element) return
-    const name = fn.id.name
+    if (!owner || !element) return
+    const { name, fn } = owner
     const rank = spreadsProps(element, fn) ? 2 : consumer ? 1 : 0
     const bound = elements.get(name)
     if (bound?.element === element) {
@@ -709,8 +733,9 @@ export function transformComponent(
   // Hooks, and the components that call one that throws.
   const hooks: Hook[] = []
   for (const statement of ast.program.body) {
-    const fn = statement.type === 'ExportNamedDeclaration' ? statement.declaration : statement
-    if (fn?.type !== 'FunctionDeclaration' || !fn.id || !/^use[A-Z]/.test(fn.id.name)) continue
+    const hook = topLevelFunction(statement)
+    if (!hook || !/^use[A-Z]/.test(hook.name)) continue
+    const { fn } = hook
     let message: string | undefined
     walk(fn, (node) => {
       if (
@@ -723,14 +748,21 @@ export function transformComponent(
       }
       return true
     })
-    hooks.push({ name: fn.id.name, ...(message !== undefined ? { throws: message } : {}) })
+    hooks.push({ name: hook.name, ...(message !== undefined ? { throws: message } : {}) })
   }
   for (const statement of ast.program.body) {
-    const fn = statement.type === 'ExportNamedDeclaration' ? statement.declaration : statement
-    const record =
-      fn?.type === 'FunctionDeclaration' && fn.id ? components.get(fn.id.name) : undefined
-    if (!record || fn?.type !== 'FunctionDeclaration') continue
-    walk(fn, (node) => {
+    const owner = topLevelFunction(statement)
+    const record = owner ? components.get(owner.name) : undefined
+    if (!owner || !record) continue
+    walk(owner.fn, (node) => {
+      if (
+        node.type === 'LogicalExpression' &&
+        (node.operator === '??' || node.operator === '||') &&
+        node.left.type === 'Identifier' &&
+        node.left.name === 'children'
+      ) {
+        record.defaultChildren = true
+      }
       const hook = isCallTo(node) ? hooks.find((h) => h.name === node.callee.name) : undefined
       if (hook?.throws !== undefined && record.throwsOutside === undefined) {
         record.throwsOutside = hook.throws

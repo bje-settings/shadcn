@@ -12,13 +12,13 @@ function renderAccordion(
   cleanup()
   render(
     <Accordion
-      data-testid="subject"
+      data-subject
       {...({ keepMounted: true, children: 'Accordion', ...props } as ComponentProps<
         typeof Accordion
       >)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="accordion"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="accordion"]')
 }
 
 function classesOfAccordion(
@@ -41,21 +41,21 @@ describe('Accordion', () => {
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
     render(
-      <Accordion data-testid="subject" multiple keepMounted>
+      <Accordion data-subject multiple keepMounted>
         Accordion
       </Accordion>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
-      <Accordion data-testid="subject" multiple defaultValue={['plans']} keepMounted>
+      <Accordion data-subject multiple defaultValue={['plans']} keepMounted>
         Accordion
       </Accordion>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -66,12 +66,12 @@ function renderAccordionItem(
   render(
     <Accordion keepMounted>
       <AccordionItem
-        data-testid="subject"
+        data-subject
         {...({ children: 'AccordionItem', ...props } as ComponentProps<typeof AccordionItem>)}
       />
     </Accordion>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="accordion-item"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="accordion-item"]')
 }
 
 function classesOfAccordionItem(
@@ -95,20 +95,20 @@ describe('AccordionItem', () => {
     cleanup()
     render(
       <Accordion multiple keepMounted>
-        <AccordionItem data-testid="subject">AccordionItem</AccordionItem>
+        <AccordionItem data-subject>AccordionItem</AccordionItem>
       </Accordion>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Accordion multiple defaultValue={['plans']} keepMounted>
-        <AccordionItem data-testid="subject">AccordionItem</AccordionItem>
+        <AccordionItem data-subject>AccordionItem</AccordionItem>
       </Accordion>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -120,7 +120,7 @@ function renderAccordionTrigger(
     <Accordion keepMounted>
       <AccordionItem>
         <AccordionTrigger
-          data-testid="subject"
+          data-subject
           {...({ children: 'AccordionTrigger', ...props } as ComponentProps<
             typeof AccordionTrigger
           >)}
@@ -128,9 +128,7 @@ function renderAccordionTrigger(
       </AccordionItem>
     </Accordion>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="accordion-trigger"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="accordion-trigger"]')
 }
 
 function classesOfAccordionTrigger(
@@ -155,11 +153,11 @@ describe('AccordionTrigger', () => {
     render(
       <Accordion multiple keepMounted>
         <AccordionItem>
-          <AccordionTrigger data-testid="subject">AccordionTrigger</AccordionTrigger>
+          <AccordionTrigger data-subject>AccordionTrigger</AccordionTrigger>
         </AccordionItem>
       </Accordion>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -167,11 +165,11 @@ describe('AccordionTrigger', () => {
     render(
       <Accordion multiple defaultValue={['plans']} keepMounted>
         <AccordionItem>
-          <AccordionTrigger data-testid="subject">AccordionTrigger</AccordionTrigger>
+          <AccordionTrigger data-subject>AccordionTrigger</AccordionTrigger>
         </AccordionItem>
       </Accordion>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -183,7 +181,7 @@ function renderAccordionContent(
     <Accordion keepMounted>
       <AccordionItem>
         <AccordionContent
-          data-testid="subject"
+          data-subject
           {...({ keepMounted: true, children: 'AccordionContent', ...props } as ComponentProps<
             typeof AccordionContent
           >)}
@@ -191,9 +189,7 @@ function renderAccordionContent(
       </AccordionItem>
     </Accordion>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="accordion-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="accordion-content"]')
 }
 
 function classesOfAccordionContent(
@@ -218,13 +214,13 @@ describe('AccordionContent', () => {
     render(
       <Accordion multiple keepMounted>
         <AccordionItem>
-          <AccordionContent data-testid="subject" keepMounted>
+          <AccordionContent data-subject keepMounted>
             AccordionContent
           </AccordionContent>
         </AccordionItem>
       </Accordion>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -232,12 +228,12 @@ describe('AccordionContent', () => {
     render(
       <Accordion multiple defaultValue={['plans']} keepMounted>
         <AccordionItem>
-          <AccordionContent data-testid="subject" keepMounted>
+          <AccordionContent data-subject keepMounted>
             AccordionContent
           </AccordionContent>
         </AccordionItem>
       </Accordion>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

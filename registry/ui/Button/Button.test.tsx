@@ -10,11 +10,11 @@ function renderButton(props: Partial<Record<keyof ComponentProps<typeof Button>,
   cleanup()
   render(
     <Button
-      data-testid="subject"
+      data-subject
       {...({ children: 'Button', ...props } as ComponentProps<typeof Button>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="button"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="button"]')
 }
 
 function classesOfButton(
@@ -86,707 +86,707 @@ describe('Button', () => {
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="xs" variant="secondary">
+      <Button data-subject size="xs" variant="secondary">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="xs" variant="outline">
+      <Button data-subject size="xs" variant="outline">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="xs" variant="ghost">
+      <Button data-subject size="xs" variant="ghost">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="xs" variant="destructive">
+      <Button data-subject size="xs" variant="destructive">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="xs" variant="link">
+      <Button data-subject size="xs" variant="link">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="sm">
+      <Button data-subject size="sm">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="sm" variant="secondary">
+      <Button data-subject size="sm" variant="secondary">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="sm" variant="outline">
+      <Button data-subject size="sm" variant="outline">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="sm" variant="ghost">
+      <Button data-subject size="sm" variant="ghost">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="sm" variant="destructive">
+      <Button data-subject size="sm" variant="destructive">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="sm" variant="link">
+      <Button data-subject size="sm" variant="link">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
     cleanup()
-    render(<Button data-testid="subject">Button</Button>)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Button data-subject>Button</Button>)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" variant="secondary">
+      <Button data-subject variant="secondary">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (15)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" variant="outline">
+      <Button data-subject variant="outline">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (16)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" variant="ghost">
+      <Button data-subject variant="ghost">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (17)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" variant="destructive">
+      <Button data-subject variant="destructive">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (18)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" variant="link">
+      <Button data-subject variant="link">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (19)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="lg">
+      <Button data-subject size="lg">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (20)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="lg" variant="secondary">
+      <Button data-subject size="lg" variant="secondary">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (21)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="lg" variant="outline">
+      <Button data-subject size="lg" variant="outline">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (22)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="lg" variant="ghost">
+      <Button data-subject size="lg" variant="ghost">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (23)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="lg" variant="destructive">
+      <Button data-subject size="lg" variant="destructive">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (24)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="lg" variant="link">
+      <Button data-subject size="lg" variant="link">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (25)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon-xs">
+      <Button data-subject size="icon-xs">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (26)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon-xs" variant="secondary">
+      <Button data-subject size="icon-xs" variant="secondary">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (27)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon-xs" variant="outline">
+      <Button data-subject size="icon-xs" variant="outline">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (28)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon-xs" variant="ghost">
+      <Button data-subject size="icon-xs" variant="ghost">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (29)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon-xs" variant="destructive">
+      <Button data-subject size="icon-xs" variant="destructive">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (30)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon-xs" variant="link">
+      <Button data-subject size="icon-xs" variant="link">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (31)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon-sm">
+      <Button data-subject size="icon-sm">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (32)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon-sm" variant="secondary">
+      <Button data-subject size="icon-sm" variant="secondary">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (33)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon-sm" variant="outline">
+      <Button data-subject size="icon-sm" variant="outline">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (34)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon-sm" variant="ghost">
+      <Button data-subject size="icon-sm" variant="ghost">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (35)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon-sm" variant="destructive">
+      <Button data-subject size="icon-sm" variant="destructive">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (36)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon-sm" variant="link">
+      <Button data-subject size="icon-sm" variant="link">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (37)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon">
+      <Button data-subject size="icon">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (38)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon" variant="secondary">
+      <Button data-subject size="icon" variant="secondary">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (39)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon" variant="outline">
+      <Button data-subject size="icon" variant="outline">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (40)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon" variant="ghost">
+      <Button data-subject size="icon" variant="ghost">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (41)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon" variant="destructive">
+      <Button data-subject size="icon" variant="destructive">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (42)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon" variant="link">
+      <Button data-subject size="icon" variant="link">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (43)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon-lg">
+      <Button data-subject size="icon-lg">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (44)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon-lg" variant="secondary">
+      <Button data-subject size="icon-lg" variant="secondary">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (45)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon-lg" variant="outline">
+      <Button data-subject size="icon-lg" variant="outline">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (46)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon-lg" variant="ghost">
+      <Button data-subject size="icon-lg" variant="ghost">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (47)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon-lg" variant="destructive">
+      <Button data-subject size="icon-lg" variant="destructive">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (48)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="icon-lg" variant="link">
+      <Button data-subject size="icon-lg" variant="link">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (49)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="xs" aria-invalid="true">
+      <Button data-subject size="xs" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (50)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="xs" variant="secondary" aria-invalid="true">
+      <Button data-subject size="xs" variant="secondary" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (51)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="xs" variant="outline" aria-invalid="true">
+      <Button data-subject size="xs" variant="outline" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (52)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="xs" variant="ghost" aria-invalid="true">
+      <Button data-subject size="xs" variant="ghost" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (53)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="xs" variant="destructive" aria-invalid="true">
+      <Button data-subject size="xs" variant="destructive" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (54)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="xs" variant="link" aria-invalid="true">
+      <Button data-subject size="xs" variant="link" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (55)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="sm" aria-invalid="true">
+      <Button data-subject size="sm" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (56)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="sm" variant="secondary" aria-invalid="true">
+      <Button data-subject size="sm" variant="secondary" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (57)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="sm" variant="outline" aria-invalid="true">
+      <Button data-subject size="sm" variant="outline" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (58)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="sm" variant="ghost" aria-invalid="true">
+      <Button data-subject size="sm" variant="ghost" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (59)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="sm" variant="destructive" aria-invalid="true">
+      <Button data-subject size="sm" variant="destructive" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (60)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="sm" variant="link" aria-invalid="true">
+      <Button data-subject size="sm" variant="link" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (61)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" aria-invalid="true">
+      <Button data-subject aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (62)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" variant="secondary" aria-invalid="true">
+      <Button data-subject variant="secondary" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (63)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" variant="outline" aria-invalid="true">
+      <Button data-subject variant="outline" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (64)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" variant="ghost" aria-invalid="true">
+      <Button data-subject variant="ghost" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (65)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" variant="destructive" aria-invalid="true">
+      <Button data-subject variant="destructive" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (66)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" variant="link" aria-invalid="true">
+      <Button data-subject variant="link" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (67)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="lg" aria-invalid="true">
+      <Button data-subject size="lg" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (68)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="lg" variant="secondary" aria-invalid="true">
+      <Button data-subject size="lg" variant="secondary" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (69)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="lg" variant="outline" aria-invalid="true">
+      <Button data-subject size="lg" variant="outline" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (70)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="lg" variant="ghost" aria-invalid="true">
+      <Button data-subject size="lg" variant="ghost" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (71)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="lg" variant="destructive" aria-invalid="true">
+      <Button data-subject size="lg" variant="destructive" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (72)", () => {
     cleanup()
     render(
-      <Button data-testid="subject" size="lg" variant="link" aria-invalid="true">
+      <Button data-subject size="lg" variant="link" aria-invalid="true">
         Button
       </Button>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 

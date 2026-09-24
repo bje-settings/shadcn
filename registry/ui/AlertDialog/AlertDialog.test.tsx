@@ -42,15 +42,10 @@ function renderAlertDialogTrigger(
   render(
     <AlertDialog defaultOpen>
       <AlertDialogTrigger>AlertDialogTrigger</AlertDialogTrigger>
-      <AlertDialogTrigger
-        data-testid="subject"
-        {...(props as ComponentProps<typeof AlertDialogTrigger>)}
-      />
+      <AlertDialogTrigger data-subject {...(props as ComponentProps<typeof AlertDialogTrigger>)} />
     </AlertDialog>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="alert-dialog-trigger"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="alert-dialog-trigger"]')
 }
 
 describe('AlertDialogTrigger', () => {
@@ -65,10 +60,10 @@ describe('AlertDialogTrigger', () => {
     render(
       <AlertDialog defaultOpen>
         <AlertDialogTrigger>AlertDialogTrigger</AlertDialogTrigger>
-        <AlertDialogTrigger data-testid="subject">AlertDialogTrigger</AlertDialogTrigger>
+        <AlertDialogTrigger data-subject>AlertDialogTrigger</AlertDialogTrigger>
       </AlertDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -81,7 +76,7 @@ function renderAlertDialogPortal(
       <AlertDialogTrigger>AlertDialogTrigger</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogPortal
-          data-testid="subject"
+          data-subject
           {...({ keepMounted: true, children: 'AlertDialogPortal', ...props } as ComponentProps<
             typeof AlertDialogPortal
           >)}
@@ -89,9 +84,7 @@ function renderAlertDialogPortal(
       </AlertDialogContent>
     </AlertDialog>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="alert-dialog-portal"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="alert-dialog-portal"]')
 }
 
 describe('AlertDialogPortal', () => {
@@ -110,18 +103,16 @@ function renderAlertDialogOverlay(
     <AlertDialog defaultOpen>
       <AlertDialogTrigger>AlertDialogTrigger</AlertDialogTrigger>
       <AlertDialogContent>
-        <AlertDialogOverlay
-          data-testid="subject"
-          {...({ children: 'AlertDialogOverlay', ...props } as ComponentProps<
-            typeof AlertDialogOverlay
-          >)}
-        />
+        <AlertDialogPortal keepMounted>
+          <AlertDialogOverlay
+            data-subject
+            {...(props as ComponentProps<typeof AlertDialogOverlay>)}
+          />
+        </AlertDialogPortal>
       </AlertDialogContent>
     </AlertDialog>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="alert-dialog-overlay"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="alert-dialog-overlay"]')
 }
 
 function classesOfAlertDialogOverlay(
@@ -152,16 +143,14 @@ function renderAlertDialogContent(
     <AlertDialog defaultOpen>
       <AlertDialogTrigger>AlertDialogTrigger</AlertDialogTrigger>
       <AlertDialogContent
-        data-testid="subject"
+        data-subject
         {...({ children: 'AlertDialogContent', ...props } as ComponentProps<
           typeof AlertDialogContent
         >)}
       />
     </AlertDialog>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="alert-dialog-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="alert-dialog-content"]')
 }
 
 function classesOfAlertDialogContent(
@@ -193,6 +182,10 @@ describe('AlertDialogContent', () => {
     )
   })
 
+  it('renders with size="sm"', () => {
+    expect(renderAlertDialogContent({ size: 'sm' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderAlertDialogContent({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -204,12 +197,12 @@ describe('AlertDialogContent', () => {
     render(
       <AlertDialog defaultOpen>
         <AlertDialogTrigger>AlertDialogTrigger</AlertDialogTrigger>
-        <AlertDialogContent data-testid="subject" size="sm">
+        <AlertDialogContent data-subject size="sm">
           AlertDialogContent
         </AlertDialogContent>
       </AlertDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -222,7 +215,7 @@ function renderAlertDialogHeader(
       <AlertDialogTrigger>AlertDialogTrigger</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader
-          data-testid="subject"
+          data-subject
           {...({ children: 'AlertDialogHeader', ...props } as ComponentProps<
             typeof AlertDialogHeader
           >)}
@@ -230,9 +223,7 @@ function renderAlertDialogHeader(
       </AlertDialogContent>
     </AlertDialog>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="alert-dialog-header"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="alert-dialog-header"]')
 }
 
 function classesOfAlertDialogHeader(
@@ -258,11 +249,11 @@ describe('AlertDialogHeader', () => {
       <AlertDialog defaultOpen>
         <AlertDialogTrigger>AlertDialogTrigger</AlertDialogTrigger>
         <AlertDialogContent size="sm">
-          <AlertDialogHeader data-testid="subject">AlertDialogHeader</AlertDialogHeader>
+          <AlertDialogHeader data-subject>AlertDialogHeader</AlertDialogHeader>
         </AlertDialogContent>
       </AlertDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -275,7 +266,7 @@ function renderAlertDialogFooter(
       <AlertDialogTrigger>AlertDialogTrigger</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogFooter
-          data-testid="subject"
+          data-subject
           {...({ children: 'AlertDialogFooter', ...props } as ComponentProps<
             typeof AlertDialogFooter
           >)}
@@ -283,9 +274,7 @@ function renderAlertDialogFooter(
       </AlertDialogContent>
     </AlertDialog>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="alert-dialog-footer"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="alert-dialog-footer"]')
 }
 
 function classesOfAlertDialogFooter(
@@ -311,11 +300,11 @@ describe('AlertDialogFooter', () => {
       <AlertDialog defaultOpen>
         <AlertDialogTrigger>AlertDialogTrigger</AlertDialogTrigger>
         <AlertDialogContent size="sm">
-          <AlertDialogFooter data-testid="subject">AlertDialogFooter</AlertDialogFooter>
+          <AlertDialogFooter data-subject>AlertDialogFooter</AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -329,7 +318,7 @@ function renderAlertDialogMedia(
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia
-            data-testid="subject"
+            data-subject
             {...({ children: 'AlertDialogMedia', ...props } as ComponentProps<
               typeof AlertDialogMedia
             >)}
@@ -338,9 +327,7 @@ function renderAlertDialogMedia(
       </AlertDialogContent>
     </AlertDialog>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="alert-dialog-media"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="alert-dialog-media"]')
 }
 
 function classesOfAlertDialogMedia(
@@ -367,12 +354,12 @@ describe('AlertDialogMedia', () => {
         <AlertDialogTrigger>AlertDialogTrigger</AlertDialogTrigger>
         <AlertDialogContent size="sm">
           <AlertDialogHeader>
-            <AlertDialogMedia data-testid="subject">AlertDialogMedia</AlertDialogMedia>
+            <AlertDialogMedia data-subject>AlertDialogMedia</AlertDialogMedia>
           </AlertDialogHeader>
         </AlertDialogContent>
       </AlertDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -386,7 +373,7 @@ function renderAlertDialogTitle(
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle
-            data-testid="subject"
+            data-subject
             {...({ children: 'AlertDialogTitle', ...props } as ComponentProps<
               typeof AlertDialogTitle
             >)}
@@ -395,9 +382,7 @@ function renderAlertDialogTitle(
       </AlertDialogContent>
     </AlertDialog>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="alert-dialog-title"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="alert-dialog-title"]')
 }
 
 function classesOfAlertDialogTitle(
@@ -424,12 +409,12 @@ describe('AlertDialogTitle', () => {
         <AlertDialogTrigger>AlertDialogTrigger</AlertDialogTrigger>
         <AlertDialogContent size="sm">
           <AlertDialogHeader>
-            <AlertDialogTitle data-testid="subject">AlertDialogTitle</AlertDialogTitle>
+            <AlertDialogTitle data-subject>AlertDialogTitle</AlertDialogTitle>
           </AlertDialogHeader>
         </AlertDialogContent>
       </AlertDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -443,7 +428,7 @@ function renderAlertDialogDescription(
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogDescription
-            data-testid="subject"
+            data-subject
             {...({ children: 'AlertDialogDescription', ...props } as ComponentProps<
               typeof AlertDialogDescription
             >)}
@@ -452,9 +437,7 @@ function renderAlertDialogDescription(
       </AlertDialogContent>
     </AlertDialog>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="alert-dialog-description"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="alert-dialog-description"]')
 }
 
 function classesOfAlertDialogDescription(
@@ -483,14 +466,12 @@ describe('AlertDialogDescription', () => {
         <AlertDialogTrigger>AlertDialogTrigger</AlertDialogTrigger>
         <AlertDialogContent size="sm">
           <AlertDialogHeader>
-            <AlertDialogDescription data-testid="subject">
-              AlertDialogDescription
-            </AlertDialogDescription>
+            <AlertDialogDescription data-subject>AlertDialogDescription</AlertDialogDescription>
           </AlertDialogHeader>
         </AlertDialogContent>
       </AlertDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -504,7 +485,7 @@ function renderAlertDialogAction(
       <AlertDialogContent>
         <AlertDialogFooter>
           <AlertDialogAction
-            data-testid="subject"
+            data-subject
             {...({ children: 'AlertDialogAction', ...props } as ComponentProps<
               typeof AlertDialogAction
             >)}
@@ -513,9 +494,7 @@ function renderAlertDialogAction(
       </AlertDialogContent>
     </AlertDialog>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="alert-dialog-action"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="alert-dialog-action"]')
 }
 
 describe('AlertDialogAction', () => {
@@ -532,12 +511,12 @@ describe('AlertDialogAction', () => {
         <AlertDialogTrigger>AlertDialogTrigger</AlertDialogTrigger>
         <AlertDialogContent size="sm">
           <AlertDialogFooter>
-            <AlertDialogAction data-testid="subject">AlertDialogAction</AlertDialogAction>
+            <AlertDialogAction data-subject>AlertDialogAction</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -547,14 +526,14 @@ describe('AlertDialogAction', () => {
         <AlertDialogTrigger>AlertDialogTrigger</AlertDialogTrigger>
         <AlertDialogContent size="sm">
           <AlertDialogFooter>
-            <AlertDialogAction data-testid="subject" variant="destructive">
+            <AlertDialogAction data-subject variant="destructive">
               AlertDialogAction
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -568,7 +547,7 @@ function renderAlertDialogCancel(
       <AlertDialogContent>
         <AlertDialogFooter>
           <AlertDialogCancel
-            data-testid="subject"
+            data-subject
             {...({ children: 'AlertDialogCancel', ...props } as ComponentProps<
               typeof AlertDialogCancel
             >)}
@@ -577,9 +556,7 @@ function renderAlertDialogCancel(
       </AlertDialogContent>
     </AlertDialog>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="alert-dialog-cancel"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="alert-dialog-cancel"]')
 }
 
 function attributesOfAlertDialogCancel(
@@ -618,12 +595,12 @@ describe('AlertDialogCancel', () => {
         <AlertDialogTrigger>AlertDialogTrigger</AlertDialogTrigger>
         <AlertDialogContent size="sm">
           <AlertDialogFooter>
-            <AlertDialogCancel data-testid="subject">AlertDialogCancel</AlertDialogCancel>
+            <AlertDialogCancel data-subject>AlertDialogCancel</AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -633,13 +610,13 @@ describe('AlertDialogCancel', () => {
         <AlertDialogTrigger>AlertDialogTrigger</AlertDialogTrigger>
         <AlertDialogContent size="sm">
           <AlertDialogFooter>
-            <AlertDialogCancel data-testid="subject" variant="ghost">
+            <AlertDialogCancel data-subject variant="ghost">
               AlertDialogCancel
             </AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

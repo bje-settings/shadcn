@@ -10,7 +10,7 @@ function renderToggle(props: Partial<Record<keyof ComponentProps<typeof Toggle>,
   cleanup()
   render(
     <Toggle
-      data-testid="subject"
+      data-subject
       {...({
         'aria-label': 'Toggle bold',
         defaultPressed: true,
@@ -19,7 +19,7 @@ function renderToggle(props: Partial<Record<keyof ComponentProps<typeof Toggle>,
       } as ComponentProps<typeof Toggle>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="toggle"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="toggle"]')
 }
 
 function classesOfToggle(
@@ -73,201 +73,191 @@ describe('Toggle', () => {
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
     render(
-      <Toggle data-testid="subject" aria-label="Toggle italic">
+      <Toggle data-subject aria-label="Toggle italic">
         Toggle
       </Toggle>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
-      <Toggle data-testid="subject" aria-label="Toggle underline">
+      <Toggle data-subject aria-label="Toggle underline">
         Toggle
       </Toggle>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
-      <Toggle data-testid="subject" variant="outline" aria-label="Toggle italic">
+      <Toggle data-subject variant="outline" aria-label="Toggle italic">
         Toggle
       </Toggle>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
-      <Toggle data-testid="subject" variant="outline" aria-label="Toggle bold">
+      <Toggle data-subject variant="outline" aria-label="Toggle bold">
         Toggle
       </Toggle>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
-      <Toggle data-testid="subject" variant="outline" aria-label="Toggle small" size="sm">
+      <Toggle data-subject variant="outline" aria-label="Toggle small" size="sm">
         Toggle
       </Toggle>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
-      <Toggle data-testid="subject" variant="outline" aria-label="Toggle default" size="default">
+      <Toggle data-subject variant="outline" aria-label="Toggle default" size="default">
         Toggle
       </Toggle>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
     render(
-      <Toggle data-testid="subject" variant="outline" aria-label="Toggle large" size="lg">
+      <Toggle data-subject variant="outline" aria-label="Toggle large" size="lg">
         Toggle
       </Toggle>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
     cleanup()
     render(
-      <Toggle data-testid="subject" variant="outline" aria-label="Toggle sm" size="sm">
+      <Toggle data-subject variant="outline" aria-label="Toggle sm" size="sm">
         Toggle
       </Toggle>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
     cleanup()
     render(
-      <Toggle data-testid="subject" variant="outline" aria-label="Toggle lg" size="lg">
+      <Toggle data-subject variant="outline" aria-label="Toggle lg" size="lg">
         Toggle
       </Toggle>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
     cleanup()
     render(
-      <Toggle data-testid="subject" variant="outline" aria-label="Toggle sm icon" size="sm">
+      <Toggle data-subject variant="outline" aria-label="Toggle sm icon" size="sm">
         Toggle
       </Toggle>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
     cleanup()
     render(
-      <Toggle
-        data-testid="subject"
-        variant="outline"
-        aria-label="Toggle default icon"
-        size="default"
-      >
+      <Toggle data-subject variant="outline" aria-label="Toggle default icon" size="default">
         Toggle
       </Toggle>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
     cleanup()
     render(
-      <Toggle data-testid="subject" variant="outline" aria-label="Toggle lg icon" size="lg">
+      <Toggle data-subject variant="outline" aria-label="Toggle lg icon" size="lg">
         Toggle
       </Toggle>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
     cleanup()
     render(
-      <Toggle data-testid="subject" variant="outline" aria-label="Toggle sm icon text" size="sm">
+      <Toggle data-subject variant="outline" aria-label="Toggle sm icon text" size="sm">
         Toggle
       </Toggle>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (15)", () => {
     cleanup()
     render(
-      <Toggle
-        data-testid="subject"
-        variant="outline"
-        aria-label="Toggle default icon text"
-        size="default"
-      >
+      <Toggle data-subject variant="outline" aria-label="Toggle default icon text" size="default">
         Toggle
       </Toggle>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (16)", () => {
     cleanup()
     render(
-      <Toggle data-testid="subject" variant="outline" aria-label="Toggle lg icon text" size="lg">
+      <Toggle data-subject variant="outline" aria-label="Toggle lg icon text" size="lg">
         Toggle
       </Toggle>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (17)", () => {
     cleanup()
     render(
-      <Toggle data-testid="subject" aria-label="Toggle disabled">
+      <Toggle data-subject aria-label="Toggle disabled">
         Toggle
       </Toggle>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (18)", () => {
     cleanup()
     render(
-      <Toggle data-testid="subject" variant="outline" aria-label="Toggle disabled outline">
+      <Toggle data-subject variant="outline" aria-label="Toggle disabled outline">
         Toggle
       </Toggle>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (19)", () => {
     cleanup()
     render(
-      <Toggle data-testid="subject" aria-label="Toggle bookmark" defaultPressed>
+      <Toggle data-subject aria-label="Toggle bookmark" defaultPressed>
         Toggle
       </Toggle>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (20)", () => {
     cleanup()
     render(
-      <Toggle data-testid="subject" variant="outline" aria-label="Toggle bookmark outline">
+      <Toggle data-subject variant="outline" aria-label="Toggle bookmark outline">
         Toggle
       </Toggle>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 

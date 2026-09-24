@@ -20,13 +20,8 @@ const USE_ID = /_r_[0-9a-z]+_|:r[0-9a-z]+:|«r[0-9a-z]+»/g
 
 function renderCard(props: Partial<Record<keyof ComponentProps<typeof Card>, unknown>> = {}) {
   cleanup()
-  render(
-    <Card
-      data-testid="subject"
-      {...({ children: 'Card', ...props } as ComponentProps<typeof Card>)}
-    />,
-  )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="card"]')
+  render(<Card data-subject {...({ children: 'Card', ...props } as ComponentProps<typeof Card>)} />)
+  return document.querySelector('[data-subject]')?.closest('[data-slot="card"]')
 }
 
 function classesOfCard(props: Partial<Record<keyof ComponentProps<typeof Card>, unknown>> = {}) {
@@ -50,6 +45,10 @@ describe('Card', () => {
     expect(attributesOfCard({ size: 'default' })).toEqual(attributesOfCard())
   })
 
+  it('renders with size="sm"', () => {
+    expect(renderCard({ size: 'sm' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderCard({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -59,21 +58,21 @@ describe('Card', () => {
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
     render(
-      <Card data-testid="subject" size="default">
+      <Card data-subject size="default">
         Card
       </Card>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
-      <Card data-testid="subject" size="sm">
+      <Card data-subject size="sm">
         Card
       </Card>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -84,12 +83,12 @@ function renderCardHeader(
   render(
     <Card>
       <CardHeader
-        data-testid="subject"
+        data-subject
         {...({ children: 'CardHeader', ...props } as ComponentProps<typeof CardHeader>)}
       />
     </Card>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="card-header"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="card-header"]')
 }
 
 function classesOfCardHeader(
@@ -113,20 +112,20 @@ describe('CardHeader', () => {
     cleanup()
     render(
       <Card size="default">
-        <CardHeader data-testid="subject">CardHeader</CardHeader>
+        <CardHeader data-subject>CardHeader</CardHeader>
       </Card>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Card size="sm">
-        <CardHeader data-testid="subject">CardHeader</CardHeader>
+        <CardHeader data-subject>CardHeader</CardHeader>
       </Card>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -138,13 +137,13 @@ function renderCardTitle(
     <Card>
       <CardHeader>
         <CardTitle
-          data-testid="subject"
+          data-subject
           {...({ children: 'CardTitle', ...props } as ComponentProps<typeof CardTitle>)}
         />
       </CardHeader>
     </Card>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="card-title"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="card-title"]')
 }
 
 function classesOfCardTitle(
@@ -169,11 +168,11 @@ describe('CardTitle', () => {
     render(
       <Card size="default">
         <CardHeader>
-          <CardTitle data-testid="subject">CardTitle</CardTitle>
+          <CardTitle data-subject>CardTitle</CardTitle>
         </CardHeader>
       </Card>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -181,11 +180,11 @@ describe('CardTitle', () => {
     render(
       <Card size="sm">
         <CardHeader>
-          <CardTitle data-testid="subject">CardTitle</CardTitle>
+          <CardTitle data-subject>CardTitle</CardTitle>
         </CardHeader>
       </Card>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -197,15 +196,13 @@ function renderCardDescription(
     <Card>
       <CardHeader>
         <CardDescription
-          data-testid="subject"
+          data-subject
           {...({ children: 'CardDescription', ...props } as ComponentProps<typeof CardDescription>)}
         />
       </CardHeader>
     </Card>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="card-description"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="card-description"]')
 }
 
 function classesOfCardDescription(
@@ -230,11 +227,11 @@ describe('CardDescription', () => {
     render(
       <Card size="default">
         <CardHeader>
-          <CardDescription data-testid="subject">CardDescription</CardDescription>
+          <CardDescription data-subject>CardDescription</CardDescription>
         </CardHeader>
       </Card>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -242,11 +239,11 @@ describe('CardDescription', () => {
     render(
       <Card size="sm">
         <CardHeader>
-          <CardDescription data-testid="subject">CardDescription</CardDescription>
+          <CardDescription data-subject>CardDescription</CardDescription>
         </CardHeader>
       </Card>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -258,13 +255,13 @@ function renderCardAction(
     <Card>
       <CardHeader>
         <CardAction
-          data-testid="subject"
+          data-subject
           {...({ children: 'CardAction', ...props } as ComponentProps<typeof CardAction>)}
         />
       </CardHeader>
     </Card>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="card-action"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="card-action"]')
 }
 
 function classesOfCardAction(
@@ -292,12 +289,12 @@ function renderCardContent(
   render(
     <Card>
       <CardContent
-        data-testid="subject"
+        data-subject
         {...({ children: 'CardContent', ...props } as ComponentProps<typeof CardContent>)}
       />
     </Card>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="card-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="card-content"]')
 }
 
 function classesOfCardContent(
@@ -321,20 +318,20 @@ describe('CardContent', () => {
     cleanup()
     render(
       <Card size="default">
-        <CardContent data-testid="subject">CardContent</CardContent>
+        <CardContent data-subject>CardContent</CardContent>
       </Card>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Card size="sm">
-        <CardContent data-testid="subject">CardContent</CardContent>
+        <CardContent data-subject>CardContent</CardContent>
       </Card>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -345,12 +342,12 @@ function renderCardFooter(
   render(
     <Card>
       <CardFooter
-        data-testid="subject"
+        data-subject
         {...({ children: 'CardFooter', ...props } as ComponentProps<typeof CardFooter>)}
       />
     </Card>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="card-footer"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="card-footer"]')
 }
 
 function classesOfCardFooter(
@@ -374,19 +371,19 @@ describe('CardFooter', () => {
     cleanup()
     render(
       <Card size="default">
-        <CardFooter data-testid="subject">CardFooter</CardFooter>
+        <CardFooter data-subject>CardFooter</CardFooter>
       </Card>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Card size="sm">
-        <CardFooter data-testid="subject">CardFooter</CardFooter>
+        <CardFooter data-subject>CardFooter</CardFooter>
       </Card>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

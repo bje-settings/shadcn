@@ -326,6 +326,16 @@
   }
 }
 
+@keyframes scroll-fade-reveal-b {
+  from {
+    --scroll-fade-b: var(--_scroll-fade-size-b, var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10))));
+  }
+
+  to {
+    --scroll-fade-b: 0px;
+  }
+}
+
 @keyframes scroll-fade-reveal-s {
   from {
     --scroll-fade-s: 0px;

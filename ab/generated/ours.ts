@@ -53,6 +53,11 @@ import * as select from '@/registry/bje/ui/Select/Select'
 import * as combobox from '@/registry/bje/ui/Combobox/Combobox'
 import * as navigationMenu from '@/registry/bje/ui/NavigationMenu/NavigationMenu'
 import * as command from '@/registry/bje/ui/Command/Command'
+import * as sonner from '@/registry/bje/ui/Sonner/Sonner'
+import * as toast from '@/registry/bje/ui/Toast/Toast'
+import * as resizable from '@/registry/bje/ui/Resizable/Resizable'
+import * as questionnaire from '@/registry/bje/ui/Questionnaire/Questionnaire'
+import * as messageScroller from '@/registry/bje/ui/MessageScroller/MessageScroller'
 
 export const ours = {
   button: button,
@@ -108,4 +113,9 @@ export const ours = {
   combobox: combobox,
   'navigation-menu': navigationMenu,
   command: command,
+  sonner: sonner,
+  toast: toast,
+  resizable: resizable,
+  questionnaire: questionnaire,
+  'message-scroller': messageScroller,
 }

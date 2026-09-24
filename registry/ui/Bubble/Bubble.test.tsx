@@ -16,11 +16,11 @@ function renderBubbleGroup(
   cleanup()
   render(
     <BubbleGroup
-      data-testid="subject"
+      data-subject
       {...({ children: 'BubbleGroup', ...props } as ComponentProps<typeof BubbleGroup>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="bubble-group"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="bubble-group"]')
 }
 
 function classesOfBubbleGroup(
@@ -45,11 +45,11 @@ function renderBubble(props: Partial<Record<keyof ComponentProps<typeof Bubble>,
   cleanup()
   render(
     <Bubble
-      data-testid="subject"
+      data-subject
       {...({ children: 'Bubble', ...props } as ComponentProps<typeof Bubble>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="bubble"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="bubble"]')
 }
 
 function classesOfBubble(
@@ -107,6 +107,10 @@ describe('Bubble', () => {
     expect(attributesOfBubble({ align: 'start' })).toEqual(attributesOfBubble())
   })
 
+  it('renders with align="end"', () => {
+    expect(renderBubble({ align: 'end' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderBubble({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -116,137 +120,137 @@ describe('Bubble', () => {
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
     render(
-      <Bubble data-testid="subject" variant="secondary">
+      <Bubble data-subject variant="secondary">
         Bubble
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
-      <Bubble data-testid="subject" variant="muted">
+      <Bubble data-subject variant="muted">
         Bubble
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
-      <Bubble data-testid="subject" variant="tinted" align="end">
+      <Bubble data-subject variant="tinted" align="end">
         Bubble
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
-      <Bubble data-testid="subject" variant="outline">
+      <Bubble data-subject variant="outline">
         Bubble
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
-      <Bubble data-testid="subject" variant="destructive">
+      <Bubble data-subject variant="destructive">
         Bubble
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
-      <Bubble data-testid="subject" variant="ghost">
+      <Bubble data-subject variant="ghost">
         Bubble
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
     render(
       <BubbleGroup>
-        <Bubble data-testid="subject" variant="secondary">
+        <Bubble data-subject variant="secondary">
           Bubble
         </Bubble>
       </BubbleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
     cleanup()
     render(
       <BubbleGroup>
-        <Bubble data-testid="subject" variant="tinted" align="end">
+        <Bubble data-subject variant="tinted" align="end">
           Bubble
         </Bubble>
       </BubbleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
     cleanup()
     render(
-      <Bubble data-testid="subject" variant="muted" align="end">
+      <Bubble data-subject variant="muted" align="end">
         Bubble
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
     cleanup()
     render(
-      <Bubble data-testid="subject" variant="secondary" align="end">
+      <Bubble data-subject variant="secondary" align="end">
         Bubble
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
     cleanup()
     render(
-      <Bubble data-testid="subject" variant="tinted">
+      <Bubble data-subject variant="tinted">
         Bubble
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
     cleanup()
     render(
-      <Bubble data-testid="subject" align="end">
+      <Bubble data-subject align="end">
         Bubble
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
     cleanup()
     render(
       <BubbleGroup>
-        <Bubble data-testid="subject" variant="outline" align="end">
+        <Bubble data-subject variant="outline" align="end">
           Bubble
         </Bubble>
       </BubbleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -257,12 +261,12 @@ function renderBubbleContent(
   render(
     <Bubble>
       <BubbleContent
-        data-testid="subject"
+        data-subject
         {...({ children: 'BubbleContent', ...props } as ComponentProps<typeof BubbleContent>)}
       />
     </Bubble>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="bubble-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="bubble-content"]')
 }
 
 function classesOfBubbleContent(
@@ -286,60 +290,60 @@ describe('BubbleContent', () => {
     cleanup()
     render(
       <Bubble variant="secondary">
-        <BubbleContent data-testid="subject">BubbleContent</BubbleContent>
+        <BubbleContent data-subject>BubbleContent</BubbleContent>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Bubble variant="muted">
-        <BubbleContent data-testid="subject">BubbleContent</BubbleContent>
+        <BubbleContent data-subject>BubbleContent</BubbleContent>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <Bubble variant="tinted" align="end">
-        <BubbleContent data-testid="subject">BubbleContent</BubbleContent>
+        <BubbleContent data-subject>BubbleContent</BubbleContent>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <Bubble variant="outline">
-        <BubbleContent data-testid="subject">BubbleContent</BubbleContent>
+        <BubbleContent data-subject>BubbleContent</BubbleContent>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
       <Bubble variant="destructive">
-        <BubbleContent data-testid="subject">BubbleContent</BubbleContent>
+        <BubbleContent data-subject>BubbleContent</BubbleContent>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
       <Bubble variant="ghost">
-        <BubbleContent data-testid="subject">BubbleContent</BubbleContent>
+        <BubbleContent data-subject>BubbleContent</BubbleContent>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -347,11 +351,11 @@ describe('BubbleContent', () => {
     render(
       <BubbleGroup>
         <Bubble variant="secondary">
-          <BubbleContent data-testid="subject">BubbleContent</BubbleContent>
+          <BubbleContent data-subject>BubbleContent</BubbleContent>
         </Bubble>
       </BubbleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -359,51 +363,51 @@ describe('BubbleContent', () => {
     render(
       <BubbleGroup>
         <Bubble variant="tinted" align="end">
-          <BubbleContent data-testid="subject">BubbleContent</BubbleContent>
+          <BubbleContent data-subject>BubbleContent</BubbleContent>
         </Bubble>
       </BubbleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
     cleanup()
     render(
       <Bubble variant="muted" align="end">
-        <BubbleContent data-testid="subject">BubbleContent</BubbleContent>
+        <BubbleContent data-subject>BubbleContent</BubbleContent>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
     cleanup()
     render(
       <Bubble variant="secondary" align="end">
-        <BubbleContent data-testid="subject">BubbleContent</BubbleContent>
+        <BubbleContent data-subject>BubbleContent</BubbleContent>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
     cleanup()
     render(
       <Bubble variant="tinted">
-        <BubbleContent data-testid="subject">BubbleContent</BubbleContent>
+        <BubbleContent data-subject>BubbleContent</BubbleContent>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
     cleanup()
     render(
       <Bubble align="end">
-        <BubbleContent data-testid="subject">BubbleContent</BubbleContent>
+        <BubbleContent data-subject>BubbleContent</BubbleContent>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
@@ -411,11 +415,11 @@ describe('BubbleContent', () => {
     render(
       <BubbleGroup>
         <Bubble variant="outline" align="end">
-          <BubbleContent data-testid="subject">BubbleContent</BubbleContent>
+          <BubbleContent data-subject>BubbleContent</BubbleContent>
         </Bubble>
       </BubbleGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -426,7 +430,7 @@ function renderBubbleReactions(
   render(
     <Bubble>
       <BubbleReactions
-        data-testid="subject"
+        data-subject
         {...({
           role: 'img',
           'aria-label': 'Reaction: thumbs up',
@@ -436,9 +440,7 @@ function renderBubbleReactions(
       />
     </Bubble>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="bubble-reactions"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="bubble-reactions"]')
 }
 
 function classesOfBubbleReactions(
@@ -496,7 +498,7 @@ describe('BubbleReactions', () => {
     render(
       <Bubble variant="secondary" align="end">
         <BubbleReactions
-          data-testid="subject"
+          data-subject
           side="bottom"
           align="start"
           role="img"
@@ -506,7 +508,7 @@ describe('BubbleReactions', () => {
         </BubbleReactions>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -514,7 +516,7 @@ describe('BubbleReactions', () => {
     render(
       <Bubble variant="tinted">
         <BubbleReactions
-          data-testid="subject"
+          data-subject
           side="bottom"
           align="end"
           role="img"
@@ -524,7 +526,7 @@ describe('BubbleReactions', () => {
         </BubbleReactions>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -532,7 +534,7 @@ describe('BubbleReactions', () => {
     render(
       <Bubble variant="secondary">
         <BubbleReactions
-          data-testid="subject"
+          data-subject
           side="bottom"
           align="start"
           role="img"
@@ -542,7 +544,7 @@ describe('BubbleReactions', () => {
         </BubbleReactions>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -550,7 +552,7 @@ describe('BubbleReactions', () => {
     render(
       <Bubble variant="secondary">
         <BubbleReactions
-          data-testid="subject"
+          data-subject
           side="bottom"
           align="start"
           role="img"
@@ -560,7 +562,7 @@ describe('BubbleReactions', () => {
         </BubbleReactions>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -568,7 +570,7 @@ describe('BubbleReactions', () => {
     render(
       <Bubble variant="secondary">
         <BubbleReactions
-          data-testid="subject"
+          data-subject
           side="top"
           align="start"
           role="img"
@@ -578,7 +580,7 @@ describe('BubbleReactions', () => {
         </BubbleReactions>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -586,7 +588,7 @@ describe('BubbleReactions', () => {
     render(
       <Bubble variant="secondary">
         <BubbleReactions
-          data-testid="subject"
+          data-subject
           side="top"
           align="start"
           role="img"
@@ -596,7 +598,7 @@ describe('BubbleReactions', () => {
         </BubbleReactions>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -604,7 +606,7 @@ describe('BubbleReactions', () => {
     render(
       <Bubble variant="muted">
         <BubbleReactions
-          data-testid="subject"
+          data-subject
           side="top"
           align="end"
           role="img"
@@ -614,7 +616,7 @@ describe('BubbleReactions', () => {
         </BubbleReactions>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -622,7 +624,7 @@ describe('BubbleReactions', () => {
     render(
       <Bubble variant="muted">
         <BubbleReactions
-          data-testid="subject"
+          data-subject
           side="top"
           align="end"
           role="img"
@@ -632,38 +634,38 @@ describe('BubbleReactions', () => {
         </BubbleReactions>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
     cleanup()
     render(
       <Bubble>
-        <BubbleReactions data-testid="subject">BubbleReactions</BubbleReactions>
+        <BubbleReactions data-subject>BubbleReactions</BubbleReactions>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
     cleanup()
     render(
       <Bubble align="end">
-        <BubbleReactions data-testid="subject" align="start">
+        <BubbleReactions data-subject align="start">
           BubbleReactions
         </BubbleReactions>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
     cleanup()
     render(
       <Bubble variant="tinted">
-        <BubbleReactions data-testid="subject">BubbleReactions</BubbleReactions>
+        <BubbleReactions data-subject>BubbleReactions</BubbleReactions>
       </Bubble>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

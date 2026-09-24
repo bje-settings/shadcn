@@ -28,12 +28,12 @@ function renderFieldSet(
   render(
     <FieldGroup>
       <FieldSet
-        data-testid="subject"
+        data-subject
         {...({ children: 'FieldSet', ...props } as ComponentProps<typeof FieldSet>)}
       />
     </FieldGroup>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="field-set"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="field-set"]')
 }
 
 function classesOfFieldSet(
@@ -62,13 +62,13 @@ function renderFieldLegend(
     <FieldGroup>
       <FieldSet>
         <FieldLegend
-          data-testid="subject"
+          data-subject
           {...({ children: 'FieldLegend', ...props } as ComponentProps<typeof FieldLegend>)}
         />
       </FieldSet>
     </FieldGroup>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="field-legend"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="field-legend"]')
 }
 
 function classesOfFieldLegend(
@@ -96,6 +96,10 @@ describe('FieldLegend', () => {
     expect(attributesOfFieldLegend({ variant: 'legend' })).toEqual(attributesOfFieldLegend())
   })
 
+  it('renders with variant="label"', () => {
+    expect(renderFieldLegend({ variant: 'label' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderFieldLegend({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -109,11 +113,11 @@ function renderFieldGroup(
   cleanup()
   render(
     <FieldGroup
-      data-testid="subject"
+      data-subject
       {...({ children: 'FieldGroup', ...props } as ComponentProps<typeof FieldGroup>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="field-group"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="field-group"]')
 }
 
 function classesOfFieldGroup(
@@ -138,11 +142,11 @@ describe('FieldGroup', () => {
     render(
       <FieldGroup>
         <FieldSet>
-          <FieldGroup data-testid="subject">FieldGroup</FieldGroup>
+          <FieldGroup data-subject>FieldGroup</FieldGroup>
         </FieldSet>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -150,13 +154,10 @@ function renderField(props: Partial<Record<keyof ComponentProps<typeof Field>, u
   cleanup()
   render(
     <FieldGroup>
-      <Field
-        data-testid="subject"
-        {...({ children: 'Field', ...props } as ComponentProps<typeof Field>)}
-      />
+      <Field data-subject {...({ children: 'Field', ...props } as ComponentProps<typeof Field>)} />
     </FieldGroup>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="field"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="field"]')
 }
 
 function classesOfField(props: Partial<Record<keyof ComponentProps<typeof Field>, unknown>> = {}) {
@@ -200,36 +201,36 @@ describe('Field', () => {
     cleanup()
     render(
       <FieldGroup>
-        <Field data-testid="subject" data-invalid>
+        <Field data-subject data-invalid>
           Field
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <FieldGroup>
-        <Field data-testid="subject" data-disabled>
+        <Field data-subject data-disabled>
           Field
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <FieldGroup>
-        <Field data-testid="subject" orientation="horizontal">
+        <Field data-subject orientation="horizontal">
           Field
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -237,13 +238,13 @@ describe('Field', () => {
     render(
       <FieldGroup>
         <FieldLabel htmlFor="checkbox-with-title">
-          <Field data-testid="subject" orientation="horizontal">
+          <Field data-subject orientation="horizontal">
             Field
           </Field>
         </FieldLabel>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -252,38 +253,38 @@ describe('Field', () => {
       <FieldGroup>
         <FieldSet>
           <FieldGroup>
-            <Field data-testid="subject" orientation="horizontal">
+            <Field data-subject orientation="horizontal">
               Field
             </Field>
           </FieldGroup>
         </FieldSet>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
       <FieldGroup>
-        <Field data-testid="subject" data-invalid orientation="horizontal">
+        <Field data-subject data-invalid orientation="horizontal">
           Field
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
     render(
       <FieldGroup>
-        <Field data-testid="subject" data-disabled orientation="horizontal">
+        <Field data-subject data-disabled orientation="horizontal">
           Field
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -291,13 +292,13 @@ describe('Field', () => {
     render(
       <FieldGroup>
         <FieldSet>
-          <Field data-testid="subject" orientation="horizontal">
+          <Field data-subject orientation="horizontal">
             Field
           </Field>
         </FieldSet>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
@@ -305,13 +306,13 @@ describe('Field', () => {
     render(
       <FieldGroup>
         <FieldLabel htmlFor="radio-title-1">
-          <Field data-testid="subject" orientation="horizontal">
+          <Field data-subject orientation="horizontal">
             Field
           </Field>
         </FieldLabel>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
@@ -319,13 +320,13 @@ describe('Field', () => {
     render(
       <FieldGroup>
         <FieldSet>
-          <Field data-testid="subject" data-invalid orientation="horizontal">
+          <Field data-subject data-invalid orientation="horizontal">
             Field
           </Field>
         </FieldSet>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
@@ -333,13 +334,13 @@ describe('Field', () => {
     render(
       <FieldGroup>
         <FieldSet>
-          <Field data-testid="subject" data-disabled orientation="horizontal">
+          <Field data-subject data-disabled orientation="horizontal">
             Field
           </Field>
         </FieldSet>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
@@ -347,13 +348,13 @@ describe('Field', () => {
     render(
       <FieldGroup>
         <Field>
-          <Field data-testid="subject" orientation="horizontal">
+          <Field data-subject orientation="horizontal">
             Field
           </Field>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -365,13 +366,13 @@ function renderFieldContent(
     <FieldGroup>
       <Field orientation="horizontal">
         <FieldContent
-          data-testid="subject"
+          data-subject
           {...({ children: 'FieldContent', ...props } as ComponentProps<typeof FieldContent>)}
         />
       </Field>
     </FieldGroup>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="field-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="field-content"]')
 }
 
 function classesOfFieldContent(
@@ -397,12 +398,12 @@ describe('FieldContent', () => {
       <FieldGroup>
         <FieldLabel htmlFor="checkbox-with-title">
           <Field orientation="horizontal">
-            <FieldContent data-testid="subject">FieldContent</FieldContent>
+            <FieldContent data-subject>FieldContent</FieldContent>
           </Field>
         </FieldLabel>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -411,12 +412,12 @@ describe('FieldContent', () => {
       <FieldGroup>
         <FieldLabel htmlFor="radio-title-1">
           <Field orientation="horizontal">
-            <FieldContent data-testid="subject">FieldContent</FieldContent>
+            <FieldContent data-subject>FieldContent</FieldContent>
           </Field>
         </FieldLabel>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -424,11 +425,11 @@ describe('FieldContent', () => {
     render(
       <FieldGroup>
         <Field data-invalid orientation="horizontal">
-          <FieldContent data-testid="subject">FieldContent</FieldContent>
+          <FieldContent data-subject>FieldContent</FieldContent>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -436,11 +437,11 @@ describe('FieldContent', () => {
     render(
       <FieldGroup>
         <Field data-disabled orientation="horizontal">
-          <FieldContent data-testid="subject">FieldContent</FieldContent>
+          <FieldContent data-subject>FieldContent</FieldContent>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -452,7 +453,7 @@ function renderFieldLabel(
     <FieldGroup>
       <Field>
         <FieldLabel
-          data-testid="subject"
+          data-subject
           {...({ htmlFor: 'input-basic', children: 'FieldLabel', ...props } as ComponentProps<
             typeof FieldLabel
           >)}
@@ -460,7 +461,7 @@ function renderFieldLabel(
       </Field>
     </FieldGroup>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="field-label"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="field-label"]')
 }
 
 function classesOfFieldLabel(
@@ -485,13 +486,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="input-with-desc">
+          <FieldLabel data-subject htmlFor="input-with-desc">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -499,13 +500,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="input-desc-first">
+          <FieldLabel data-subject htmlFor="input-desc-first">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -513,13 +514,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="input-required">
+          <FieldLabel data-subject htmlFor="input-required">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -527,13 +528,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="input-disabled">
+          <FieldLabel data-subject htmlFor="input-disabled">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -541,13 +542,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="input-badge">
+          <FieldLabel data-subject htmlFor="input-badge">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -555,13 +556,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field data-invalid>
-          <FieldLabel data-testid="subject" htmlFor="input-invalid">
+          <FieldLabel data-subject htmlFor="input-invalid">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -569,13 +570,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field data-disabled>
-          <FieldLabel data-testid="subject" htmlFor="input-disabled-field">
+          <FieldLabel data-subject htmlFor="input-disabled-field">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -583,13 +584,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="textarea-basic">
+          <FieldLabel data-subject htmlFor="textarea-basic">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
@@ -597,13 +598,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="textarea-comments">
+          <FieldLabel data-subject htmlFor="textarea-comments">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
@@ -611,13 +612,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="textarea-bio">
+          <FieldLabel data-subject htmlFor="textarea-bio">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
@@ -625,13 +626,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="textarea-desc-after">
+          <FieldLabel data-subject htmlFor="textarea-desc-after">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
@@ -639,13 +640,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field data-invalid>
-          <FieldLabel data-testid="subject" htmlFor="textarea-invalid">
+          <FieldLabel data-subject htmlFor="textarea-invalid">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
@@ -653,13 +654,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field data-disabled>
-          <FieldLabel data-testid="subject" htmlFor="textarea-disabled-field">
+          <FieldLabel data-subject htmlFor="textarea-disabled-field">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (15)", () => {
@@ -667,13 +668,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="select-basic">
+          <FieldLabel data-subject htmlFor="select-basic">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (16)", () => {
@@ -681,13 +682,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="select-country">
+          <FieldLabel data-subject htmlFor="select-country">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (17)", () => {
@@ -695,13 +696,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="select-timezone">
+          <FieldLabel data-subject htmlFor="select-timezone">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (18)", () => {
@@ -709,13 +710,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field data-invalid>
-          <FieldLabel data-testid="subject" htmlFor="select-invalid">
+          <FieldLabel data-subject htmlFor="select-invalid">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (19)", () => {
@@ -723,13 +724,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field data-disabled>
-          <FieldLabel data-testid="subject" htmlFor="select-disabled-field">
+          <FieldLabel data-subject htmlFor="select-disabled-field">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (20)", () => {
@@ -737,13 +738,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="native-select-basic">
+          <FieldLabel data-subject htmlFor="native-select-basic">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (21)", () => {
@@ -751,13 +752,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="native-select-country">
+          <FieldLabel data-subject htmlFor="native-select-country">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (22)", () => {
@@ -765,13 +766,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="native-select-timezone">
+          <FieldLabel data-subject htmlFor="native-select-timezone">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (23)", () => {
@@ -779,13 +780,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="native-select-grouped">
+          <FieldLabel data-subject htmlFor="native-select-grouped">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (24)", () => {
@@ -793,13 +794,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field data-invalid>
-          <FieldLabel data-testid="subject" htmlFor="native-select-invalid">
+          <FieldLabel data-subject htmlFor="native-select-invalid">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (25)", () => {
@@ -807,13 +808,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field data-disabled>
-          <FieldLabel data-testid="subject" htmlFor="native-select-disabled-field">
+          <FieldLabel data-subject htmlFor="native-select-disabled-field">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (26)", () => {
@@ -821,13 +822,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field orientation="horizontal">
-          <FieldLabel data-testid="subject" htmlFor="checkbox-basic">
+          <FieldLabel data-subject htmlFor="checkbox-basic">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (27)", () => {
@@ -835,13 +836,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field orientation="horizontal">
-          <FieldLabel data-testid="subject" htmlFor="checkbox-right">
+          <FieldLabel data-subject htmlFor="checkbox-right">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (28)", () => {
@@ -850,26 +851,26 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <Field orientation="horizontal">
           <FieldContent>
-            <FieldLabel data-testid="subject" htmlFor="checkbox-with-desc">
+            <FieldLabel data-subject htmlFor="checkbox-with-desc">
               FieldLabel
             </FieldLabel>
           </FieldContent>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (29)", () => {
     cleanup()
     render(
       <FieldGroup>
-        <FieldLabel data-testid="subject" htmlFor="checkbox-with-title">
+        <FieldLabel data-subject htmlFor="checkbox-with-title">
           FieldLabel
         </FieldLabel>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (30)", () => {
@@ -879,7 +880,7 @@ describe('FieldLabel', () => {
         <FieldSet>
           <FieldGroup>
             <Field orientation="horizontal">
-              <FieldLabel data-testid="subject" htmlFor="pref-dark">
+              <FieldLabel data-subject htmlFor="pref-dark">
                 FieldLabel
               </FieldLabel>
             </Field>
@@ -887,7 +888,7 @@ describe('FieldLabel', () => {
         </FieldSet>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (31)", () => {
@@ -897,7 +898,7 @@ describe('FieldLabel', () => {
         <FieldSet>
           <FieldGroup>
             <Field orientation="horizontal">
-              <FieldLabel data-testid="subject" htmlFor="pref-compact">
+              <FieldLabel data-subject htmlFor="pref-compact">
                 FieldLabel
               </FieldLabel>
             </Field>
@@ -905,7 +906,7 @@ describe('FieldLabel', () => {
         </FieldSet>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (32)", () => {
@@ -915,7 +916,7 @@ describe('FieldLabel', () => {
         <FieldSet>
           <FieldGroup>
             <Field orientation="horizontal">
-              <FieldLabel data-testid="subject" htmlFor="pref-notifications">
+              <FieldLabel data-subject htmlFor="pref-notifications">
                 FieldLabel
               </FieldLabel>
             </Field>
@@ -923,7 +924,7 @@ describe('FieldLabel', () => {
         </FieldSet>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (33)", () => {
@@ -931,13 +932,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field data-invalid orientation="horizontal">
-          <FieldLabel data-testid="subject" htmlFor="checkbox-invalid">
+          <FieldLabel data-subject htmlFor="checkbox-invalid">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (34)", () => {
@@ -945,13 +946,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field data-disabled orientation="horizontal">
-          <FieldLabel data-testid="subject" htmlFor="checkbox-disabled-field">
+          <FieldLabel data-subject htmlFor="checkbox-disabled-field">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (35)", () => {
@@ -960,14 +961,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <FieldSet>
           <Field orientation="horizontal">
-            <FieldLabel data-testid="subject" htmlFor="radio-free">
+            <FieldLabel data-subject htmlFor="radio-free">
               FieldLabel
             </FieldLabel>
           </Field>
         </FieldSet>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (36)", () => {
@@ -976,14 +977,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <FieldSet>
           <Field orientation="horizontal">
-            <FieldLabel data-testid="subject" htmlFor="radio-pro">
+            <FieldLabel data-subject htmlFor="radio-pro">
               FieldLabel
             </FieldLabel>
           </Field>
         </FieldSet>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (37)", () => {
@@ -992,14 +993,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <FieldSet>
           <Field orientation="horizontal">
-            <FieldLabel data-testid="subject" htmlFor="radio-enterprise">
+            <FieldLabel data-subject htmlFor="radio-enterprise">
               FieldLabel
             </FieldLabel>
           </Field>
         </FieldSet>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (38)", () => {
@@ -1008,14 +1009,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <FieldSet>
           <Field orientation="horizontal">
-            <FieldLabel data-testid="subject" htmlFor="battery-high">
+            <FieldLabel data-subject htmlFor="battery-high">
               FieldLabel
             </FieldLabel>
           </Field>
         </FieldSet>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (39)", () => {
@@ -1024,14 +1025,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <FieldSet>
           <Field orientation="horizontal">
-            <FieldLabel data-testid="subject" htmlFor="battery-medium">
+            <FieldLabel data-subject htmlFor="battery-medium">
               FieldLabel
             </FieldLabel>
           </Field>
         </FieldSet>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (40)", () => {
@@ -1040,14 +1041,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <FieldSet>
           <Field orientation="horizontal">
-            <FieldLabel data-testid="subject" htmlFor="battery-low">
+            <FieldLabel data-subject htmlFor="battery-low">
               FieldLabel
             </FieldLabel>
           </Field>
         </FieldSet>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (41)", () => {
@@ -1056,26 +1057,26 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <Field orientation="horizontal">
           <FieldContent>
-            <FieldLabel data-testid="subject" htmlFor="radio-content-1">
+            <FieldLabel data-subject htmlFor="radio-content-1">
               FieldLabel
             </FieldLabel>
           </FieldContent>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (42)", () => {
     cleanup()
     render(
       <FieldGroup>
-        <FieldLabel data-testid="subject" htmlFor="radio-title-1">
+        <FieldLabel data-subject htmlFor="radio-title-1">
           FieldLabel
         </FieldLabel>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (43)", () => {
@@ -1084,14 +1085,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <FieldSet>
           <Field data-invalid orientation="horizontal">
-            <FieldLabel data-testid="subject" htmlFor="radio-invalid-1">
+            <FieldLabel data-subject htmlFor="radio-invalid-1">
               FieldLabel
             </FieldLabel>
           </Field>
         </FieldSet>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (44)", () => {
@@ -1100,14 +1101,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <FieldSet>
           <Field data-invalid orientation="horizontal">
-            <FieldLabel data-testid="subject" htmlFor="radio-invalid-2">
+            <FieldLabel data-subject htmlFor="radio-invalid-2">
               FieldLabel
             </FieldLabel>
           </Field>
         </FieldSet>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (45)", () => {
@@ -1116,14 +1117,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <FieldSet>
           <Field data-disabled orientation="horizontal">
-            <FieldLabel data-testid="subject" htmlFor="radio-disabled-1">
+            <FieldLabel data-subject htmlFor="radio-disabled-1">
               FieldLabel
             </FieldLabel>
           </Field>
         </FieldSet>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (46)", () => {
@@ -1132,14 +1133,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <FieldSet>
           <Field data-disabled orientation="horizontal">
-            <FieldLabel data-testid="subject" htmlFor="radio-disabled-2">
+            <FieldLabel data-subject htmlFor="radio-disabled-2">
               FieldLabel
             </FieldLabel>
           </Field>
         </FieldSet>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (47)", () => {
@@ -1148,14 +1149,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <Field orientation="horizontal">
           <FieldContent>
-            <FieldLabel data-testid="subject" htmlFor="switch-airplane">
+            <FieldLabel data-subject htmlFor="switch-airplane">
               FieldLabel
             </FieldLabel>
           </FieldContent>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (48)", () => {
@@ -1163,13 +1164,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field orientation="horizontal">
-          <FieldLabel data-testid="subject" htmlFor="switch-dark">
+          <FieldLabel data-subject htmlFor="switch-dark">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (49)", () => {
@@ -1178,14 +1179,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <Field orientation="horizontal">
           <FieldContent>
-            <FieldLabel data-testid="subject" htmlFor="switch-marketing">
+            <FieldLabel data-subject htmlFor="switch-marketing">
               FieldLabel
             </FieldLabel>
           </FieldContent>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (50)", () => {
@@ -1193,11 +1194,11 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject">FieldLabel</FieldLabel>
+          <FieldLabel data-subject>FieldLabel</FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (51)", () => {
@@ -1206,14 +1207,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <Field>
           <Field orientation="horizontal">
-            <FieldLabel data-testid="subject" htmlFor="switch-profile">
+            <FieldLabel data-subject htmlFor="switch-profile">
               FieldLabel
             </FieldLabel>
           </Field>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (52)", () => {
@@ -1222,14 +1223,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <Field>
           <Field orientation="horizontal">
-            <FieldLabel data-testid="subject" htmlFor="switch-email">
+            <FieldLabel data-subject htmlFor="switch-email">
               FieldLabel
             </FieldLabel>
           </Field>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (53)", () => {
@@ -1238,14 +1239,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <Field data-invalid orientation="horizontal">
           <FieldContent>
-            <FieldLabel data-testid="subject" htmlFor="switch-invalid">
+            <FieldLabel data-subject htmlFor="switch-invalid">
               FieldLabel
             </FieldLabel>
           </FieldContent>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (54)", () => {
@@ -1254,14 +1255,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <Field data-disabled orientation="horizontal">
           <FieldContent>
-            <FieldLabel data-testid="subject" htmlFor="switch-disabled-field">
+            <FieldLabel data-subject htmlFor="switch-disabled-field">
               FieldLabel
             </FieldLabel>
           </FieldContent>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (55)", () => {
@@ -1269,13 +1270,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="slider-volume">
+          <FieldLabel data-subject htmlFor="slider-volume">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (56)", () => {
@@ -1283,13 +1284,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="slider-brightness">
+          <FieldLabel data-subject htmlFor="slider-brightness">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (57)", () => {
@@ -1297,13 +1298,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="slider-quality">
+          <FieldLabel data-subject htmlFor="slider-quality">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (58)", () => {
@@ -1311,13 +1312,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="slider-temperature">
+          <FieldLabel data-subject htmlFor="slider-temperature">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (59)", () => {
@@ -1325,13 +1326,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="slider-price-range">
+          <FieldLabel data-subject htmlFor="slider-price-range">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (60)", () => {
@@ -1339,13 +1340,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="slider-color-balance">
+          <FieldLabel data-subject htmlFor="slider-color-balance">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (61)", () => {
@@ -1353,13 +1354,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field data-invalid>
-          <FieldLabel data-testid="subject" htmlFor="slider-invalid">
+          <FieldLabel data-subject htmlFor="slider-invalid">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (62)", () => {
@@ -1367,13 +1368,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field data-disabled>
-          <FieldLabel data-testid="subject" htmlFor="slider-disabled-field">
+          <FieldLabel data-subject htmlFor="slider-disabled-field">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (63)", () => {
@@ -1381,13 +1382,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="otp-basic">
+          <FieldLabel data-subject htmlFor="otp-basic">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (64)", () => {
@@ -1395,13 +1396,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="otp-with-desc">
+          <FieldLabel data-subject htmlFor="otp-with-desc">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (65)", () => {
@@ -1409,13 +1410,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="otp-separator">
+          <FieldLabel data-subject htmlFor="otp-separator">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (66)", () => {
@@ -1423,13 +1424,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field>
-          <FieldLabel data-testid="subject" htmlFor="otp-pin">
+          <FieldLabel data-subject htmlFor="otp-pin">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (67)", () => {
@@ -1437,13 +1438,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field data-invalid>
-          <FieldLabel data-testid="subject" htmlFor="otp-invalid">
+          <FieldLabel data-subject htmlFor="otp-invalid">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (68)", () => {
@@ -1451,13 +1452,13 @@ describe('FieldLabel', () => {
     render(
       <FieldGroup>
         <Field data-disabled>
-          <FieldLabel data-testid="subject" htmlFor="otp-disabled-field">
+          <FieldLabel data-subject htmlFor="otp-disabled-field">
             FieldLabel
           </FieldLabel>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (69)", () => {
@@ -1466,14 +1467,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <Field orientation="horizontal">
           <FieldContent>
-            <FieldLabel data-testid="subject" htmlFor="horizontal-input">
+            <FieldLabel data-subject htmlFor="horizontal-input">
               FieldLabel
             </FieldLabel>
           </FieldContent>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (70)", () => {
@@ -1482,14 +1483,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <Field orientation="horizontal">
           <FieldContent>
-            <FieldLabel data-testid="subject" htmlFor="horizontal-textarea">
+            <FieldLabel data-subject htmlFor="horizontal-textarea">
               FieldLabel
             </FieldLabel>
           </FieldContent>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (71)", () => {
@@ -1498,14 +1499,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <Field orientation="horizontal">
           <FieldContent>
-            <FieldLabel data-testid="subject" htmlFor="horizontal-switch">
+            <FieldLabel data-subject htmlFor="horizontal-switch">
               FieldLabel
             </FieldLabel>
           </FieldContent>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (72)", () => {
@@ -1514,14 +1515,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <Field orientation="horizontal">
           <FieldContent>
-            <FieldLabel data-testid="subject" htmlFor="horizontal-select">
+            <FieldLabel data-subject htmlFor="horizontal-select">
               FieldLabel
             </FieldLabel>
           </FieldContent>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (73)", () => {
@@ -1530,14 +1531,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <Field orientation="horizontal">
           <FieldContent>
-            <FieldLabel data-testid="subject" htmlFor="horizontal-native-select">
+            <FieldLabel data-subject htmlFor="horizontal-native-select">
               FieldLabel
             </FieldLabel>
           </FieldContent>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (74)", () => {
@@ -1546,14 +1547,14 @@ describe('FieldLabel', () => {
       <FieldGroup>
         <Field orientation="horizontal">
           <FieldContent>
-            <FieldLabel data-testid="subject" htmlFor="horizontal-slider">
+            <FieldLabel data-subject htmlFor="horizontal-slider">
               FieldLabel
             </FieldLabel>
           </FieldContent>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -1567,7 +1568,7 @@ function renderFieldTitle(
         <Field orientation="horizontal">
           <FieldContent>
             <FieldTitle
-              data-testid="subject"
+              data-subject
               {...({ children: 'FieldTitle', ...props } as ComponentProps<typeof FieldTitle>)}
             />
           </FieldContent>
@@ -1575,7 +1576,7 @@ function renderFieldTitle(
       </FieldLabel>
     </FieldGroup>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="field-label"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="field-label"]')
 }
 
 function classesOfFieldTitle(
@@ -1602,13 +1603,13 @@ describe('FieldTitle', () => {
         <FieldLabel htmlFor="radio-title-1">
           <Field orientation="horizontal">
             <FieldContent>
-              <FieldTitle data-testid="subject">FieldTitle</FieldTitle>
+              <FieldTitle data-subject>FieldTitle</FieldTitle>
             </FieldContent>
           </Field>
         </FieldLabel>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -1620,7 +1621,7 @@ function renderFieldDescription(
     <FieldGroup>
       <Field>
         <FieldDescription
-          data-testid="subject"
+          data-subject
           {...({ children: 'FieldDescription', ...props } as ComponentProps<
             typeof FieldDescription
           >)}
@@ -1628,9 +1629,7 @@ function renderFieldDescription(
       </Field>
     </FieldGroup>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="field-description"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="field-description"]')
 }
 
 function classesOfFieldDescription(
@@ -1655,11 +1654,11 @@ describe('FieldDescription', () => {
     render(
       <FieldGroup>
         <Field data-invalid>
-          <FieldDescription data-testid="subject">FieldDescription</FieldDescription>
+          <FieldDescription data-subject>FieldDescription</FieldDescription>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -1667,11 +1666,11 @@ describe('FieldDescription', () => {
     render(
       <FieldGroup>
         <Field data-disabled>
-          <FieldDescription data-testid="subject">FieldDescription</FieldDescription>
+          <FieldDescription data-subject>FieldDescription</FieldDescription>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -1680,12 +1679,12 @@ describe('FieldDescription', () => {
       <FieldGroup>
         <Field orientation="horizontal">
           <FieldContent>
-            <FieldDescription data-testid="subject">FieldDescription</FieldDescription>
+            <FieldDescription data-subject>FieldDescription</FieldDescription>
           </FieldContent>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -1695,13 +1694,13 @@ describe('FieldDescription', () => {
         <FieldLabel htmlFor="checkbox-with-title">
           <Field orientation="horizontal">
             <FieldContent>
-              <FieldDescription data-testid="subject">FieldDescription</FieldDescription>
+              <FieldDescription data-subject>FieldDescription</FieldDescription>
             </FieldContent>
           </Field>
         </FieldLabel>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -1709,11 +1708,11 @@ describe('FieldDescription', () => {
     render(
       <FieldGroup>
         <FieldSet>
-          <FieldDescription data-testid="subject">FieldDescription</FieldDescription>
+          <FieldDescription data-subject>FieldDescription</FieldDescription>
         </FieldSet>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -1723,13 +1722,13 @@ describe('FieldDescription', () => {
         <FieldLabel htmlFor="radio-title-1">
           <Field orientation="horizontal">
             <FieldContent>
-              <FieldDescription data-testid="subject">FieldDescription</FieldDescription>
+              <FieldDescription data-subject>FieldDescription</FieldDescription>
             </FieldContent>
           </Field>
         </FieldLabel>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -1738,12 +1737,12 @@ describe('FieldDescription', () => {
       <FieldGroup>
         <Field data-invalid orientation="horizontal">
           <FieldContent>
-            <FieldDescription data-testid="subject">FieldDescription</FieldDescription>
+            <FieldDescription data-subject>FieldDescription</FieldDescription>
           </FieldContent>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -1752,12 +1751,12 @@ describe('FieldDescription', () => {
       <FieldGroup>
         <Field data-disabled orientation="horizontal">
           <FieldContent>
-            <FieldDescription data-testid="subject">FieldDescription</FieldDescription>
+            <FieldDescription data-subject>FieldDescription</FieldDescription>
           </FieldContent>
         </Field>
       </FieldGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -1771,7 +1770,7 @@ function renderFieldSeparator(
         <Field orientation="horizontal">
           <FieldContent>
             <FieldSeparator
-              data-testid="subject"
+              data-subject
               {...({ children: 'FieldSeparator', ...props } as ComponentProps<
                 typeof FieldSeparator
               >)}
@@ -1781,7 +1780,7 @@ function renderFieldSeparator(
       </FieldLabel>
     </FieldGroup>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="field-separator"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="field-separator"]')
 }
 
 function classesOfFieldSeparator(
@@ -1812,7 +1811,7 @@ function renderFieldError(
         <Field orientation="horizontal">
           <FieldContent>
             <FieldError
-              data-testid="subject"
+              data-subject
               {...({ children: 'FieldError', ...props } as ComponentProps<typeof FieldError>)}
             />
           </FieldContent>
@@ -1820,7 +1819,7 @@ function renderFieldError(
       </FieldLabel>
     </FieldGroup>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="field-error"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="field-error"]')
 }
 
 function classesOfFieldError(

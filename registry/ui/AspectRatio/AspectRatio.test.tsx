@@ -12,11 +12,11 @@ function renderAspectRatio(
   cleanup()
   render(
     <AspectRatio
-      data-testid="subject"
+      data-subject
       {...({ children: 'AspectRatio', ...props } as ComponentProps<typeof AspectRatio>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="aspect-ratio"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="aspect-ratio"]')
 }
 
 function classesOfAspectRatio(

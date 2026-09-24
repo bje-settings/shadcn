@@ -20,11 +20,11 @@ function renderBreadcrumb(
   cleanup()
   render(
     <Breadcrumb
-      data-testid="subject"
+      data-subject
       {...({ children: 'Breadcrumb', ...props } as ComponentProps<typeof Breadcrumb>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="breadcrumb"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="breadcrumb"]')
 }
 
 describe('Breadcrumb', () => {
@@ -42,12 +42,12 @@ function renderBreadcrumbList(
   render(
     <Breadcrumb>
       <BreadcrumbList
-        data-testid="subject"
+        data-subject
         {...({ children: 'BreadcrumbList', ...props } as ComponentProps<typeof BreadcrumbList>)}
       />
     </Breadcrumb>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="breadcrumb-list"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="breadcrumb-list"]')
 }
 
 function classesOfBreadcrumbList(
@@ -76,13 +76,13 @@ function renderBreadcrumbItem(
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem
-          data-testid="subject"
+          data-subject
           {...({ children: 'BreadcrumbItem', ...props } as ComponentProps<typeof BreadcrumbItem>)}
         />
       </BreadcrumbList>
     </Breadcrumb>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="breadcrumb-item"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="breadcrumb-item"]')
 }
 
 function classesOfBreadcrumbItem(
@@ -112,7 +112,7 @@ function renderBreadcrumbLink(
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink
-            data-testid="subject"
+            data-subject
             {...({ href: '#', children: 'BreadcrumbLink', ...props } as ComponentProps<
               typeof BreadcrumbLink
             >)}
@@ -121,7 +121,7 @@ function renderBreadcrumbLink(
       </BreadcrumbList>
     </Breadcrumb>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="breadcrumb-link"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="breadcrumb-link"]')
 }
 
 function classesOfBreadcrumbLink(
@@ -147,12 +147,12 @@ describe('BreadcrumbLink', () => {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink data-testid="subject" />
+            <BreadcrumbLink data-subject />
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -165,14 +165,14 @@ function renderBreadcrumbPage(
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbPage
-            data-testid="subject"
+            data-subject
             {...({ children: 'BreadcrumbPage', ...props } as ComponentProps<typeof BreadcrumbPage>)}
           />
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="breadcrumb-page"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="breadcrumb-page"]')
 }
 
 function classesOfBreadcrumbPage(
@@ -201,15 +201,13 @@ function renderBreadcrumbSeparator(
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbSeparator
-          data-testid="subject"
+          data-subject
           {...(props as ComponentProps<typeof BreadcrumbSeparator>)}
         />
       </BreadcrumbList>
     </Breadcrumb>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="breadcrumb-separator"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="breadcrumb-separator"]')
 }
 
 function classesOfBreadcrumbSeparator(
@@ -241,16 +239,14 @@ function renderBreadcrumbEllipsis(
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbEllipsis
-            data-testid="subject"
+            data-subject
             {...(props as ComponentProps<typeof BreadcrumbEllipsis>)}
           />
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="breadcrumb-ellipsis"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="breadcrumb-ellipsis"]')
 }
 
 function classesOfBreadcrumbEllipsis(

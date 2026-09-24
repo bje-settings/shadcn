@@ -16,13 +16,8 @@ function renderProgress(
   props: Partial<Record<keyof ComponentProps<typeof Progress>, unknown>> = {},
 ) {
   cleanup()
-  render(
-    <Progress
-      data-testid="subject"
-      {...({ value: 0, ...props } as ComponentProps<typeof Progress>)}
-    />,
-  )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="progress"]')
+  render(<Progress data-subject {...({ value: 0, ...props } as ComponentProps<typeof Progress>)} />)
+  return document.querySelector('[data-subject]')?.closest('[data-slot="progress"]')
 }
 
 function classesOfProgress(
@@ -44,42 +39,42 @@ describe('Progress', () => {
 
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
-    render(<Progress data-testid="subject" value={25} />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Progress data-subject value={25} />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
-    render(<Progress data-testid="subject" value={50} />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Progress data-subject value={50} />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
-    render(<Progress data-testid="subject" value={75} />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Progress data-subject value={75} />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
-    render(<Progress data-testid="subject" value={100} />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Progress data-subject value={100} />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
-      <Progress data-testid="subject" value={56}>
+      <Progress data-subject value={56}>
         Progress
       </Progress>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
-    render(<Progress data-testid="subject" {...({} as ComponentProps<typeof Progress>)} />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Progress data-subject {...({} as ComponentProps<typeof Progress>)} />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -88,14 +83,14 @@ function renderProgressTrack(
 ) {
   cleanup()
   render(
-    <Progress {...({} as ComponentProps<typeof Progress>)}>
+    <Progress value={0}>
       <ProgressTrack
-        data-testid="subject"
+        data-subject
         {...({ children: 'ProgressTrack', ...props } as ComponentProps<typeof ProgressTrack>)}
       />
     </Progress>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="progress-track"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="progress-track"]')
 }
 
 function classesOfProgressTrack(
@@ -121,18 +116,13 @@ function renderProgressIndicator(
 ) {
   cleanup()
   render(
-    <Progress {...({} as ComponentProps<typeof Progress>)}>
-      <ProgressIndicator
-        data-testid="subject"
-        {...({ children: 'ProgressIndicator', ...props } as ComponentProps<
-          typeof ProgressIndicator
-        >)}
-      />
+    <Progress value={0}>
+      <ProgressTrack>
+        <ProgressIndicator data-subject {...(props as ComponentProps<typeof ProgressIndicator>)} />
+      </ProgressTrack>
     </Progress>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="progress-indicator"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="progress-indicator"]')
 }
 
 function classesOfProgressIndicator(
@@ -160,12 +150,12 @@ function renderProgressLabel(
   render(
     <Progress value={56}>
       <ProgressLabel
-        data-testid="subject"
+        data-subject
         {...({ children: 'ProgressLabel', ...props } as ComponentProps<typeof ProgressLabel>)}
       />
     </Progress>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="progress-label"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="progress-label"]')
 }
 
 function classesOfProgressLabel(

@@ -220,7 +220,7 @@ export async function buildComponent(
     ...context,
     setup,
     unstyled,
-    unrendered: config.unrenderedInTests,
+    unrendered: config.unrenderedInTests[upstream.name] ?? {},
   })
   const files = [
     {

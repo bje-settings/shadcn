@@ -16,11 +16,11 @@ function renderScrollArea(
   cleanup()
   render(
     <ScrollArea
-      data-testid="subject"
+      data-subject
       {...({ children: 'ScrollArea', ...props } as ComponentProps<typeof ScrollArea>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="scroll-area"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="scroll-area"]')
 }
 
 function classesOfScrollArea(
@@ -48,14 +48,12 @@ function renderScrollBar(
   render(
     <ScrollArea>
       <ScrollBar
-        data-testid="subject"
+        data-subject
         {...({ keepMounted: true, ...props } as ComponentProps<typeof ScrollBar>)}
       />
     </ScrollArea>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="scroll-area-scrollbar"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="scroll-area-scrollbar"]')
 }
 
 function classesOfScrollBar(
@@ -81,6 +79,10 @@ describe('ScrollBar', () => {
 
   it('renders the same with orientation="vertical" passed explicitly', () => {
     expect(attributesOfScrollBar({ orientation: 'vertical' })).toEqual(attributesOfScrollBar())
+  })
+
+  it('renders with orientation="horizontal"', () => {
+    expect(renderScrollBar({ orientation: 'horizontal' })).toBeTruthy()
   })
 
   it('appends a consumer className last', () => {

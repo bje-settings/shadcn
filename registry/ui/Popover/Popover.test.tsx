@@ -37,12 +37,12 @@ function renderPopoverTrigger(
     <Popover defaultOpen>
       <PopoverTrigger>PopoverTrigger</PopoverTrigger>
       <PopoverTrigger
-        data-testid="subject"
+        data-subject
         {...({ children: 'PopoverTrigger', ...props } as ComponentProps<typeof PopoverTrigger>)}
       />
     </Popover>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="popover-trigger"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="popover-trigger"]')
 }
 
 describe('PopoverTrigger', () => {
@@ -61,12 +61,12 @@ function renderPopoverContent(
     <Popover defaultOpen>
       <PopoverTrigger>PopoverTrigger</PopoverTrigger>
       <PopoverContent
-        data-testid="subject"
+        data-subject
         {...({ children: 'PopoverContent', ...props } as ComponentProps<typeof PopoverContent>)}
       />
     </Popover>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="popover-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="popover-content"]')
 }
 
 function classesOfPopoverContent(
@@ -106,6 +106,34 @@ describe('PopoverContent', () => {
     expect(attributesOfPopoverContent({ sideOffset: 4 })).toEqual(attributesOfPopoverContent())
   })
 
+  it('renders with align="start"', () => {
+    expect(renderPopoverContent({ align: 'start' })).toBeTruthy()
+  })
+
+  it('renders with align="end"', () => {
+    expect(renderPopoverContent({ align: 'end' })).toBeTruthy()
+  })
+
+  it('renders with side="left"', () => {
+    expect(renderPopoverContent({ side: 'left' })).toBeTruthy()
+  })
+
+  it('renders with side="right"', () => {
+    expect(renderPopoverContent({ side: 'right' })).toBeTruthy()
+  })
+
+  it('renders with side="top"', () => {
+    expect(renderPopoverContent({ side: 'top' })).toBeTruthy()
+  })
+
+  it('renders with side="inline-start"', () => {
+    expect(renderPopoverContent({ side: 'inline-start' })).toBeTruthy()
+  })
+
+  it('renders with side="inline-end"', () => {
+    expect(renderPopoverContent({ side: 'inline-end' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderPopoverContent({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -117,10 +145,10 @@ describe('PopoverContent', () => {
     render(
       <Popover defaultOpen>
         <PopoverTrigger>PopoverTrigger</PopoverTrigger>
-        <PopoverContent data-testid="subject">PopoverContent</PopoverContent>
+        <PopoverContent data-subject>PopoverContent</PopoverContent>
       </Popover>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -128,12 +156,12 @@ describe('PopoverContent', () => {
     render(
       <Popover defaultOpen>
         <PopoverTrigger>PopoverTrigger</PopoverTrigger>
-        <PopoverContent data-testid="subject" align="center">
+        <PopoverContent data-subject align="center">
           PopoverContent
         </PopoverContent>
       </Popover>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -141,12 +169,12 @@ describe('PopoverContent', () => {
     render(
       <Popover defaultOpen>
         <PopoverTrigger>PopoverTrigger</PopoverTrigger>
-        <PopoverContent data-testid="subject" align="end">
+        <PopoverContent data-subject align="end">
           PopoverContent
         </PopoverContent>
       </Popover>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -159,13 +187,13 @@ function renderPopoverHeader(
       <PopoverTrigger>PopoverTrigger</PopoverTrigger>
       <PopoverContent align="start">
         <PopoverHeader
-          data-testid="subject"
+          data-subject
           {...({ children: 'PopoverHeader', ...props } as ComponentProps<typeof PopoverHeader>)}
         />
       </PopoverContent>
     </Popover>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="popover-header"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="popover-header"]')
 }
 
 function classesOfPopoverHeader(
@@ -196,14 +224,14 @@ function renderPopoverTitle(
       <PopoverContent align="start">
         <PopoverHeader>
           <PopoverTitle
-            data-testid="subject"
+            data-subject
             {...({ children: 'PopoverTitle', ...props } as ComponentProps<typeof PopoverTitle>)}
           />
         </PopoverHeader>
       </PopoverContent>
     </Popover>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="popover-title"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="popover-title"]')
 }
 
 function classesOfPopoverTitle(
@@ -234,7 +262,7 @@ function renderPopoverDescription(
       <PopoverContent align="start">
         <PopoverHeader>
           <PopoverDescription
-            data-testid="subject"
+            data-subject
             {...({ children: 'PopoverDescription', ...props } as ComponentProps<
               typeof PopoverDescription
             >)}
@@ -243,9 +271,7 @@ function renderPopoverDescription(
       </PopoverContent>
     </Popover>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="popover-description"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="popover-description"]')
 }
 
 function classesOfPopoverDescription(

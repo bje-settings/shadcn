@@ -10,8 +10,8 @@ function renderSkeleton(
   props: Partial<Record<keyof ComponentProps<typeof Skeleton>, unknown>> = {},
 ) {
   cleanup()
-  render(<Skeleton data-testid="subject" {...(props as ComponentProps<typeof Skeleton>)} />)
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="skeleton"]')
+  render(<Skeleton data-subject {...(props as ComponentProps<typeof Skeleton>)} />)
+  return document.querySelector('[data-subject]')?.closest('[data-slot="skeleton"]')
 }
 
 function classesOfSkeleton(

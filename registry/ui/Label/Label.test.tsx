@@ -10,13 +10,13 @@ function renderLabel(props: Partial<Record<keyof ComponentProps<typeof Label>, u
   cleanup()
   render(
     <Label
-      data-testid="subject"
+      data-subject
       {...({ htmlFor: 'label-demo-terms', children: 'Label', ...props } as ComponentProps<
         typeof Label
       >)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="label"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="label"]')
 }
 
 function classesOfLabel(props: Partial<Record<keyof ComponentProps<typeof Label>, unknown>> = {}) {
@@ -37,30 +37,30 @@ describe('Label', () => {
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
     render(
-      <Label data-testid="subject" htmlFor="label-demo-username">
+      <Label data-subject htmlFor="label-demo-username">
         Label
       </Label>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
-      <Label data-testid="subject" htmlFor="label-demo-disabled">
+      <Label data-subject htmlFor="label-demo-disabled">
         Label
       </Label>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
-      <Label data-testid="subject" htmlFor="label-demo-message">
+      <Label data-subject htmlFor="label-demo-message">
         Label
       </Label>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

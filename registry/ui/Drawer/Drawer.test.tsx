@@ -139,12 +139,12 @@ function renderDrawerTrigger(
     <Drawer defaultOpen>
       <DrawerTrigger>DrawerTrigger</DrawerTrigger>
       <DrawerTrigger
-        data-testid="subject"
+        data-subject
         {...({ children: 'DrawerTrigger', ...props } as ComponentProps<typeof DrawerTrigger>)}
       />
     </Drawer>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="drawer-trigger"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="drawer-trigger"]')
 }
 
 describe('DrawerTrigger', () => {
@@ -159,10 +159,10 @@ describe('DrawerTrigger', () => {
     render(
       <Drawer showSwipeHandle defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
-        <DrawerTrigger data-testid="subject">DrawerTrigger</DrawerTrigger>
+        <DrawerTrigger data-subject>DrawerTrigger</DrawerTrigger>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -170,10 +170,10 @@ describe('DrawerTrigger', () => {
     render(
       <Drawer swipeDirection="down" defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
-        <DrawerTrigger data-testid="subject">DrawerTrigger</DrawerTrigger>
+        <DrawerTrigger data-subject>DrawerTrigger</DrawerTrigger>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -181,10 +181,10 @@ describe('DrawerTrigger', () => {
     render(
       <Drawer swipeDirection="up" defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
-        <DrawerTrigger data-testid="subject">DrawerTrigger</DrawerTrigger>
+        <DrawerTrigger data-subject>DrawerTrigger</DrawerTrigger>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -192,10 +192,10 @@ describe('DrawerTrigger', () => {
     render(
       <Drawer swipeDirection="left" defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
-        <DrawerTrigger data-testid="subject">DrawerTrigger</DrawerTrigger>
+        <DrawerTrigger data-subject>DrawerTrigger</DrawerTrigger>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -203,10 +203,10 @@ describe('DrawerTrigger', () => {
     render(
       <Drawer swipeDirection="right" defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
-        <DrawerTrigger data-testid="subject">DrawerTrigger</DrawerTrigger>
+        <DrawerTrigger data-subject>DrawerTrigger</DrawerTrigger>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -218,13 +218,13 @@ describe('DrawerTrigger', () => {
           <DrawerFooter>
             <Drawer defaultOpen>
               <DrawerTrigger>DrawerTrigger</DrawerTrigger>
-              <DrawerTrigger data-testid="subject">DrawerTrigger</DrawerTrigger>
+              <DrawerTrigger data-subject>DrawerTrigger</DrawerTrigger>
             </Drawer>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -240,7 +240,7 @@ describe('DrawerTrigger', () => {
                 <DrawerFooter>
                   <Drawer defaultOpen>
                     <DrawerTrigger>DrawerTrigger</DrawerTrigger>
-                    <DrawerTrigger data-testid="subject">DrawerTrigger</DrawerTrigger>
+                    <DrawerTrigger data-subject>DrawerTrigger</DrawerTrigger>
                   </Drawer>
                 </DrawerFooter>
               </DrawerContent>
@@ -249,7 +249,7 @@ describe('DrawerTrigger', () => {
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -257,10 +257,10 @@ describe('DrawerTrigger', () => {
     render(
       <Drawer modal={false} disablePointerDismissal swipeDirection="right" defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
-        <DrawerTrigger data-testid="subject">DrawerTrigger</DrawerTrigger>
+        <DrawerTrigger data-subject>DrawerTrigger</DrawerTrigger>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -273,15 +273,18 @@ function renderDrawerPortal(
       <DrawerTrigger>DrawerTrigger</DrawerTrigger>
       <DrawerContent>
         <DrawerPortal
-          data-testid="subject"
-          {...({ keepMounted: true, children: 'DrawerPortal', ...props } as ComponentProps<
-            typeof DrawerPortal
-          >)}
+          data-subject
+          {...({
+            'data-slot': 'drawer-portal',
+            keepMounted: true,
+            children: 'DrawerPortal',
+            ...props,
+          } as ComponentProps<typeof DrawerPortal>)}
         />
       </DrawerContent>
     </Drawer>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="drawer-portal"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="drawer-portal"]')
 }
 
 describe('DrawerPortal', () => {
@@ -302,14 +305,14 @@ function renderDrawerClose(
       <DrawerContent>
         <DrawerFooter>
           <DrawerClose
-            data-testid="subject"
+            data-subject
             {...({ children: 'DrawerClose', ...props } as ComponentProps<typeof DrawerClose>)}
           />
         </DrawerFooter>
       </DrawerContent>
     </Drawer>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="drawer-close"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="drawer-close"]')
 }
 
 describe('DrawerClose', () => {
@@ -326,12 +329,12 @@ describe('DrawerClose', () => {
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
           <DrawerFooter>
-            <DrawerClose data-testid="subject">DrawerClose</DrawerClose>
+            <DrawerClose data-subject>DrawerClose</DrawerClose>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -341,12 +344,12 @@ describe('DrawerClose', () => {
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
           <DrawerFooter>
-            <DrawerClose data-testid="subject">DrawerClose</DrawerClose>
+            <DrawerClose data-subject>DrawerClose</DrawerClose>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -356,12 +359,12 @@ describe('DrawerClose', () => {
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
           <DrawerFooter>
-            <DrawerClose data-testid="subject">DrawerClose</DrawerClose>
+            <DrawerClose data-subject>DrawerClose</DrawerClose>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -371,12 +374,12 @@ describe('DrawerClose', () => {
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
           <DrawerFooter>
-            <DrawerClose data-testid="subject">DrawerClose</DrawerClose>
+            <DrawerClose data-subject>DrawerClose</DrawerClose>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -394,7 +397,7 @@ describe('DrawerClose', () => {
                     <DrawerTrigger>DrawerTrigger</DrawerTrigger>
                     <DrawerContent>
                       <DrawerFooter>
-                        <DrawerClose data-testid="subject">DrawerClose</DrawerClose>
+                        <DrawerClose data-subject>DrawerClose</DrawerClose>
                       </DrawerFooter>
                     </DrawerContent>
                   </Drawer>
@@ -405,7 +408,7 @@ describe('DrawerClose', () => {
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -419,7 +422,7 @@ describe('DrawerClose', () => {
               <DrawerTrigger>DrawerTrigger</DrawerTrigger>
               <DrawerContent>
                 <DrawerFooter>
-                  <DrawerClose data-testid="subject">DrawerClose</DrawerClose>
+                  <DrawerClose data-subject>DrawerClose</DrawerClose>
                 </DrawerFooter>
               </DrawerContent>
             </Drawer>
@@ -427,7 +430,7 @@ describe('DrawerClose', () => {
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -437,12 +440,12 @@ describe('DrawerClose', () => {
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
           <DrawerFooter>
-            <DrawerClose data-testid="subject">DrawerClose</DrawerClose>
+            <DrawerClose data-subject>DrawerClose</DrawerClose>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -452,12 +455,12 @@ describe('DrawerClose', () => {
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
           <DrawerFooter>
-            <DrawerClose data-testid="subject">DrawerClose</DrawerClose>
+            <DrawerClose data-subject>DrawerClose</DrawerClose>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -469,14 +472,13 @@ function renderDrawerOverlay(
     <Drawer defaultOpen>
       <DrawerTrigger>DrawerTrigger</DrawerTrigger>
       <DrawerContent>
-        <DrawerOverlay
-          data-testid="subject"
-          {...({ children: 'DrawerOverlay', ...props } as ComponentProps<typeof DrawerOverlay>)}
-        />
+        <DrawerPortal data-slot="drawer-portal" keepMounted>
+          <DrawerOverlay data-subject {...(props as ComponentProps<typeof DrawerOverlay>)} />
+        </DrawerPortal>
       </DrawerContent>
     </Drawer>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="drawer-overlay"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="drawer-overlay"]')
 }
 
 function classesOfDrawerOverlay(
@@ -505,18 +507,16 @@ function renderDrawerSwipeHandle(
     <Drawer defaultOpen>
       <DrawerTrigger>DrawerTrigger</DrawerTrigger>
       <DrawerContent>
-        <DrawerSwipeHandle
-          data-testid="subject"
-          {...({ children: 'DrawerSwipeHandle', ...props } as ComponentProps<
-            typeof DrawerSwipeHandle
-          >)}
-        />
+        <DrawerPortal data-slot="drawer-portal" keepMounted>
+          <DrawerSwipeHandle
+            data-subject
+            {...(props as ComponentProps<typeof DrawerSwipeHandle>)}
+          />
+        </DrawerPortal>
       </DrawerContent>
     </Drawer>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="drawer-swipe-handle"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="drawer-swipe-handle"]')
 }
 
 function classesOfDrawerSwipeHandle(
@@ -545,12 +545,12 @@ function renderDrawerContent(
     <Drawer defaultOpen>
       <DrawerTrigger>DrawerTrigger</DrawerTrigger>
       <DrawerContent
-        data-testid="subject"
+        data-subject
         {...({ children: 'DrawerContent', ...props } as ComponentProps<typeof DrawerContent>)}
       />
     </Drawer>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="drawer-popup"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="drawer-popup"]')
 }
 
 function classesOfDrawerContent(
@@ -580,10 +580,10 @@ describe('DrawerContent', () => {
     render(
       <Drawer showSwipeHandle defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
-        <DrawerContent data-testid="subject">DrawerContent</DrawerContent>
+        <DrawerContent data-subject>DrawerContent</DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -591,10 +591,10 @@ describe('DrawerContent', () => {
     render(
       <Drawer swipeDirection="down" defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
-        <DrawerContent data-testid="subject">DrawerContent</DrawerContent>
+        <DrawerContent data-subject>DrawerContent</DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -602,10 +602,10 @@ describe('DrawerContent', () => {
     render(
       <Drawer swipeDirection="up" defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
-        <DrawerContent data-testid="subject">DrawerContent</DrawerContent>
+        <DrawerContent data-subject>DrawerContent</DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -613,10 +613,10 @@ describe('DrawerContent', () => {
     render(
       <Drawer swipeDirection="left" defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
-        <DrawerContent data-testid="subject">DrawerContent</DrawerContent>
+        <DrawerContent data-subject>DrawerContent</DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -624,10 +624,10 @@ describe('DrawerContent', () => {
     render(
       <Drawer swipeDirection="right" defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
-        <DrawerContent data-testid="subject">DrawerContent</DrawerContent>
+        <DrawerContent data-subject>DrawerContent</DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -639,13 +639,13 @@ describe('DrawerContent', () => {
           <DrawerFooter>
             <Drawer defaultOpen>
               <DrawerTrigger>DrawerTrigger</DrawerTrigger>
-              <DrawerContent data-testid="subject">DrawerContent</DrawerContent>
+              <DrawerContent data-subject>DrawerContent</DrawerContent>
             </Drawer>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -661,7 +661,7 @@ describe('DrawerContent', () => {
                 <DrawerFooter>
                   <Drawer defaultOpen>
                     <DrawerTrigger>DrawerTrigger</DrawerTrigger>
-                    <DrawerContent data-testid="subject">DrawerContent</DrawerContent>
+                    <DrawerContent data-subject>DrawerContent</DrawerContent>
                   </Drawer>
                 </DrawerFooter>
               </DrawerContent>
@@ -670,7 +670,7 @@ describe('DrawerContent', () => {
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -678,10 +678,10 @@ describe('DrawerContent', () => {
     render(
       <Drawer modal={false} disablePointerDismissal swipeDirection="right" defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
-        <DrawerContent data-testid="subject">DrawerContent</DrawerContent>
+        <DrawerContent data-subject>DrawerContent</DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -694,13 +694,13 @@ function renderDrawerHeader(
       <DrawerTrigger>DrawerTrigger</DrawerTrigger>
       <DrawerContent>
         <DrawerHeader
-          data-testid="subject"
+          data-subject
           {...({ children: 'DrawerHeader', ...props } as ComponentProps<typeof DrawerHeader>)}
         />
       </DrawerContent>
     </Drawer>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="drawer-header"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="drawer-header"]')
 }
 
 function classesOfDrawerHeader(
@@ -726,11 +726,11 @@ describe('DrawerHeader', () => {
       <Drawer showSwipeHandle defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
-          <DrawerHeader data-testid="subject">DrawerHeader</DrawerHeader>
+          <DrawerHeader data-subject>DrawerHeader</DrawerHeader>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -739,11 +739,11 @@ describe('DrawerHeader', () => {
       <Drawer swipeDirection="down" defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
-          <DrawerHeader data-testid="subject">DrawerHeader</DrawerHeader>
+          <DrawerHeader data-subject>DrawerHeader</DrawerHeader>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -752,11 +752,11 @@ describe('DrawerHeader', () => {
       <Drawer swipeDirection="up" defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
-          <DrawerHeader data-testid="subject">DrawerHeader</DrawerHeader>
+          <DrawerHeader data-subject>DrawerHeader</DrawerHeader>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -765,11 +765,11 @@ describe('DrawerHeader', () => {
       <Drawer swipeDirection="left" defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
-          <DrawerHeader data-testid="subject">DrawerHeader</DrawerHeader>
+          <DrawerHeader data-subject>DrawerHeader</DrawerHeader>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -778,11 +778,11 @@ describe('DrawerHeader', () => {
       <Drawer swipeDirection="right" defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
-          <DrawerHeader data-testid="subject">DrawerHeader</DrawerHeader>
+          <DrawerHeader data-subject>DrawerHeader</DrawerHeader>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -795,14 +795,14 @@ describe('DrawerHeader', () => {
             <Drawer defaultOpen>
               <DrawerTrigger>DrawerTrigger</DrawerTrigger>
               <DrawerContent>
-                <DrawerHeader data-testid="subject">DrawerHeader</DrawerHeader>
+                <DrawerHeader data-subject>DrawerHeader</DrawerHeader>
               </DrawerContent>
             </Drawer>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -819,7 +819,7 @@ describe('DrawerHeader', () => {
                   <Drawer defaultOpen>
                     <DrawerTrigger>DrawerTrigger</DrawerTrigger>
                     <DrawerContent>
-                      <DrawerHeader data-testid="subject">DrawerHeader</DrawerHeader>
+                      <DrawerHeader data-subject>DrawerHeader</DrawerHeader>
                     </DrawerContent>
                   </Drawer>
                 </DrawerFooter>
@@ -829,7 +829,7 @@ describe('DrawerHeader', () => {
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -838,11 +838,11 @@ describe('DrawerHeader', () => {
       <Drawer modal={false} disablePointerDismissal swipeDirection="right" defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
-          <DrawerHeader data-testid="subject">DrawerHeader</DrawerHeader>
+          <DrawerHeader data-subject>DrawerHeader</DrawerHeader>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -855,13 +855,13 @@ function renderDrawerFooter(
       <DrawerTrigger>DrawerTrigger</DrawerTrigger>
       <DrawerContent>
         <DrawerFooter
-          data-testid="subject"
+          data-subject
           {...({ children: 'DrawerFooter', ...props } as ComponentProps<typeof DrawerFooter>)}
         />
       </DrawerContent>
     </Drawer>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="drawer-footer"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="drawer-footer"]')
 }
 
 function classesOfDrawerFooter(
@@ -887,11 +887,11 @@ describe('DrawerFooter', () => {
       <Drawer swipeDirection="down" defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
-          <DrawerFooter data-testid="subject">DrawerFooter</DrawerFooter>
+          <DrawerFooter data-subject>DrawerFooter</DrawerFooter>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -900,11 +900,11 @@ describe('DrawerFooter', () => {
       <Drawer swipeDirection="up" defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
-          <DrawerFooter data-testid="subject">DrawerFooter</DrawerFooter>
+          <DrawerFooter data-subject>DrawerFooter</DrawerFooter>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -913,11 +913,11 @@ describe('DrawerFooter', () => {
       <Drawer swipeDirection="left" defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
-          <DrawerFooter data-testid="subject">DrawerFooter</DrawerFooter>
+          <DrawerFooter data-subject>DrawerFooter</DrawerFooter>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -926,11 +926,11 @@ describe('DrawerFooter', () => {
       <Drawer swipeDirection="right" defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
-          <DrawerFooter data-testid="subject">DrawerFooter</DrawerFooter>
+          <DrawerFooter data-subject>DrawerFooter</DrawerFooter>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -939,11 +939,11 @@ describe('DrawerFooter', () => {
       <Drawer showSwipeHandle defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
-          <DrawerFooter data-testid="subject">DrawerFooter</DrawerFooter>
+          <DrawerFooter data-subject>DrawerFooter</DrawerFooter>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -956,14 +956,14 @@ describe('DrawerFooter', () => {
             <Drawer defaultOpen>
               <DrawerTrigger>DrawerTrigger</DrawerTrigger>
               <DrawerContent>
-                <DrawerFooter data-testid="subject">DrawerFooter</DrawerFooter>
+                <DrawerFooter data-subject>DrawerFooter</DrawerFooter>
               </DrawerContent>
             </Drawer>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -980,7 +980,7 @@ describe('DrawerFooter', () => {
                   <Drawer defaultOpen>
                     <DrawerTrigger>DrawerTrigger</DrawerTrigger>
                     <DrawerContent>
-                      <DrawerFooter data-testid="subject">DrawerFooter</DrawerFooter>
+                      <DrawerFooter data-subject>DrawerFooter</DrawerFooter>
                     </DrawerContent>
                   </Drawer>
                 </DrawerFooter>
@@ -990,7 +990,7 @@ describe('DrawerFooter', () => {
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -999,11 +999,11 @@ describe('DrawerFooter', () => {
       <Drawer modal={false} disablePointerDismissal swipeDirection="right" defaultOpen>
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
-          <DrawerFooter data-testid="subject">DrawerFooter</DrawerFooter>
+          <DrawerFooter data-subject>DrawerFooter</DrawerFooter>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -1017,14 +1017,14 @@ function renderDrawerTitle(
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle
-            data-testid="subject"
+            data-subject
             {...({ children: 'DrawerTitle', ...props } as ComponentProps<typeof DrawerTitle>)}
           />
         </DrawerHeader>
       </DrawerContent>
     </Drawer>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="drawer-title"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="drawer-title"]')
 }
 
 function classesOfDrawerTitle(
@@ -1051,12 +1051,12 @@ describe('DrawerTitle', () => {
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerTitle data-testid="subject">DrawerTitle</DrawerTitle>
+            <DrawerTitle data-subject>DrawerTitle</DrawerTitle>
           </DrawerHeader>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -1066,12 +1066,12 @@ describe('DrawerTitle', () => {
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerTitle data-testid="subject">DrawerTitle</DrawerTitle>
+            <DrawerTitle data-subject>DrawerTitle</DrawerTitle>
           </DrawerHeader>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -1081,12 +1081,12 @@ describe('DrawerTitle', () => {
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerTitle data-testid="subject">DrawerTitle</DrawerTitle>
+            <DrawerTitle data-subject>DrawerTitle</DrawerTitle>
           </DrawerHeader>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -1096,12 +1096,12 @@ describe('DrawerTitle', () => {
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerTitle data-testid="subject">DrawerTitle</DrawerTitle>
+            <DrawerTitle data-subject>DrawerTitle</DrawerTitle>
           </DrawerHeader>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -1111,12 +1111,12 @@ describe('DrawerTitle', () => {
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerTitle data-testid="subject">DrawerTitle</DrawerTitle>
+            <DrawerTitle data-subject>DrawerTitle</DrawerTitle>
           </DrawerHeader>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -1130,7 +1130,7 @@ describe('DrawerTitle', () => {
               <DrawerTrigger>DrawerTrigger</DrawerTrigger>
               <DrawerContent>
                 <DrawerHeader>
-                  <DrawerTitle data-testid="subject">DrawerTitle</DrawerTitle>
+                  <DrawerTitle data-subject>DrawerTitle</DrawerTitle>
                 </DrawerHeader>
               </DrawerContent>
             </Drawer>
@@ -1138,7 +1138,7 @@ describe('DrawerTitle', () => {
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -1156,7 +1156,7 @@ describe('DrawerTitle', () => {
                     <DrawerTrigger>DrawerTrigger</DrawerTrigger>
                     <DrawerContent>
                       <DrawerHeader>
-                        <DrawerTitle data-testid="subject">DrawerTitle</DrawerTitle>
+                        <DrawerTitle data-subject>DrawerTitle</DrawerTitle>
                       </DrawerHeader>
                     </DrawerContent>
                   </Drawer>
@@ -1167,7 +1167,7 @@ describe('DrawerTitle', () => {
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -1177,12 +1177,12 @@ describe('DrawerTitle', () => {
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerTitle data-testid="subject">DrawerTitle</DrawerTitle>
+            <DrawerTitle data-subject>DrawerTitle</DrawerTitle>
           </DrawerHeader>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -1196,7 +1196,7 @@ function renderDrawerDescription(
       <DrawerContent>
         <DrawerHeader>
           <DrawerDescription
-            data-testid="subject"
+            data-subject
             {...({ children: 'DrawerDescription', ...props } as ComponentProps<
               typeof DrawerDescription
             >)}
@@ -1205,9 +1205,7 @@ function renderDrawerDescription(
       </DrawerContent>
     </Drawer>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="drawer-description"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="drawer-description"]')
 }
 
 function classesOfDrawerDescription(
@@ -1234,12 +1232,12 @@ describe('DrawerDescription', () => {
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerDescription data-testid="subject">DrawerDescription</DrawerDescription>
+            <DrawerDescription data-subject>DrawerDescription</DrawerDescription>
           </DrawerHeader>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -1249,12 +1247,12 @@ describe('DrawerDescription', () => {
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerDescription data-testid="subject">DrawerDescription</DrawerDescription>
+            <DrawerDescription data-subject>DrawerDescription</DrawerDescription>
           </DrawerHeader>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -1264,12 +1262,12 @@ describe('DrawerDescription', () => {
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerDescription data-testid="subject">DrawerDescription</DrawerDescription>
+            <DrawerDescription data-subject>DrawerDescription</DrawerDescription>
           </DrawerHeader>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -1279,12 +1277,12 @@ describe('DrawerDescription', () => {
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerDescription data-testid="subject">DrawerDescription</DrawerDescription>
+            <DrawerDescription data-subject>DrawerDescription</DrawerDescription>
           </DrawerHeader>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -1294,12 +1292,12 @@ describe('DrawerDescription', () => {
         <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerDescription data-testid="subject">DrawerDescription</DrawerDescription>
+            <DrawerDescription data-subject>DrawerDescription</DrawerDescription>
           </DrawerHeader>
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -1313,7 +1311,7 @@ describe('DrawerDescription', () => {
               <DrawerTrigger>DrawerTrigger</DrawerTrigger>
               <DrawerContent>
                 <DrawerHeader>
-                  <DrawerDescription data-testid="subject">DrawerDescription</DrawerDescription>
+                  <DrawerDescription data-subject>DrawerDescription</DrawerDescription>
                 </DrawerHeader>
               </DrawerContent>
             </Drawer>
@@ -1321,7 +1319,7 @@ describe('DrawerDescription', () => {
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -1339,9 +1337,7 @@ describe('DrawerDescription', () => {
                     <DrawerTrigger>DrawerTrigger</DrawerTrigger>
                     <DrawerContent>
                       <DrawerHeader>
-                        <DrawerDescription data-testid="subject">
-                          DrawerDescription
-                        </DrawerDescription>
+                        <DrawerDescription data-subject>DrawerDescription</DrawerDescription>
                       </DrawerHeader>
                     </DrawerContent>
                   </Drawer>
@@ -1352,6 +1348,6 @@ describe('DrawerDescription', () => {
         </DrawerContent>
       </Drawer>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

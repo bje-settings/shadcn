@@ -228,7 +228,7 @@ function Text({ className }) {
 })
 
 describe('component tracking', () => {
-  it('records each top-level function, its first data-slot and literal defaults', () => {
+  it('records each top-level function or arrow component, its element and literal defaults', () => {
     const source = `import { cn } from "cn"
 import { cva } from "class-variance-authority"
 const xVariants = cva("grid")
@@ -258,6 +258,7 @@ export default function () { return <i data-slot="anon" className="p-4" /> }`
       },
       { name: 'Plain', dataSlot: 'plain', tag: 'i', slot: 'plain', defaults: [] },
       { name: 'Empty', dataSlot: 'empty', tag: 'i', slot: 'empty', defaults: [] },
+      { name: 'Arrow', dataSlot: 'arrow', tag: 'i', slot: 'arrow', defaults: [] },
     ])
   })
 })

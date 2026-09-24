@@ -1005,7 +1005,9 @@ export const fixtures = [
     ancestors: [
       {
         component: 'Progress',
-        props: {},
+        props: {
+          value: 0,
+        },
       },
     ],
     children: true,
@@ -1020,10 +1022,16 @@ export const fixtures = [
     ancestors: [
       {
         component: 'Progress',
+        props: {
+          value: 0,
+        },
+      },
+      {
+        component: 'ProgressTrack',
         props: {},
       },
     ],
-    children: true,
+    children: false,
     overlay: false,
     label: 'ProgressIndicator',
     props: {},
@@ -3156,8 +3164,14 @@ export const fixtures = [
         component: 'DialogContent',
         props: {},
       },
+      {
+        component: 'DialogPortal',
+        props: {
+          keepMounted: true,
+        },
+      },
     ],
-    children: true,
+    children: false,
     overlay: true,
     label: 'DialogOverlay',
     props: {},
@@ -3338,8 +3352,14 @@ export const fixtures = [
         component: 'AlertDialogContent',
         props: {},
       },
+      {
+        component: 'AlertDialogPortal',
+        props: {
+          keepMounted: true,
+        },
+      },
     ],
-    children: true,
+    children: false,
     overlay: true,
     label: 'AlertDialogOverlay',
     props: {},
@@ -3784,6 +3804,7 @@ export const fixtures = [
     overlay: true,
     label: 'DrawerPortal',
     props: {
+      'data-slot': 'drawer-portal',
       keepMounted: true,
     },
   },
@@ -3835,8 +3856,15 @@ export const fixtures = [
         component: 'DrawerContent',
         props: {},
       },
+      {
+        component: 'DrawerPortal',
+        props: {
+          'data-slot': 'drawer-portal',
+          keepMounted: true,
+        },
+      },
     ],
-    children: true,
+    children: false,
     overlay: true,
     label: 'DrawerOverlay',
     props: {},
@@ -3860,8 +3888,15 @@ export const fixtures = [
         component: 'DrawerContent',
         props: {},
       },
+      {
+        component: 'DrawerPortal',
+        props: {
+          'data-slot': 'drawer-portal',
+          keepMounted: true,
+        },
+      },
     ],
-    children: true,
+    children: false,
     overlay: true,
     label: 'DrawerSwipeHandle',
     props: {},
@@ -4644,7 +4679,7 @@ export const fixtures = [
         props: {},
       },
       {
-        component: 'ContextMenuItem',
+        component: 'ContextMenuRadioGroup',
         props: {},
       },
     ],
@@ -5066,7 +5101,7 @@ export const fixtures = [
         props: {},
       },
       {
-        component: 'MenubarItem',
+        component: 'MenubarGroup',
         props: {},
       },
     ],
@@ -5617,7 +5652,7 @@ export const fixtures = [
         props: {},
       },
     ],
-    children: true,
+    children: false,
     overlay: true,
     label: 'SelectScrollUpButton',
     props: {
@@ -5644,7 +5679,7 @@ export const fixtures = [
         props: {},
       },
     ],
-    children: true,
+    children: false,
     overlay: true,
     label: 'SelectScrollDownButton',
     props: {
@@ -6031,7 +6066,7 @@ export const fixtures = [
         props: {},
       },
     ],
-    children: true,
+    children: false,
     overlay: false,
     label: 'NavigationMenuPositioner',
     props: {},
@@ -6258,6 +6293,771 @@ export const fixtures = [
     children: true,
     overlay: false,
     label: 'CommandShortcut',
+    props: {},
+  },
+  {
+    item: 'sonner',
+    component: 'Toaster',
+    ancestors: [],
+    children: false,
+    overlay: false,
+    label: 'Toaster',
+    props: {},
+  },
+  {
+    item: 'toast',
+    component: 'ToastPortal',
+    slot: 'toast-portal',
+    ancestors: [
+      {
+        component: 'ToastProvider',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'ToastPortal',
+    props: {},
+  },
+  {
+    item: 'toast',
+    component: 'ToastViewport',
+    slot: 'toast-viewport',
+    ancestors: [
+      {
+        component: 'ToastProvider',
+        props: {},
+      },
+      {
+        component: 'ToastPortal',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'ToastViewport',
+    props: {},
+  },
+  {
+    item: 'toast',
+    component: 'Toast',
+    slot: 'toast',
+    ancestors: [
+      {
+        component: 'ToastProvider',
+        props: {},
+      },
+      {
+        component: 'ToastPortal',
+        props: {},
+      },
+      {
+        component: 'ToastViewport',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'Toast',
+    props: {
+      toast: {
+        id: 'toast',
+        title: 'Toast',
+        description: 'Toast description',
+        actionProps: {
+          children: 'Undo',
+        },
+      },
+    },
+  },
+  {
+    item: 'toast',
+    component: 'ToastContent',
+    slot: 'toast-content',
+    ancestors: [
+      {
+        component: 'ToastProvider',
+        props: {},
+      },
+      {
+        component: 'ToastPortal',
+        props: {},
+      },
+      {
+        component: 'ToastViewport',
+        props: {},
+      },
+      {
+        component: 'Toast',
+        props: {
+          toast: {
+            id: 'toast',
+            title: 'Toast',
+            description: 'Toast description',
+            actionProps: {
+              children: 'Undo',
+            },
+          },
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'ToastContent',
+    props: {},
+  },
+  {
+    item: 'toast',
+    component: 'ToastTitle',
+    slot: 'toast-title',
+    ancestors: [
+      {
+        component: 'ToastProvider',
+        props: {},
+      },
+      {
+        component: 'ToastPortal',
+        props: {},
+      },
+      {
+        component: 'ToastViewport',
+        props: {},
+      },
+      {
+        component: 'Toast',
+        props: {
+          toast: {
+            id: 'toast',
+            title: 'Toast',
+            description: 'Toast description',
+            actionProps: {
+              children: 'Undo',
+            },
+          },
+        },
+      },
+      {
+        component: 'ToastContent',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'ToastTitle',
+    props: {},
+  },
+  {
+    item: 'toast',
+    component: 'ToastDescription',
+    slot: 'toast-description',
+    ancestors: [
+      {
+        component: 'ToastProvider',
+        props: {},
+      },
+      {
+        component: 'ToastPortal',
+        props: {},
+      },
+      {
+        component: 'ToastViewport',
+        props: {},
+      },
+      {
+        component: 'Toast',
+        props: {
+          toast: {
+            id: 'toast',
+            title: 'Toast',
+            description: 'Toast description',
+            actionProps: {
+              children: 'Undo',
+            },
+          },
+        },
+      },
+      {
+        component: 'ToastContent',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'ToastDescription',
+    props: {},
+  },
+  {
+    item: 'toast',
+    component: 'ToastAction',
+    slot: 'toast-action',
+    ancestors: [
+      {
+        component: 'ToastProvider',
+        props: {},
+      },
+      {
+        component: 'ToastPortal',
+        props: {},
+      },
+      {
+        component: 'ToastViewport',
+        props: {},
+      },
+      {
+        component: 'Toast',
+        props: {
+          toast: {
+            id: 'toast',
+            title: 'Toast',
+            description: 'Toast description',
+            actionProps: {
+              children: 'Undo',
+            },
+          },
+        },
+      },
+      {
+        component: 'ToastContent',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'ToastAction',
+    props: {},
+  },
+  {
+    item: 'toast',
+    component: 'ToastClose',
+    slot: 'toast-close',
+    ancestors: [
+      {
+        component: 'ToastProvider',
+        props: {},
+      },
+      {
+        component: 'ToastPortal',
+        props: {},
+      },
+      {
+        component: 'ToastViewport',
+        props: {},
+      },
+      {
+        component: 'Toast',
+        props: {
+          toast: {
+            id: 'toast',
+            title: 'Toast',
+            description: 'Toast description',
+            actionProps: {
+              children: 'Undo',
+            },
+          },
+        },
+      },
+      {
+        component: 'ToastContent',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'ToastClose',
+    props: {},
+  },
+  {
+    item: 'resizable',
+    component: 'ResizablePanelGroup',
+    slot: 'resizable-panel-group',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'ResizablePanelGroup',
+    props: {
+      orientation: 'horizontal',
+    },
+  },
+  {
+    item: 'resizable',
+    component: 'ResizablePanel',
+    slot: 'resizable-panel',
+    ancestors: [
+      {
+        component: 'ResizablePanelGroup',
+        props: {
+          orientation: 'horizontal',
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'ResizablePanel',
+    props: {
+      defaultSize: '25%',
+    },
+  },
+  {
+    item: 'resizable',
+    component: 'ResizableHandle',
+    slot: 'resizable-handle',
+    ancestors: [
+      {
+        component: 'ResizablePanelGroup',
+        props: {
+          orientation: 'horizontal',
+        },
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'ResizableHandle',
+    props: {},
+  },
+  {
+    item: 'questionnaire',
+    component: 'Questionnaire',
+    slot: 'questionnaire',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Questionnaire',
+    props: {
+      defaultItem: 'plan',
+    },
+  },
+  {
+    item: 'questionnaire',
+    component: 'QuestionnaireProgress',
+    slot: 'questionnaire-progress',
+    ancestors: [
+      {
+        component: 'Questionnaire',
+        props: {
+          defaultItem: 'task',
+          shortcuts: 'letters',
+        },
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'QuestionnaireProgress',
+    props: {},
+  },
+  {
+    item: 'questionnaire',
+    component: 'QuestionnaireItem',
+    slot: 'questionnaire-item',
+    ancestors: [
+      {
+        component: 'Questionnaire',
+        props: {
+          defaultItem: 'plan',
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'QuestionnaireItem',
+    props: {
+      name: 'plan',
+      required: true,
+    },
+  },
+  {
+    item: 'questionnaire',
+    component: 'QuestionnaireTitle',
+    slot: 'questionnaire-title',
+    ancestors: [
+      {
+        component: 'Questionnaire',
+        props: {
+          defaultItem: 'plan',
+        },
+      },
+      {
+        component: 'QuestionnaireItem',
+        props: {
+          name: 'plan',
+          required: true,
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'QuestionnaireTitle',
+    props: {},
+  },
+  {
+    item: 'questionnaire',
+    component: 'QuestionnaireDescription',
+    slot: 'questionnaire-description',
+    ancestors: [
+      {
+        component: 'Questionnaire',
+        props: {
+          defaultItem: 'plan',
+        },
+      },
+      {
+        component: 'QuestionnaireItem',
+        props: {
+          name: 'plan',
+          required: true,
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'QuestionnaireDescription',
+    props: {},
+  },
+  {
+    item: 'questionnaire',
+    component: 'QuestionnaireChoices',
+    slot: 'questionnaire-choices',
+    ancestors: [
+      {
+        component: 'Questionnaire',
+        props: {
+          defaultItem: 'plan',
+        },
+      },
+      {
+        component: 'QuestionnaireItem',
+        props: {
+          name: 'plan',
+          required: true,
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'QuestionnaireChoices',
+    props: {},
+  },
+  {
+    item: 'questionnaire',
+    component: 'QuestionnaireChoice',
+    slot: 'questionnaire-choice',
+    ancestors: [
+      {
+        component: 'Questionnaire',
+        props: {
+          defaultItem: 'plan',
+        },
+      },
+      {
+        component: 'QuestionnaireItem',
+        props: {
+          name: 'plan',
+          required: true,
+        },
+      },
+      {
+        component: 'QuestionnaireChoices',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'QuestionnaireChoice',
+    props: {
+      value: 'plus',
+    },
+  },
+  {
+    item: 'questionnaire',
+    component: 'QuestionnaireChoiceDescription',
+    slot: 'questionnaire-choice-description',
+    ancestors: [
+      {
+        component: 'Questionnaire',
+        props: {
+          defaultItem: 'plan',
+        },
+      },
+      {
+        component: 'QuestionnaireItem',
+        props: {
+          name: 'plan',
+          required: true,
+        },
+      },
+      {
+        component: 'QuestionnaireChoices',
+        props: {},
+      },
+      {
+        component: 'QuestionnaireChoice',
+        props: {
+          value: 'plus',
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'QuestionnaireChoiceDescription',
+    props: {},
+  },
+  {
+    item: 'questionnaire',
+    component: 'QuestionnaireInput',
+    slot: 'questionnaire-input',
+    ancestors: [
+      {
+        component: 'Questionnaire',
+        props: {
+          defaultItem: 'direction',
+          shortcuts: 'numbers',
+        },
+      },
+      {
+        component: 'QuestionnaireItem',
+        props: {
+          name: 'direction',
+          required: true,
+        },
+      },
+      {
+        component: 'QuestionnaireChoices',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'QuestionnaireInput',
+    props: {
+      'aria-label': 'Another direction',
+      placeholder: 'Type another direction…',
+    },
+  },
+  {
+    item: 'questionnaire',
+    component: 'QuestionnaireError',
+    slot: 'questionnaire-error',
+    ancestors: [
+      {
+        component: 'Questionnaire',
+        props: {
+          defaultItem: 'plan',
+        },
+      },
+      {
+        component: 'QuestionnaireItem',
+        props: {
+          name: 'plan',
+          required: true,
+        },
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'QuestionnaireError',
+    props: {},
+  },
+  {
+    item: 'questionnaire',
+    component: 'QuestionnaireActions',
+    slot: 'questionnaire-actions',
+    ancestors: [
+      {
+        component: 'Questionnaire',
+        props: {
+          defaultItem: 'plan',
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'QuestionnaireActions',
+    props: {},
+  },
+  {
+    item: 'questionnaire',
+    component: 'QuestionnairePrevious',
+    slot: 'questionnaire-previous',
+    ancestors: [
+      {
+        component: 'Questionnaire',
+        props: {
+          defaultItem: 'plan',
+        },
+      },
+      {
+        component: 'QuestionnaireActions',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'QuestionnairePrevious',
+    props: {},
+  },
+  {
+    item: 'questionnaire',
+    component: 'QuestionnaireSkip',
+    slot: 'questionnaire-skip',
+    ancestors: [
+      {
+        component: 'Questionnaire',
+        props: {
+          defaultItem: 'plan',
+        },
+      },
+      {
+        component: 'QuestionnaireActions',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'QuestionnaireSkip',
+    props: {},
+  },
+  {
+    item: 'questionnaire',
+    component: 'QuestionnaireNext',
+    slot: 'questionnaire-next',
+    ancestors: [
+      {
+        component: 'Questionnaire',
+        props: {
+          defaultItem: 'plan',
+        },
+      },
+      {
+        component: 'QuestionnaireActions',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'QuestionnaireNext',
+    props: {},
+  },
+  {
+    item: 'questionnaire',
+    component: 'QuestionnaireSubmit',
+    slot: 'questionnaire-submit',
+    ancestors: [
+      {
+        component: 'Questionnaire',
+        props: {
+          defaultItem: 'plan',
+        },
+      },
+      {
+        component: 'QuestionnaireActions',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'QuestionnaireSubmit',
+    props: {},
+  },
+  {
+    item: 'message-scroller',
+    component: 'MessageScroller',
+    slot: 'message-scroller',
+    ancestors: [
+      {
+        component: 'MessageScrollerProvider',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'MessageScroller',
+    props: {},
+  },
+  {
+    item: 'message-scroller',
+    component: 'MessageScrollerViewport',
+    slot: 'message-scroller-viewport',
+    ancestors: [
+      {
+        component: 'MessageScrollerProvider',
+        props: {},
+      },
+      {
+        component: 'MessageScroller',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'MessageScrollerViewport',
+    props: {},
+  },
+  {
+    item: 'message-scroller',
+    component: 'MessageScrollerContent',
+    slot: 'message-scroller-content',
+    ancestors: [
+      {
+        component: 'MessageScrollerProvider',
+        props: {},
+      },
+      {
+        component: 'MessageScroller',
+        props: {},
+      },
+      {
+        component: 'MessageScrollerViewport',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'MessageScrollerContent',
+    props: {},
+  },
+  {
+    item: 'message-scroller',
+    component: 'MessageScrollerItem',
+    slot: 'message-scroller-item',
+    ancestors: [
+      {
+        component: 'MessageScrollerProvider',
+        props: {},
+      },
+      {
+        component: 'MessageScroller',
+        props: {},
+      },
+      {
+        component: 'MessageScrollerViewport',
+        props: {},
+      },
+      {
+        component: 'MessageScrollerContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'MessageScrollerItem',
+    props: {},
+  },
+  {
+    item: 'message-scroller',
+    component: 'MessageScrollerButton',
+    slot: 'message-scroller-button',
+    ancestors: [
+      {
+        component: 'MessageScrollerProvider',
+        props: {},
+      },
+      {
+        component: 'MessageScroller',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'MessageScrollerButton',
     props: {},
   },
 ]

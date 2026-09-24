@@ -23,11 +23,11 @@ function renderItemGroup(
   cleanup()
   render(
     <ItemGroup
-      data-testid="subject"
+      data-subject
       {...({ children: 'ItemGroup', ...props } as ComponentProps<typeof ItemGroup>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="item-group"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="item-group"]')
 }
 
 function classesOfItemGroup(
@@ -54,10 +54,10 @@ function renderItemSeparator(
   cleanup()
   render(
     <ItemGroup>
-      <ItemSeparator data-testid="subject" {...(props as ComponentProps<typeof ItemSeparator>)} />
+      <ItemSeparator data-subject {...(props as ComponentProps<typeof ItemSeparator>)} />
     </ItemGroup>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="item-separator"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="item-separator"]')
 }
 
 function classesOfItemSeparator(
@@ -80,13 +80,8 @@ describe('ItemSeparator', () => {
 
 function renderItem(props: Partial<Record<keyof ComponentProps<typeof Item>, unknown>> = {}) {
   cleanup()
-  render(
-    <Item
-      data-testid="subject"
-      {...({ children: 'Item', ...props } as ComponentProps<typeof Item>)}
-    />,
-  )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="item"]')
+  render(<Item data-subject {...({ children: 'Item', ...props } as ComponentProps<typeof Item>)} />)
+  return document.querySelector('[data-subject]')?.closest('[data-slot="item"]')
 }
 
 function classesOfItem(props: Partial<Record<keyof ComponentProps<typeof Item>, unknown>> = {}) {
@@ -140,115 +135,115 @@ describe('Item', () => {
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
     render(
-      <Item data-testid="subject" variant="outline">
+      <Item data-subject variant="outline">
         Item
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
-      <Item data-testid="subject" variant="muted">
+      <Item data-subject variant="muted">
         Item
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
-      <Item data-testid="subject" size="sm">
+      <Item data-subject size="sm">
         Item
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
-      <Item data-testid="subject" variant="outline" size="sm">
+      <Item data-subject variant="outline" size="sm">
         Item
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
-      <Item data-testid="subject" variant="muted" size="sm">
+      <Item data-subject variant="muted" size="sm">
         Item
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
-      <Item data-testid="subject" size="xs">
+      <Item data-subject size="xs">
         Item
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
     render(
-      <Item data-testid="subject" variant="outline" size="xs">
+      <Item data-subject variant="outline" size="xs">
         Item
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
     cleanup()
     render(
-      <Item data-testid="subject" variant="muted" size="xs">
+      <Item data-subject variant="muted" size="xs">
         Item
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
     cleanup()
     render(
       <ItemGroup>
-        <Item data-testid="subject">Item</Item>
+        <Item data-subject>Item</Item>
       </ItemGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
     cleanup()
     render(
       <ItemGroup>
-        <Item data-testid="subject" variant="outline">
+        <Item data-subject variant="outline">
           Item
         </Item>
       </ItemGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
     cleanup()
     render(
       <ItemGroup>
-        <Item data-testid="subject" variant="muted">
+        <Item data-subject variant="muted">
           Item
         </Item>
       </ItemGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -259,12 +254,12 @@ function renderItemMedia(
   render(
     <Item>
       <ItemMedia
-        data-testid="subject"
+        data-subject
         {...({ children: 'ItemMedia', ...props } as ComponentProps<typeof ItemMedia>)}
       />
     </Item>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="item-media"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="item-media"]')
 }
 
 function classesOfItemMedia(
@@ -310,96 +305,96 @@ describe('ItemMedia', () => {
     cleanup()
     render(
       <Item variant="outline">
-        <ItemMedia data-testid="subject" variant="icon">
+        <ItemMedia data-subject variant="icon">
           ItemMedia
         </ItemMedia>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Item variant="muted">
-        <ItemMedia data-testid="subject" variant="icon">
+        <ItemMedia data-subject variant="icon">
           ItemMedia
         </ItemMedia>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <Item size="sm">
-        <ItemMedia data-testid="subject" variant="icon">
+        <ItemMedia data-subject variant="icon">
           ItemMedia
         </ItemMedia>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <Item variant="outline" size="sm">
-        <ItemMedia data-testid="subject" variant="icon">
+        <ItemMedia data-subject variant="icon">
           ItemMedia
         </ItemMedia>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
       <Item variant="muted" size="sm">
-        <ItemMedia data-testid="subject" variant="icon">
+        <ItemMedia data-subject variant="icon">
           ItemMedia
         </ItemMedia>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
       <Item size="xs">
-        <ItemMedia data-testid="subject" variant="icon">
+        <ItemMedia data-subject variant="icon">
           ItemMedia
         </ItemMedia>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
     render(
       <Item variant="outline" size="xs">
-        <ItemMedia data-testid="subject" variant="icon">
+        <ItemMedia data-subject variant="icon">
           ItemMedia
         </ItemMedia>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
     cleanup()
     render(
       <Item variant="muted" size="xs">
-        <ItemMedia data-testid="subject" variant="icon">
+        <ItemMedia data-subject variant="icon">
           ItemMedia
         </ItemMedia>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
@@ -407,13 +402,13 @@ describe('ItemMedia', () => {
     render(
       <ItemGroup>
         <Item>
-          <ItemMedia data-testid="subject" variant="icon">
+          <ItemMedia data-subject variant="icon">
             ItemMedia
           </ItemMedia>
         </Item>
       </ItemGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
@@ -421,13 +416,13 @@ describe('ItemMedia', () => {
     render(
       <ItemGroup>
         <Item variant="outline">
-          <ItemMedia data-testid="subject" variant="icon">
+          <ItemMedia data-subject variant="icon">
             ItemMedia
           </ItemMedia>
         </Item>
       </ItemGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
@@ -435,73 +430,73 @@ describe('ItemMedia', () => {
     render(
       <ItemGroup>
         <Item variant="muted">
-          <ItemMedia data-testid="subject" variant="icon">
+          <ItemMedia data-subject variant="icon">
             ItemMedia
           </ItemMedia>
         </Item>
       </ItemGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
     cleanup()
     render(
       <Item>
-        <ItemMedia data-testid="subject" variant="image">
+        <ItemMedia data-subject variant="image">
           ItemMedia
         </ItemMedia>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
     cleanup()
     render(
       <Item variant="outline">
-        <ItemMedia data-testid="subject" variant="image">
+        <ItemMedia data-subject variant="image">
           ItemMedia
         </ItemMedia>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (15)", () => {
     cleanup()
     render(
       <Item variant="outline" size="sm">
-        <ItemMedia data-testid="subject" variant="image">
+        <ItemMedia data-subject variant="image">
           ItemMedia
         </ItemMedia>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (16)", () => {
     cleanup()
     render(
       <Item variant="outline" size="xs">
-        <ItemMedia data-testid="subject" variant="image">
+        <ItemMedia data-subject variant="image">
           ItemMedia
         </ItemMedia>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (17)", () => {
     cleanup()
     render(
       <Item variant="muted">
-        <ItemMedia data-testid="subject" variant="image">
+        <ItemMedia data-subject variant="image">
           ItemMedia
         </ItemMedia>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -512,12 +507,12 @@ function renderItemContent(
   render(
     <Item>
       <ItemContent
-        data-testid="subject"
+        data-subject
         {...({ children: 'ItemContent', ...props } as ComponentProps<typeof ItemContent>)}
       />
     </Item>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="item-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="item-content"]')
 }
 
 function classesOfItemContent(
@@ -541,80 +536,80 @@ describe('ItemContent', () => {
     cleanup()
     render(
       <Item variant="outline">
-        <ItemContent data-testid="subject">ItemContent</ItemContent>
+        <ItemContent data-subject>ItemContent</ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Item variant="muted">
-        <ItemContent data-testid="subject">ItemContent</ItemContent>
+        <ItemContent data-subject>ItemContent</ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <Item size="sm">
-        <ItemContent data-testid="subject">ItemContent</ItemContent>
+        <ItemContent data-subject>ItemContent</ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <Item variant="outline" size="sm">
-        <ItemContent data-testid="subject">ItemContent</ItemContent>
+        <ItemContent data-subject>ItemContent</ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
       <Item variant="muted" size="sm">
-        <ItemContent data-testid="subject">ItemContent</ItemContent>
+        <ItemContent data-subject>ItemContent</ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
       <Item size="xs">
-        <ItemContent data-testid="subject">ItemContent</ItemContent>
+        <ItemContent data-subject>ItemContent</ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
     render(
       <Item variant="outline" size="xs">
-        <ItemContent data-testid="subject">ItemContent</ItemContent>
+        <ItemContent data-subject>ItemContent</ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
     cleanup()
     render(
       <Item variant="muted" size="xs">
-        <ItemContent data-testid="subject">ItemContent</ItemContent>
+        <ItemContent data-subject>ItemContent</ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
@@ -622,11 +617,11 @@ describe('ItemContent', () => {
     render(
       <ItemGroup>
         <Item>
-          <ItemContent data-testid="subject">ItemContent</ItemContent>
+          <ItemContent data-subject>ItemContent</ItemContent>
         </Item>
       </ItemGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
@@ -634,11 +629,11 @@ describe('ItemContent', () => {
     render(
       <ItemGroup>
         <Item variant="outline">
-          <ItemContent data-testid="subject">ItemContent</ItemContent>
+          <ItemContent data-subject>ItemContent</ItemContent>
         </Item>
       </ItemGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
@@ -646,11 +641,11 @@ describe('ItemContent', () => {
     render(
       <ItemGroup>
         <Item variant="muted">
-          <ItemContent data-testid="subject">ItemContent</ItemContent>
+          <ItemContent data-subject>ItemContent</ItemContent>
         </Item>
       </ItemGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -662,13 +657,13 @@ function renderItemTitle(
     <Item>
       <ItemContent>
         <ItemTitle
-          data-testid="subject"
+          data-subject
           {...({ children: 'ItemTitle', ...props } as ComponentProps<typeof ItemTitle>)}
         />
       </ItemContent>
     </Item>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="item-title"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="item-title"]')
 }
 
 function classesOfItemTitle(
@@ -693,11 +688,11 @@ describe('ItemTitle', () => {
     render(
       <Item variant="outline">
         <ItemContent>
-          <ItemTitle data-testid="subject">ItemTitle</ItemTitle>
+          <ItemTitle data-subject>ItemTitle</ItemTitle>
         </ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -705,11 +700,11 @@ describe('ItemTitle', () => {
     render(
       <Item variant="muted">
         <ItemContent>
-          <ItemTitle data-testid="subject">ItemTitle</ItemTitle>
+          <ItemTitle data-subject>ItemTitle</ItemTitle>
         </ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -717,11 +712,11 @@ describe('ItemTitle', () => {
     render(
       <Item size="sm">
         <ItemContent>
-          <ItemTitle data-testid="subject">ItemTitle</ItemTitle>
+          <ItemTitle data-subject>ItemTitle</ItemTitle>
         </ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -729,11 +724,11 @@ describe('ItemTitle', () => {
     render(
       <Item variant="outline" size="sm">
         <ItemContent>
-          <ItemTitle data-testid="subject">ItemTitle</ItemTitle>
+          <ItemTitle data-subject>ItemTitle</ItemTitle>
         </ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -741,11 +736,11 @@ describe('ItemTitle', () => {
     render(
       <Item variant="muted" size="sm">
         <ItemContent>
-          <ItemTitle data-testid="subject">ItemTitle</ItemTitle>
+          <ItemTitle data-subject>ItemTitle</ItemTitle>
         </ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -753,11 +748,11 @@ describe('ItemTitle', () => {
     render(
       <Item size="xs">
         <ItemContent>
-          <ItemTitle data-testid="subject">ItemTitle</ItemTitle>
+          <ItemTitle data-subject>ItemTitle</ItemTitle>
         </ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -765,11 +760,11 @@ describe('ItemTitle', () => {
     render(
       <Item variant="outline" size="xs">
         <ItemContent>
-          <ItemTitle data-testid="subject">ItemTitle</ItemTitle>
+          <ItemTitle data-subject>ItemTitle</ItemTitle>
         </ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -777,11 +772,11 @@ describe('ItemTitle', () => {
     render(
       <Item variant="muted" size="xs">
         <ItemContent>
-          <ItemTitle data-testid="subject">ItemTitle</ItemTitle>
+          <ItemTitle data-subject>ItemTitle</ItemTitle>
         </ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
@@ -790,12 +785,12 @@ describe('ItemTitle', () => {
       <ItemGroup>
         <Item>
           <ItemContent>
-            <ItemTitle data-testid="subject">ItemTitle</ItemTitle>
+            <ItemTitle data-subject>ItemTitle</ItemTitle>
           </ItemContent>
         </Item>
       </ItemGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
@@ -804,12 +799,12 @@ describe('ItemTitle', () => {
       <ItemGroup>
         <Item variant="outline">
           <ItemContent>
-            <ItemTitle data-testid="subject">ItemTitle</ItemTitle>
+            <ItemTitle data-subject>ItemTitle</ItemTitle>
           </ItemContent>
         </Item>
       </ItemGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
@@ -818,12 +813,12 @@ describe('ItemTitle', () => {
       <ItemGroup>
         <Item variant="muted">
           <ItemContent>
-            <ItemTitle data-testid="subject">ItemTitle</ItemTitle>
+            <ItemTitle data-subject>ItemTitle</ItemTitle>
           </ItemContent>
         </Item>
       </ItemGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -835,15 +830,13 @@ function renderItemDescription(
     <Item>
       <ItemContent>
         <ItemDescription
-          data-testid="subject"
+          data-subject
           {...({ children: 'ItemDescription', ...props } as ComponentProps<typeof ItemDescription>)}
         />
       </ItemContent>
     </Item>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="item-description"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="item-description"]')
 }
 
 function classesOfItemDescription(
@@ -868,11 +861,11 @@ describe('ItemDescription', () => {
     render(
       <Item variant="outline">
         <ItemContent>
-          <ItemDescription data-testid="subject">ItemDescription</ItemDescription>
+          <ItemDescription data-subject>ItemDescription</ItemDescription>
         </ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -880,11 +873,11 @@ describe('ItemDescription', () => {
     render(
       <Item variant="muted">
         <ItemContent>
-          <ItemDescription data-testid="subject">ItemDescription</ItemDescription>
+          <ItemDescription data-subject>ItemDescription</ItemDescription>
         </ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -892,11 +885,11 @@ describe('ItemDescription', () => {
     render(
       <Item size="sm">
         <ItemContent>
-          <ItemDescription data-testid="subject">ItemDescription</ItemDescription>
+          <ItemDescription data-subject>ItemDescription</ItemDescription>
         </ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -904,11 +897,11 @@ describe('ItemDescription', () => {
     render(
       <Item variant="outline" size="sm">
         <ItemContent>
-          <ItemDescription data-testid="subject">ItemDescription</ItemDescription>
+          <ItemDescription data-subject>ItemDescription</ItemDescription>
         </ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -916,11 +909,11 @@ describe('ItemDescription', () => {
     render(
       <Item variant="muted" size="sm">
         <ItemContent>
-          <ItemDescription data-testid="subject">ItemDescription</ItemDescription>
+          <ItemDescription data-subject>ItemDescription</ItemDescription>
         </ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -928,11 +921,11 @@ describe('ItemDescription', () => {
     render(
       <Item size="xs">
         <ItemContent>
-          <ItemDescription data-testid="subject">ItemDescription</ItemDescription>
+          <ItemDescription data-subject>ItemDescription</ItemDescription>
         </ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -940,11 +933,11 @@ describe('ItemDescription', () => {
     render(
       <Item variant="outline" size="xs">
         <ItemContent>
-          <ItemDescription data-testid="subject">ItemDescription</ItemDescription>
+          <ItemDescription data-subject>ItemDescription</ItemDescription>
         </ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -952,11 +945,11 @@ describe('ItemDescription', () => {
     render(
       <Item variant="muted" size="xs">
         <ItemContent>
-          <ItemDescription data-testid="subject">ItemDescription</ItemDescription>
+          <ItemDescription data-subject>ItemDescription</ItemDescription>
         </ItemContent>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
@@ -965,12 +958,12 @@ describe('ItemDescription', () => {
       <ItemGroup>
         <Item>
           <ItemContent>
-            <ItemDescription data-testid="subject">ItemDescription</ItemDescription>
+            <ItemDescription data-subject>ItemDescription</ItemDescription>
           </ItemContent>
         </Item>
       </ItemGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
@@ -979,12 +972,12 @@ describe('ItemDescription', () => {
       <ItemGroup>
         <Item variant="outline">
           <ItemContent>
-            <ItemDescription data-testid="subject">ItemDescription</ItemDescription>
+            <ItemDescription data-subject>ItemDescription</ItemDescription>
           </ItemContent>
         </Item>
       </ItemGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
@@ -993,12 +986,12 @@ describe('ItemDescription', () => {
       <ItemGroup>
         <Item variant="muted">
           <ItemContent>
-            <ItemDescription data-testid="subject">ItemDescription</ItemDescription>
+            <ItemDescription data-subject>ItemDescription</ItemDescription>
           </ItemContent>
         </Item>
       </ItemGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -1009,12 +1002,12 @@ function renderItemActions(
   render(
     <Item>
       <ItemActions
-        data-testid="subject"
+        data-subject
         {...({ children: 'ItemActions', ...props } as ComponentProps<typeof ItemActions>)}
       />
     </Item>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="item-actions"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="item-actions"]')
 }
 
 function classesOfItemActions(
@@ -1038,80 +1031,80 @@ describe('ItemActions', () => {
     cleanup()
     render(
       <Item variant="outline">
-        <ItemActions data-testid="subject">ItemActions</ItemActions>
+        <ItemActions data-subject>ItemActions</ItemActions>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Item variant="muted">
-        <ItemActions data-testid="subject">ItemActions</ItemActions>
+        <ItemActions data-subject>ItemActions</ItemActions>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <Item size="sm">
-        <ItemActions data-testid="subject">ItemActions</ItemActions>
+        <ItemActions data-subject>ItemActions</ItemActions>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <Item variant="outline" size="sm">
-        <ItemActions data-testid="subject">ItemActions</ItemActions>
+        <ItemActions data-subject>ItemActions</ItemActions>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
       <Item variant="muted" size="sm">
-        <ItemActions data-testid="subject">ItemActions</ItemActions>
+        <ItemActions data-subject>ItemActions</ItemActions>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
       <Item size="xs">
-        <ItemActions data-testid="subject">ItemActions</ItemActions>
+        <ItemActions data-subject>ItemActions</ItemActions>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
     render(
       <Item variant="outline" size="xs">
-        <ItemActions data-testid="subject">ItemActions</ItemActions>
+        <ItemActions data-subject>ItemActions</ItemActions>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
     cleanup()
     render(
       <Item variant="muted" size="xs">
-        <ItemActions data-testid="subject">ItemActions</ItemActions>
+        <ItemActions data-subject>ItemActions</ItemActions>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
@@ -1119,11 +1112,11 @@ describe('ItemActions', () => {
     render(
       <ItemGroup>
         <Item>
-          <ItemActions data-testid="subject">ItemActions</ItemActions>
+          <ItemActions data-subject>ItemActions</ItemActions>
         </Item>
       </ItemGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
@@ -1131,11 +1124,11 @@ describe('ItemActions', () => {
     render(
       <ItemGroup>
         <Item variant="outline">
-          <ItemActions data-testid="subject">ItemActions</ItemActions>
+          <ItemActions data-subject>ItemActions</ItemActions>
         </Item>
       </ItemGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
@@ -1143,11 +1136,11 @@ describe('ItemActions', () => {
     render(
       <ItemGroup>
         <Item variant="muted">
-          <ItemActions data-testid="subject">ItemActions</ItemActions>
+          <ItemActions data-subject>ItemActions</ItemActions>
         </Item>
       </ItemGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -1158,12 +1151,12 @@ function renderItemHeader(
   render(
     <Item>
       <ItemHeader
-        data-testid="subject"
+        data-subject
         {...({ children: 'ItemHeader', ...props } as ComponentProps<typeof ItemHeader>)}
       />
     </Item>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="item-header"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="item-header"]')
 }
 
 function classesOfItemHeader(
@@ -1187,20 +1180,20 @@ describe('ItemHeader', () => {
     cleanup()
     render(
       <Item variant="outline">
-        <ItemHeader data-testid="subject">ItemHeader</ItemHeader>
+        <ItemHeader data-subject>ItemHeader</ItemHeader>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Item variant="muted">
-        <ItemHeader data-testid="subject">ItemHeader</ItemHeader>
+        <ItemHeader data-subject>ItemHeader</ItemHeader>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -1211,12 +1204,12 @@ function renderItemFooter(
   render(
     <Item>
       <ItemFooter
-        data-testid="subject"
+        data-subject
         {...({ children: 'ItemFooter', ...props } as ComponentProps<typeof ItemFooter>)}
       />
     </Item>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="item-footer"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="item-footer"]')
 }
 
 function classesOfItemFooter(
@@ -1240,19 +1233,19 @@ describe('ItemFooter', () => {
     cleanup()
     render(
       <Item variant="outline">
-        <ItemFooter data-testid="subject">ItemFooter</ItemFooter>
+        <ItemFooter data-subject>ItemFooter</ItemFooter>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Item variant="muted">
-        <ItemFooter data-testid="subject">ItemFooter</ItemFooter>
+        <ItemFooter data-subject>ItemFooter</ItemFooter>
       </Item>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

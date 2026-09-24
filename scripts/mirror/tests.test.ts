@@ -24,6 +24,7 @@ const part: PartTypes = {
   required: [],
   text: true,
   childrenFunction: false,
+  options: {},
 }
 
 const header = `import { cva } from "class-variance-authority"
@@ -110,19 +111,17 @@ export { Chip, ChipList, ChipItem }`,
     )
     expect(test).toContain('import { Chip, ChipItem, ChipList } from "./Chip"')
     expect(test).toContain(
-      'render(<Chip defaultOpen value="a" count={2}><ChipList><ChipItem data-testid="subject" {...({ "value": "a", "children": "ChipItem", ...props } as ComponentProps<typeof ChipItem>)} /></ChipList></Chip>)',
+      'render(<Chip defaultOpen value="a" count={2}><ChipList><ChipItem data-subject {...({ "value": "a", "children": "ChipItem", ...props } as ComponentProps<typeof ChipItem>)} /></ChipList></Chip>)',
     )
     expect(test).toContain('  cleanup()\n')
     expect(test).toContain(
-      'return document.querySelector(\'[data-testid="subject"]\')?.closest("[data-slot=\\"chip-item\\"]")',
+      'return document.querySelector(\'[data-subject]\')?.closest("[data-slot=\\"chip-item\\"]")',
     )
     expect(test).toContain('const element = document.querySelector(".consumer")')
     expect(test).toContain('it("renders as upstream\'s example uses it (2)", () => {')
-    expect(test).toContain('render(<ChipItem data-testid="subject" value="b">ChipItem</ChipItem>)')
-    expect(test).toContain('render(<ChipItem data-testid="subject" />)')
-    expect(test).toContain(
-      'expect(document.querySelector("[data-testid=\\"subject\\"]")).not.toBeNull()',
-    )
+    expect(test).toContain('render(<ChipItem data-subject value="b">ChipItem</ChipItem>)')
+    expect(test).toContain('render(<ChipItem data-subject />)')
+    expect(test).toContain('expect(document.querySelector("[data-subject]")).not.toBeNull()')
   })
 
   it('tests a part that renders no element of its own by its children', () => {
@@ -140,6 +139,7 @@ export { Chip }`,
               required: [],
               text: true,
               childrenFunction: false,
+              options: {},
             },
           ],
         ]),
@@ -207,13 +207,16 @@ export { Chip, ChipList }`,
       {
         types: new Map([
           ['Chip', part],
-          ['ChipList', { ...part, className: false, text: false, childrenFunction: true }],
+          [
+            'ChipList',
+            { ...part, className: false, text: false, childrenFunction: true, options: {} },
+          ],
         ]),
         unrendered: { Chip: 'it waits for an open item.' },
       },
     )
     expect(test).toContain('it("renders nothing in jsdom: it waits for an open item.", () => {')
-    expect(test).toContain('expect(document.querySelector(\'[data-testid="subject"]\')).toBeNull()')
+    expect(test).toContain("expect(document.querySelector('[data-subject]')).toBeNull()")
     expect(test).toContain('expect(() => render(<ChipList>{() => <i />}</ChipList>)).not.toThrow()')
   })
 

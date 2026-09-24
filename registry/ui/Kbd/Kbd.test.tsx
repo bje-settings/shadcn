@@ -8,13 +8,8 @@ import styles from './Kbd.module.scss'
 
 function renderKbd(props: Partial<Record<keyof ComponentProps<typeof Kbd>, unknown>> = {}) {
   cleanup()
-  render(
-    <Kbd
-      data-testid="subject"
-      {...({ children: 'Kbd', ...props } as ComponentProps<typeof Kbd>)}
-    />,
-  )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="kbd"]')
+  render(<Kbd data-subject {...({ children: 'Kbd', ...props } as ComponentProps<typeof Kbd>)} />)
+  return document.querySelector('[data-subject]')?.closest('[data-slot="kbd"]')
 }
 
 function classesOfKbd(props: Partial<Record<keyof ComponentProps<typeof Kbd>, unknown>> = {}) {
@@ -36,10 +31,10 @@ describe('Kbd', () => {
     cleanup()
     render(
       <KbdGroup>
-        <Kbd data-testid="subject">Kbd</Kbd>
+        <Kbd data-subject>Kbd</Kbd>
       </KbdGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -49,11 +44,11 @@ function renderKbdGroup(
   cleanup()
   render(
     <KbdGroup
-      data-testid="subject"
+      data-subject
       {...({ children: 'KbdGroup', ...props } as ComponentProps<typeof KbdGroup>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="kbd-group"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="kbd-group"]')
 }
 
 function classesOfKbdGroup(

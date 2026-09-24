@@ -24,7 +24,8 @@ const valid = {
   globalClasses: [{ classes: ['dark'], reason: 'dark mode' }],
   classesWithoutCss: [{ classes: ['xs:flex'], reason: 'no xs breakpoint' }],
   testSetup: [{ items: ['button'], lines: ['stub()'], reason: 'jsdom' }],
-  unrenderedInTests: { Button: 'why' },
+  unrenderedInTests: { button: { Button: 'why' } },
+  testProps: { button: { Button: { size: 'sm' } } },
 }
 
 function withChange(change: Record<string, unknown>) {
@@ -46,8 +47,10 @@ describe('parseConfig', () => {
         coverageExclusions: undefined,
         testSetup: undefined,
         unrenderedInTests: undefined,
+        testProps: undefined,
       }),
     )
+    expect(config.testProps).toEqual({})
     expect(config.coverageExclusions).toEqual({})
     expect(config.testSetup).toEqual([])
     expect(config.unrenderedInTests).toEqual({})
@@ -106,6 +109,21 @@ describe('parseConfig', () => {
       'consumerClasses[0].reason',
     ],
     ['a non-array testSetup', withChange({ testSetup: {} }), 'testSetup must be an array'],
+    [
+      'unrendered parts of an item not configured',
+      withChange({ unrenderedInTests: { card: { Card: 'x' } } }),
+      'unrenderedInTests.card is not a configured component',
+    ],
+    [
+      'a non-string unrendered reason',
+      withChange({ unrenderedInTests: { button: { Button: 1 } } }),
+      'unrenderedInTests.button.Button must be a non-empty string',
+    ],
+    [
+      'non-object test props',
+      withChange({ testProps: { button: { Button: 'x' } } }),
+      'testProps.button.Button must be an object',
+    ],
     [
       'a testSetup item not configured',
       withChange({ testSetup: [{ items: ['card'], lines: [], reason: 'x' }] }),

@@ -52,6 +52,11 @@ import * as selectExample from './examples/ours/select-example'
 import * as comboboxExample from './examples/ours/combobox-example'
 import * as navigationMenuExample from './examples/ours/navigation-menu-example'
 import * as commandExample from './examples/ours/command-example'
+import * as sonnerExample from './examples/ours/sonner-example'
+import * as toastExample from './examples/ours/toast-example'
+import * as resizableExample from './examples/ours/resizable-example'
+import * as questionnaireExample from './examples/ours/questionnaire-example'
+import * as messageScrollerExample from './examples/ours/message-scroller-example'
 
 export const oursExamples = {
   'button-example': buttonExample,
@@ -106,4 +111,9 @@ export const oursExamples = {
   'combobox-example': comboboxExample,
   'navigation-menu-example': navigationMenuExample,
   'command-example': commandExample,
+  'sonner-example': sonnerExample,
+  'toast-example': toastExample,
+  'resizable-example': resizableExample,
+  'questionnaire-example': questionnaireExample,
+  'message-scroller-example': messageScrollerExample,
 }

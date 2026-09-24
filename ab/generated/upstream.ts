@@ -53,6 +53,11 @@ import * as select from './upstream/select'
 import * as combobox from './upstream/combobox'
 import * as navigationMenu from './upstream/navigation-menu'
 import * as command from './upstream/command'
+import * as sonner from './upstream/sonner'
+import * as toast from './upstream/toast'
+import * as resizable from './upstream/resizable'
+import * as questionnaire from './upstream/questionnaire'
+import * as messageScroller from './upstream/message-scroller'
 
 export const upstream = {
   button: button,
@@ -108,4 +113,9 @@ export const upstream = {
   combobox: combobox,
   'navigation-menu': navigationMenu,
   command: command,
+  sonner: sonner,
+  toast: toast,
+  resizable: resizable,
+  questionnaire: questionnaire,
+  'message-scroller': messageScroller,
 }

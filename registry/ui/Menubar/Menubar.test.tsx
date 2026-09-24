@@ -31,11 +31,11 @@ function renderMenubar(props: Partial<Record<keyof ComponentProps<typeof Menubar
   cleanup()
   render(
     <Menubar
-      data-testid="subject"
+      data-subject
       {...({ children: 'Menubar', ...props } as ComponentProps<typeof Menubar>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="menubar"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="menubar"]')
 }
 
 function classesOfMenubar(
@@ -80,14 +80,14 @@ function renderMenubarGroup(
         <MenubarTrigger>MenubarTrigger</MenubarTrigger>
         <MenubarContent>
           <MenubarGroup
-            data-testid="subject"
+            data-subject
             {...({ children: 'MenubarGroup', ...props } as ComponentProps<typeof MenubarGroup>)}
           />
         </MenubarContent>
       </MenubarMenu>
     </Menubar>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="menubar-group"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="menubar-group"]')
 }
 
 describe('MenubarGroup', () => {
@@ -107,14 +107,14 @@ describe('MenubarGroup', () => {
             <MenubarSub defaultOpen>
               <MenubarSubTrigger inset>MenubarSubTrigger</MenubarSubTrigger>
               <MenubarSubContent>
-                <MenubarGroup data-testid="subject">MenubarGroup</MenubarGroup>
+                <MenubarGroup data-subject>MenubarGroup</MenubarGroup>
               </MenubarSubContent>
             </MenubarSub>
           </MenubarContent>
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -127,19 +127,19 @@ function renderMenubarPortal(
       <MenubarMenu defaultOpen>
         <MenubarTrigger>MenubarTrigger</MenubarTrigger>
         <MenubarContent>
-          <MenubarItem>
+          <MenubarGroup>
             <MenubarPortal
-              data-testid="subject"
+              data-subject
               {...({ keepMounted: true, children: 'MenubarPortal', ...props } as ComponentProps<
                 typeof MenubarPortal
               >)}
             />
-          </MenubarItem>
+          </MenubarGroup>
         </MenubarContent>
       </MenubarMenu>
     </Menubar>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="menubar-portal"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="menubar-portal"]')
 }
 
 describe('MenubarPortal', () => {
@@ -159,13 +159,13 @@ function renderMenubarTrigger(
       <MenubarMenu defaultOpen>
         <MenubarTrigger>MenubarTrigger</MenubarTrigger>
         <MenubarTrigger
-          data-testid="subject"
+          data-subject
           {...({ children: 'MenubarTrigger', ...props } as ComponentProps<typeof MenubarTrigger>)}
         />
       </MenubarMenu>
     </Menubar>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="menubar-trigger"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="menubar-trigger"]')
 }
 
 function classesOfMenubarTrigger(
@@ -195,13 +195,13 @@ function renderMenubarContent(
       <MenubarMenu defaultOpen>
         <MenubarTrigger>MenubarTrigger</MenubarTrigger>
         <MenubarContent
-          data-testid="subject"
+          data-subject
           {...({ children: 'MenubarContent', ...props } as ComponentProps<typeof MenubarContent>)}
         />
       </MenubarMenu>
     </Menubar>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="menubar-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="menubar-content"]')
 }
 
 function classesOfMenubarContent(
@@ -233,6 +233,14 @@ describe('MenubarContent', () => {
     expect(attributesOfMenubarContent({ sideOffset: 8 })).toEqual(attributesOfMenubarContent())
   })
 
+  it('renders with align="center"', () => {
+    expect(renderMenubarContent({ align: 'center' })).toBeTruthy()
+  })
+
+  it('renders with align="end"', () => {
+    expect(renderMenubarContent({ align: 'end' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderMenubarContent({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -250,14 +258,14 @@ function renderMenubarItem(
         <MenubarTrigger>MenubarTrigger</MenubarTrigger>
         <MenubarContent>
           <MenubarItem
-            data-testid="subject"
+            data-subject
             {...({ children: 'MenubarItem', ...props } as ComponentProps<typeof MenubarItem>)}
           />
         </MenubarContent>
       </MenubarMenu>
     </Menubar>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="menubar-item"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="menubar-item"]')
 }
 
 function classesOfMenubarItem(
@@ -285,6 +293,10 @@ describe('MenubarItem', () => {
     expect(attributesOfMenubarItem({ variant: 'default' })).toEqual(attributesOfMenubarItem())
   })
 
+  it('renders with variant="destructive"', () => {
+    expect(renderMenubarItem({ variant: 'destructive' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderMenubarItem({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -299,13 +311,13 @@ describe('MenubarItem', () => {
           <MenubarTrigger>MenubarTrigger</MenubarTrigger>
           <MenubarContent>
             <MenubarGroup>
-              <MenubarItem data-testid="subject">MenubarItem</MenubarItem>
+              <MenubarItem data-subject>MenubarItem</MenubarItem>
             </MenubarGroup>
           </MenubarContent>
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -318,14 +330,14 @@ describe('MenubarItem', () => {
             <MenubarSub defaultOpen>
               <MenubarSubTrigger>MenubarSubTrigger</MenubarSubTrigger>
               <MenubarSubContent>
-                <MenubarItem data-testid="subject">MenubarItem</MenubarItem>
+                <MenubarItem data-subject>MenubarItem</MenubarItem>
               </MenubarSubContent>
             </MenubarSub>
           </MenubarContent>
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -335,14 +347,14 @@ describe('MenubarItem', () => {
         <MenubarMenu defaultOpen>
           <MenubarTrigger>MenubarTrigger</MenubarTrigger>
           <MenubarContent>
-            <MenubarItem data-testid="subject" inset>
+            <MenubarItem data-subject inset>
               MenubarItem
             </MenubarItem>
           </MenubarContent>
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -353,7 +365,7 @@ describe('MenubarItem', () => {
           <MenubarTrigger>MenubarTrigger</MenubarTrigger>
           <MenubarContent>
             <MenubarGroup>
-              <MenubarItem data-testid="subject" variant="destructive">
+              <MenubarItem data-subject variant="destructive">
                 MenubarItem
               </MenubarItem>
             </MenubarGroup>
@@ -361,7 +373,7 @@ describe('MenubarItem', () => {
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -371,14 +383,14 @@ describe('MenubarItem', () => {
         <MenubarMenu defaultOpen>
           <MenubarTrigger>MenubarTrigger</MenubarTrigger>
           <MenubarContent>
-            <MenubarItem data-testid="subject" variant="destructive">
+            <MenubarItem data-subject variant="destructive">
               MenubarItem
             </MenubarItem>
           </MenubarContent>
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -389,7 +401,7 @@ describe('MenubarItem', () => {
           <MenubarTrigger>MenubarTrigger</MenubarTrigger>
           <MenubarContent>
             <MenubarGroup>
-              <MenubarItem data-testid="subject" inset>
+              <MenubarItem data-subject inset>
                 MenubarItem
               </MenubarItem>
             </MenubarGroup>
@@ -397,7 +409,7 @@ describe('MenubarItem', () => {
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -411,7 +423,7 @@ describe('MenubarItem', () => {
               <MenubarSubTrigger inset>MenubarSubTrigger</MenubarSubTrigger>
               <MenubarSubContent>
                 <MenubarGroup>
-                  <MenubarItem data-testid="subject">MenubarItem</MenubarItem>
+                  <MenubarItem data-subject>MenubarItem</MenubarItem>
                 </MenubarGroup>
               </MenubarSubContent>
             </MenubarSub>
@@ -419,7 +431,7 @@ describe('MenubarItem', () => {
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -433,7 +445,7 @@ function renderMenubarCheckboxItem(
         <MenubarTrigger>MenubarTrigger</MenubarTrigger>
         <MenubarContent>
           <MenubarCheckboxItem
-            data-testid="subject"
+            data-subject
             {...({ children: 'MenubarCheckboxItem', ...props } as ComponentProps<
               typeof MenubarCheckboxItem
             >)}
@@ -442,9 +454,7 @@ function renderMenubarCheckboxItem(
       </MenubarMenu>
     </Menubar>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="menubar-checkbox-item"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="menubar-checkbox-item"]')
 }
 
 function classesOfMenubarCheckboxItem(
@@ -473,14 +483,14 @@ describe('MenubarCheckboxItem', () => {
         <MenubarMenu defaultOpen>
           <MenubarTrigger>MenubarTrigger</MenubarTrigger>
           <MenubarContent>
-            <MenubarCheckboxItem data-testid="subject" checked>
+            <MenubarCheckboxItem data-subject checked>
               MenubarCheckboxItem
             </MenubarCheckboxItem>
           </MenubarContent>
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -491,7 +501,7 @@ describe('MenubarCheckboxItem', () => {
           <MenubarTrigger>MenubarTrigger</MenubarTrigger>
           <MenubarContent>
             <MenubarGroup>
-              <MenubarCheckboxItem data-testid="subject" inset>
+              <MenubarCheckboxItem data-subject inset>
                 MenubarCheckboxItem
               </MenubarCheckboxItem>
             </MenubarGroup>
@@ -499,7 +509,7 @@ describe('MenubarCheckboxItem', () => {
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -513,7 +523,7 @@ function renderMenubarRadioGroup(
         <MenubarTrigger>MenubarTrigger</MenubarTrigger>
         <MenubarContent>
           <MenubarRadioGroup
-            data-testid="subject"
+            data-subject
             {...({ children: 'MenubarRadioGroup', ...props } as ComponentProps<
               typeof MenubarRadioGroup
             >)}
@@ -522,9 +532,7 @@ function renderMenubarRadioGroup(
       </MenubarMenu>
     </Menubar>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="menubar-radio-group"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="menubar-radio-group"]')
 }
 
 describe('MenubarRadioGroup', () => {
@@ -542,13 +550,13 @@ describe('MenubarRadioGroup', () => {
           <MenubarTrigger>MenubarTrigger</MenubarTrigger>
           <MenubarContent>
             <MenubarGroup>
-              <MenubarRadioGroup data-testid="subject">MenubarRadioGroup</MenubarRadioGroup>
+              <MenubarRadioGroup data-subject>MenubarRadioGroup</MenubarRadioGroup>
             </MenubarGroup>
           </MenubarContent>
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -563,7 +571,7 @@ function renderMenubarRadioItem(
         <MenubarContent>
           <MenubarRadioGroup>
             <MenubarRadioItem
-              data-testid="subject"
+              data-subject
               {...({ value: 'andy', children: 'MenubarRadioItem', ...props } as ComponentProps<
                 typeof MenubarRadioItem
               >)}
@@ -573,9 +581,7 @@ function renderMenubarRadioItem(
       </MenubarMenu>
     </Menubar>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="menubar-radio-item"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="menubar-radio-item"]')
 }
 
 function classesOfMenubarRadioItem(
@@ -603,7 +609,7 @@ describe('MenubarRadioItem', () => {
           <MenubarTrigger>MenubarTrigger</MenubarTrigger>
           <MenubarContent>
             <MenubarRadioGroup>
-              <MenubarRadioItem data-testid="subject" value="benoit">
+              <MenubarRadioItem data-subject value="benoit">
                 MenubarRadioItem
               </MenubarRadioItem>
             </MenubarRadioGroup>
@@ -611,7 +617,7 @@ describe('MenubarRadioItem', () => {
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -622,7 +628,7 @@ describe('MenubarRadioItem', () => {
           <MenubarTrigger>MenubarTrigger</MenubarTrigger>
           <MenubarContent>
             <MenubarRadioGroup>
-              <MenubarRadioItem data-testid="subject" value="luis">
+              <MenubarRadioItem data-subject value="luis">
                 MenubarRadioItem
               </MenubarRadioItem>
             </MenubarRadioGroup>
@@ -630,7 +636,7 @@ describe('MenubarRadioItem', () => {
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -641,7 +647,7 @@ describe('MenubarRadioItem', () => {
           <MenubarTrigger>MenubarTrigger</MenubarTrigger>
           <MenubarContent>
             <MenubarRadioGroup>
-              <MenubarRadioItem data-testid="subject" value="light">
+              <MenubarRadioItem data-subject value="light">
                 MenubarRadioItem
               </MenubarRadioItem>
             </MenubarRadioGroup>
@@ -649,7 +655,7 @@ describe('MenubarRadioItem', () => {
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -660,7 +666,7 @@ describe('MenubarRadioItem', () => {
           <MenubarTrigger>MenubarTrigger</MenubarTrigger>
           <MenubarContent>
             <MenubarRadioGroup>
-              <MenubarRadioItem data-testid="subject" value="dark">
+              <MenubarRadioItem data-subject value="dark">
                 MenubarRadioItem
               </MenubarRadioItem>
             </MenubarRadioGroup>
@@ -668,7 +674,7 @@ describe('MenubarRadioItem', () => {
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -679,7 +685,7 @@ describe('MenubarRadioItem', () => {
           <MenubarTrigger>MenubarTrigger</MenubarTrigger>
           <MenubarContent>
             <MenubarRadioGroup>
-              <MenubarRadioItem data-testid="subject" value="system">
+              <MenubarRadioItem data-subject value="system">
                 MenubarRadioItem
               </MenubarRadioItem>
             </MenubarRadioGroup>
@@ -687,7 +693,7 @@ describe('MenubarRadioItem', () => {
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -699,7 +705,7 @@ describe('MenubarRadioItem', () => {
           <MenubarContent>
             <MenubarGroup>
               <MenubarRadioGroup>
-                <MenubarRadioItem data-testid="subject" inset value="light">
+                <MenubarRadioItem data-subject inset value="light">
                   MenubarRadioItem
                 </MenubarRadioItem>
               </MenubarRadioGroup>
@@ -708,7 +714,7 @@ describe('MenubarRadioItem', () => {
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -720,7 +726,7 @@ describe('MenubarRadioItem', () => {
           <MenubarContent>
             <MenubarGroup>
               <MenubarRadioGroup>
-                <MenubarRadioItem data-testid="subject" inset value="dark">
+                <MenubarRadioItem data-subject inset value="dark">
                   MenubarRadioItem
                 </MenubarRadioItem>
               </MenubarRadioGroup>
@@ -729,7 +735,7 @@ describe('MenubarRadioItem', () => {
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -741,7 +747,7 @@ describe('MenubarRadioItem', () => {
           <MenubarContent>
             <MenubarGroup>
               <MenubarRadioGroup>
-                <MenubarRadioItem data-testid="subject" inset value="system">
+                <MenubarRadioItem data-subject inset value="system">
                   MenubarRadioItem
                 </MenubarRadioItem>
               </MenubarRadioGroup>
@@ -750,7 +756,7 @@ describe('MenubarRadioItem', () => {
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -765,7 +771,7 @@ function renderMenubarLabel(
         <MenubarContent>
           <MenubarGroup>
             <MenubarLabel
-              data-testid="subject"
+              data-subject
               {...({ children: 'MenubarLabel', ...props } as ComponentProps<typeof MenubarLabel>)}
             />
           </MenubarGroup>
@@ -773,7 +779,7 @@ function renderMenubarLabel(
       </MenubarMenu>
     </Menubar>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="menubar-label"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="menubar-label"]')
 }
 
 function classesOfMenubarLabel(
@@ -801,7 +807,7 @@ describe('MenubarLabel', () => {
           <MenubarTrigger>MenubarTrigger</MenubarTrigger>
           <MenubarContent>
             <MenubarGroup>
-              <MenubarLabel data-testid="subject" inset>
+              <MenubarLabel data-subject inset>
                 MenubarLabel
               </MenubarLabel>
             </MenubarGroup>
@@ -809,7 +815,7 @@ describe('MenubarLabel', () => {
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -822,17 +828,12 @@ function renderMenubarSeparator(
       <MenubarMenu defaultOpen>
         <MenubarTrigger>MenubarTrigger</MenubarTrigger>
         <MenubarContent>
-          <MenubarSeparator
-            data-testid="subject"
-            {...(props as ComponentProps<typeof MenubarSeparator>)}
-          />
+          <MenubarSeparator data-subject {...(props as ComponentProps<typeof MenubarSeparator>)} />
         </MenubarContent>
       </MenubarMenu>
     </Menubar>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="menubar-separator"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="menubar-separator"]')
 }
 
 function classesOfMenubarSeparator(
@@ -860,13 +861,13 @@ describe('MenubarSeparator', () => {
           <MenubarTrigger>MenubarTrigger</MenubarTrigger>
           <MenubarContent>
             <MenubarGroup>
-              <MenubarSeparator data-testid="subject" />
+              <MenubarSeparator data-subject />
             </MenubarGroup>
           </MenubarContent>
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -879,14 +880,14 @@ describe('MenubarSeparator', () => {
             <MenubarSub defaultOpen>
               <MenubarSubTrigger>MenubarSubTrigger</MenubarSubTrigger>
               <MenubarSubContent>
-                <MenubarSeparator data-testid="subject" />
+                <MenubarSeparator data-subject />
               </MenubarSubContent>
             </MenubarSub>
           </MenubarContent>
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -901,7 +902,7 @@ function renderMenubarShortcut(
         <MenubarContent>
           <MenubarItem>
             <MenubarShortcut
-              data-testid="subject"
+              data-subject
               {...({ children: 'MenubarShortcut', ...props } as ComponentProps<
                 typeof MenubarShortcut
               >)}
@@ -911,9 +912,7 @@ function renderMenubarShortcut(
       </MenubarMenu>
     </Menubar>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="menubar-shortcut"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="menubar-shortcut"]')
 }
 
 function classesOfMenubarShortcut(
@@ -941,13 +940,13 @@ describe('MenubarShortcut', () => {
           <MenubarTrigger>MenubarTrigger</MenubarTrigger>
           <MenubarContent>
             <MenubarItem inset>
-              <MenubarShortcut data-testid="subject">MenubarShortcut</MenubarShortcut>
+              <MenubarShortcut data-subject>MenubarShortcut</MenubarShortcut>
             </MenubarItem>
           </MenubarContent>
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -958,13 +957,13 @@ describe('MenubarShortcut', () => {
           <MenubarTrigger>MenubarTrigger</MenubarTrigger>
           <MenubarContent>
             <MenubarItem variant="destructive">
-              <MenubarShortcut data-testid="subject">MenubarShortcut</MenubarShortcut>
+              <MenubarShortcut data-subject>MenubarShortcut</MenubarShortcut>
             </MenubarItem>
           </MenubarContent>
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -999,7 +998,7 @@ function renderMenubarSubTrigger(
           <MenubarSub defaultOpen>
             <MenubarSubTrigger>MenubarSubTrigger</MenubarSubTrigger>
             <MenubarSubTrigger
-              data-testid="subject"
+              data-subject
               {...({ children: 'MenubarSubTrigger', ...props } as ComponentProps<
                 typeof MenubarSubTrigger
               >)}
@@ -1009,9 +1008,7 @@ function renderMenubarSubTrigger(
       </MenubarMenu>
     </Menubar>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="menubar-sub-trigger"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="menubar-sub-trigger"]')
 }
 
 function classesOfMenubarSubTrigger(
@@ -1040,7 +1037,7 @@ describe('MenubarSubTrigger', () => {
           <MenubarContent>
             <MenubarSub defaultOpen>
               <MenubarSubTrigger inset>MenubarSubTrigger</MenubarSubTrigger>
-              <MenubarSubTrigger data-testid="subject" inset>
+              <MenubarSubTrigger data-subject inset>
                 MenubarSubTrigger
               </MenubarSubTrigger>
             </MenubarSub>
@@ -1048,7 +1045,7 @@ describe('MenubarSubTrigger', () => {
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -1064,7 +1061,7 @@ function renderMenubarSubContent(
           <MenubarSub defaultOpen>
             <MenubarSubTrigger>MenubarSubTrigger</MenubarSubTrigger>
             <MenubarSubContent
-              data-testid="subject"
+              data-subject
               {...({ children: 'MenubarSubContent', ...props } as ComponentProps<
                 typeof MenubarSubContent
               >)}
@@ -1074,9 +1071,7 @@ function renderMenubarSubContent(
       </MenubarMenu>
     </Menubar>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="menubar-sub-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="menubar-sub-content"]')
 }
 
 function classesOfMenubarSubContent(
@@ -1105,12 +1100,12 @@ describe('MenubarSubContent', () => {
           <MenubarContent>
             <MenubarSub defaultOpen>
               <MenubarSubTrigger inset>MenubarSubTrigger</MenubarSubTrigger>
-              <MenubarSubContent data-testid="subject">MenubarSubContent</MenubarSubContent>
+              <MenubarSubContent data-subject>MenubarSubContent</MenubarSubContent>
             </MenubarSub>
           </MenubarContent>
         </MenubarMenu>
       </Menubar>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

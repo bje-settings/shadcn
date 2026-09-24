@@ -14,11 +14,11 @@ function renderTabs(props: Partial<Record<keyof ComponentProps<typeof Tabs>, unk
   cleanup()
   render(
     <Tabs
-      data-testid="subject"
+      data-subject
       {...({ defaultValue: 'home', children: 'Tabs', ...props } as ComponentProps<typeof Tabs>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="tabs"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="tabs"]')
 }
 
 function classesOfTabs(props: Partial<Record<keyof ComponentProps<typeof Tabs>, unknown>> = {}) {
@@ -42,6 +42,10 @@ describe('Tabs', () => {
     expect(attributesOfTabs({ orientation: 'horizontal' })).toEqual(attributesOfTabs())
   })
 
+  it('renders with orientation="vertical"', () => {
+    expect(renderTabs({ orientation: 'vertical' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderTabs({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -51,41 +55,41 @@ describe('Tabs', () => {
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
     render(
-      <Tabs data-testid="subject" defaultValue="overview">
+      <Tabs data-subject defaultValue="overview">
         Tabs
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
-      <Tabs data-testid="subject" defaultValue="preview">
+      <Tabs data-subject defaultValue="preview">
         Tabs
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
-      <Tabs data-testid="subject" defaultValue="account">
+      <Tabs data-subject defaultValue="account">
         Tabs
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
-      <Tabs data-testid="subject" defaultValue="account" orientation="vertical">
+      <Tabs data-subject defaultValue="account" orientation="vertical">
         Tabs
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -96,12 +100,12 @@ function renderTabsList(
   render(
     <Tabs defaultValue="home">
       <TabsList
-        data-testid="subject"
+        data-subject
         {...({ children: 'TabsList', ...props } as ComponentProps<typeof TabsList>)}
       />
     </Tabs>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="tabs-list"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="tabs-list"]')
 }
 
 function classesOfTabsList(
@@ -142,64 +146,64 @@ describe('TabsList', () => {
     cleanup()
     render(
       <Tabs defaultValue="overview">
-        <TabsList data-testid="subject" variant="line">
+        <TabsList data-subject variant="line">
           TabsList
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Tabs defaultValue="overview">
-        <TabsList data-testid="subject">TabsList</TabsList>
+        <TabsList data-subject>TabsList</TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <Tabs defaultValue="preview">
-        <TabsList data-testid="subject">TabsList</TabsList>
+        <TabsList data-subject>TabsList</TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <Tabs defaultValue="account">
-        <TabsList data-testid="subject">TabsList</TabsList>
+        <TabsList data-subject>TabsList</TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
       <Tabs defaultValue="account">
-        <TabsList data-testid="subject" variant="line">
+        <TabsList data-subject variant="line">
           TabsList
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
       <Tabs defaultValue="account" orientation="vertical">
-        <TabsList data-testid="subject">TabsList</TabsList>
+        <TabsList data-subject>TabsList</TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -211,7 +215,7 @@ function renderTabsTrigger(
     <Tabs defaultValue="home">
       <TabsList>
         <TabsTrigger
-          data-testid="subject"
+          data-subject
           {...({ value: 'home', children: 'TabsTrigger', ...props } as ComponentProps<
             typeof TabsTrigger
           >)}
@@ -219,7 +223,7 @@ function renderTabsTrigger(
       </TabsList>
     </Tabs>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="tabs-trigger"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="tabs-trigger"]')
 }
 
 function classesOfTabsTrigger(
@@ -244,13 +248,13 @@ describe('TabsTrigger', () => {
     render(
       <Tabs defaultValue="home">
         <TabsList>
-          <TabsTrigger data-testid="subject" value="settings">
+          <TabsTrigger data-subject value="settings">
             TabsTrigger
           </TabsTrigger>
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -258,13 +262,13 @@ describe('TabsTrigger', () => {
     render(
       <Tabs defaultValue="overview">
         <TabsList variant="line">
-          <TabsTrigger data-testid="subject" value="overview">
+          <TabsTrigger data-subject value="overview">
             TabsTrigger
           </TabsTrigger>
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -272,13 +276,13 @@ describe('TabsTrigger', () => {
     render(
       <Tabs defaultValue="overview">
         <TabsList variant="line">
-          <TabsTrigger data-testid="subject" value="analytics">
+          <TabsTrigger data-subject value="analytics">
             TabsTrigger
           </TabsTrigger>
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -286,13 +290,13 @@ describe('TabsTrigger', () => {
     render(
       <Tabs defaultValue="overview">
         <TabsList variant="line">
-          <TabsTrigger data-testid="subject" value="reports">
+          <TabsTrigger data-subject value="reports">
             TabsTrigger
           </TabsTrigger>
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -300,13 +304,13 @@ describe('TabsTrigger', () => {
     render(
       <Tabs defaultValue="overview">
         <TabsList>
-          <TabsTrigger data-testid="subject" value="overview">
+          <TabsTrigger data-subject value="overview">
             TabsTrigger
           </TabsTrigger>
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -314,13 +318,13 @@ describe('TabsTrigger', () => {
     render(
       <Tabs defaultValue="overview">
         <TabsList>
-          <TabsTrigger data-testid="subject" value="analytics">
+          <TabsTrigger data-subject value="analytics">
             TabsTrigger
           </TabsTrigger>
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -328,13 +332,13 @@ describe('TabsTrigger', () => {
     render(
       <Tabs defaultValue="preview">
         <TabsList>
-          <TabsTrigger data-testid="subject" value="preview">
+          <TabsTrigger data-subject value="preview">
             TabsTrigger
           </TabsTrigger>
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -342,13 +346,13 @@ describe('TabsTrigger', () => {
     render(
       <Tabs defaultValue="preview">
         <TabsList>
-          <TabsTrigger data-testid="subject" value="code">
+          <TabsTrigger data-subject value="code">
             TabsTrigger
           </TabsTrigger>
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
@@ -356,13 +360,13 @@ describe('TabsTrigger', () => {
     render(
       <Tabs defaultValue="home">
         <TabsList>
-          <TabsTrigger data-testid="subject" value="search">
+          <TabsTrigger data-subject value="search">
             TabsTrigger
           </TabsTrigger>
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
@@ -370,13 +374,13 @@ describe('TabsTrigger', () => {
     render(
       <Tabs defaultValue="overview">
         <TabsList>
-          <TabsTrigger data-testid="subject" value="reports">
+          <TabsTrigger data-subject value="reports">
             TabsTrigger
           </TabsTrigger>
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
@@ -384,13 +388,13 @@ describe('TabsTrigger', () => {
     render(
       <Tabs defaultValue="overview">
         <TabsList>
-          <TabsTrigger data-testid="subject" value="settings">
+          <TabsTrigger data-subject value="settings">
             TabsTrigger
           </TabsTrigger>
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
@@ -398,13 +402,13 @@ describe('TabsTrigger', () => {
     render(
       <Tabs defaultValue="account">
         <TabsList>
-          <TabsTrigger data-testid="subject" value="account">
+          <TabsTrigger data-subject value="account">
             TabsTrigger
           </TabsTrigger>
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
@@ -412,13 +416,13 @@ describe('TabsTrigger', () => {
     render(
       <Tabs defaultValue="account">
         <TabsList>
-          <TabsTrigger data-testid="subject" value="password">
+          <TabsTrigger data-subject value="password">
             TabsTrigger
           </TabsTrigger>
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (15)", () => {
@@ -426,13 +430,13 @@ describe('TabsTrigger', () => {
     render(
       <Tabs defaultValue="account">
         <TabsList>
-          <TabsTrigger data-testid="subject" value="notifications">
+          <TabsTrigger data-subject value="notifications">
             TabsTrigger
           </TabsTrigger>
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (16)", () => {
@@ -440,13 +444,13 @@ describe('TabsTrigger', () => {
     render(
       <Tabs defaultValue="account">
         <TabsList variant="line">
-          <TabsTrigger data-testid="subject" value="account">
+          <TabsTrigger data-subject value="account">
             TabsTrigger
           </TabsTrigger>
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (17)", () => {
@@ -454,13 +458,13 @@ describe('TabsTrigger', () => {
     render(
       <Tabs defaultValue="account">
         <TabsList variant="line">
-          <TabsTrigger data-testid="subject" value="password">
+          <TabsTrigger data-subject value="password">
             TabsTrigger
           </TabsTrigger>
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (18)", () => {
@@ -468,13 +472,13 @@ describe('TabsTrigger', () => {
     render(
       <Tabs defaultValue="account">
         <TabsList variant="line">
-          <TabsTrigger data-testid="subject" value="notifications">
+          <TabsTrigger data-subject value="notifications">
             TabsTrigger
           </TabsTrigger>
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (19)", () => {
@@ -482,13 +486,13 @@ describe('TabsTrigger', () => {
     render(
       <Tabs defaultValue="account" orientation="vertical">
         <TabsList>
-          <TabsTrigger data-testid="subject" value="account">
+          <TabsTrigger data-subject value="account">
             TabsTrigger
           </TabsTrigger>
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (20)", () => {
@@ -496,13 +500,13 @@ describe('TabsTrigger', () => {
     render(
       <Tabs defaultValue="account" orientation="vertical">
         <TabsList>
-          <TabsTrigger data-testid="subject" value="password">
+          <TabsTrigger data-subject value="password">
             TabsTrigger
           </TabsTrigger>
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (21)", () => {
@@ -510,13 +514,13 @@ describe('TabsTrigger', () => {
     render(
       <Tabs defaultValue="account" orientation="vertical">
         <TabsList>
-          <TabsTrigger data-testid="subject" value="notifications">
+          <TabsTrigger data-subject value="notifications">
             TabsTrigger
           </TabsTrigger>
         </TabsList>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -527,7 +531,7 @@ function renderTabsContent(
   render(
     <Tabs defaultValue="account">
       <TabsContent
-        data-testid="subject"
+        data-subject
         {...({
           value: 'account',
           keepMounted: true,
@@ -537,7 +541,7 @@ function renderTabsContent(
       />
     </Tabs>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="tabs-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="tabs-content"]')
 }
 
 function classesOfTabsContent(
@@ -561,96 +565,96 @@ describe('TabsContent', () => {
     cleanup()
     render(
       <Tabs defaultValue="account">
-        <TabsContent data-testid="subject" value="password" keepMounted>
+        <TabsContent data-subject value="password" keepMounted>
           TabsContent
         </TabsContent>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Tabs defaultValue="account">
-        <TabsContent data-testid="subject" value="notifications" keepMounted>
+        <TabsContent data-subject value="notifications" keepMounted>
           TabsContent
         </TabsContent>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <Tabs defaultValue="overview">
-        <TabsContent data-testid="subject" value="overview" keepMounted>
+        <TabsContent data-subject value="overview" keepMounted>
           TabsContent
         </TabsContent>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <Tabs defaultValue="overview">
-        <TabsContent data-testid="subject" value="analytics" keepMounted>
+        <TabsContent data-subject value="analytics" keepMounted>
           TabsContent
         </TabsContent>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
       <Tabs defaultValue="overview">
-        <TabsContent data-testid="subject" value="reports" keepMounted>
+        <TabsContent data-subject value="reports" keepMounted>
           TabsContent
         </TabsContent>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
       <Tabs defaultValue="account" orientation="vertical">
-        <TabsContent data-testid="subject" value="account" keepMounted>
+        <TabsContent data-subject value="account" keepMounted>
           TabsContent
         </TabsContent>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
     render(
       <Tabs defaultValue="account" orientation="vertical">
-        <TabsContent data-testid="subject" value="password" keepMounted>
+        <TabsContent data-subject value="password" keepMounted>
           TabsContent
         </TabsContent>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
     cleanup()
     render(
       <Tabs defaultValue="account" orientation="vertical">
-        <TabsContent data-testid="subject" value="notifications" keepMounted>
+        <TabsContent data-subject value="notifications" keepMounted>
           TabsContent
         </TabsContent>
       </Tabs>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 

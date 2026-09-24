@@ -47,21 +47,19 @@ function renderContextMenuPortal(
       <ContextMenuTrigger>ContextMenuTrigger</ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuGroup>
-          <ContextMenuItem>
+          <ContextMenuRadioGroup>
             <ContextMenuPortal
-              data-testid="subject"
+              data-subject
               {...({ keepMounted: true, children: 'ContextMenuPortal', ...props } as ComponentProps<
                 typeof ContextMenuPortal
               >)}
             />
-          </ContextMenuItem>
+          </ContextMenuRadioGroup>
         </ContextMenuGroup>
       </ContextMenuContent>
     </ContextMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="context-menu-portal"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="context-menu-portal"]')
 }
 
 describe('ContextMenuPortal', () => {
@@ -80,16 +78,14 @@ function renderContextMenuTrigger(
     <ContextMenu defaultOpen>
       <ContextMenuTrigger>ContextMenuTrigger</ContextMenuTrigger>
       <ContextMenuTrigger
-        data-testid="subject"
+        data-subject
         {...({ children: 'ContextMenuTrigger', ...props } as ComponentProps<
           typeof ContextMenuTrigger
         >)}
       />
     </ContextMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="context-menu-trigger"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="context-menu-trigger"]')
 }
 
 function classesOfContextMenuTrigger(
@@ -120,16 +116,14 @@ function renderContextMenuContent(
     <ContextMenu defaultOpen>
       <ContextMenuTrigger>ContextMenuTrigger</ContextMenuTrigger>
       <ContextMenuContent
-        data-testid="subject"
+        data-subject
         {...({ children: 'ContextMenuContent', ...props } as ComponentProps<
           typeof ContextMenuContent
         >)}
       />
     </ContextMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="context-menu-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="context-menu-content"]')
 }
 
 function classesOfContextMenuContent(
@@ -179,6 +173,34 @@ describe('ContextMenuContent', () => {
     )
   })
 
+  it('renders with align="center"', () => {
+    expect(renderContextMenuContent({ align: 'center' })).toBeTruthy()
+  })
+
+  it('renders with align="end"', () => {
+    expect(renderContextMenuContent({ align: 'end' })).toBeTruthy()
+  })
+
+  it('renders with side="left"', () => {
+    expect(renderContextMenuContent({ side: 'left' })).toBeTruthy()
+  })
+
+  it('renders with side="top"', () => {
+    expect(renderContextMenuContent({ side: 'top' })).toBeTruthy()
+  })
+
+  it('renders with side="bottom"', () => {
+    expect(renderContextMenuContent({ side: 'bottom' })).toBeTruthy()
+  })
+
+  it('renders with side="inline-start"', () => {
+    expect(renderContextMenuContent({ side: 'inline-start' })).toBeTruthy()
+  })
+
+  it('renders with side="inline-end"', () => {
+    expect(renderContextMenuContent({ side: 'inline-end' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderContextMenuContent({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -195,7 +217,7 @@ function renderContextMenuGroup(
       <ContextMenuTrigger>ContextMenuTrigger</ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuGroup
-          data-testid="subject"
+          data-subject
           {...({ children: 'ContextMenuGroup', ...props } as ComponentProps<
             typeof ContextMenuGroup
           >)}
@@ -203,9 +225,7 @@ function renderContextMenuGroup(
       </ContextMenuContent>
     </ContextMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="context-menu-group"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="context-menu-group"]')
 }
 
 describe('ContextMenuGroup', () => {
@@ -224,13 +244,13 @@ describe('ContextMenuGroup', () => {
           <ContextMenuSub defaultOpen>
             <ContextMenuSubTrigger>ContextMenuSubTrigger</ContextMenuSubTrigger>
             <ContextMenuSubContent>
-              <ContextMenuGroup data-testid="subject">ContextMenuGroup</ContextMenuGroup>
+              <ContextMenuGroup data-subject>ContextMenuGroup</ContextMenuGroup>
             </ContextMenuSubContent>
           </ContextMenuSub>
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -242,13 +262,13 @@ describe('ContextMenuGroup', () => {
           <ContextMenuSub defaultOpen>
             <ContextMenuSubTrigger inset>ContextMenuSubTrigger</ContextMenuSubTrigger>
             <ContextMenuSubContent>
-              <ContextMenuGroup data-testid="subject">ContextMenuGroup</ContextMenuGroup>
+              <ContextMenuGroup data-subject>ContextMenuGroup</ContextMenuGroup>
             </ContextMenuSubContent>
           </ContextMenuSub>
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -262,7 +282,7 @@ function renderContextMenuLabel(
       <ContextMenuContent>
         <ContextMenuGroup>
           <ContextMenuLabel
-            data-testid="subject"
+            data-subject
             {...({ children: 'ContextMenuLabel', ...props } as ComponentProps<
               typeof ContextMenuLabel
             >)}
@@ -271,9 +291,7 @@ function renderContextMenuLabel(
       </ContextMenuContent>
     </ContextMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="context-menu-label"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="context-menu-label"]')
 }
 
 function classesOfContextMenuLabel(
@@ -300,14 +318,14 @@ describe('ContextMenuLabel', () => {
         <ContextMenuTrigger>ContextMenuTrigger</ContextMenuTrigger>
         <ContextMenuContent>
           <ContextMenuGroup>
-            <ContextMenuLabel data-testid="subject" inset>
+            <ContextMenuLabel data-subject inset>
               ContextMenuLabel
             </ContextMenuLabel>
           </ContextMenuGroup>
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -321,7 +339,7 @@ function renderContextMenuItem(
       <ContextMenuContent>
         <ContextMenuGroup>
           <ContextMenuItem
-            data-testid="subject"
+            data-subject
             {...({ children: 'ContextMenuItem', ...props } as ComponentProps<
               typeof ContextMenuItem
             >)}
@@ -330,9 +348,7 @@ function renderContextMenuItem(
       </ContextMenuContent>
     </ContextMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="context-menu-item"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="context-menu-item"]')
 }
 
 function classesOfContextMenuItem(
@@ -362,6 +378,10 @@ describe('ContextMenuItem', () => {
     )
   })
 
+  it('renders with variant="destructive"', () => {
+    expect(renderContextMenuItem({ variant: 'destructive' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderContextMenuItem({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -375,14 +395,14 @@ describe('ContextMenuItem', () => {
         <ContextMenuTrigger>ContextMenuTrigger</ContextMenuTrigger>
         <ContextMenuContent>
           <ContextMenuGroup>
-            <ContextMenuItem data-testid="subject" variant="destructive">
+            <ContextMenuItem data-subject variant="destructive">
               ContextMenuItem
             </ContextMenuItem>
           </ContextMenuGroup>
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -395,14 +415,14 @@ describe('ContextMenuItem', () => {
             <ContextMenuSubTrigger>ContextMenuSubTrigger</ContextMenuSubTrigger>
             <ContextMenuSubContent>
               <ContextMenuGroup>
-                <ContextMenuItem data-testid="subject">ContextMenuItem</ContextMenuItem>
+                <ContextMenuItem data-subject>ContextMenuItem</ContextMenuItem>
               </ContextMenuGroup>
             </ContextMenuSubContent>
           </ContextMenuSub>
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -415,7 +435,7 @@ describe('ContextMenuItem', () => {
             <ContextMenuSubTrigger>ContextMenuSubTrigger</ContextMenuSubTrigger>
             <ContextMenuSubContent>
               <ContextMenuGroup>
-                <ContextMenuItem data-testid="subject" variant="destructive">
+                <ContextMenuItem data-subject variant="destructive">
                   ContextMenuItem
                 </ContextMenuItem>
               </ContextMenuGroup>
@@ -424,7 +444,7 @@ describe('ContextMenuItem', () => {
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -434,14 +454,14 @@ describe('ContextMenuItem', () => {
         <ContextMenuTrigger>ContextMenuTrigger</ContextMenuTrigger>
         <ContextMenuContent>
           <ContextMenuGroup>
-            <ContextMenuItem data-testid="subject" inset>
+            <ContextMenuItem data-subject inset>
               ContextMenuItem
             </ContextMenuItem>
           </ContextMenuGroup>
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -454,14 +474,14 @@ describe('ContextMenuItem', () => {
             <ContextMenuSubTrigger inset>ContextMenuSubTrigger</ContextMenuSubTrigger>
             <ContextMenuSubContent>
               <ContextMenuGroup>
-                <ContextMenuItem data-testid="subject">ContextMenuItem</ContextMenuItem>
+                <ContextMenuItem data-subject>ContextMenuItem</ContextMenuItem>
               </ContextMenuGroup>
             </ContextMenuSubContent>
           </ContextMenuSub>
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -493,7 +513,7 @@ function renderContextMenuSubTrigger(
         <ContextMenuSub defaultOpen>
           <ContextMenuSubTrigger>ContextMenuSubTrigger</ContextMenuSubTrigger>
           <ContextMenuSubTrigger
-            data-testid="subject"
+            data-subject
             {...({ children: 'ContextMenuSubTrigger', ...props } as ComponentProps<
               typeof ContextMenuSubTrigger
             >)}
@@ -502,9 +522,7 @@ function renderContextMenuSubTrigger(
       </ContextMenuContent>
     </ContextMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="context-menu-sub-trigger"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="context-menu-sub-trigger"]')
 }
 
 function classesOfContextMenuSubTrigger(
@@ -534,14 +552,14 @@ describe('ContextMenuSubTrigger', () => {
         <ContextMenuContent>
           <ContextMenuSub defaultOpen>
             <ContextMenuSubTrigger inset>ContextMenuSubTrigger</ContextMenuSubTrigger>
-            <ContextMenuSubTrigger data-testid="subject" inset>
+            <ContextMenuSubTrigger data-subject inset>
               ContextMenuSubTrigger
             </ContextMenuSubTrigger>
           </ContextMenuSub>
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -556,7 +574,7 @@ function renderContextMenuSubContent(
         <ContextMenuSub defaultOpen>
           <ContextMenuSubTrigger>ContextMenuSubTrigger</ContextMenuSubTrigger>
           <ContextMenuSubContent
-            data-testid="subject"
+            data-subject
             {...({ children: 'ContextMenuSubContent', ...props } as ComponentProps<
               typeof ContextMenuSubContent
             >)}
@@ -565,9 +583,7 @@ function renderContextMenuSubContent(
       </ContextMenuContent>
     </ContextMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="context-menu-sub-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="context-menu-sub-content"]')
 }
 
 function classesOfContextMenuSubContent(
@@ -597,14 +613,12 @@ describe('ContextMenuSubContent', () => {
         <ContextMenuContent>
           <ContextMenuSub defaultOpen>
             <ContextMenuSubTrigger inset>ContextMenuSubTrigger</ContextMenuSubTrigger>
-            <ContextMenuSubContent data-testid="subject">
-              ContextMenuSubContent
-            </ContextMenuSubContent>
+            <ContextMenuSubContent data-subject>ContextMenuSubContent</ContextMenuSubContent>
           </ContextMenuSub>
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -618,7 +632,7 @@ function renderContextMenuCheckboxItem(
       <ContextMenuContent>
         <ContextMenuGroup>
           <ContextMenuCheckboxItem
-            data-testid="subject"
+            data-subject
             {...({
               defaultChecked: true,
               children: 'ContextMenuCheckboxItem',
@@ -630,7 +644,7 @@ function renderContextMenuCheckboxItem(
     </ContextMenu>,
   )
   return document
-    .querySelector('[data-testid="subject"]')
+    .querySelector('[data-subject]')
     ?.closest('[data-slot="context-menu-checkbox-item"]')
 }
 
@@ -660,14 +674,12 @@ describe('ContextMenuCheckboxItem', () => {
         <ContextMenuTrigger>ContextMenuTrigger</ContextMenuTrigger>
         <ContextMenuContent>
           <ContextMenuGroup>
-            <ContextMenuCheckboxItem data-testid="subject">
-              ContextMenuCheckboxItem
-            </ContextMenuCheckboxItem>
+            <ContextMenuCheckboxItem data-subject>ContextMenuCheckboxItem</ContextMenuCheckboxItem>
           </ContextMenuGroup>
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -677,14 +689,14 @@ describe('ContextMenuCheckboxItem', () => {
         <ContextMenuTrigger>ContextMenuTrigger</ContextMenuTrigger>
         <ContextMenuContent>
           <ContextMenuGroup>
-            <ContextMenuCheckboxItem data-testid="subject" inset>
+            <ContextMenuCheckboxItem data-subject inset>
               ContextMenuCheckboxItem
             </ContextMenuCheckboxItem>
           </ContextMenuGroup>
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -698,7 +710,7 @@ function renderContextMenuRadioGroup(
       <ContextMenuContent>
         <ContextMenuGroup>
           <ContextMenuRadioGroup
-            data-testid="subject"
+            data-subject
             {...({ children: 'ContextMenuRadioGroup', ...props } as ComponentProps<
               typeof ContextMenuRadioGroup
             >)}
@@ -707,9 +719,7 @@ function renderContextMenuRadioGroup(
       </ContextMenuContent>
     </ContextMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="context-menu-radio-group"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="context-menu-radio-group"]')
 }
 
 describe('ContextMenuRadioGroup', () => {
@@ -731,7 +741,7 @@ function renderContextMenuRadioItem(
         <ContextMenuGroup>
           <ContextMenuRadioGroup>
             <ContextMenuRadioItem
-              data-testid="subject"
+              data-subject
               {...({ value: 'pedro', children: 'ContextMenuRadioItem', ...props } as ComponentProps<
                 typeof ContextMenuRadioItem
               >)}
@@ -741,9 +751,7 @@ function renderContextMenuRadioItem(
       </ContextMenuContent>
     </ContextMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="context-menu-radio-item"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="context-menu-radio-item"]')
 }
 
 function classesOfContextMenuRadioItem(
@@ -773,7 +781,7 @@ describe('ContextMenuRadioItem', () => {
         <ContextMenuContent>
           <ContextMenuGroup>
             <ContextMenuRadioGroup>
-              <ContextMenuRadioItem data-testid="subject" value="colm">
+              <ContextMenuRadioItem data-subject value="colm">
                 ContextMenuRadioItem
               </ContextMenuRadioItem>
             </ContextMenuRadioGroup>
@@ -781,7 +789,7 @@ describe('ContextMenuRadioItem', () => {
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -792,7 +800,7 @@ describe('ContextMenuRadioItem', () => {
         <ContextMenuContent>
           <ContextMenuGroup>
             <ContextMenuRadioGroup>
-              <ContextMenuRadioItem data-testid="subject" value="light">
+              <ContextMenuRadioItem data-subject value="light">
                 ContextMenuRadioItem
               </ContextMenuRadioItem>
             </ContextMenuRadioGroup>
@@ -800,7 +808,7 @@ describe('ContextMenuRadioItem', () => {
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -811,7 +819,7 @@ describe('ContextMenuRadioItem', () => {
         <ContextMenuContent>
           <ContextMenuGroup>
             <ContextMenuRadioGroup>
-              <ContextMenuRadioItem data-testid="subject" value="dark">
+              <ContextMenuRadioItem data-subject value="dark">
                 ContextMenuRadioItem
               </ContextMenuRadioItem>
             </ContextMenuRadioGroup>
@@ -819,7 +827,7 @@ describe('ContextMenuRadioItem', () => {
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -830,7 +838,7 @@ describe('ContextMenuRadioItem', () => {
         <ContextMenuContent>
           <ContextMenuGroup>
             <ContextMenuRadioGroup>
-              <ContextMenuRadioItem data-testid="subject" value="system">
+              <ContextMenuRadioItem data-subject value="system">
                 ContextMenuRadioItem
               </ContextMenuRadioItem>
             </ContextMenuRadioGroup>
@@ -838,7 +846,7 @@ describe('ContextMenuRadioItem', () => {
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -849,7 +857,7 @@ describe('ContextMenuRadioItem', () => {
         <ContextMenuContent>
           <ContextMenuGroup>
             <ContextMenuRadioGroup>
-              <ContextMenuRadioItem data-testid="subject" inset value="light">
+              <ContextMenuRadioItem data-subject inset value="light">
                 ContextMenuRadioItem
               </ContextMenuRadioItem>
             </ContextMenuRadioGroup>
@@ -857,7 +865,7 @@ describe('ContextMenuRadioItem', () => {
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -868,7 +876,7 @@ describe('ContextMenuRadioItem', () => {
         <ContextMenuContent>
           <ContextMenuGroup>
             <ContextMenuRadioGroup>
-              <ContextMenuRadioItem data-testid="subject" inset value="dark">
+              <ContextMenuRadioItem data-subject inset value="dark">
                 ContextMenuRadioItem
               </ContextMenuRadioItem>
             </ContextMenuRadioGroup>
@@ -876,7 +884,7 @@ describe('ContextMenuRadioItem', () => {
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -887,7 +895,7 @@ describe('ContextMenuRadioItem', () => {
         <ContextMenuContent>
           <ContextMenuGroup>
             <ContextMenuRadioGroup>
-              <ContextMenuRadioItem data-testid="subject" inset value="system">
+              <ContextMenuRadioItem data-subject inset value="system">
                 ContextMenuRadioItem
               </ContextMenuRadioItem>
             </ContextMenuRadioGroup>
@@ -895,7 +903,7 @@ describe('ContextMenuRadioItem', () => {
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -908,15 +916,13 @@ function renderContextMenuSeparator(
       <ContextMenuTrigger>ContextMenuTrigger</ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuSeparator
-          data-testid="subject"
+          data-subject
           {...(props as ComponentProps<typeof ContextMenuSeparator>)}
         />
       </ContextMenuContent>
     </ContextMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="context-menu-separator"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="context-menu-separator"]')
 }
 
 function classesOfContextMenuSeparator(
@@ -947,13 +953,13 @@ describe('ContextMenuSeparator', () => {
           <ContextMenuSub defaultOpen>
             <ContextMenuSubTrigger>ContextMenuSubTrigger</ContextMenuSubTrigger>
             <ContextMenuSubContent>
-              <ContextMenuSeparator data-testid="subject" />
+              <ContextMenuSeparator data-subject />
             </ContextMenuSubContent>
           </ContextMenuSub>
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -968,7 +974,7 @@ function renderContextMenuShortcut(
         <ContextMenuGroup>
           <ContextMenuItem>
             <ContextMenuShortcut
-              data-testid="subject"
+              data-subject
               {...({ children: 'ContextMenuShortcut', ...props } as ComponentProps<
                 typeof ContextMenuShortcut
               >)}
@@ -978,9 +984,7 @@ function renderContextMenuShortcut(
       </ContextMenuContent>
     </ContextMenu>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="context-menu-shortcut"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="context-menu-shortcut"]')
 }
 
 function classesOfContextMenuShortcut(
@@ -1010,12 +1014,12 @@ describe('ContextMenuShortcut', () => {
         <ContextMenuContent>
           <ContextMenuGroup>
             <ContextMenuItem variant="destructive">
-              <ContextMenuShortcut data-testid="subject">ContextMenuShortcut</ContextMenuShortcut>
+              <ContextMenuShortcut data-subject>ContextMenuShortcut</ContextMenuShortcut>
             </ContextMenuItem>
           </ContextMenuGroup>
         </ContextMenuContent>
       </ContextMenu>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

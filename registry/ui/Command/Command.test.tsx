@@ -28,11 +28,11 @@ function renderCommand(props: Partial<Record<keyof ComponentProps<typeof Command
   cleanup()
   render(
     <Command
-      data-testid="subject"
+      data-subject
       {...({ children: 'Command', ...props } as ComponentProps<typeof Command>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="command"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="command"]')
 }
 
 function classesOfCommand(
@@ -56,10 +56,10 @@ describe('Command', () => {
     cleanup()
     render(
       <CommandDialog defaultOpen>
-        <Command data-testid="subject">Command</Command>
+        <Command data-subject>Command</Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -69,13 +69,13 @@ function renderCommandDialog(
   cleanup()
   render(
     <CommandDialog
-      data-testid="subject"
+      data-subject
       {...({ defaultOpen: true, children: 'CommandDialog', ...props } as ComponentProps<
         typeof CommandDialog
       >)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')
+  return document.querySelector('[data-subject]')
 }
 
 describe('CommandDialog', () => {
@@ -93,14 +93,14 @@ function renderCommandInput(
   render(
     <Command>
       <CommandInput
-        data-testid="subject"
+        data-subject
         {...({ placeholder: 'Type a command or search...', ...props } as ComponentProps<
           typeof CommandInput
         >)}
       />
     </Command>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="command-input"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="command-input"]')
 }
 
 function classesOfCommandInput(
@@ -125,11 +125,11 @@ describe('CommandInput', () => {
     render(
       <CommandDialog defaultOpen>
         <Command>
-          <CommandInput data-testid="subject" placeholder="Type a command or search..." />
+          <CommandInput data-subject placeholder="Type a command or search..." />
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -140,12 +140,12 @@ function renderCommandList(
   render(
     <Command>
       <CommandList
-        data-testid="subject"
+        data-subject
         {...({ children: 'CommandList', ...props } as ComponentProps<typeof CommandList>)}
       />
     </Command>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="command-list"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="command-list"]')
 }
 
 function classesOfCommandList(
@@ -170,11 +170,11 @@ describe('CommandList', () => {
     render(
       <CommandDialog defaultOpen>
         <Command>
-          <CommandList data-testid="subject">CommandList</CommandList>
+          <CommandList data-subject>CommandList</CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -186,13 +186,13 @@ function renderCommandEmpty(
     <Command>
       <CommandList>
         <CommandEmpty
-          data-testid="subject"
+          data-subject
           {...({ children: 'CommandEmpty', ...props } as ComponentProps<typeof CommandEmpty>)}
         />
       </CommandList>
     </Command>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="command-empty"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="command-empty"]')
 }
 
 function classesOfCommandEmpty(
@@ -218,12 +218,12 @@ describe('CommandEmpty', () => {
       <CommandDialog defaultOpen>
         <Command>
           <CommandList>
-            <CommandEmpty data-testid="subject">CommandEmpty</CommandEmpty>
+            <CommandEmpty data-subject>CommandEmpty</CommandEmpty>
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -235,7 +235,7 @@ function renderCommandGroup(
     <Command>
       <CommandList>
         <CommandGroup
-          data-testid="subject"
+          data-subject
           {...({ heading: 'Suggestions', children: 'CommandGroup', ...props } as ComponentProps<
             typeof CommandGroup
           >)}
@@ -243,7 +243,7 @@ function renderCommandGroup(
       </CommandList>
     </Command>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="command-group"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="command-group"]')
 }
 
 function classesOfCommandGroup(
@@ -268,13 +268,13 @@ describe('CommandGroup', () => {
     render(
       <Command>
         <CommandList>
-          <CommandGroup data-testid="subject" heading="Settings">
+          <CommandGroup data-subject heading="Settings">
             CommandGroup
           </CommandGroup>
         </CommandList>
       </Command>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -283,14 +283,14 @@ describe('CommandGroup', () => {
       <CommandDialog defaultOpen>
         <Command>
           <CommandList>
-            <CommandGroup data-testid="subject" heading="Suggestions">
+            <CommandGroup data-subject heading="Suggestions">
               CommandGroup
             </CommandGroup>
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -299,14 +299,14 @@ describe('CommandGroup', () => {
       <CommandDialog defaultOpen>
         <Command>
           <CommandList>
-            <CommandGroup data-testid="subject" heading="Settings">
+            <CommandGroup data-subject heading="Settings">
               CommandGroup
             </CommandGroup>
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -315,14 +315,14 @@ describe('CommandGroup', () => {
       <CommandDialog defaultOpen>
         <Command>
           <CommandList>
-            <CommandGroup data-testid="subject" heading="Navigation">
+            <CommandGroup data-subject heading="Navigation">
               CommandGroup
             </CommandGroup>
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -331,14 +331,14 @@ describe('CommandGroup', () => {
       <CommandDialog defaultOpen>
         <Command>
           <CommandList>
-            <CommandGroup data-testid="subject" heading="Actions">
+            <CommandGroup data-subject heading="Actions">
               CommandGroup
             </CommandGroup>
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -347,14 +347,14 @@ describe('CommandGroup', () => {
       <CommandDialog defaultOpen>
         <Command>
           <CommandList>
-            <CommandGroup data-testid="subject" heading="View">
+            <CommandGroup data-subject heading="View">
               CommandGroup
             </CommandGroup>
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -363,14 +363,14 @@ describe('CommandGroup', () => {
       <CommandDialog defaultOpen>
         <Command>
           <CommandList>
-            <CommandGroup data-testid="subject" heading="Account">
+            <CommandGroup data-subject heading="Account">
               CommandGroup
             </CommandGroup>
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -379,14 +379,14 @@ describe('CommandGroup', () => {
       <CommandDialog defaultOpen>
         <Command>
           <CommandList>
-            <CommandGroup data-testid="subject" heading="Tools">
+            <CommandGroup data-subject heading="Tools">
               CommandGroup
             </CommandGroup>
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -397,16 +397,11 @@ function renderCommandSeparator(
   render(
     <Command>
       <CommandList>
-        <CommandSeparator
-          data-testid="subject"
-          {...(props as ComponentProps<typeof CommandSeparator>)}
-        />
+        <CommandSeparator data-subject {...(props as ComponentProps<typeof CommandSeparator>)} />
       </CommandList>
     </Command>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="command-separator"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="command-separator"]')
 }
 
 function classesOfCommandSeparator(
@@ -432,12 +427,12 @@ describe('CommandSeparator', () => {
       <CommandDialog defaultOpen>
         <Command>
           <CommandList>
-            <CommandSeparator data-testid="subject" />
+            <CommandSeparator data-subject />
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -450,14 +445,14 @@ function renderCommandItem(
       <CommandList>
         <CommandGroup heading="Suggestions">
           <CommandItem
-            data-testid="subject"
+            data-subject
             {...({ children: 'CommandItem', ...props } as ComponentProps<typeof CommandItem>)}
           />
         </CommandGroup>
       </CommandList>
     </Command>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="command-item"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="command-item"]')
 }
 
 function classesOfCommandItem(
@@ -483,12 +478,12 @@ describe('CommandItem', () => {
       <Command>
         <CommandList>
           <CommandGroup heading="Settings">
-            <CommandItem data-testid="subject">CommandItem</CommandItem>
+            <CommandItem data-subject>CommandItem</CommandItem>
           </CommandGroup>
         </CommandList>
       </Command>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -498,13 +493,13 @@ describe('CommandItem', () => {
         <Command>
           <CommandList>
             <CommandGroup heading="Suggestions">
-              <CommandItem data-testid="subject">CommandItem</CommandItem>
+              <CommandItem data-subject>CommandItem</CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -514,13 +509,13 @@ describe('CommandItem', () => {
         <Command>
           <CommandList>
             <CommandGroup heading="Settings">
-              <CommandItem data-testid="subject">CommandItem</CommandItem>
+              <CommandItem data-subject>CommandItem</CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -530,13 +525,13 @@ describe('CommandItem', () => {
         <Command>
           <CommandList>
             <CommandGroup heading="Navigation">
-              <CommandItem data-testid="subject">CommandItem</CommandItem>
+              <CommandItem data-subject>CommandItem</CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -546,13 +541,13 @@ describe('CommandItem', () => {
         <Command>
           <CommandList>
             <CommandGroup heading="Actions">
-              <CommandItem data-testid="subject">CommandItem</CommandItem>
+              <CommandItem data-subject>CommandItem</CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -562,13 +557,13 @@ describe('CommandItem', () => {
         <Command>
           <CommandList>
             <CommandGroup heading="View">
-              <CommandItem data-testid="subject">CommandItem</CommandItem>
+              <CommandItem data-subject>CommandItem</CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -578,13 +573,13 @@ describe('CommandItem', () => {
         <Command>
           <CommandList>
             <CommandGroup heading="Account">
-              <CommandItem data-testid="subject">CommandItem</CommandItem>
+              <CommandItem data-subject>CommandItem</CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -594,13 +589,13 @@ describe('CommandItem', () => {
         <Command>
           <CommandList>
             <CommandGroup heading="Tools">
-              <CommandItem data-testid="subject">CommandItem</CommandItem>
+              <CommandItem data-subject>CommandItem</CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -614,7 +609,7 @@ function renderCommandShortcut(
         <CommandGroup heading="Settings">
           <CommandItem>
             <CommandShortcut
-              data-testid="subject"
+              data-subject
               {...({ children: 'CommandShortcut', ...props } as ComponentProps<
                 typeof CommandShortcut
               >)}
@@ -624,9 +619,7 @@ function renderCommandShortcut(
       </CommandList>
     </Command>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="command-shortcut"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="command-shortcut"]')
 }
 
 function classesOfCommandShortcut(
@@ -654,14 +647,14 @@ describe('CommandShortcut', () => {
           <CommandList>
             <CommandGroup heading="Settings">
               <CommandItem>
-                <CommandShortcut data-testid="subject">CommandShortcut</CommandShortcut>
+                <CommandShortcut data-subject>CommandShortcut</CommandShortcut>
               </CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -672,14 +665,14 @@ describe('CommandShortcut', () => {
           <CommandList>
             <CommandGroup heading="Navigation">
               <CommandItem>
-                <CommandShortcut data-testid="subject">CommandShortcut</CommandShortcut>
+                <CommandShortcut data-subject>CommandShortcut</CommandShortcut>
               </CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -690,14 +683,14 @@ describe('CommandShortcut', () => {
           <CommandList>
             <CommandGroup heading="Actions">
               <CommandItem>
-                <CommandShortcut data-testid="subject">CommandShortcut</CommandShortcut>
+                <CommandShortcut data-subject>CommandShortcut</CommandShortcut>
               </CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -708,14 +701,14 @@ describe('CommandShortcut', () => {
           <CommandList>
             <CommandGroup heading="View">
               <CommandItem>
-                <CommandShortcut data-testid="subject">CommandShortcut</CommandShortcut>
+                <CommandShortcut data-subject>CommandShortcut</CommandShortcut>
               </CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -726,13 +719,13 @@ describe('CommandShortcut', () => {
           <CommandList>
             <CommandGroup heading="Account">
               <CommandItem>
-                <CommandShortcut data-testid="subject">CommandShortcut</CommandShortcut>
+                <CommandShortcut data-subject>CommandShortcut</CommandShortcut>
               </CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>
       </CommandDialog>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

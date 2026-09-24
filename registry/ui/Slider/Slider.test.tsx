@@ -14,11 +14,11 @@ function renderSlider(props: Partial<Record<keyof ComponentProps<typeof Slider>,
   cleanup()
   render(
     <Slider
-      data-testid="subject"
+      data-subject
       {...({ defaultValue: 50, step: 1, ...props } as ComponentProps<typeof Slider>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="slider"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="slider"]')
 }
 
 function classesOfSlider(
@@ -58,53 +58,37 @@ describe('Slider', () => {
 
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
-    render(<Slider data-testid="subject" defaultValue={[25, 50]} max={100} step={5} />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Slider data-subject defaultValue={[25, 50]} max={100} step={5} />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
-    render(<Slider data-testid="subject" defaultValue={[10, 20, 70]} max={100} step={10} />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Slider data-subject defaultValue={[10, 20, 70]} max={100} step={10} />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
-    render(
-      <Slider
-        data-testid="subject"
-        defaultValue={[50]}
-        max={100}
-        step={1}
-        orientation="vertical"
-      />,
-    )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Slider data-subject defaultValue={[50]} max={100} step={1} orientation="vertical" />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
-    render(
-      <Slider
-        data-testid="subject"
-        defaultValue={[25]}
-        max={100}
-        step={1}
-        orientation="vertical"
-      />,
-    )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Slider data-subject defaultValue={[25]} max={100} step={1} orientation="vertical" />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
-    render(<Slider data-testid="subject" id="slider-demo-temperature" min={0} max={1} step={0.1} />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Slider data-subject id="slider-demo-temperature" min={0} max={1} step={0.1} />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
-    render(<Slider data-testid="subject" defaultValue={[50]} max={100} step={1} />)
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Slider data-subject defaultValue={[50]} max={100} step={1} />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

@@ -21,11 +21,11 @@ function renderButtonGroup(
   cleanup()
   render(
     <ButtonGroup
-      data-testid="subject"
+      data-subject
       {...({ children: 'ButtonGroup', ...props } as ComponentProps<typeof ButtonGroup>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="button-group"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="button-group"]')
 }
 
 function classesOfButtonGroup(
@@ -66,74 +66,74 @@ describe('ButtonGroup', () => {
     cleanup()
     render(
       <ButtonGroup>
-        <ButtonGroup data-testid="subject">ButtonGroup</ButtonGroup>
+        <ButtonGroup data-subject>ButtonGroup</ButtonGroup>
       </ButtonGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <ButtonGroup>
-        <ButtonGroup data-testid="subject" aria-label="Single navigation button">
+        <ButtonGroup data-subject aria-label="Single navigation button">
           ButtonGroup
         </ButtonGroup>
       </ButtonGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
-      <ButtonGroup data-testid="subject" aria-labelledby="alignment-label">
+      <ButtonGroup data-subject aria-labelledby="alignment-label">
         ButtonGroup
       </ButtonGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
-      <ButtonGroup data-testid="subject" orientation="vertical" aria-label="Media controls">
+      <ButtonGroup data-subject orientation="vertical" aria-label="Media controls">
         ButtonGroup
       </ButtonGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
-      <ButtonGroup data-testid="subject" orientation="vertical" aria-label="Design tools palette">
+      <ButtonGroup data-subject orientation="vertical" aria-label="Design tools palette">
         ButtonGroup
       </ButtonGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
       <ButtonGroup orientation="vertical" aria-label="Design tools palette">
-        <ButtonGroup data-testid="subject" orientation="vertical">
+        <ButtonGroup data-subject orientation="vertical">
           ButtonGroup
         </ButtonGroup>
       </ButtonGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
     render(
       <ButtonGroup orientation="vertical" aria-label="Design tools palette">
-        <ButtonGroup data-testid="subject">ButtonGroup</ButtonGroup>
+        <ButtonGroup data-subject>ButtonGroup</ButtonGroup>
       </ButtonGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -144,14 +144,12 @@ function renderButtonGroupText(
   render(
     <ButtonGroup>
       <ButtonGroupText
-        data-testid="subject"
+        data-subject
         {...({ children: 'ButtonGroupText', ...props } as ComponentProps<typeof ButtonGroupText>)}
       />
     </ButtonGroup>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="button-group-text"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="button-group-text"]')
 }
 
 function classesOfButtonGroupText(
@@ -179,16 +177,14 @@ function renderButtonGroupSeparator(
   render(
     <ButtonGroup>
       <ButtonGroupSeparator
-        data-testid="subject"
+        data-subject
         {...({ children: 'ButtonGroupSeparator', ...props } as ComponentProps<
           typeof ButtonGroupSeparator
         >)}
       />
     </ButtonGroup>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="button-group-separator"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="button-group-separator"]')
 }
 
 function classesOfButtonGroupSeparator(
@@ -218,6 +214,10 @@ describe('ButtonGroupSeparator', () => {
     expect(attributesOfButtonGroupSeparator({ orientation: 'vertical' })).toEqual(
       attributesOfButtonGroupSeparator(),
     )
+  })
+
+  it('renders with orientation="horizontal"', () => {
+    expect(renderButtonGroupSeparator({ orientation: 'horizontal' })).toBeTruthy()
   })
 
   it('appends a consumer className last', () => {

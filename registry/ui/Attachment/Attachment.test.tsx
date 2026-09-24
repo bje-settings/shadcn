@@ -26,11 +26,11 @@ function renderAttachment(
   cleanup()
   render(
     <Attachment
-      data-testid="subject"
+      data-subject
       {...({ children: 'Attachment', ...props } as ComponentProps<typeof Attachment>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="attachment"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="attachment"]')
 }
 
 function classesOfAttachment(
@@ -87,6 +87,22 @@ describe('Attachment', () => {
     expect(attributesOfAttachment({ state: 'done' })).toEqual(attributesOfAttachment())
   })
 
+  it('renders with state="idle"', () => {
+    expect(renderAttachment({ state: 'idle' })).toBeTruthy()
+  })
+
+  it('renders with state="uploading"', () => {
+    expect(renderAttachment({ state: 'uploading' })).toBeTruthy()
+  })
+
+  it('renders with state="processing"', () => {
+    expect(renderAttachment({ state: 'processing' })).toBeTruthy()
+  })
+
+  it('renders with state="error"', () => {
+    expect(renderAttachment({ state: 'error' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderAttachment({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -97,162 +113,162 @@ describe('Attachment', () => {
     cleanup()
     render(
       <AttachmentGroup>
-        <Attachment data-testid="subject" orientation="vertical">
+        <Attachment data-subject orientation="vertical">
           Attachment
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
-      <Attachment data-testid="subject" size="sm">
+      <Attachment data-subject size="sm">
         Attachment
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
-      <Attachment data-testid="subject" state="idle">
+      <Attachment data-subject state="idle">
         Attachment
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
-      <Attachment data-testid="subject" state="uploading">
+      <Attachment data-subject state="uploading">
         Attachment
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
-      <Attachment data-testid="subject" state="processing">
+      <Attachment data-subject state="processing">
         Attachment
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
-      <Attachment data-testid="subject" state="error">
+      <Attachment data-subject state="error">
         Attachment
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
     render(
-      <Attachment data-testid="subject" state="done">
+      <Attachment data-subject state="done">
         Attachment
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
     cleanup()
     render(
       <AttachmentGroup>
-        <Attachment data-testid="subject" state="idle" orientation="vertical">
+        <Attachment data-subject state="idle" orientation="vertical">
           Attachment
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
     cleanup()
     render(
       <AttachmentGroup>
-        <Attachment data-testid="subject" state="uploading" orientation="vertical">
+        <Attachment data-subject state="uploading" orientation="vertical">
           Attachment
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
     cleanup()
     render(
       <AttachmentGroup>
-        <Attachment data-testid="subject" state="processing" orientation="vertical">
+        <Attachment data-subject state="processing" orientation="vertical">
           Attachment
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
     cleanup()
     render(
       <AttachmentGroup>
-        <Attachment data-testid="subject" state="error" orientation="vertical">
+        <Attachment data-subject state="error" orientation="vertical">
           Attachment
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
     cleanup()
     render(
       <AttachmentGroup>
-        <Attachment data-testid="subject" state="done" orientation="vertical">
+        <Attachment data-subject state="done" orientation="vertical">
           Attachment
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
     cleanup()
     render(
-      <Attachment data-testid="subject" size="default">
+      <Attachment data-subject size="default">
         Attachment
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (15)", () => {
     cleanup()
     render(
-      <Attachment data-testid="subject" size="xs">
+      <Attachment data-subject size="xs">
         Attachment
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (16)", () => {
     cleanup()
     render(
       <AttachmentGroup>
-        <Attachment data-testid="subject">Attachment</Attachment>
+        <Attachment data-subject>Attachment</Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -263,14 +279,12 @@ function renderAttachmentMedia(
   render(
     <Attachment>
       <AttachmentMedia
-        data-testid="subject"
+        data-subject
         {...({ children: 'AttachmentMedia', ...props } as ComponentProps<typeof AttachmentMedia>)}
       />
     </Attachment>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="attachment-media"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="attachment-media"]')
 }
 
 function classesOfAttachmentMedia(
@@ -310,61 +324,61 @@ describe('AttachmentMedia', () => {
     render(
       <AttachmentGroup>
         <Attachment orientation="vertical">
-          <AttachmentMedia data-testid="subject">AttachmentMedia</AttachmentMedia>
+          <AttachmentMedia data-subject>AttachmentMedia</AttachmentMedia>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Attachment state="idle">
-        <AttachmentMedia data-testid="subject">AttachmentMedia</AttachmentMedia>
+        <AttachmentMedia data-subject>AttachmentMedia</AttachmentMedia>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <Attachment state="uploading">
-        <AttachmentMedia data-testid="subject">AttachmentMedia</AttachmentMedia>
+        <AttachmentMedia data-subject>AttachmentMedia</AttachmentMedia>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <Attachment state="processing">
-        <AttachmentMedia data-testid="subject">AttachmentMedia</AttachmentMedia>
+        <AttachmentMedia data-subject>AttachmentMedia</AttachmentMedia>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
       <Attachment state="error">
-        <AttachmentMedia data-testid="subject">AttachmentMedia</AttachmentMedia>
+        <AttachmentMedia data-subject>AttachmentMedia</AttachmentMedia>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
       <Attachment state="done">
-        <AttachmentMedia data-testid="subject">AttachmentMedia</AttachmentMedia>
+        <AttachmentMedia data-subject>AttachmentMedia</AttachmentMedia>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -372,11 +386,11 @@ describe('AttachmentMedia', () => {
     render(
       <AttachmentGroup>
         <Attachment state="idle" orientation="vertical">
-          <AttachmentMedia data-testid="subject">AttachmentMedia</AttachmentMedia>
+          <AttachmentMedia data-subject>AttachmentMedia</AttachmentMedia>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -384,11 +398,11 @@ describe('AttachmentMedia', () => {
     render(
       <AttachmentGroup>
         <Attachment state="uploading" orientation="vertical">
-          <AttachmentMedia data-testid="subject">AttachmentMedia</AttachmentMedia>
+          <AttachmentMedia data-subject>AttachmentMedia</AttachmentMedia>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
@@ -396,11 +410,11 @@ describe('AttachmentMedia', () => {
     render(
       <AttachmentGroup>
         <Attachment state="processing" orientation="vertical">
-          <AttachmentMedia data-testid="subject">AttachmentMedia</AttachmentMedia>
+          <AttachmentMedia data-subject>AttachmentMedia</AttachmentMedia>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
@@ -408,11 +422,11 @@ describe('AttachmentMedia', () => {
     render(
       <AttachmentGroup>
         <Attachment state="error" orientation="vertical">
-          <AttachmentMedia data-testid="subject">AttachmentMedia</AttachmentMedia>
+          <AttachmentMedia data-subject>AttachmentMedia</AttachmentMedia>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
@@ -420,23 +434,23 @@ describe('AttachmentMedia', () => {
     render(
       <AttachmentGroup>
         <Attachment state="done" orientation="vertical">
-          <AttachmentMedia data-testid="subject">AttachmentMedia</AttachmentMedia>
+          <AttachmentMedia data-subject>AttachmentMedia</AttachmentMedia>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
     cleanup()
     render(
       <Attachment>
-        <AttachmentMedia data-testid="subject" variant="image">
+        <AttachmentMedia data-subject variant="image">
           AttachmentMedia
         </AttachmentMedia>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
@@ -444,73 +458,73 @@ describe('AttachmentMedia', () => {
     render(
       <AttachmentGroup>
         <Attachment orientation="vertical">
-          <AttachmentMedia data-testid="subject" variant="image">
+          <AttachmentMedia data-subject variant="image">
             AttachmentMedia
           </AttachmentMedia>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (15)", () => {
     cleanup()
     render(
       <Attachment state="idle">
-        <AttachmentMedia data-testid="subject" variant="image">
+        <AttachmentMedia data-subject variant="image">
           AttachmentMedia
         </AttachmentMedia>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (16)", () => {
     cleanup()
     render(
       <Attachment state="uploading">
-        <AttachmentMedia data-testid="subject" variant="image">
+        <AttachmentMedia data-subject variant="image">
           AttachmentMedia
         </AttachmentMedia>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (17)", () => {
     cleanup()
     render(
       <Attachment state="processing">
-        <AttachmentMedia data-testid="subject" variant="image">
+        <AttachmentMedia data-subject variant="image">
           AttachmentMedia
         </AttachmentMedia>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (18)", () => {
     cleanup()
     render(
       <Attachment state="error">
-        <AttachmentMedia data-testid="subject" variant="image">
+        <AttachmentMedia data-subject variant="image">
           AttachmentMedia
         </AttachmentMedia>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (19)", () => {
     cleanup()
     render(
       <Attachment state="done">
-        <AttachmentMedia data-testid="subject" variant="image">
+        <AttachmentMedia data-subject variant="image">
           AttachmentMedia
         </AttachmentMedia>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (20)", () => {
@@ -518,13 +532,13 @@ describe('AttachmentMedia', () => {
     render(
       <AttachmentGroup>
         <Attachment state="idle" orientation="vertical">
-          <AttachmentMedia data-testid="subject" variant="image">
+          <AttachmentMedia data-subject variant="image">
             AttachmentMedia
           </AttachmentMedia>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (21)", () => {
@@ -532,13 +546,13 @@ describe('AttachmentMedia', () => {
     render(
       <AttachmentGroup>
         <Attachment state="uploading" orientation="vertical">
-          <AttachmentMedia data-testid="subject" variant="image">
+          <AttachmentMedia data-subject variant="image">
             AttachmentMedia
           </AttachmentMedia>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (22)", () => {
@@ -546,13 +560,13 @@ describe('AttachmentMedia', () => {
     render(
       <AttachmentGroup>
         <Attachment state="processing" orientation="vertical">
-          <AttachmentMedia data-testid="subject" variant="image">
+          <AttachmentMedia data-subject variant="image">
             AttachmentMedia
           </AttachmentMedia>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (23)", () => {
@@ -560,13 +574,13 @@ describe('AttachmentMedia', () => {
     render(
       <AttachmentGroup>
         <Attachment state="error" orientation="vertical">
-          <AttachmentMedia data-testid="subject" variant="image">
+          <AttachmentMedia data-subject variant="image">
             AttachmentMedia
           </AttachmentMedia>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (24)", () => {
@@ -574,43 +588,43 @@ describe('AttachmentMedia', () => {
     render(
       <AttachmentGroup>
         <Attachment state="done" orientation="vertical">
-          <AttachmentMedia data-testid="subject" variant="image">
+          <AttachmentMedia data-subject variant="image">
             AttachmentMedia
           </AttachmentMedia>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (25)", () => {
     cleanup()
     render(
       <Attachment size="default">
-        <AttachmentMedia data-testid="subject">AttachmentMedia</AttachmentMedia>
+        <AttachmentMedia data-subject>AttachmentMedia</AttachmentMedia>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (26)", () => {
     cleanup()
     render(
       <Attachment size="sm">
-        <AttachmentMedia data-testid="subject">AttachmentMedia</AttachmentMedia>
+        <AttachmentMedia data-subject>AttachmentMedia</AttachmentMedia>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (27)", () => {
     cleanup()
     render(
       <Attachment size="xs">
-        <AttachmentMedia data-testid="subject">AttachmentMedia</AttachmentMedia>
+        <AttachmentMedia data-subject>AttachmentMedia</AttachmentMedia>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (28)", () => {
@@ -618,11 +632,11 @@ describe('AttachmentMedia', () => {
     render(
       <AttachmentGroup>
         <Attachment>
-          <AttachmentMedia data-testid="subject">AttachmentMedia</AttachmentMedia>
+          <AttachmentMedia data-subject>AttachmentMedia</AttachmentMedia>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (29)", () => {
@@ -630,13 +644,13 @@ describe('AttachmentMedia', () => {
     render(
       <AttachmentGroup>
         <Attachment>
-          <AttachmentMedia data-testid="subject" variant="image">
+          <AttachmentMedia data-subject variant="image">
             AttachmentMedia
           </AttachmentMedia>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -647,16 +661,14 @@ function renderAttachmentContent(
   render(
     <Attachment>
       <AttachmentContent
-        data-testid="subject"
+        data-subject
         {...({ children: 'AttachmentContent', ...props } as ComponentProps<
           typeof AttachmentContent
         >)}
       />
     </Attachment>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="attachment-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="attachment-content"]')
 }
 
 function classesOfAttachmentContent(
@@ -681,71 +693,71 @@ describe('AttachmentContent', () => {
     render(
       <AttachmentGroup>
         <Attachment orientation="vertical">
-          <AttachmentContent data-testid="subject">AttachmentContent</AttachmentContent>
+          <AttachmentContent data-subject>AttachmentContent</AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Attachment size="sm">
-        <AttachmentContent data-testid="subject">AttachmentContent</AttachmentContent>
+        <AttachmentContent data-subject>AttachmentContent</AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <Attachment state="idle">
-        <AttachmentContent data-testid="subject">AttachmentContent</AttachmentContent>
+        <AttachmentContent data-subject>AttachmentContent</AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <Attachment state="uploading">
-        <AttachmentContent data-testid="subject">AttachmentContent</AttachmentContent>
+        <AttachmentContent data-subject>AttachmentContent</AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
       <Attachment state="processing">
-        <AttachmentContent data-testid="subject">AttachmentContent</AttachmentContent>
+        <AttachmentContent data-subject>AttachmentContent</AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
       <Attachment state="error">
-        <AttachmentContent data-testid="subject">AttachmentContent</AttachmentContent>
+        <AttachmentContent data-subject>AttachmentContent</AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
     render(
       <Attachment state="done">
-        <AttachmentContent data-testid="subject">AttachmentContent</AttachmentContent>
+        <AttachmentContent data-subject>AttachmentContent</AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -753,11 +765,11 @@ describe('AttachmentContent', () => {
     render(
       <AttachmentGroup>
         <Attachment state="idle" orientation="vertical">
-          <AttachmentContent data-testid="subject">AttachmentContent</AttachmentContent>
+          <AttachmentContent data-subject>AttachmentContent</AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
@@ -765,11 +777,11 @@ describe('AttachmentContent', () => {
     render(
       <AttachmentGroup>
         <Attachment state="uploading" orientation="vertical">
-          <AttachmentContent data-testid="subject">AttachmentContent</AttachmentContent>
+          <AttachmentContent data-subject>AttachmentContent</AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
@@ -777,11 +789,11 @@ describe('AttachmentContent', () => {
     render(
       <AttachmentGroup>
         <Attachment state="processing" orientation="vertical">
-          <AttachmentContent data-testid="subject">AttachmentContent</AttachmentContent>
+          <AttachmentContent data-subject>AttachmentContent</AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
@@ -789,11 +801,11 @@ describe('AttachmentContent', () => {
     render(
       <AttachmentGroup>
         <Attachment state="error" orientation="vertical">
-          <AttachmentContent data-testid="subject">AttachmentContent</AttachmentContent>
+          <AttachmentContent data-subject>AttachmentContent</AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
@@ -801,31 +813,31 @@ describe('AttachmentContent', () => {
     render(
       <AttachmentGroup>
         <Attachment state="done" orientation="vertical">
-          <AttachmentContent data-testid="subject">AttachmentContent</AttachmentContent>
+          <AttachmentContent data-subject>AttachmentContent</AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
     cleanup()
     render(
       <Attachment size="default">
-        <AttachmentContent data-testid="subject">AttachmentContent</AttachmentContent>
+        <AttachmentContent data-subject>AttachmentContent</AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (15)", () => {
     cleanup()
     render(
       <Attachment size="xs">
-        <AttachmentContent data-testid="subject">AttachmentContent</AttachmentContent>
+        <AttachmentContent data-subject>AttachmentContent</AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (16)", () => {
@@ -833,11 +845,11 @@ describe('AttachmentContent', () => {
     render(
       <AttachmentGroup>
         <Attachment>
-          <AttachmentContent data-testid="subject">AttachmentContent</AttachmentContent>
+          <AttachmentContent data-subject>AttachmentContent</AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -849,15 +861,13 @@ function renderAttachmentTitle(
     <Attachment>
       <AttachmentContent>
         <AttachmentTitle
-          data-testid="subject"
+          data-subject
           {...({ children: 'AttachmentTitle', ...props } as ComponentProps<typeof AttachmentTitle>)}
         />
       </AttachmentContent>
     </Attachment>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="attachment-title"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="attachment-title"]')
 }
 
 function classesOfAttachmentTitle(
@@ -883,12 +893,12 @@ describe('AttachmentTitle', () => {
       <AttachmentGroup>
         <Attachment orientation="vertical">
           <AttachmentContent>
-            <AttachmentTitle data-testid="subject">AttachmentTitle</AttachmentTitle>
+            <AttachmentTitle data-subject>AttachmentTitle</AttachmentTitle>
           </AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -896,11 +906,11 @@ describe('AttachmentTitle', () => {
     render(
       <Attachment size="sm">
         <AttachmentContent>
-          <AttachmentTitle data-testid="subject">AttachmentTitle</AttachmentTitle>
+          <AttachmentTitle data-subject>AttachmentTitle</AttachmentTitle>
         </AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -908,11 +918,11 @@ describe('AttachmentTitle', () => {
     render(
       <Attachment state="idle">
         <AttachmentContent>
-          <AttachmentTitle data-testid="subject">AttachmentTitle</AttachmentTitle>
+          <AttachmentTitle data-subject>AttachmentTitle</AttachmentTitle>
         </AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -920,11 +930,11 @@ describe('AttachmentTitle', () => {
     render(
       <Attachment state="uploading">
         <AttachmentContent>
-          <AttachmentTitle data-testid="subject">AttachmentTitle</AttachmentTitle>
+          <AttachmentTitle data-subject>AttachmentTitle</AttachmentTitle>
         </AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -932,11 +942,11 @@ describe('AttachmentTitle', () => {
     render(
       <Attachment state="processing">
         <AttachmentContent>
-          <AttachmentTitle data-testid="subject">AttachmentTitle</AttachmentTitle>
+          <AttachmentTitle data-subject>AttachmentTitle</AttachmentTitle>
         </AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -944,11 +954,11 @@ describe('AttachmentTitle', () => {
     render(
       <Attachment state="error">
         <AttachmentContent>
-          <AttachmentTitle data-testid="subject">AttachmentTitle</AttachmentTitle>
+          <AttachmentTitle data-subject>AttachmentTitle</AttachmentTitle>
         </AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -956,11 +966,11 @@ describe('AttachmentTitle', () => {
     render(
       <Attachment state="done">
         <AttachmentContent>
-          <AttachmentTitle data-testid="subject">AttachmentTitle</AttachmentTitle>
+          <AttachmentTitle data-subject>AttachmentTitle</AttachmentTitle>
         </AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -969,12 +979,12 @@ describe('AttachmentTitle', () => {
       <AttachmentGroup>
         <Attachment state="idle" orientation="vertical">
           <AttachmentContent>
-            <AttachmentTitle data-testid="subject">AttachmentTitle</AttachmentTitle>
+            <AttachmentTitle data-subject>AttachmentTitle</AttachmentTitle>
           </AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
@@ -983,12 +993,12 @@ describe('AttachmentTitle', () => {
       <AttachmentGroup>
         <Attachment state="uploading" orientation="vertical">
           <AttachmentContent>
-            <AttachmentTitle data-testid="subject">AttachmentTitle</AttachmentTitle>
+            <AttachmentTitle data-subject>AttachmentTitle</AttachmentTitle>
           </AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
@@ -997,12 +1007,12 @@ describe('AttachmentTitle', () => {
       <AttachmentGroup>
         <Attachment state="processing" orientation="vertical">
           <AttachmentContent>
-            <AttachmentTitle data-testid="subject">AttachmentTitle</AttachmentTitle>
+            <AttachmentTitle data-subject>AttachmentTitle</AttachmentTitle>
           </AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
@@ -1011,12 +1021,12 @@ describe('AttachmentTitle', () => {
       <AttachmentGroup>
         <Attachment state="error" orientation="vertical">
           <AttachmentContent>
-            <AttachmentTitle data-testid="subject">AttachmentTitle</AttachmentTitle>
+            <AttachmentTitle data-subject>AttachmentTitle</AttachmentTitle>
           </AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
@@ -1025,12 +1035,12 @@ describe('AttachmentTitle', () => {
       <AttachmentGroup>
         <Attachment state="done" orientation="vertical">
           <AttachmentContent>
-            <AttachmentTitle data-testid="subject">AttachmentTitle</AttachmentTitle>
+            <AttachmentTitle data-subject>AttachmentTitle</AttachmentTitle>
           </AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
@@ -1038,11 +1048,11 @@ describe('AttachmentTitle', () => {
     render(
       <Attachment size="default">
         <AttachmentContent>
-          <AttachmentTitle data-testid="subject">AttachmentTitle</AttachmentTitle>
+          <AttachmentTitle data-subject>AttachmentTitle</AttachmentTitle>
         </AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (15)", () => {
@@ -1050,11 +1060,11 @@ describe('AttachmentTitle', () => {
     render(
       <Attachment size="xs">
         <AttachmentContent>
-          <AttachmentTitle data-testid="subject">AttachmentTitle</AttachmentTitle>
+          <AttachmentTitle data-subject>AttachmentTitle</AttachmentTitle>
         </AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (16)", () => {
@@ -1063,12 +1073,12 @@ describe('AttachmentTitle', () => {
       <AttachmentGroup>
         <Attachment>
           <AttachmentContent>
-            <AttachmentTitle data-testid="subject">AttachmentTitle</AttachmentTitle>
+            <AttachmentTitle data-subject>AttachmentTitle</AttachmentTitle>
           </AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -1080,7 +1090,7 @@ function renderAttachmentDescription(
     <Attachment>
       <AttachmentContent>
         <AttachmentDescription
-          data-testid="subject"
+          data-subject
           {...({ children: 'AttachmentDescription', ...props } as ComponentProps<
             typeof AttachmentDescription
           >)}
@@ -1088,9 +1098,7 @@ function renderAttachmentDescription(
       </AttachmentContent>
     </Attachment>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="attachment-description"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="attachment-description"]')
 }
 
 function classesOfAttachmentDescription(
@@ -1118,14 +1126,12 @@ describe('AttachmentDescription', () => {
       <AttachmentGroup>
         <Attachment orientation="vertical">
           <AttachmentContent>
-            <AttachmentDescription data-testid="subject">
-              AttachmentDescription
-            </AttachmentDescription>
+            <AttachmentDescription data-subject>AttachmentDescription</AttachmentDescription>
           </AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -1133,11 +1139,11 @@ describe('AttachmentDescription', () => {
     render(
       <Attachment size="sm">
         <AttachmentContent>
-          <AttachmentDescription data-testid="subject">AttachmentDescription</AttachmentDescription>
+          <AttachmentDescription data-subject>AttachmentDescription</AttachmentDescription>
         </AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -1145,11 +1151,11 @@ describe('AttachmentDescription', () => {
     render(
       <Attachment state="idle">
         <AttachmentContent>
-          <AttachmentDescription data-testid="subject">AttachmentDescription</AttachmentDescription>
+          <AttachmentDescription data-subject>AttachmentDescription</AttachmentDescription>
         </AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -1157,11 +1163,11 @@ describe('AttachmentDescription', () => {
     render(
       <Attachment state="uploading">
         <AttachmentContent>
-          <AttachmentDescription data-testid="subject">AttachmentDescription</AttachmentDescription>
+          <AttachmentDescription data-subject>AttachmentDescription</AttachmentDescription>
         </AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -1169,11 +1175,11 @@ describe('AttachmentDescription', () => {
     render(
       <Attachment state="processing">
         <AttachmentContent>
-          <AttachmentDescription data-testid="subject">AttachmentDescription</AttachmentDescription>
+          <AttachmentDescription data-subject>AttachmentDescription</AttachmentDescription>
         </AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -1181,11 +1187,11 @@ describe('AttachmentDescription', () => {
     render(
       <Attachment state="error">
         <AttachmentContent>
-          <AttachmentDescription data-testid="subject">AttachmentDescription</AttachmentDescription>
+          <AttachmentDescription data-subject>AttachmentDescription</AttachmentDescription>
         </AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -1193,11 +1199,11 @@ describe('AttachmentDescription', () => {
     render(
       <Attachment state="done">
         <AttachmentContent>
-          <AttachmentDescription data-testid="subject">AttachmentDescription</AttachmentDescription>
+          <AttachmentDescription data-subject>AttachmentDescription</AttachmentDescription>
         </AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -1206,14 +1212,12 @@ describe('AttachmentDescription', () => {
       <AttachmentGroup>
         <Attachment state="idle" orientation="vertical">
           <AttachmentContent>
-            <AttachmentDescription data-testid="subject">
-              AttachmentDescription
-            </AttachmentDescription>
+            <AttachmentDescription data-subject>AttachmentDescription</AttachmentDescription>
           </AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
@@ -1222,14 +1226,12 @@ describe('AttachmentDescription', () => {
       <AttachmentGroup>
         <Attachment state="uploading" orientation="vertical">
           <AttachmentContent>
-            <AttachmentDescription data-testid="subject">
-              AttachmentDescription
-            </AttachmentDescription>
+            <AttachmentDescription data-subject>AttachmentDescription</AttachmentDescription>
           </AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
@@ -1238,14 +1240,12 @@ describe('AttachmentDescription', () => {
       <AttachmentGroup>
         <Attachment state="processing" orientation="vertical">
           <AttachmentContent>
-            <AttachmentDescription data-testid="subject">
-              AttachmentDescription
-            </AttachmentDescription>
+            <AttachmentDescription data-subject>AttachmentDescription</AttachmentDescription>
           </AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
@@ -1254,14 +1254,12 @@ describe('AttachmentDescription', () => {
       <AttachmentGroup>
         <Attachment state="error" orientation="vertical">
           <AttachmentContent>
-            <AttachmentDescription data-testid="subject">
-              AttachmentDescription
-            </AttachmentDescription>
+            <AttachmentDescription data-subject>AttachmentDescription</AttachmentDescription>
           </AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
@@ -1270,14 +1268,12 @@ describe('AttachmentDescription', () => {
       <AttachmentGroup>
         <Attachment state="done" orientation="vertical">
           <AttachmentContent>
-            <AttachmentDescription data-testid="subject">
-              AttachmentDescription
-            </AttachmentDescription>
+            <AttachmentDescription data-subject>AttachmentDescription</AttachmentDescription>
           </AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
@@ -1285,11 +1281,11 @@ describe('AttachmentDescription', () => {
     render(
       <Attachment size="default">
         <AttachmentContent>
-          <AttachmentDescription data-testid="subject">AttachmentDescription</AttachmentDescription>
+          <AttachmentDescription data-subject>AttachmentDescription</AttachmentDescription>
         </AttachmentContent>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (15)", () => {
@@ -1298,14 +1294,12 @@ describe('AttachmentDescription', () => {
       <AttachmentGroup>
         <Attachment>
           <AttachmentContent>
-            <AttachmentDescription data-testid="subject">
-              AttachmentDescription
-            </AttachmentDescription>
+            <AttachmentDescription data-subject>AttachmentDescription</AttachmentDescription>
           </AttachmentContent>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -1316,16 +1310,14 @@ function renderAttachmentActions(
   render(
     <Attachment>
       <AttachmentActions
-        data-testid="subject"
+        data-subject
         {...({ children: 'AttachmentActions', ...props } as ComponentProps<
           typeof AttachmentActions
         >)}
       />
     </Attachment>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="attachment-actions"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="attachment-actions"]')
 }
 
 function classesOfAttachmentActions(
@@ -1350,61 +1342,61 @@ describe('AttachmentActions', () => {
     render(
       <AttachmentGroup>
         <Attachment orientation="vertical">
-          <AttachmentActions data-testid="subject">AttachmentActions</AttachmentActions>
+          <AttachmentActions data-subject>AttachmentActions</AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Attachment state="idle">
-        <AttachmentActions data-testid="subject">AttachmentActions</AttachmentActions>
+        <AttachmentActions data-subject>AttachmentActions</AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <Attachment state="uploading">
-        <AttachmentActions data-testid="subject">AttachmentActions</AttachmentActions>
+        <AttachmentActions data-subject>AttachmentActions</AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <Attachment state="processing">
-        <AttachmentActions data-testid="subject">AttachmentActions</AttachmentActions>
+        <AttachmentActions data-subject>AttachmentActions</AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
       <Attachment state="error">
-        <AttachmentActions data-testid="subject">AttachmentActions</AttachmentActions>
+        <AttachmentActions data-subject>AttachmentActions</AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
       <Attachment state="done">
-        <AttachmentActions data-testid="subject">AttachmentActions</AttachmentActions>
+        <AttachmentActions data-subject>AttachmentActions</AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -1412,11 +1404,11 @@ describe('AttachmentActions', () => {
     render(
       <AttachmentGroup>
         <Attachment state="idle" orientation="vertical">
-          <AttachmentActions data-testid="subject">AttachmentActions</AttachmentActions>
+          <AttachmentActions data-subject>AttachmentActions</AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -1424,11 +1416,11 @@ describe('AttachmentActions', () => {
     render(
       <AttachmentGroup>
         <Attachment state="uploading" orientation="vertical">
-          <AttachmentActions data-testid="subject">AttachmentActions</AttachmentActions>
+          <AttachmentActions data-subject>AttachmentActions</AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
@@ -1436,11 +1428,11 @@ describe('AttachmentActions', () => {
     render(
       <AttachmentGroup>
         <Attachment state="processing" orientation="vertical">
-          <AttachmentActions data-testid="subject">AttachmentActions</AttachmentActions>
+          <AttachmentActions data-subject>AttachmentActions</AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
@@ -1448,11 +1440,11 @@ describe('AttachmentActions', () => {
     render(
       <AttachmentGroup>
         <Attachment state="error" orientation="vertical">
-          <AttachmentActions data-testid="subject">AttachmentActions</AttachmentActions>
+          <AttachmentActions data-subject>AttachmentActions</AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
@@ -1460,11 +1452,11 @@ describe('AttachmentActions', () => {
     render(
       <AttachmentGroup>
         <Attachment state="done" orientation="vertical">
-          <AttachmentActions data-testid="subject">AttachmentActions</AttachmentActions>
+          <AttachmentActions data-subject>AttachmentActions</AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
@@ -1472,11 +1464,11 @@ describe('AttachmentActions', () => {
     render(
       <AttachmentGroup>
         <Attachment>
-          <AttachmentActions data-testid="subject">AttachmentActions</AttachmentActions>
+          <AttachmentActions data-subject>AttachmentActions</AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -1488,7 +1480,7 @@ function renderAttachmentAction(
     <Attachment>
       <AttachmentActions>
         <AttachmentAction
-          data-testid="subject"
+          data-subject
           {...({
             'aria-label': 'Remove sales-dashboard.pdf',
             children: 'AttachmentAction',
@@ -1498,9 +1490,7 @@ function renderAttachmentAction(
       </AttachmentActions>
     </Attachment>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="attachment-action"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="attachment-action"]')
 }
 
 function attributesOfAttachmentAction(
@@ -1531,13 +1521,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment>
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Remove customer-import.csv">
+          <AttachmentAction data-subject aria-label="Remove customer-import.csv">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -1545,13 +1535,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment>
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Remove message-renderer.tsx">
+          <AttachmentAction data-subject aria-label="Remove message-renderer.tsx">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -1560,14 +1550,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove sales-dashboard.pdf">
+            <AttachmentAction data-subject aria-label="Remove sales-dashboard.pdf">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -1576,14 +1566,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove customer-import.csv">
+            <AttachmentAction data-subject aria-label="Remove customer-import.csv">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -1592,14 +1582,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove message-renderer.tsx">
+            <AttachmentAction data-subject aria-label="Remove message-renderer.tsx">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -1608,14 +1598,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove source-assets.zip">
+            <AttachmentAction data-subject aria-label="Remove source-assets.zip">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -1624,14 +1614,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove quarterly-review.key">
+            <AttachmentAction data-subject aria-label="Remove quarterly-review.key">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
@@ -1639,13 +1629,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment>
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Remove React Documentation">
+          <AttachmentAction data-subject aria-label="Remove React Documentation">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
@@ -1653,13 +1643,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment>
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Remove Tailwind CSS">
+          <AttachmentAction data-subject aria-label="Remove Tailwind CSS">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
@@ -1667,16 +1657,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment>
         <AttachmentActions>
-          <AttachmentAction
-            data-testid="subject"
-            aria-label="Remove Building accessible components"
-          >
+          <AttachmentAction data-subject aria-label="Remove Building accessible components">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
@@ -1684,13 +1671,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment>
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Remove Utility-first CSS framework">
+          <AttachmentAction data-subject aria-label="Remove Utility-first CSS framework">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
@@ -1698,13 +1685,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment state="idle">
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Remove selected-file.pdf">
+          <AttachmentAction data-subject aria-label="Remove selected-file.pdf">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
@@ -1712,13 +1699,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment state="uploading">
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Remove design-system.zip">
+          <AttachmentAction data-subject aria-label="Remove design-system.zip">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (15)", () => {
@@ -1726,13 +1713,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment state="processing">
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Remove market-research.pdf">
+          <AttachmentAction data-subject aria-label="Remove market-research.pdf">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (16)", () => {
@@ -1740,13 +1727,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment state="error">
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Retry upload">
+          <AttachmentAction data-subject aria-label="Retry upload">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (17)", () => {
@@ -1754,13 +1741,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment state="error">
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Remove attachment">
+          <AttachmentAction data-subject aria-label="Remove attachment">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (18)", () => {
@@ -1768,13 +1755,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment state="done">
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Remove uploaded-report.pdf">
+          <AttachmentAction data-subject aria-label="Remove uploaded-report.pdf">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (19)", () => {
@@ -1783,14 +1770,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment state="idle" orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove selected-file.pdf">
+            <AttachmentAction data-subject aria-label="Remove selected-file.pdf">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (20)", () => {
@@ -1799,14 +1786,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment state="uploading" orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove design-system.zip">
+            <AttachmentAction data-subject aria-label="Remove design-system.zip">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (21)", () => {
@@ -1815,14 +1802,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment state="processing" orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove market-research.pdf">
+            <AttachmentAction data-subject aria-label="Remove market-research.pdf">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (22)", () => {
@@ -1831,14 +1818,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment state="error" orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Retry financial-model.xlsx">
+            <AttachmentAction data-subject aria-label="Retry financial-model.xlsx">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (23)", () => {
@@ -1847,14 +1834,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment state="error" orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove financial-model.xlsx">
+            <AttachmentAction data-subject aria-label="Remove financial-model.xlsx">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (24)", () => {
@@ -1863,14 +1850,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment state="done" orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove uploaded-report.pdf">
+            <AttachmentAction data-subject aria-label="Remove uploaded-report.pdf">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (25)", () => {
@@ -1878,13 +1865,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment>
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Remove workspace.png">
+          <AttachmentAction data-subject aria-label="Remove workspace.png">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (26)", () => {
@@ -1892,13 +1879,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment>
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Remove desk-reference.jpg">
+          <AttachmentAction data-subject aria-label="Remove desk-reference.jpg">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (27)", () => {
@@ -1906,13 +1893,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment>
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Remove office-reference.jpg">
+          <AttachmentAction data-subject aria-label="Remove office-reference.jpg">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (28)", () => {
@@ -1921,14 +1908,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove workspace.png">
+            <AttachmentAction data-subject aria-label="Remove workspace.png">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (29)", () => {
@@ -1937,14 +1924,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove desk-reference.jpg">
+            <AttachmentAction data-subject aria-label="Remove desk-reference.jpg">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (30)", () => {
@@ -1953,14 +1940,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove office-reference.jpg">
+            <AttachmentAction data-subject aria-label="Remove office-reference.jpg">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (31)", () => {
@@ -1969,14 +1956,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove patio-reference.jpg">
+            <AttachmentAction data-subject aria-label="Remove patio-reference.jpg">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (32)", () => {
@@ -1985,14 +1972,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove house-exterior.jpg">
+            <AttachmentAction data-subject aria-label="Remove house-exterior.jpg">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (33)", () => {
@@ -2000,13 +1987,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment state="idle">
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Remove office-reference.jpg">
+          <AttachmentAction data-subject aria-label="Remove office-reference.jpg">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (34)", () => {
@@ -2014,13 +2001,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment state="uploading">
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Remove workspace.png">
+          <AttachmentAction data-subject aria-label="Remove workspace.png">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (35)", () => {
@@ -2028,13 +2015,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment state="processing">
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Remove desk-reference.jpg">
+          <AttachmentAction data-subject aria-label="Remove desk-reference.jpg">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (36)", () => {
@@ -2042,13 +2029,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment state="error">
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Retry image upload">
+          <AttachmentAction data-subject aria-label="Retry image upload">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (37)", () => {
@@ -2056,13 +2043,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment state="done">
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Remove workspace.png">
+          <AttachmentAction data-subject aria-label="Remove workspace.png">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (38)", () => {
@@ -2071,14 +2058,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment state="idle" orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove office-reference.jpg">
+            <AttachmentAction data-subject aria-label="Remove office-reference.jpg">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (39)", () => {
@@ -2087,14 +2074,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment state="uploading" orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove workspace.png">
+            <AttachmentAction data-subject aria-label="Remove workspace.png">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (40)", () => {
@@ -2103,14 +2090,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment state="processing" orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove desk-reference.jpg">
+            <AttachmentAction data-subject aria-label="Remove desk-reference.jpg">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (41)", () => {
@@ -2119,14 +2106,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment state="error" orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Retry office-reference.jpg">
+            <AttachmentAction data-subject aria-label="Retry office-reference.jpg">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (42)", () => {
@@ -2135,14 +2122,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment state="error" orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove office-reference.jpg">
+            <AttachmentAction data-subject aria-label="Remove office-reference.jpg">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (43)", () => {
@@ -2151,14 +2138,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment state="done" orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove workspace.png">
+            <AttachmentAction data-subject aria-label="Remove workspace.png">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (44)", () => {
@@ -2167,14 +2154,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment>
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove briefing-notes.pdf">
+            <AttachmentAction data-subject aria-label="Remove briefing-notes.pdf">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (45)", () => {
@@ -2183,14 +2170,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment>
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove workspace.png">
+            <AttachmentAction data-subject aria-label="Remove workspace.png">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (46)", () => {
@@ -2199,14 +2186,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment>
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove customers.csv">
+            <AttachmentAction data-subject aria-label="Remove customers.csv">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (47)", () => {
@@ -2215,14 +2202,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment>
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove renderer.tsx">
+            <AttachmentAction data-subject aria-label="Remove renderer.tsx">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (48)", () => {
@@ -2231,14 +2218,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove invoice.pdf">
+            <AttachmentAction data-subject aria-label="Remove invoice.pdf">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (49)", () => {
@@ -2247,14 +2234,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove desk.jpg">
+            <AttachmentAction data-subject aria-label="Remove desk.jpg">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (50)", () => {
@@ -2263,14 +2250,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove assets.zip">
+            <AttachmentAction data-subject aria-label="Remove assets.zip">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (51)", () => {
@@ -2279,14 +2266,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove office.jpg">
+            <AttachmentAction data-subject aria-label="Remove office.jpg">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (52)", () => {
@@ -2295,14 +2282,14 @@ describe('AttachmentAction', () => {
       <AttachmentGroup>
         <Attachment orientation="vertical">
           <AttachmentActions>
-            <AttachmentAction data-testid="subject" aria-label="Remove notes.pdf">
+            <AttachmentAction data-subject aria-label="Remove notes.pdf">
               AttachmentAction
             </AttachmentAction>
           </AttachmentActions>
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (53)", () => {
@@ -2310,13 +2297,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment>
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Download attachment">
+          <AttachmentAction data-subject aria-label="Download attachment">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (54)", () => {
@@ -2324,13 +2311,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment>
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Remove attachment">
+          <AttachmentAction data-subject aria-label="Remove attachment">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (55)", () => {
@@ -2338,13 +2325,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment>
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Copy link">
+          <AttachmentAction data-subject aria-label="Copy link">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (56)", () => {
@@ -2352,13 +2339,13 @@ describe('AttachmentAction', () => {
     render(
       <Attachment>
         <AttachmentActions>
-          <AttachmentAction data-testid="subject" aria-label="Remove research-summary.pdf">
+          <AttachmentAction data-subject aria-label="Remove research-summary.pdf">
             AttachmentAction
           </AttachmentAction>
         </AttachmentActions>
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -2368,15 +2355,10 @@ function renderAttachmentTrigger(
   cleanup()
   render(
     <Attachment size="sm">
-      <AttachmentTrigger
-        data-testid="subject"
-        {...(props as ComponentProps<typeof AttachmentTrigger>)}
-      />
+      <AttachmentTrigger data-subject {...(props as ComponentProps<typeof AttachmentTrigger>)} />
     </Attachment>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="attachment-trigger"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="attachment-trigger"]')
 }
 
 function classesOfAttachmentTrigger(
@@ -2400,10 +2382,10 @@ describe('AttachmentTrigger', () => {
     cleanup()
     render(
       <Attachment>
-        <AttachmentTrigger data-testid="subject" />
+        <AttachmentTrigger data-subject />
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -2411,21 +2393,21 @@ describe('AttachmentTrigger', () => {
     render(
       <AttachmentGroup>
         <Attachment orientation="vertical">
-          <AttachmentTrigger data-testid="subject" />
+          <AttachmentTrigger data-subject />
         </Attachment>
       </AttachmentGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <Attachment>
-        <AttachmentTrigger data-testid="subject" aria-label="Preview research-summary.pdf" />
+        <AttachmentTrigger data-subject aria-label="Preview research-summary.pdf" />
       </Attachment>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -2435,13 +2417,11 @@ function renderAttachmentGroup(
   cleanup()
   render(
     <AttachmentGroup
-      data-testid="subject"
+      data-subject
       {...({ children: 'AttachmentGroup', ...props } as ComponentProps<typeof AttachmentGroup>)}
     />,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="attachment-group"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="attachment-group"]')
 }
 
 function classesOfAttachmentGroup(

@@ -23,11 +23,11 @@ function renderInputGroup(
   cleanup()
   render(
     <InputGroup
-      data-testid="subject"
+      data-subject
       {...({ children: 'InputGroup', ...props } as ComponentProps<typeof InputGroup>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="input-group"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="input-group"]')
 }
 
 function classesOfInputGroup(
@@ -50,11 +50,11 @@ describe('InputGroup', () => {
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
     render(
-      <InputGroup data-testid="subject" data-disabled="true">
+      <InputGroup data-subject data-disabled="true">
         InputGroup
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -65,14 +65,12 @@ function renderInputGroupAddon(
   render(
     <InputGroup>
       <InputGroupAddon
-        data-testid="subject"
+        data-subject
         {...({ children: 'InputGroupAddon', ...props } as ComponentProps<typeof InputGroupAddon>)}
       />
     </InputGroup>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="input-group-addon"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="input-group-addon"]')
 }
 
 function classesOfInputGroupAddon(
@@ -120,80 +118,80 @@ describe('InputGroupAddon', () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupAddon data-testid="subject" align="inline-end">
+        <InputGroupAddon data-subject align="inline-end">
           InputGroupAddon
         </InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupAddon data-testid="subject" align="block-start">
+        <InputGroupAddon data-subject align="block-start">
           InputGroupAddon
         </InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupAddon data-testid="subject" align="block-end">
+        <InputGroupAddon data-subject align="block-end">
           InputGroupAddon
         </InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupAddon data-testid="subject" />
+        <InputGroupAddon data-subject />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupAddon data-testid="subject" align="inline-start">
+        <InputGroupAddon data-subject align="inline-start">
           InputGroupAddon
         </InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
       <InputGroup data-disabled="true">
-        <InputGroupAddon data-testid="subject">InputGroupAddon</InputGroupAddon>
+        <InputGroupAddon data-subject>InputGroupAddon</InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
     render(
       <InputGroup data-disabled="true">
-        <InputGroupAddon data-testid="subject" align="inline-end">
+        <InputGroupAddon data-subject align="inline-end">
           InputGroupAddon
         </InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -205,7 +203,7 @@ function renderInputGroupButton(
     <InputGroup>
       <InputGroupAddon align="inline-end">
         <InputGroupButton
-          data-testid="subject"
+          data-subject
           {...({ children: 'InputGroupButton', ...props } as ComponentProps<
             typeof InputGroupButton
           >)}
@@ -213,7 +211,7 @@ function renderInputGroupButton(
       </InputGroupAddon>
     </InputGroup>,
   )
-  return document.querySelector('[data-testid="subject"]')
+  return document.querySelector('[data-subject]')
 }
 
 function classesOfInputGroupButton(
@@ -269,6 +267,14 @@ describe('InputGroupButton', () => {
     )
   })
 
+  it('renders with type="submit"', () => {
+    expect(renderInputGroupButton({ type: 'submit' })).toBeTruthy()
+  })
+
+  it('renders with type="reset"', () => {
+    expect(renderInputGroupButton({ type: 'reset' })).toBeTruthy()
+  })
+
   it('appends a consumer className last', () => {
     renderInputGroupButton({ className: 'consumer' })
     const element = document.querySelector('.consumer')
@@ -280,11 +286,11 @@ describe('InputGroupButton', () => {
     render(
       <InputGroup>
         <InputGroupAddon>
-          <InputGroupButton data-testid="subject">InputGroupButton</InputGroupButton>
+          <InputGroupButton data-subject>InputGroupButton</InputGroupButton>
         </InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -292,13 +298,13 @@ describe('InputGroupButton', () => {
     render(
       <InputGroup>
         <InputGroupAddon>
-          <InputGroupButton data-testid="subject" variant="outline">
+          <InputGroupButton data-subject variant="outline">
             InputGroupButton
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -306,13 +312,13 @@ describe('InputGroupButton', () => {
     render(
       <InputGroup>
         <InputGroupAddon>
-          <InputGroupButton data-testid="subject" variant="secondary">
+          <InputGroupButton data-subject variant="secondary">
             InputGroupButton
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
@@ -320,13 +326,13 @@ describe('InputGroupButton', () => {
     render(
       <InputGroup>
         <InputGroupAddon align="inline-end">
-          <InputGroupButton data-testid="subject" variant="secondary">
+          <InputGroupButton data-subject variant="secondary">
             InputGroupButton
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -334,13 +340,13 @@ describe('InputGroupButton', () => {
     render(
       <InputGroup>
         <InputGroupAddon align="inline-end">
-          <InputGroupButton data-testid="subject" variant="secondary" size="icon-xs">
+          <InputGroupButton data-subject variant="secondary" size="icon-xs">
             InputGroupButton
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -348,11 +354,11 @@ describe('InputGroupButton', () => {
     render(
       <InputGroup>
         <InputGroupAddon align="inline-end">
-          <InputGroupButton data-testid="subject" size="icon-xs" />
+          <InputGroupButton data-subject size="icon-xs" />
         </InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -360,23 +366,23 @@ describe('InputGroupButton', () => {
     render(
       <InputGroup>
         <InputGroupAddon>
-          <InputGroupButton data-testid="subject" />
+          <InputGroupButton data-subject />
         </InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupButton data-testid="subject" variant="secondary" size="icon-xs">
+        <InputGroupButton data-subject variant="secondary" size="icon-xs">
           InputGroupButton
         </InputGroupButton>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
@@ -384,13 +390,13 @@ describe('InputGroupButton', () => {
     render(
       <InputGroup>
         <InputGroupAddon align="block-end">
-          <InputGroupButton data-testid="subject" variant="default" size="icon-xs">
+          <InputGroupButton data-subject variant="default" size="icon-xs">
             InputGroupButton
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
@@ -398,13 +404,13 @@ describe('InputGroupButton', () => {
     render(
       <InputGroup>
         <InputGroupAddon align="block-end">
-          <InputGroupButton data-testid="subject" variant="ghost" size="sm">
+          <InputGroupButton data-subject variant="ghost" size="sm">
             InputGroupButton
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
@@ -412,13 +418,13 @@ describe('InputGroupButton', () => {
     render(
       <InputGroup>
         <InputGroupAddon align="block-end">
-          <InputGroupButton data-testid="subject" variant="default" size="sm">
+          <InputGroupButton data-subject variant="default" size="sm">
             InputGroupButton
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
@@ -426,13 +432,13 @@ describe('InputGroupButton', () => {
     render(
       <InputGroup>
         <InputGroupAddon align="block-start">
-          <InputGroupButton data-testid="subject" size="icon-xs">
+          <InputGroupButton data-subject size="icon-xs">
             InputGroupButton
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
@@ -440,13 +446,13 @@ describe('InputGroupButton', () => {
     render(
       <InputGroup>
         <InputGroupAddon align="block-start">
-          <InputGroupButton data-testid="subject" size="icon-xs" variant="ghost">
+          <InputGroupButton data-subject size="icon-xs" variant="ghost">
             InputGroupButton
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -458,13 +464,13 @@ function renderInputGroupText(
     <InputGroup>
       <InputGroupAddon align="block-start">
         <InputGroupText
-          data-testid="subject"
+          data-subject
           {...({ children: 'InputGroupText', ...props } as ComponentProps<typeof InputGroupText>)}
         />
       </InputGroupAddon>
     </InputGroup>,
   )
-  return document.querySelector('[data-testid="subject"]')
+  return document.querySelector('[data-subject]')
 }
 
 function classesOfInputGroupText(
@@ -489,11 +495,11 @@ describe('InputGroupText', () => {
     render(
       <InputGroup>
         <InputGroupAddon align="block-end">
-          <InputGroupText data-testid="subject">InputGroupText</InputGroupText>
+          <InputGroupText data-subject>InputGroupText</InputGroupText>
         </InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -501,11 +507,11 @@ describe('InputGroupText', () => {
     render(
       <InputGroup>
         <InputGroupAddon align="inline-end">
-          <InputGroupText data-testid="subject">InputGroupText</InputGroupText>
+          <InputGroupText data-subject>InputGroupText</InputGroupText>
         </InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -513,11 +519,11 @@ describe('InputGroupText', () => {
     render(
       <InputGroup>
         <InputGroupAddon>
-          <InputGroupText data-testid="subject">InputGroupText</InputGroupText>
+          <InputGroupText data-subject>InputGroupText</InputGroupText>
         </InputGroupAddon>
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -528,16 +534,14 @@ function renderInputGroupInput(
   render(
     <InputGroup>
       <InputGroupInput
-        data-testid="subject"
+        data-subject
         {...({ id: 'input-group-02', placeholder: 'Placeholder', ...props } as ComponentProps<
           typeof InputGroupInput
         >)}
       />
     </InputGroup>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="input-group-control"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="input-group-control"]')
 }
 
 function classesOfInputGroupInput(
@@ -561,14 +565,10 @@ describe('InputGroupInput', () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput
-          data-testid="subject"
-          id="input-disabled-03"
-          placeholder="This field is disabled"
-        />
+        <InputGroupInput data-subject id="input-disabled-03" placeholder="This field is disabled" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -576,262 +576,254 @@ describe('InputGroupInput', () => {
     render(
       <InputGroup>
         <InputGroupInput
-          data-testid="subject"
+          data-subject
           id="input-invalid-04"
           placeholder="This field is invalid"
           aria-invalid="true"
         />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-icon-left-05" />
+        <InputGroupInput data-subject id="input-icon-left-05" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-icon-right-07" />
+        <InputGroupInput data-subject id="input-icon-right-07" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-icon-both-09" />
+        <InputGroupInput data-subject id="input-icon-both-09" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-addon-20" />
+        <InputGroupInput data-subject id="input-addon-20" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-addon-21" />
+        <InputGroupInput data-subject id="input-addon-21" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (9)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-icon-both-10" />
+        <InputGroupInput data-subject id="input-icon-both-10" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (10)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-description-10" />
+        <InputGroupInput data-subject id="input-description-10" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (11)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-label-10" />
+        <InputGroupInput data-subject id="input-label-10" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (12)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-optional-12" aria-label="Optional" />
+        <InputGroupInput data-subject id="input-optional-12" aria-label="Optional" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (13)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-button-13" />
+        <InputGroupInput data-subject id="input-button-13" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (14)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-button-14" />
+        <InputGroupInput data-subject id="input-button-14" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (15)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-button-15" />
+        <InputGroupInput data-subject id="input-button-15" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (16)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-button-16" />
+        <InputGroupInput data-subject id="input-button-16" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (17)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-button-17" />
+        <InputGroupInput data-subject id="input-button-17" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (18)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-button-18" />
+        <InputGroupInput data-subject id="input-button-18" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (19)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-tooltip-20" />
+        <InputGroupInput data-subject id="input-tooltip-20" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (20)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-dropdown-21" />
+        <InputGroupInput data-subject id="input-dropdown-21" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (21)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-secure-19" />
+        <InputGroupInput data-subject id="input-secure-19" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (22)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="url" />
+        <InputGroupInput data-subject id="url" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (23)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-kbd-22" />
+        <InputGroupInput data-subject id="input-kbd-22" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (24)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-kbd-23" />
+        <InputGroupInput data-subject id="input-kbd-23" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (25)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput
-          data-testid="subject"
-          id="input-search-apps-24"
-          placeholder="Search for Apps..."
-        />
+        <InputGroupInput data-subject id="input-search-apps-24" placeholder="Search for Apps..." />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (26)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput
-          data-testid="subject"
-          id="input-search-type-25"
-          placeholder="Type to search..."
-        />
+        <InputGroupInput data-subject id="input-search-type-25" placeholder="Type to search..." />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (27)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-username-26" defaultValue="shadcn" />
+        <InputGroupInput data-subject id="input-username-26" defaultValue="shadcn" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (28)", () => {
@@ -839,13 +831,13 @@ describe('InputGroupInput', () => {
     render(
       <InputGroup>
         <InputGroupInput
-          data-testid="subject"
+          data-subject
           id="input-search-docs-27"
           placeholder="Search documentation..."
         />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (29)", () => {
@@ -853,68 +845,63 @@ describe('InputGroupInput', () => {
     render(
       <InputGroup data-disabled="true">
         <InputGroupInput
-          data-testid="subject"
+          data-subject
           id="input-search-disabled-28"
           placeholder="Search documentation..."
         />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (30)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-group-11" placeholder="First Name" />
+        <InputGroupInput data-subject id="input-group-11" placeholder="First Name" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (31)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-group-12" placeholder="Last Name" />
+        <InputGroupInput data-subject id="input-group-12" placeholder="Last Name" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (32)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="input-group-29" defaultValue="shadcn" />
+        <InputGroupInput data-subject id="input-group-29" defaultValue="shadcn" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (33)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput
-          data-testid="subject"
-          id="email-input"
-          type="email"
-          placeholder="you@example.com"
-        />
+        <InputGroupInput data-subject id="email-input" type="email" placeholder="you@example.com" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (34)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupInput data-testid="subject" id="website-input" placeholder="example.com" />
+        <InputGroupInput data-subject id="website-input" placeholder="example.com" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -925,7 +912,7 @@ function renderInputGroupTextarea(
   render(
     <InputGroup>
       <InputGroupTextarea
-        data-testid="subject"
+        data-subject
         {...({
           id: 'feedback-textarea',
           placeholder: 'Share your thoughts...',
@@ -934,9 +921,7 @@ function renderInputGroupTextarea(
       />
     </InputGroup>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="input-group-control"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="input-group-control"]')
 }
 
 function classesOfInputGroupTextarea(
@@ -963,13 +948,13 @@ describe('InputGroupTextarea', () => {
     render(
       <InputGroup>
         <InputGroupTextarea
-          data-testid="subject"
+          data-subject
           id="textarea-header-footer-13"
           placeholder="Enter your text here..."
         />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
@@ -977,14 +962,14 @@ describe('InputGroupTextarea', () => {
     render(
       <InputGroup>
         <InputGroupTextarea
-          data-testid="subject"
+          data-subject
           id="textarea-header-footer-14"
           placeholder="Enter your text here..."
           aria-invalid="true"
         />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
@@ -992,23 +977,23 @@ describe('InputGroupTextarea', () => {
     render(
       <InputGroup>
         <InputGroupTextarea
-          data-testid="subject"
+          data-subject
           id="textarea-header-footer-15"
           placeholder="Enter your text here..."
         />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
       <InputGroup>
-        <InputGroupTextarea data-testid="subject" id="prompt-31" />
+        <InputGroupTextarea data-subject id="prompt-31" />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (6)", () => {
@@ -1016,13 +1001,13 @@ describe('InputGroupTextarea', () => {
     render(
       <InputGroup>
         <InputGroupTextarea
-          data-testid="subject"
+          data-subject
           id="textarea-header-footer-30"
           placeholder="Enter your text here..."
         />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (7)", () => {
@@ -1030,13 +1015,13 @@ describe('InputGroupTextarea', () => {
     render(
       <InputGroup>
         <InputGroupTextarea
-          data-testid="subject"
+          data-subject
           id="textarea-comment-31"
           placeholder="Share your thoughts..."
         />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (8)", () => {
@@ -1044,12 +1029,12 @@ describe('InputGroupTextarea', () => {
     render(
       <InputGroup>
         <InputGroupTextarea
-          data-testid="subject"
+          data-subject
           id="textarea-code-32"
           placeholder="console.log('Hello, world!');"
         />
       </InputGroup>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })

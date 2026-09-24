@@ -24,11 +24,11 @@ function renderPagination(
   cleanup()
   render(
     <Pagination
-      data-testid="subject"
+      data-subject
       {...({ children: 'Pagination', ...props } as ComponentProps<typeof Pagination>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="pagination"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="pagination"]')
 }
 
 function classesOfPagination(
@@ -56,16 +56,14 @@ function renderPaginationContent(
   render(
     <Pagination>
       <PaginationContent
-        data-testid="subject"
+        data-subject
         {...({ children: 'PaginationContent', ...props } as ComponentProps<
           typeof PaginationContent
         >)}
       />
     </Pagination>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="pagination-content"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="pagination-content"]')
 }
 
 function classesOfPaginationContent(
@@ -94,13 +92,13 @@ function renderPaginationItem(
     <Pagination>
       <PaginationContent>
         <PaginationItem
-          data-testid="subject"
+          data-subject
           {...({ children: 'PaginationItem', ...props } as ComponentProps<typeof PaginationItem>)}
         />
       </PaginationContent>
     </Pagination>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="pagination-item"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="pagination-item"]')
 }
 
 describe('PaginationItem', () => {
@@ -120,7 +118,7 @@ function renderPaginationLink(
       <PaginationContent>
         <PaginationItem>
           <PaginationLink
-            data-testid="subject"
+            data-subject
             {...({ href: '#', children: 'PaginationLink', ...props } as ComponentProps<
               typeof PaginationLink
             >)}
@@ -129,7 +127,7 @@ function renderPaginationLink(
       </PaginationContent>
     </Pagination>,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="pagination-link"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="pagination-link"]')
 }
 
 function attributesOfPaginationLink(
@@ -159,14 +157,14 @@ describe('PaginationLink', () => {
       <Pagination>
         <PaginationContent>
           <PaginationItem>
-            <PaginationLink data-testid="subject" href="#" isActive>
+            <PaginationLink data-subject href="#" isActive>
               PaginationLink
             </PaginationLink>
           </PaginationItem>
         </PaginationContent>
       </Pagination>,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
 
@@ -179,14 +177,14 @@ function renderPaginationPrevious(
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            data-testid="subject"
+            data-subject
             {...({ href: '#', ...props } as ComponentProps<typeof PaginationPrevious>)}
           />
         </PaginationItem>
       </PaginationContent>
     </Pagination>,
   )
-  return document.querySelector('[data-testid="subject"]')
+  return document.querySelector('[data-subject]')
 }
 
 function classesOfPaginationPrevious(
@@ -234,14 +232,14 @@ function renderPaginationNext(
       <PaginationContent>
         <PaginationItem>
           <PaginationNext
-            data-testid="subject"
+            data-subject
             {...({ href: '#', ...props } as ComponentProps<typeof PaginationNext>)}
           />
         </PaginationItem>
       </PaginationContent>
     </Pagination>,
   )
-  return document.querySelector('[data-testid="subject"]')
+  return document.querySelector('[data-subject]')
 }
 
 function classesOfPaginationNext(
@@ -287,16 +285,14 @@ function renderPaginationEllipsis(
       <PaginationContent>
         <PaginationItem>
           <PaginationEllipsis
-            data-testid="subject"
+            data-subject
             {...(props as ComponentProps<typeof PaginationEllipsis>)}
           />
         </PaginationItem>
       </PaginationContent>
     </Pagination>,
   )
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="pagination-ellipsis"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="pagination-ellipsis"]')
 }
 
 function classesOfPaginationEllipsis(

@@ -12,11 +12,11 @@ function renderTextarea(
   cleanup()
   render(
     <Textarea
-      data-testid="subject"
+      data-subject
       {...({ placeholder: 'Type your message here.', ...props } as ComponentProps<typeof Textarea>)}
     />,
   )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="textarea"]')
+  return document.querySelector('[data-subject]')?.closest('[data-slot="textarea"]')
 }
 
 function classesOfTextarea(
@@ -38,47 +38,41 @@ describe('Textarea', () => {
 
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
-    render(
-      <Textarea data-testid="subject" placeholder="Type your message here." aria-invalid="true" />,
-    )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    render(<Textarea data-subject placeholder="Type your message here." aria-invalid="true" />)
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
       <Textarea
-        data-testid="subject"
+        data-subject
         id="textarea-demo-message"
         placeholder="Type your message here."
         rows={6}
       />,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (4)", () => {
     cleanup()
     render(
       <Textarea
-        data-testid="subject"
+        data-subject
         id="textarea-demo-message-2"
         placeholder="Type your message here."
         rows={6}
       />,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 
   it("renders as upstream's example uses it (5)", () => {
     cleanup()
     render(
-      <Textarea
-        data-testid="subject"
-        id="textarea-demo-disabled"
-        placeholder="Type your message here."
-      />,
+      <Textarea data-subject id="textarea-demo-disabled" placeholder="Type your message here." />,
     )
-    expect(document.querySelector('[data-testid="subject"]')).not.toBeNull()
+    expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 })
