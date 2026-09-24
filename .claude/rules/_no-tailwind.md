@@ -6,11 +6,12 @@ does; where they disagree, this file wins.
 ## Disregard in the vendored skill
 
 - `supporting/styling.md`: Tailwind utility classes (`bg-primary`, `size-*`, `space-x-*`, ...).
-- `customization.md`: `@theme inline`, `tailwind.config.js`, and the Tailwind CSS file.
+- `supporting/customization.md`: `@theme inline`, `tailwind.config.js`, and the Tailwind CSS file.
 - Any instruction to run `shadcn init` or `shadcn add` here, or to create a `components.json`.
   This repo produces a registry; it does not consume one.
 
-`registry.md`, `cli.md` (for `shadcn build`), and `supporting/base-vs-radix.md` still apply.
+`supporting/registry.md`, `supporting/cli.md` (for `shadcn build`), and `supporting/base-vs-radix.md`
+still apply.
 
 ## Registry items
 

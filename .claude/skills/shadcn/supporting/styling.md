@@ -1,6 +1,6 @@
 # Styling & Customization
 
-See [customization.md](../customization.md) for theming, CSS variables, and adding custom colors.
+See [customization.md](./customization.md) for theming, CSS variables, and adding custom colors.
 
 ## Contents
 
@@ -57,7 +57,7 @@ For positive, negative, or status indicators, use Badge variants, semantic token
 <span className="text-destructive">-3.2%</span>
 ```
 
-If you need a success/positive color that doesn't exist as a semantic token, use a Badge variant or ask the user about adding a custom CSS variable to the theme (see [customization.md](../customization.md)).
+If you need a success/positive color that doesn't exist as a semantic token, use a Badge variant or ask the user about adding a custom CSS variable to the theme (see [customization.md](./customization.md)).
 
 ---
 
@@ -102,7 +102,7 @@ Use `className` for layout (e.g. `max-w-md`, `mx-auto`, `mt-4`), **not** for ove
 To customize a component's appearance, prefer these approaches in order:
 1. **Built-in variants** — `variant="outline"`, `variant="destructive"`, etc.
 2. **Semantic color tokens** — `bg-primary`, `text-muted-foreground`.
-3. **CSS variables** — define custom colors in the global CSS file (see [customization.md](../customization.md)).
+3. **CSS variables** — define custom colors in the global CSS file (see [customization.md](./customization.md)).
 
 ---
 

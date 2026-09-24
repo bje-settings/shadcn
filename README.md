@@ -40,11 +40,12 @@ The vendored copy differs from upstream to follow the
 [skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices):
 
 - `rules/` renamed to `supporting/`, since these are
-  [supporting files](https://code.claude.com/docs/en/skills#add-supporting-files), not Claude Code rules
+  [supporting files](https://code.claude.com/docs/en/skills#add-supporting-files), not Claude Code rules;
+  `cli.md`, `customization.md`, and `registry.md` moved into it so only `SKILL.md` sits at the root
 - `agents/` and `assets/` removed (OpenAI Codex metadata)
 - `mcp.md` removed (not referenced from `SKILL.md`, and no shadcn MCP server is configured)
 - `evals/` removed (authoring test cases, never loaded at runtime)
-- Tables of contents added to `registry.md` and `supporting/icons.md` (over 100 lines)
+- Tables of contents added to `supporting/registry.md` and `supporting/icons.md` (over 100 lines)
 
 `npx skills update shadcn` replaces the directory with upstream, so reapply these changes after
 updating.

@@ -140,7 +140,7 @@ module.exports = {
 
 ## Customizing Components
 
-See also: [supporting/styling.md](./supporting/styling.md) for Incorrect/Correct examples.
+See also: [supporting/styling.md](./styling.md) for Incorrect/Correct examples.
 
 Prefer these approaches in order:
 
@@ -206,4 +206,4 @@ npx shadcn@latest add button --dry-run        # see all affected files
 npx shadcn@latest add button --diff button.tsx # see the diff for a specific file
 ```
 
-See [Updating Components in SKILL.md](./SKILL.md#updating-components) for the full smart merge workflow.
+See [Updating Components in SKILL.md](../SKILL.md#updating-components) for the full smart merge workflow.

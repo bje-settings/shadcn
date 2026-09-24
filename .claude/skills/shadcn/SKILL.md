@@ -162,7 +162,7 @@ The injected project context contains these key fields:
 - **`packageManager`** → use this for any non-shadcn dependency installs (e.g. `pnpm add date-fns` vs `npm install date-fns`).
 - **`preset`** → resolved preset code and values for the current project. Use `npx shadcn@latest preset resolve --json` when you only need preset information.
 
-See [cli.md — `info` command](./cli.md) for the full field reference.
+See [cli.md — `info` command](./supporting/cli.md) for the full field reference.
 
 ## Component Docs, Examples, and Usage
 
@@ -272,6 +272,6 @@ npx shadcn@latest view owner/repo/item
 - [supporting/icons.md](./supporting/icons.md) — data-icon, icon sizing, passing icons as objects
 - [supporting/styling.md](./supporting/styling.md) — Semantic colors, variants, className, spacing, size, truncate, dark mode, cn(), z-index
 - [supporting/base-vs-radix.md](./supporting/base-vs-radix.md) — asChild vs render, Select, ToggleGroup, Slider, Accordion
-- [cli.md](./cli.md) — Commands, flags, presets, templates
-- [registry.md](./registry.md) — Authoring source registries, `include`, item definitions, dependencies, GitHub registry rules
-- [customization.md](./customization.md) — Theming, CSS variables, extending components
+- [supporting/cli.md](./supporting/cli.md) — Commands, flags, presets, templates
+- [supporting/registry.md](./supporting/registry.md) — Authoring source registries, `include`, item definitions, dependencies, GitHub registry rules
+- [supporting/customization.md](./supporting/customization.md) — Theming, CSS variables, extending components
