@@ -12,3 +12,7 @@ node_modules/
 
 # shadcn build output
 /public/r/
+
+# A/B harness output
+/ab/report/
+/ab/results/

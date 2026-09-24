@@ -9,7 +9,8 @@ describe('formatWithBiome', () => {
     expect(formatWithBiome(root, 'a.json', '{"a":[1]}')).toBe('{ "a": [1] }\n')
   })
 
-  it('passes SCSS through untouched', () => {
+  it('passes stylesheets through untouched', () => {
     expect(formatWithBiome(root, 'a.module.scss', 'a{b:c}')).toBe('a{b:c}')
+    expect(formatWithBiome(root, 'a.css', '@source "./x";')).toBe('@source "./x";')
   })
 })

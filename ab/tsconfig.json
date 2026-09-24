@@ -1,0 +1,16 @@
+{
+  // The harness is bundled by Vite, so it resolves like a bundler, with both
+  // sides' registry aliases.
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": false,
+    "types": ["node", "vite/client"],
+    "paths": {
+      "@/registry/bje/ui/*": ["../registry/ui/*"],
+      "@/registry/base-vega/ui/*": ["./generated/upstream/*"]
+    }
+  },
+  "include": ["."]
+}

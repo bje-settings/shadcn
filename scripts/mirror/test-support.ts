@@ -1,0 +1,26 @@
+// Shared by the mirror's tests: the project CSS built from the committed
+// snapshots, and a compiler over it, as `mirror build` uses them.
+
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { parseConfig } from './config.ts'
+import { type BaseColor, type FontItem, projectCss, type StyleIndex } from './project-css.ts'
+import { compileCandidates } from './tailwind.ts'
+
+export const root = process.cwd()
+export const config = parseConfig(
+  JSON.parse(readFileSync(join(root, 'mirror.config.json'), 'utf8')),
+)
+
+export function snapshot<T>(name: string): T {
+  const path = join(root, config.snapshotDir, config.upstream.style, `${name}.json`)
+  return JSON.parse(readFileSync(path, 'utf8')) as T
+}
+
+export const input = projectCss(
+  snapshot<StyleIndex>('index'),
+  snapshot<BaseColor>(`colors-${config.theme.baseColor}`),
+  snapshot<FontItem>(`font-${config.theme.font}`),
+)
+
+export const compile = (candidates: string[]) => compileCandidates(input, candidates)

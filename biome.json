@@ -42,7 +42,7 @@
   },
   "overrides": [
     {
-      "includes": ["registry/ui/**"],
+      "includes": ["registry/ui/**", "ab/generated/**"],
       "linter": {
         "rules": {
           "a11y": {

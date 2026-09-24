@@ -1,16 +1,21 @@
 import { describe, expect, it } from 'vitest'
 import { buildComponent, dependenciesOf, type UpstreamItem } from './component.ts'
 import { parseConfig } from './config.ts'
+import { compile } from './test-support.ts'
 
 const config = parseConfig({
   namespace: 'bje',
   upstream: {
     url: 'https://example.com/{style}/{name}.json',
+    colorsUrl: 'https://example.com/colors/{name}.json',
     style: 'base-vega',
   },
+  theme: { baseColor: 'neutral', font: 'inter' },
   components: ['badge'],
   snapshotDir: 'upstream',
   outputDir: 'registry/ui',
+  globalsDir: 'registry/styles',
+  harnessDir: 'ab/generated',
 })
 
 const source = (classes: string) => `import { cva } from "class-variance-authority"
@@ -29,14 +34,18 @@ const badge = (content: string): UpstreamItem => ({
 
 describe('buildComponent', () => {
   it('writes the component and its module into a PascalCase folder', async () => {
-    const result = await buildComponent(badge(source('group/badge inline-flex bg-primary')), config)
+    const result = await buildComponent(
+      badge(source('group/badge inline-flex bg-primary')),
+      config,
+      compile,
+    )
     expect(result.item).toEqual({
       name: 'badge',
       type: 'registry:ui',
       title: 'Badge',
       dependencies: ['clsx'],
       devDependencies: ['@testing-library/dom', '@testing-library/react', 'jsdom', 'vitest'],
-      registryDependencies: [],
+      registryDependencies: ['@bje/globals'],
       files: [
         { path: 'registry/ui/Badge/Badge.tsx', type: 'registry:ui' },
         { path: 'registry/ui/Badge/Badge.module.scss', type: 'registry:ui' },
@@ -74,8 +83,8 @@ describe('buildComponent', () => {
       'import { cn } from "cn"\nimport { Badge as Base } from "@/registry/base-vega/ui/badge"',
     )
     const item = { ...badge(content), registryDependencies: ['badge'] }
-    const { item: result } = await buildComponent(item, config)
-    expect(result.registryDependencies).toEqual(['@bje/badge'])
+    const { item: result } = await buildComponent(item, config, compile)
+    expect(result.registryDependencies).toEqual(['@bje/badge', '@bje/globals'])
   })
 
   it('wraps long property lists and omits empty sections', async () => {
@@ -108,7 +117,7 @@ describe('buildComponent', () => {
       'one file',
     ],
   ])('rejects %s', async (_, item, message) => {
-    await expect(buildComponent(item as UpstreamItem, config)).rejects.toThrow(message)
+    await expect(buildComponent(item as UpstreamItem, config, compile)).rejects.toThrow(message)
   })
 })
 

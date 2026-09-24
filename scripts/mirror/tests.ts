@@ -9,7 +9,7 @@ import { parse } from '@babel/parser'
 import { pascalCase } from './names.ts'
 import type { RenderedComponent, TransformedComponent, VariantSet } from './tsx.ts'
 
-function exportedNames(code: string): Set<string> {
+export function exportedNames(code: string): Set<string> {
   const ast = parse(code, {
     sourceType: 'module',
     plugins: ['typescript', 'jsx'],

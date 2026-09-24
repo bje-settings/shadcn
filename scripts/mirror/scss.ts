@@ -46,12 +46,23 @@ function wrappersOf(rule: Rule, layer: AtRule): string[] {
   return wrappers
 }
 
+// The utility's own class becomes `&`. Any other class (e.g. `.dark` from the
+// dark variant) names something outside the module, so it is marked
+// :global() or CSS modules would rename it and the selector would never match.
 function nestSelector(selector: string, candidates: Set<string>, resolved: Set<string>): string {
   return selectorParser((root) => {
     root.walkClasses((node) => {
-      if (!candidates.has(node.value)) return
-      resolved.add(node.value)
-      node.replaceWith(selectorParser.nesting({ value: '&' }))
+      if (candidates.has(node.value)) {
+        resolved.add(node.value)
+        node.replaceWith(selectorParser.nesting({ value: '&' }))
+        return
+      }
+      node.replaceWith(
+        selectorParser.pseudo({
+          value: ':global',
+          nodes: [selectorParser.selector({ nodes: [node.clone()], value: '' })],
+        }),
+      )
     })
   }).processSync(selector)
 }

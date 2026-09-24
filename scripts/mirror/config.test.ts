@@ -1,15 +1,19 @@
 import { describe, expect, it } from 'vitest'
-import { parseConfig, upstreamUrl } from './config.ts'
+import { colorsUrl, parseConfig, upstreamUrl } from './config.ts'
 
 const valid = {
   namespace: 'bje',
   upstream: {
     url: 'https://example.com/{style}/{name}.json',
+    colorsUrl: 'https://example.com/colors/{name}.json',
     style: 'base-vega',
   },
+  theme: { baseColor: 'neutral', font: 'inter' },
   components: ['button', 'icon-button'],
   snapshotDir: 'upstream',
   outputDir: 'registry/ui',
+  globalsDir: 'registry/styles',
+  harnessDir: 'ab/generated',
   selectorRewrites: [{ pattern: 'a+', replace: '', reason: 'why' }],
 }
 
@@ -25,6 +29,7 @@ describe('parseConfig', () => {
       selectorRewrites: [{ pattern: /a+/g, replace: '', reason: 'why' }],
     })
     expect(upstreamUrl(config, 'button')).toBe('https://example.com/base-vega/button.json')
+    expect(colorsUrl(config)).toBe('https://example.com/colors/neutral.json')
   })
 
   it('defaults selectorRewrites to none', () => {
@@ -41,17 +46,24 @@ describe('parseConfig', () => {
     ],
     [
       'a url without placeholders',
-      withChange({
-        upstream: { url: 'https://example.com', style: 'base-vega' },
-      }),
+      withChange({ upstream: { ...valid.upstream, url: 'https://example.com' } }),
       'must contain {style} and {name}',
     ],
     [
       'a url without {name}',
-      withChange({
-        upstream: { url: 'https://example.com/{style}', style: 'base-vega' },
-      }),
+      withChange({ upstream: { ...valid.upstream, url: 'https://example.com/{style}' } }),
       'must contain {style} and {name}',
+    ],
+    [
+      'a colorsUrl without {name}',
+      withChange({ upstream: { ...valid.upstream, colorsUrl: 'https://example.com/colors' } }),
+      'upstream.colorsUrl must contain {name}',
+    ],
+    ['a missing theme', withChange({ theme: 'neutral' }), 'theme must be an object'],
+    [
+      'a theme without a font',
+      withChange({ theme: { baseColor: 'neutral' } }),
+      'theme.font must be',
     ],
     ['non-array components', withChange({ components: 'button' }), 'components must be'],
     ['empty components', withChange({ components: [] }), 'components must be'],

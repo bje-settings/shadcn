@@ -15,11 +15,22 @@ export type MirrorConfig = {
   namespace: string
   upstream: {
     url: string
+    // Base color themes, e.g. https://ui.shadcn.com/r/colors/{name}.json
+    colorsUrl: string
     style: string
+  }
+  // The preset's theme choices (the shadcn CLI's `vega` preset is neutral + inter).
+  theme: {
+    baseColor: string
+    font: string
   }
   components: string[]
   snapshotDir: string
   outputDir: string
+  // Generated global stylesheets (the @<namespace>/globals item)
+  globalsDir: string
+  // Generated inputs for the A/B harness
+  harnessDir: string
   selectorRewrites: SelectorRewrite[]
 }
 
@@ -45,6 +56,11 @@ export function parseConfig(raw: unknown): MirrorConfig {
   if (!url.includes('{style}') || !url.includes('{name}')) {
     fail('upstream.url must contain {style} and {name}')
   }
+
+  const colorsUrl = string(upstream, 'colorsUrl', 'upstream.')
+  if (!colorsUrl.includes('{name}')) fail('upstream.colorsUrl must contain {name}')
+  const theme = raw.theme
+  if (!isRecord(theme)) fail('theme must be an object')
 
   const components = raw.components
   if (
@@ -77,14 +93,24 @@ export function parseConfig(raw: unknown): MirrorConfig {
 
   return {
     namespace: string(raw, 'namespace', ''),
-    upstream: { url, style: string(upstream, 'style', 'upstream.') },
+    upstream: { url, colorsUrl, style: string(upstream, 'style', 'upstream.') },
+    theme: {
+      baseColor: string(theme, 'baseColor', 'theme.'),
+      font: string(theme, 'font', 'theme.'),
+    },
     components,
     snapshotDir: string(raw, 'snapshotDir', ''),
     outputDir: string(raw, 'outputDir', ''),
+    globalsDir: string(raw, 'globalsDir', ''),
+    harnessDir: string(raw, 'harnessDir', ''),
     selectorRewrites,
   }
 }
 
 export function upstreamUrl(config: MirrorConfig, name: string): string {
   return config.upstream.url.replace('{style}', config.upstream.style).replace('{name}', name)
+}
+
+export function colorsUrl(config: MirrorConfig): string {
+  return config.upstream.colorsUrl.replace('{name}', config.theme.baseColor)
 }

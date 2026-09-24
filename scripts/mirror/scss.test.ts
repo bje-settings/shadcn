@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import type { SelectorRewrite } from './config.ts'
 import { slotToScss } from './scss.ts'
-import { compileCandidates } from './tailwind.ts'
+import { compile } from './test-support.ts'
 
 async function convert(classes: string[], rewrites: SelectorRewrite[] = []) {
-  return slotToScss(await compileCandidates(classes), { name: 'root', classes }, rewrites)
+  return slotToScss(await compile(classes), { name: 'root', classes }, rewrites)
 }
 
 describe('slotToScss', () => {
@@ -21,6 +21,11 @@ describe('slotToScss', () => {
     )
     expect(scss).toContain('    @supports (color: color-mix(in lab, red, red)) {')
     expect(scss).toContain('  :where([data-slot="group"]) & {')
+  })
+
+  it('keeps classes outside the module global', async () => {
+    const { scss } = await convert(['dark:bg-primary'])
+    expect(scss).toContain('  &:is(:global(.dark) *) {')
   })
 
   it('merges adjacent blocks that share a selector', async () => {

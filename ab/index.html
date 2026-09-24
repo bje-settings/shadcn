@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>A/B: side by side</title>
+    <style>
+      body { margin: 0; display: grid; grid-template-columns: 1fr 1fr; height: 100vh; font: 12px system-ui; }
+      section { display: grid; grid-template-rows: auto 1fr; border-left: 1px solid #ccc; }
+      h1 { margin: 0; padding: 6px 12px; font-size: 12px; background: #f4f4f4; }
+      iframe { border: 0; width: 100%; height: 100%; }
+    </style>
+  </head>
+  <body>
+    <section><h1>Upstream (Tailwind)</h1><iframe id="upstream"></iframe></section>
+    <section><h1>Ours (SCSS modules)</h1><iframe id="ours"></iframe></section>
+    <script>
+      // Pass ?case=<id> through to both sides.
+      for (const side of ['upstream', 'ours']) {
+        document.getElementById(side).src = `${side}.html${location.search}`
+      }
+    </script>
+  </body>
+</html>

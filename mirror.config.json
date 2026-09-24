@@ -2,11 +2,18 @@
   "namespace": "bje",
   "upstream": {
     "url": "https://ui.shadcn.com/r/styles/{style}/{name}.json",
+    "colorsUrl": "https://ui.shadcn.com/r/colors/{name}.json",
     "style": "base-vega"
+  },
+  "theme": {
+    "baseColor": "neutral",
+    "font": "inter"
   },
   "components": ["button", "button-group", "separator"],
   "snapshotDir": "upstream",
   "outputDir": "registry/ui",
+  "globalsDir": "registry/styles",
+  "harnessDir": "ab/generated",
   "selectorRewrites": [
     {
       "pattern": ":not\\(\\[class\\*=\"[\\w-]+\"\\]\\)",
