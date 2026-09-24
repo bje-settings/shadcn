@@ -92,7 +92,7 @@ jobs:
         run: pnpm ab
       - name: Summarize A/B timings
         if: ${{ !cancelled() }}
-        run: pnpm -s ab:timings >> "$GITHUB_STEP_SUMMARY"
+        run: pnpm -s ab:timings | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Upload the A/B report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
