@@ -56,6 +56,7 @@
 
 @layer theme {
   :root, :host {
+    --font-sans: "Inter Variable", sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
     --spacing: .25rem;
@@ -69,6 +70,13 @@
     --default-transition-timing-function: cubic-bezier(.4, 0, .2, 1);
     --default-font-family: "Inter Variable", sans-serif;
     --default-mono-font-family: var(--font-mono);
+    --font-heading: var(--font-sans);
+    --color-foreground: var(--foreground);
+    --color-primary: var(--primary);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-border: var(--border);
+    --color-ring: var(--ring);
   }
 }
 

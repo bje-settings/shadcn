@@ -99,6 +99,26 @@
           "path": "registry/styles/base.scss",
           "type": "registry:file",
           "target": "@components/styles/base.scss"
+        },
+        {
+          "path": "registry/styles/fonts.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts.css"
+        }
+      ]
+    },
+    {
+      "name": "typeset",
+      "type": "registry:file",
+      "title": "Typeset",
+      "dependencies": [],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/styles/typeset.css",
+          "type": "registry:file",
+          "target": "@components/styles/typeset.css"
         }
       ]
     }
