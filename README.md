@@ -163,8 +163,8 @@ error in place and fails alone. Each theme renders on its own page with `.dark` 
 that resolve at the root switch too. `?theme=dark` and `?case=<id>` select the theme and narrow a
 page to one case. Playwright uses the installed Chrome
 (`channel: 'chrome'`); CI runs the `ab` job on the runner's Chrome and uploads the report as an
-artifact, with images for the failed comparisons only. A pull request that changes only docs, unit
-tests or lint and hook config skips the comparison.
+artifact, with images for the failed comparisons only. A draft pull request skips the comparison
+until it is marked ready, as does one that changes only docs, unit tests or lint and hook config.
 
 ## Adding an item
 

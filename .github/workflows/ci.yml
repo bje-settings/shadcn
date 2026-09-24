@@ -2,6 +2,9 @@ name: CI
 
 on:
   pull_request:
+    # ready_for_review: a draft skips the A/B comparison, which runs once the
+    # pull request is marked ready.
+    types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches: [main]
 
@@ -89,15 +92,21 @@ jobs:
         with:
           # The merge commit and its base, to list what a pull request changes.
           fetch-depth: 2
-      # A pull request that changes only files no A/B case renders or builds
-      # from (docs, unit tests, lint and hook config) skips the comparison.
-      # The job still reports, as the ruleset requires. Anything else runs
+      # A draft pull request skips the comparison until it is marked ready,
+      # as does one that changes only files no A/B case renders or builds
+      # from (docs, unit tests, lint and hook config). The job still reports,
+      # as the ruleset requires, and a draft cannot merge. Anything else runs
       # it, as does every push to main.
       - name: Decide whether the comparison runs
         id: scope
         run: |
           if [ "${{ github.event_name }}" != pull_request ]; then
             echo run=true >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "${{ github.event.pull_request.draft }}" = true ]; then
+            echo "Draft pull request: comparison skipped until it is marked ready." >> "$GITHUB_STEP_SUMMARY"
+            echo run=false >> "$GITHUB_OUTPUT"
             exit 0
           fi
           relevant=$(git diff --name-only HEAD^1 HEAD | grep -Ev \
