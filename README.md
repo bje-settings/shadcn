@@ -19,9 +19,10 @@ Source for the `@bje` [shadcn registry](https://ui.shadcn.com/docs/registry).
 ## Development
 
 ```bash
-pnpm install   # also installs the lefthook pre-commit hooks
-pnpm build     # shadcn build: validates registry.json and writes public/r/
-pnpm test      # vitest with 100% coverage thresholds, generated components included
+pnpm install        # also installs the lefthook pre-commit hooks
+pnpm mirror:build   # once after cloning: the A/B harness inputs are not committed
+pnpm build          # shadcn build: validates registry.json and writes public/r/
+pnpm test           # vitest with 100% coverage thresholds, generated components included
 ```
 
 ## Mirror
@@ -117,8 +118,9 @@ output.
 Generated files get Biome's formatting and safe fixes (import order, `import type`). They keep
 upstream's code, so `biome.json` turns off the rules upstream's code trips for `registry/ui/**`
 (see the `registry/ui/**` override in `biome.json`). Every other rule still applies there.
-`ab/generated/**` holds upstream's code verbatim for comparison and generated harness inputs, so
-Biome only formats it.
+`ab/generated/`, upstream's code verbatim for comparison and the generated harness inputs, is not
+committed: `pnpm ab` and `pnpm ab:serve` rebuild it first (`pnpm mirror:build`), and CI does the
+same. Biome skips it as a gitignored path.
 
 ## Visual A/B
 

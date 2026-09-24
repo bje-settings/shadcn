@@ -1,8 +1,8 @@
 // The committed output must be exactly what `mirror build` produces from the
 // committed snapshots: a hand edit to a generated file, or a pipeline change
-// without `pnpm mirror:build`, fails here. Covers components, global
-// stylesheets, A/B harness inputs, the rebuilt project CSS and registry.json,
-// and proves every generated stylesheet compiles with Sass.
+// without `pnpm mirror:build`, fails here. Covers components, hooks, global
+// stylesheets, the rebuilt project CSS and registry.json, and proves every
+// generated stylesheet compiles with Sass.
 
 import { cp, mkdtemp, readdir, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -14,7 +14,9 @@ import { formatWithBiome } from './format.ts'
 import { config, root } from './test-support.ts'
 
 const snapshots = join(config.snapshotDir, config.upstream.style)
-const outputDirs = [config.outputDir, config.hooksDir, config.globalsDir, config.harnessDir]
+// The A/B harness inputs are not committed (see .gitignore): pnpm ab
+// regenerates them.
+const outputDirs = [config.outputDir, config.hooksDir, config.globalsDir]
 let built: string
 
 async function files(base: string, dir: string): Promise<string[]> {

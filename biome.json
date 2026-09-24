@@ -66,15 +66,6 @@
           }
         }
       }
-    },
-    {
-      "includes": ["ab/generated/**"],
-      "linter": {
-        "enabled": false
-      },
-      "assist": {
-        "enabled": false
-      }
     }
   ]
 }

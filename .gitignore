@@ -13,6 +13,7 @@ node_modules/
 # shadcn build output
 /public/r/
 
-# A/B harness output
+# A/B harness inputs (pnpm mirror:build rebuilds them from upstream/) and output
+/ab/generated/
 /ab/report/
 /ab/results/
