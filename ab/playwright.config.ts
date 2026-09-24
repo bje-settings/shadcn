@@ -6,6 +6,10 @@ export default defineConfig({
   testDir: '.',
   testMatch: 'ab.spec.ts',
   fullyParallel: true,
+  // Playwright defaults to half the CPU cores: one worker on CI's 2-core
+  // runner. A case mostly waits (for its DOM to settle), not computes, so
+  // more workers than cores still overlap.
+  workers: process.env.CI ? 4 : undefined,
   forbidOnly: Boolean(process.env.CI),
   reporter: [
     ['list'],
