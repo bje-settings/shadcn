@@ -929,7 +929,7 @@ describe('SelectScrollDownButton', () => {
 })
 
 describe('re-exports', () => {
-  it('re-exports Select from @base-ui/react/select', () => {
+  it('re-exports Select from @base-ui\u002Freact\u002Fselect', () => {
     expect(Select).toBe(SelectPrimitive.Root)
   })
 })

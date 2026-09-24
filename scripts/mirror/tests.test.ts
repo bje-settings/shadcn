@@ -304,6 +304,44 @@ export { Select, All, Plain, Strange, local }`)
     expect(test).not.toContain('Unexported')
   })
 
+  it('escapes upstream text in generated code, bracing escaped JSX attributes', () => {
+    const test = generate(
+      `${header}
+function useChips() {
+  if (!useContext(Ctx)) throw new Error("use </Chip> in a \u2028 <Chips>")
+  return 1
+}
+function Chip({ className }) {
+  useChips()
+  return <span data-slot="chip" className={cn("x", className)} />
+}
+export { Chip }`,
+      {
+        scaffolds: new Map<string, Scaffold>([
+          [
+            'Chip',
+            {
+              ancestors: [{ component: 'Chips', props: { src: 'https://x.test/a.png', alt: 'a' } }],
+              props: { list: ['</b>'] },
+              children: true,
+              others: [],
+            },
+          ],
+        ]),
+      },
+    )
+    expect(test).toContain('<Chips src={"https:\\u002F\\u002Fx.test\\u002Fa.png"} alt="a">')
+    expect(test).toContain('"list": ["\\u003C\\u002Fb\\u003E"]')
+    expect(test).toContain(
+      '.toThrow("use \\u003C\\u002FChip\\u003E in a \\u2028 \\u003CChips\\u003E")',
+    )
+    expect(test).not.toMatch(/[\u2028<]\/?Chip>/)
+  })
+
+  it('refuses a re-export from an unexpected module specifier', () => {
+    expect(() => generate('export { X } from "a\\"b"')).toThrow('unexpected module specifier a"b')
+  })
+
   it('names the exported components it has no template for', () => {
     expect(() =>
       generate(`${header}

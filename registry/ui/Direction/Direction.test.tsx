@@ -5,11 +5,11 @@ import { describe, expect, it } from 'vitest'
 import { DirectionProvider, useDirection } from './Direction'
 
 describe('re-exports', () => {
-  it('re-exports DirectionProvider from @base-ui/react/direction-provider', () => {
+  it('re-exports DirectionProvider from @base-ui\u002Freact\u002Fdirection-provider', () => {
     expect(DirectionProvider).toBe(directionProvider.DirectionProvider)
   })
 
-  it('re-exports useDirection from @base-ui/react/direction-provider', () => {
+  it('re-exports useDirection from @base-ui\u002Freact\u002Fdirection-provider', () => {
     expect(useDirection).toBe(directionProvider.useDirection)
   })
 })

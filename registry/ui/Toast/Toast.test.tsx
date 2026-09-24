@@ -393,11 +393,11 @@ describe('Toaster', () => {
 })
 
 describe('re-exports', () => {
-  it('re-exports createToastManager from @base-ui/react/toast', () => {
+  it('re-exports createToastManager from @base-ui\u002Freact\u002Ftoast', () => {
     expect(createToastManager).toBe(ToastPrimitive.createToastManager)
   })
 
-  it('re-exports useToastManager from @base-ui/react/toast', () => {
+  it('re-exports useToastManager from @base-ui\u002Freact\u002Ftoast', () => {
     expect(useToastManager).toBe(ToastPrimitive.useToastManager)
   })
 })

@@ -948,7 +948,7 @@ describe('ComboboxChipsInput', () => {
 })
 
 describe('re-exports', () => {
-  it('re-exports Combobox from @base-ui/react', () => {
+  it('re-exports Combobox from @base-ui\u002Freact', () => {
     expect(Combobox).toBe(ComboboxPrimitive.Root)
   })
 })

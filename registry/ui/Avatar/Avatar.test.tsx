@@ -134,7 +134,7 @@ function renderAvatarImage(
       <AvatarImage
         data-subject
         {...({
-          src: 'https://github.com/shadcn.png',
+          src: 'https:\u002F\u002Fgithub.com\u002Fshadcn.png',
           alt: '@shadcn',
           keepMounted: true,
           ...props,
@@ -166,7 +166,12 @@ describe('AvatarImage', () => {
     cleanup()
     render(
       <Avatar>
-        <AvatarImage data-subject src="https://github.com/shadcn.png" alt="@shadcn" keepMounted />
+        <AvatarImage
+          data-subject
+          src={'https:\u002F\u002Fgithub.com\u002Fshadcn.png'}
+          alt="@shadcn"
+          keepMounted
+        />
       </Avatar>,
     )
     expect(document.querySelector('[data-subject]')).not.toBeNull()
@@ -176,7 +181,12 @@ describe('AvatarImage', () => {
     cleanup()
     render(
       <Avatar size="lg">
-        <AvatarImage data-subject src="https://github.com/shadcn.png" alt="@shadcn" keepMounted />
+        <AvatarImage
+          data-subject
+          src={'https:\u002F\u002Fgithub.com\u002Fshadcn.png'}
+          alt="@shadcn"
+          keepMounted
+        />
       </Avatar>,
     )
     expect(document.querySelector('[data-subject]')).not.toBeNull()
@@ -188,7 +198,7 @@ describe('AvatarImage', () => {
       <Avatar size="sm">
         <AvatarImage
           data-subject
-          src="https://github.com/jorgezreik.png"
+          src={'https:\u002F\u002Fgithub.com\u002Fjorgezreik.png'}
           alt="@jorgezreik"
           keepMounted
         />
@@ -203,7 +213,7 @@ describe('AvatarImage', () => {
       <Avatar>
         <AvatarImage
           data-subject
-          src="https://github.com/jorgezreik.png"
+          src={'https:\u002F\u002Fgithub.com\u002Fjorgezreik.png'}
           alt="@jorgezreik"
           keepMounted
         />
@@ -218,7 +228,7 @@ describe('AvatarImage', () => {
       <Avatar size="lg">
         <AvatarImage
           data-subject
-          src="https://github.com/jorgezreik.png"
+          src={'https:\u002F\u002Fgithub.com\u002Fjorgezreik.png'}
           alt="@jorgezreik"
           keepMounted
         />
@@ -233,7 +243,7 @@ describe('AvatarImage', () => {
       <Avatar size="sm">
         <AvatarImage
           data-subject
-          src="https://github.com/pranathip.png"
+          src={'https:\u002F\u002Fgithub.com\u002Fpranathip.png'}
           alt="@pranathip"
           keepMounted
         />
@@ -248,7 +258,7 @@ describe('AvatarImage', () => {
       <Avatar>
         <AvatarImage
           data-subject
-          src="https://github.com/pranathip.png"
+          src={'https:\u002F\u002Fgithub.com\u002Fpranathip.png'}
           alt="@pranathip"
           keepMounted
         />
@@ -263,7 +273,7 @@ describe('AvatarImage', () => {
       <Avatar size="lg">
         <AvatarImage
           data-subject
-          src="https://github.com/pranathip.png"
+          src={'https:\u002F\u002Fgithub.com\u002Fpranathip.png'}
           alt="@pranathip"
           keepMounted
         />
@@ -277,7 +287,12 @@ describe('AvatarImage', () => {
     render(
       <AvatarGroup>
         <Avatar size="sm">
-          <AvatarImage data-subject src="https://github.com/shadcn.png" alt="@shadcn" keepMounted />
+          <AvatarImage
+            data-subject
+            src={'https:\u002F\u002Fgithub.com\u002Fshadcn.png'}
+            alt="@shadcn"
+            keepMounted
+          />
         </Avatar>
       </AvatarGroup>,
     )
@@ -291,7 +306,7 @@ describe('AvatarImage', () => {
         <Avatar size="sm">
           <AvatarImage
             data-subject
-            src="https://github.com/maxleiter.png"
+            src={'https:\u002F\u002Fgithub.com\u002Fmaxleiter.png'}
             alt="@maxleiter"
             keepMounted
           />
@@ -308,7 +323,7 @@ describe('AvatarImage', () => {
         <Avatar size="sm">
           <AvatarImage
             data-subject
-            src="https://github.com/evilrabbit.png"
+            src={'https:\u002F\u002Fgithub.com\u002Fevilrabbit.png'}
             alt="@evilrabbit"
             keepMounted
           />
@@ -323,7 +338,12 @@ describe('AvatarImage', () => {
     render(
       <AvatarGroup>
         <Avatar>
-          <AvatarImage data-subject src="https://github.com/shadcn.png" alt="@shadcn" keepMounted />
+          <AvatarImage
+            data-subject
+            src={'https:\u002F\u002Fgithub.com\u002Fshadcn.png'}
+            alt="@shadcn"
+            keepMounted
+          />
         </Avatar>
       </AvatarGroup>,
     )
@@ -337,7 +357,7 @@ describe('AvatarImage', () => {
         <Avatar>
           <AvatarImage
             data-subject
-            src="https://github.com/maxleiter.png"
+            src={'https:\u002F\u002Fgithub.com\u002Fmaxleiter.png'}
             alt="@maxleiter"
             keepMounted
           />
@@ -354,7 +374,7 @@ describe('AvatarImage', () => {
         <Avatar>
           <AvatarImage
             data-subject
-            src="https://github.com/evilrabbit.png"
+            src={'https:\u002F\u002Fgithub.com\u002Fevilrabbit.png'}
             alt="@evilrabbit"
             keepMounted
           />
@@ -369,7 +389,12 @@ describe('AvatarImage', () => {
     render(
       <AvatarGroup>
         <Avatar size="lg">
-          <AvatarImage data-subject src="https://github.com/shadcn.png" alt="@shadcn" keepMounted />
+          <AvatarImage
+            data-subject
+            src={'https:\u002F\u002Fgithub.com\u002Fshadcn.png'}
+            alt="@shadcn"
+            keepMounted
+          />
         </Avatar>
       </AvatarGroup>,
     )
@@ -383,7 +408,7 @@ describe('AvatarImage', () => {
         <Avatar size="lg">
           <AvatarImage
             data-subject
-            src="https://github.com/maxleiter.png"
+            src={'https:\u002F\u002Fgithub.com\u002Fmaxleiter.png'}
             alt="@maxleiter"
             keepMounted
           />
@@ -400,7 +425,7 @@ describe('AvatarImage', () => {
         <Avatar size="lg">
           <AvatarImage
             data-subject
-            src="https://github.com/evilrabbit.png"
+            src={'https:\u002F\u002Fgithub.com\u002Fevilrabbit.png'}
             alt="@evilrabbit"
             keepMounted
           />

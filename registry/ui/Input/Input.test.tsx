@@ -74,7 +74,14 @@ describe('Input', () => {
 
   it("renders as upstream's example uses it (8)", () => {
     cleanup()
-    render(<Input data-subject id="input-demo-url" type="url" placeholder="https://example.com" />)
+    render(
+      <Input
+        data-subject
+        id="input-demo-url"
+        type="url"
+        placeholder={'https:\u002F\u002Fexample.com'}
+      />,
+    )
     expect(document.querySelector('[data-subject]')).not.toBeNull()
   })
 

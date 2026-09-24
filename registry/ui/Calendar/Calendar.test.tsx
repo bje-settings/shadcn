@@ -124,7 +124,7 @@ describe('Calendar', () => {
       <Calendar
         data-subject
         mode="single"
-        modifiersClassNames={{ booked: '[&>button]:line-through opacity-100' }}
+        modifiersClassNames={{ booked: '[&\u003Ebutton]:line-through opacity-100' }}
       />,
     )
     expect(document.querySelector('[data-subject]')).not.toBeNull()

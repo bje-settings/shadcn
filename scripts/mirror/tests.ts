@@ -65,7 +65,7 @@ function forwardedValues(code: string, exported: Set<string>): Forwarded[] {
                 name: specifier.exported.name,
                 original: `${namespace}.${specifier.local.name}`,
                 from,
-                importLine: `import * as ${namespace} from ${q(from)}`,
+                importLine: `import * as ${namespace} from ${moduleString(from)}`,
               },
             ]
           : [],
@@ -91,14 +91,37 @@ function forwardedValues(code: string, exported: Set<string>): Forwarded[] {
           name: id.name,
           original: code.slice(init.start as number, init.end as number),
           from,
-          importLine: `import ${head} from ${q(from)}`,
+          importLine: `import ${head} from ${moduleString(from)}`,
         },
       ]
     })
   })
 }
 
-const q = (value: string) => JSON.stringify(value)
+// A module specifier from upstream's imports, as a string literal: only a
+// package path (`@base-ui/react/select`), kept readable.
+function moduleString(from: string): string {
+  if (!/^[@\w][\w@./-]*$/.test(from)) throw new Error(`unexpected module specifier ${from}`)
+  return `"${from}"`
+}
+
+// String literals and JSON values for generated code. Upstream text (an
+// error message, an image URL) goes into the test source, so beyond JSON's
+// escaping they escape what could end a surrounding context: angle brackets,
+// the slash of `</script>`, and the JS line separators.
+const UNSAFE: Record<string, string> = {
+  '<': '\\u003C',
+  '>': '\\u003E',
+  '/': '\\u002F',
+  '\u2028': '\\u2028',
+  '\u2029': '\\u2029',
+}
+
+// Any JSON value as a JavaScript expression, escaped the same way.
+const jsValue = (value: Literal) =>
+  JSON.stringify(value).replace(/[<>/\u2028\u2029]/g, (char) => UNSAFE[char] as string)
+
+const q = (value: string) => jsValue(value)
 
 function defaultClasses(set: VariantSet): string[] {
   return [
@@ -117,7 +140,7 @@ function objectLiteral(
   code: Record<string, string> = {},
 ): string {
   const entries = [
-    ...Object.entries(props).map(([name, value]) => `${q(name)}: ${JSON.stringify(value)}`),
+    ...Object.entries(props).map(([name, value]) => `${q(name)}: ${jsValue(value)}`),
     ...Object.entries(code).map(([name, expression]) => `${q(name)}: ${expression}`),
   ]
   return `{ ${[...entries, ...(rest ? [`...${rest}`] : [])].join(', ')} }`
@@ -138,7 +161,9 @@ function attributesFor(types: Map<string, PartTypes>): Attributes {
     return Object.entries(props)
       .map(([name, value]) => {
         if (value === true) return ` ${name}`
-        return ` ${name}=${typeof value === 'string' ? q(value) : `{${JSON.stringify(value)}}`}`
+        // A JSX attribute string takes no escapes: an escaped one goes in braces.
+        const plain = typeof value === 'string' && q(value) === JSON.stringify(value)
+        return ` ${name}=${plain ? q(value as string) : `{${jsValue(value)}}`}`
       })
       .join('')
   }

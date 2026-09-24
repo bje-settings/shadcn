@@ -126,10 +126,10 @@ describe('CarouselContent', () => {
     expect(classesOfCarouselContent()).toEqual(expect.arrayContaining([styles.carouselContentDiv]))
   })
 
-  it('throws outside its root: useCarousel must be used within a <Carousel />', () => {
+  it('throws outside its root: useCarousel must be used within a \u003CCarousel \u002F\u003E', () => {
     cleanup()
     expect(() => render(<CarouselContent />)).toThrow(
-      'useCarousel must be used within a <Carousel />',
+      'useCarousel must be used within a \u003CCarousel \u002F\u003E',
     )
   })
 
@@ -178,9 +178,11 @@ describe('CarouselItem', () => {
     expect(classesOfCarouselItem()).toEqual(expect.arrayContaining([styles.carouselItem]))
   })
 
-  it('throws outside its root: useCarousel must be used within a <Carousel />', () => {
+  it('throws outside its root: useCarousel must be used within a \u003CCarousel \u002F\u003E', () => {
     cleanup()
-    expect(() => render(<CarouselItem />)).toThrow('useCarousel must be used within a <Carousel />')
+    expect(() => render(<CarouselItem />)).toThrow(
+      'useCarousel must be used within a \u003CCarousel \u002F\u003E',
+    )
   })
 
   it('appends a consumer className last', () => {
@@ -247,10 +249,10 @@ describe('CarouselPrevious', () => {
     )
   })
 
-  it('throws outside its root: useCarousel must be used within a <Carousel />', () => {
+  it('throws outside its root: useCarousel must be used within a \u003CCarousel \u002F\u003E', () => {
     cleanup()
     expect(() => render(<CarouselPrevious />)).toThrow(
-      'useCarousel must be used within a <Carousel />',
+      'useCarousel must be used within a \u003CCarousel \u002F\u003E',
     )
   })
 
@@ -312,9 +314,11 @@ describe('CarouselNext', () => {
     expect(attributesOfCarouselNext({ size: 'icon-sm' })).toEqual(attributesOfCarouselNext())
   })
 
-  it('throws outside its root: useCarousel must be used within a <Carousel />', () => {
+  it('throws outside its root: useCarousel must be used within a \u003CCarousel \u002F\u003E', () => {
     cleanup()
-    expect(() => render(<CarouselNext />)).toThrow('useCarousel must be used within a <Carousel />')
+    expect(() => render(<CarouselNext />)).toThrow(
+      'useCarousel must be used within a \u003CCarousel \u002F\u003E',
+    )
   })
 
   it('appends a consumer className last', () => {
@@ -343,9 +347,9 @@ describe('useCarousel', () => {
     expect(result.current).toBeDefined()
   })
 
-  it('throws outside its root: useCarousel must be used within a <Carousel />', () => {
+  it('throws outside its root: useCarousel must be used within a \u003CCarousel \u002F\u003E', () => {
     expect(() => renderHook(() => useCarousel())).toThrow(
-      'useCarousel must be used within a <Carousel />',
+      'useCarousel must be used within a \u003CCarousel \u002F\u003E',
     )
   })
 })
