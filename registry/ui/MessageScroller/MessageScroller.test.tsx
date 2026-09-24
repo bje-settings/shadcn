@@ -173,6 +173,13 @@ function classesOfMessageScrollerItem(
   return renderMessageScrollerItem(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfMessageScrollerItem(
+  props: Partial<Record<keyof ComponentProps<typeof MessageScrollerItem>, unknown>> = {},
+) {
+  renderMessageScrollerItem(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfMessageScrollerItem(
   props: Partial<Record<keyof ComponentProps<typeof MessageScrollerItem>, unknown>> = {},
 ) {
@@ -196,8 +203,8 @@ describe('MessageScrollerItem', () => {
     )
   })
 
-  it('renders with scrollAnchor=true', () => {
-    expect(renderMessageScrollerItem({ scrollAnchor: true })).toBeTruthy()
+  it('renders differently with scrollAnchor=true', () => {
+    expect(htmlOfMessageScrollerItem({ scrollAnchor: true })).not.toBe(htmlOfMessageScrollerItem())
   })
 
   it('appends a consumer className last', () => {
@@ -248,6 +255,13 @@ function classesOfMessageScrollerButton(
   return renderMessageScrollerButton(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfMessageScrollerButton(
+  props: Partial<Record<keyof ComponentProps<typeof MessageScrollerButton>, unknown>> = {},
+) {
+  renderMessageScrollerButton(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfMessageScrollerButton(
   props: Partial<Record<keyof ComponentProps<typeof MessageScrollerButton>, unknown>> = {},
 ) {
@@ -283,8 +297,10 @@ describe('MessageScrollerButton', () => {
     )
   })
 
-  it('renders with direction="start"', () => {
-    expect(renderMessageScrollerButton({ direction: 'start' })).toBeTruthy()
+  it('renders differently with direction="start"', () => {
+    expect(htmlOfMessageScrollerButton({ direction: 'start' })).not.toBe(
+      htmlOfMessageScrollerButton(),
+    )
   })
 
   it('appends a consumer className last', () => {

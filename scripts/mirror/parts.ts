@@ -12,25 +12,18 @@ import { Project, ts } from 'ts-morph'
 import { childNodes, parseModule } from './ast.ts'
 import type { PreparedComponent } from './component.ts'
 import { pascalCase } from './names.ts'
+import type { Literal, Part } from './shapes.ts'
 import type { TransformedComponent } from './tsx.ts'
 
-export type Literal = string | number | boolean | Literal[] | { [key: string]: Literal }
-
-export type Part = {
-  component: string
-  props: Record<string, Literal>
-  // A part that opens renders its trigger from the example before its
-  // children: a submenu stays closed without one.
-  trigger?: Part
-}
+export type { Literal, Part } from './shapes.ts'
 
 export type Usage = {
   // The same item's components it renders inside, outermost first
   ancestors: Part[]
   // Its own literal props from the example
   props: Record<string, Literal>
-  // Whether it takes children: the example passes some, or else it does not
-  // render a void element
+  // Whether it takes children: its type takes text, it does not render a void
+  // element, <textarea> or table structure, and the example passes some
   children: boolean
 }
 
@@ -320,7 +313,11 @@ export function scaffolds(
       .filter((ancestor) => types.has(elementName(ancestor) ?? ''))
       .map((ancestor) => {
         const component = elementName(ancestor) as string
-        const trigger = types.get(component)?.opens ? triggerOf(ancestor) : undefined
+        // Not when the trigger is the part being scaffolded, which would
+        // render it twice.
+        const found = types.get(component)?.opens ? triggerOf(ancestor) : undefined
+        const trigger =
+          found?.component === elementName(path.at(-1) as JSXElement) ? undefined : found
         const props = { ...literalProps(ancestor), ...given[component] }
         return { component, props, ...(trigger ? { trigger } : {}) }
       })

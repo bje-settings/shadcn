@@ -19,14 +19,12 @@ export type Case = {
   state: 'rest' | 'hover' | 'focus' | 'disabled'
   // data-slot of the element a state applies to; else the case's first child
   slot?: string
-  // Renders alone on its page and is compared as the whole viewport, since
+  // Renders only when the page is narrowed to it and is compared as the
+  // whole viewport, since
   // its popup portals out of the case
   overlay: boolean
   render: (side: Side) => ReactNode
 }
-
-// A fixture's scaffold part, as scripts/mirror/parts.ts writes it.
-type Part = { component: string; props: Record<string, unknown>; trigger?: Part }
 
 const THEMES = ['light', 'dark'] as const
 const STATES = ['rest', 'hover', 'focus', 'disabled'] as const
@@ -48,12 +46,14 @@ export const cases: Case[] = [
             </Component>
           )
           // Inside its scaffold's ancestors, innermost first.
-          for (const part of [...(fixture.ancestors as Part[])].reverse()) {
+          for (const part of [...fixture.ancestors].reverse()) {
             const Ancestor = pick(ui, fixture.item, part.component)
             const Trigger = part.trigger && pick(ui, fixture.item, part.trigger.component)
             element = (
               <Ancestor {...part.props}>
-                {Trigger && <Trigger {...part.trigger?.props}>{part.trigger?.component}</Trigger>}
+                {part.trigger && Trigger && (
+                  <Trigger {...part.trigger.props}>{part.trigger.component}</Trigger>
+                )}
                 {element}
               </Ancestor>
             )

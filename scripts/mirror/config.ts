@@ -75,6 +75,10 @@ export type MirrorConfig = {
   // Date). A part given one is left out of the A/B fixtures; its item's docs
   // examples render it there.
   testExpressions: Record<string, Record<string, Record<string, string>>>
+  // Props whose other values render the same under a part's scaffold, by
+  // item and `Part.prop`, with the reason (Sidebar's collapsible shows only
+  // once collapsed): their test checks the value renders, not a difference.
+  sameRenderInTests: Record<string, Record<string, string>>
   // Exported parts jsdom renders nothing for under their scaffold, by item
   // and part, with the reason: their generated test checks they render
   // nothing.
@@ -178,13 +182,17 @@ export function parseConfig(raw: unknown): MirrorConfig {
       }),
     )
   }
-  const testProps = byItem(
-    'testProps',
-    (value, path) => shape.record(value, path) as Record<string, Literal>,
-  )
+  const testProps = byItem('testProps', (value, path) => {
+    const props = shape.record(value, path)
+    for (const [prop, literal] of Object.entries(props)) {
+      if (!isLiteral(literal)) shape.fail(`${path}.${prop} must be a JSON literal without null`)
+    }
+    return props as Record<string, Literal>
+  })
   const testExpressions = byItem('testExpressions', (value, path) =>
     shape.stringRecord(value, path),
   )
+  const sameRenderInTests = byItem('sameRenderInTests', (value, path) => shape.string(value, path))
   const unrenderedInTests = byItem('unrenderedInTests', (value, path) => shape.string(value, path))
 
   return {
@@ -208,6 +216,7 @@ export function parseConfig(raw: unknown): MirrorConfig {
     coverageExclusions,
     testSetup,
     unrenderedInTests,
+    sameRenderInTests,
     testProps,
     testExpressions,
   }
@@ -225,6 +234,35 @@ function classLists(raw: Record<string, unknown>, key: string): ClassList[] {
       reason: string(record, 'reason', `${path}.`),
     }
   })
+}
+
+function isLiteral(value: unknown): value is Literal {
+  if (['string', 'number', 'boolean'].includes(typeof value)) return true
+  if (Array.isArray(value)) return value.every(isLiteral)
+  return isRecord(value) && Object.values(value).every(isLiteral)
+}
+
+// Every part the test config names, by item, must be one the item exports:
+// an entry for a renamed or removed part would otherwise do nothing.
+export function checkConfiguredParts(
+  config: MirrorConfig,
+  exported: (item: string) => Set<string>,
+): void {
+  const byItem = {
+    testProps: config.testProps,
+    testExpressions: config.testExpressions,
+    unrenderedInTests: config.unrenderedInTests,
+    sameRenderInTests: config.sameRenderInTests,
+  }
+  for (const [key, items] of Object.entries(byItem)) {
+    for (const [item, parts] of Object.entries(items)) {
+      const names = exported(item)
+      // sameRenderInTests keys are `Part.prop`.
+      for (const part of Object.keys(parts).map((k) => k.split('.')[0] as string)) {
+        if (!names.has(part)) shape.fail(`${key}.${item}.${part} is not a part ${item} exports`)
+      }
+    }
+  }
 }
 
 export function upstreamUrl(config: MirrorConfig, name: string): string {

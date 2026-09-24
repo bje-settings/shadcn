@@ -39,6 +39,13 @@ function classesOfAttachment(
   return renderAttachment(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfAttachment(
+  props: Partial<Record<keyof ComponentProps<typeof Attachment>, unknown>> = {},
+) {
+  renderAttachment(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfAttachment(
   props: Partial<Record<keyof ComponentProps<typeof Attachment>, unknown>> = {},
 ) {
@@ -87,20 +94,20 @@ describe('Attachment', () => {
     expect(attributesOfAttachment({ state: 'done' })).toEqual(attributesOfAttachment())
   })
 
-  it('renders with state="idle"', () => {
-    expect(renderAttachment({ state: 'idle' })).toBeTruthy()
+  it('renders differently with state="idle"', () => {
+    expect(htmlOfAttachment({ state: 'idle' })).not.toBe(htmlOfAttachment())
   })
 
-  it('renders with state="uploading"', () => {
-    expect(renderAttachment({ state: 'uploading' })).toBeTruthy()
+  it('renders differently with state="uploading"', () => {
+    expect(htmlOfAttachment({ state: 'uploading' })).not.toBe(htmlOfAttachment())
   })
 
-  it('renders with state="processing"', () => {
-    expect(renderAttachment({ state: 'processing' })).toBeTruthy()
+  it('renders differently with state="processing"', () => {
+    expect(htmlOfAttachment({ state: 'processing' })).not.toBe(htmlOfAttachment())
   })
 
-  it('renders with state="error"', () => {
-    expect(renderAttachment({ state: 'error' })).toBeTruthy()
+  it('renders differently with state="error"', () => {
+    expect(htmlOfAttachment({ state: 'error' })).not.toBe(htmlOfAttachment())
   })
 
   it('appends a consumer className last', () => {

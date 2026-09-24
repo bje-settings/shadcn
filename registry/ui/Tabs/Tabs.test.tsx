@@ -25,6 +25,11 @@ function classesOfTabs(props: Partial<Record<keyof ComponentProps<typeof Tabs>, 
   return renderTabs(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfTabs(props: Partial<Record<keyof ComponentProps<typeof Tabs>, unknown>> = {}) {
+  renderTabs(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfTabs(props: Partial<Record<keyof ComponentProps<typeof Tabs>, unknown>> = {}) {
   const element = renderTabs(props)
   expect(element).toBeTruthy()
@@ -42,8 +47,8 @@ describe('Tabs', () => {
     expect(attributesOfTabs({ orientation: 'horizontal' })).toEqual(attributesOfTabs())
   })
 
-  it('renders with orientation="vertical"', () => {
-    expect(renderTabs({ orientation: 'vertical' })).toBeTruthy()
+  it('renders differently with orientation="vertical"', () => {
+    expect(htmlOfTabs({ orientation: 'vertical' })).not.toBe(htmlOfTabs())
   })
 
   it('appends a consumer className last', () => {

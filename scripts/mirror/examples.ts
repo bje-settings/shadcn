@@ -1,8 +1,9 @@
 // Turns an upstream `<item>-example` (the demo behind shadcn's docs page) into
 // A/B cases: each sub-example the default export renders becomes a case when
 // everything it reaches is available, which is mirrored components, the
-// harness's stand-ins for docs-only imports, and react, and it passes no
-// consumer class whose upstream styling the mirror drops.
+// harness's stand-ins for docs-only imports, react and packages mirrored
+// items depend on, and it passes no registry component a consumer class whose
+// upstream styling the mirror drops.
 //
 // The output is two trimmed copies of the example holding only the kept
 // sub-examples, the top-level code they reach and the imports they use, with
@@ -71,11 +72,43 @@ function references(node: Node): Set<string> {
 }
 
 // Whitespace-separated tokens of every string in a node: the classes it may pass.
-function classTokens(node: Node): string[] {
+function stringTokens(node: Node): string[] {
   const tokens: string[] = []
   const visit = (current: Node) => {
     if (current.type === 'StringLiteral') tokens.push(...current.value.split(/\s+/))
     if (current.type === 'TemplateElement') tokens.push(...current.value.raw.split(/\s+/))
+    for (const child of childNodes(current)) visit(child)
+  }
+  visit(node)
+  return tokens
+}
+
+// The class tokens a node passes as className to a registry component (one
+// of `components`, the local names of its registry imports): only there can
+// a consumer class gate that component's upstream styling.
+function componentClassTokens(node: Node, components: Set<string>): string[] {
+  const tokens: string[] = []
+  const visit = (current: Node) => {
+    if (current.type === 'JSXOpeningElement') {
+      const { name } = current
+      const tag =
+        name.type === 'JSXIdentifier'
+          ? name.name
+          : name.type === 'JSXMemberExpression' && name.object.type === 'JSXIdentifier'
+            ? name.object.name
+            : undefined
+      for (const attribute of current.attributes) {
+        if (
+          tag !== undefined &&
+          components.has(tag) &&
+          attribute.type === 'JSXAttribute' &&
+          attribute.name.name === 'className' &&
+          attribute.value
+        ) {
+          tokens.push(...stringTokens(attribute.value))
+        }
+      }
+    }
     for (const child of childNodes(current)) visit(child)
   }
   visit(node)
@@ -177,6 +210,13 @@ export function prepareExample(
     return mirrored.has(item) ? undefined : item
   }
 
+  // Local names of registry component imports.
+  const registryComponents = new Set(
+    [...imports].flatMap(([name, declaration]) =>
+      declaration.source.value.startsWith(`${registry}ui/`) ? [name] : [],
+    ),
+  )
+
   const kept: string[] = []
   const skipped: PreparedExample['skipped'] = []
   const keep = new Set<string>()
@@ -194,7 +234,7 @@ export function prepareExample(
     ].sort()
     const passed = [...reached]
       .filter((ref) => declarations.has(ref))
-      .flatMap((ref) => classTokens(declarations.get(ref) as Node))
+      .flatMap((ref) => componentClassTokens(declarations.get(ref) as Node, registryComponents))
       .filter((token) => dropped.has(token))
     const reasons = [
       ...(missing.length > 0 ? [`needs ${missing.join(', ')}`] : []),

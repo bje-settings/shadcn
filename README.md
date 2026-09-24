@@ -40,13 +40,14 @@ directories. The rest records, each with a reason, what the pipeline cannot infe
 | `globalClasses`      | Outside classes elements really carry (`dark`, `sr-only`, `rdp-*`, `recharts-*`)     |
 | `classesWithoutCss`  | Upstream classes Tailwind compiles to nothing upstream too                           |
 | `coverageExclusions` | Items whose upstream logic no generated render reaches (interaction, runtime state) |
-| `testSetup`          | Lines a generated test runs first: jsdom stubs (`ResizeObserver`, `matchMedia`)      |
+| `testSetup`          | Lines a generated test runs first: jsdom stubs (`ResizeObserver`, `matchMedia`, ...) |
 | `testProps`          | Props a part needs that no docs example passes as a literal (a Toast's `toast`)      |
 | `testExpressions`    | Such props as TypeScript expressions, where JSON cannot hold them (a `Date`)         |
 | `unrenderedInTests`  | Parts jsdom renders nothing for; their test checks exactly that                      |
+| `sameRenderInTests`  | Props whose other values render the same in the test's scaffold (Sidebar collapsed) |
 
-Consumers need `sass` to compile the components and global stylesheets; every item lists it in
-`devDependencies`.
+Consumers need `sass` to compile the components and global stylesheets; every component item and
+`@bje/globals` lists it in `devDependencies`.
 
 ```bash
 pnpm mirror:fetch   # snapshot items, their docs examples, style index, font, base color, Typeset
@@ -70,20 +71,24 @@ For each component, the build:
    Imports of other upstream components point at this registry's copies, and each upstream
    `registryDependencies` entry becomes `@bje/<item>`; a dependency not listed in
    `mirror.config.json` fails the build.
-3. Compiles each slot's classes with Tailwind itself against `upstream/<style>/index.css`, then
-   nests the output under `:where(.<slot>)` so a consumer's `className` always wins. Selectors on
-   Tailwind's `group`/`peer` marker classes target the `data-slot` of the mirrored elements that
-   carry the marker, in any component (`group-data-[size=sm]/card:` becomes
-   `[data-slot="card"][data-size="sm"] &`). Upstream's `svg:not([class*="size-"])` defaults skip
-   the mirrored elements whose classes contain `size-` (Spinner), matched by `data-slot`. Rules that
-   need a configured consumer class (Card's `[.border-b]:` padding) or a marker no mirrored
-   element carries are dropped and listed in the module's header; any other outside class fails
-   the build.
-4. Lists in the module's header the custom properties it expects globally. Any class Tailwind
-   produces no CSS for, other than `group`/`peer` markers, fails the build.
+3. Compiles each slot's classes with Tailwind itself against `upstream/<style>/index.css`. Rules
+   styling the slot's own element nest under `:where(.<slot>)`, so a consumer's `className` wins;
+   rules styling descendants (`*:w-full`, `& svg`) nest under `.<slot>` and keep upstream's
+   specificity. Selectors on Tailwind's `group`/`peer` marker classes target the `data-slot` of the
+   mirrored elements that carry the marker, in any component (`group-data-[size=sm]/card:`
+   becomes `&:is(:where([data-slot="card"])[data-size="sm"] *)`); a marker no mirrored element
+   carries fails the build. Upstream's `svg:not([class*="size-"])` defaults skip the mirrored
+   elements whose classes contain `size-` (Spinner), matched by `data-slot`; a probe that matches
+   none is noted in the header. Rules that need a configured consumer class (Card's `[.border-b]:`
+   padding) are dropped and listed in the module's header and the build log; any other outside
+   class fails the build.
+4. Lists in the module's header the custom properties it reads and does not set (global tokens,
+   or set by an enclosing slot or an inline style). Any class Tailwind produces no CSS for, other
+   than `group`/`peer` markers and `classesWithoutCss` entries, fails the build.
 5. Generates `<Name>.test.tsx` covering every exported component: its `data-slot` and classes,
    every option of every `cva()` group, null groups, literal prop defaults, and consumer
-   `className`, other values of boolean and union-typed defaults, default children, exported hooks
+   `className`, that other values of boolean and union-typed defaults and default children change
+   the render, exported hooks
    (inside the provider their error names) and re-exported or aliased values. Parts render inside
    the same item's parts that enclose them in upstream's docs example, or in the module's own
    composition, with their literal props and triggers, opened where upstream's types take
@@ -111,17 +116,17 @@ output.
 
 Generated files get Biome's formatting and safe fixes (import order, `import type`). They keep
 upstream's code, so `biome.json` turns off the rules upstream's code trips for `registry/ui/**`
-(a11y `noLabelWithoutControl`, `noRedundantRoles`, `useFocusableInteractive`,
-`useKeyWithClickEvents` and `useSemanticElements`; `noArrayIndexKey`, `noDoubleEquals` and
-`noUnusedImports`).
-Every other rule still applies there. `ab/generated/**` holds upstream's code verbatim for comparison and generated harness
-inputs, so Biome only formats it.
+(see the `registry/ui/**` override in `biome.json`). Every other rule still applies there.
+`ab/generated/**` holds upstream's code verbatim for comparison and generated harness inputs, so
+Biome only formats it.
 
 ## Visual A/B
 
 `ab/` renders every mirrored component twice: upstream's source with Tailwind (`upstream.html`) and
 ours with CSS modules and the global stylesheets (`ours.html`). Playwright screenshots each case on
-both pages and diffs them with pixelmatch; any differing pixel fails the case.
+both pages and diffs them with pixelmatch. A differing pixel or size, a page or console error, or a
+state (hover, focus, disabled) that applies on one side only fails the case; a state that applies
+on neither side is skipped.
 
 ```bash
 pnpm ab         # run every case; the HTML report in ab/report has upstream, ours and diff images

@@ -296,7 +296,6 @@ function renderSelectTrigger(
   cleanup()
   render(
     <Select defaultOpen>
-      <SelectTrigger>SelectTrigger</SelectTrigger>
       <SelectTrigger
         data-subject
         {...({ children: 'SelectTrigger', ...props } as ComponentProps<typeof SelectTrigger>)}
@@ -310,6 +309,13 @@ function classesOfSelectTrigger(
   props: Partial<Record<keyof ComponentProps<typeof SelectTrigger>, unknown>> = {},
 ) {
   return renderSelectTrigger(props)?.getAttribute('class')?.split(' ') ?? []
+}
+
+function htmlOfSelectTrigger(
+  props: Partial<Record<keyof ComponentProps<typeof SelectTrigger>, unknown>> = {},
+) {
+  renderSelectTrigger(props)
+  return document.body.innerHTML.replace(USE_ID, '')
 }
 
 function attributesOfSelectTrigger(
@@ -331,8 +337,8 @@ describe('SelectTrigger', () => {
     expect(attributesOfSelectTrigger({ size: 'default' })).toEqual(attributesOfSelectTrigger())
   })
 
-  it('renders with size="sm"', () => {
-    expect(renderSelectTrigger({ size: 'sm' })).toBeTruthy()
+  it('renders differently with size="sm"', () => {
+    expect(htmlOfSelectTrigger({ size: 'sm' })).not.toBe(htmlOfSelectTrigger())
   })
 
   it('appends a consumer className last', () => {
@@ -345,7 +351,6 @@ describe('SelectTrigger', () => {
     cleanup()
     render(
       <Select defaultOpen>
-        <SelectTrigger size="sm">SelectTrigger</SelectTrigger>
         <SelectTrigger data-subject size="sm">
           SelectTrigger
         </SelectTrigger>
@@ -358,7 +363,6 @@ describe('SelectTrigger', () => {
     cleanup()
     render(
       <Select defaultOpen>
-        <SelectTrigger size="default">SelectTrigger</SelectTrigger>
         <SelectTrigger data-subject size="default">
           SelectTrigger
         </SelectTrigger>
@@ -371,7 +375,6 @@ describe('SelectTrigger', () => {
     cleanup()
     render(
       <Select defaultOpen>
-        <SelectTrigger id="select-fruit">SelectTrigger</SelectTrigger>
         <SelectTrigger data-subject id="select-fruit">
           SelectTrigger
         </SelectTrigger>
@@ -384,7 +387,6 @@ describe('SelectTrigger', () => {
     cleanup()
     render(
       <Select defaultOpen>
-        <SelectTrigger aria-invalid="true">SelectTrigger</SelectTrigger>
         <SelectTrigger data-subject aria-invalid="true">
           SelectTrigger
         </SelectTrigger>
@@ -397,9 +399,6 @@ describe('SelectTrigger', () => {
     cleanup()
     render(
       <Select defaultOpen>
-        <SelectTrigger id="select-fruit-invalid" aria-invalid>
-          SelectTrigger
-        </SelectTrigger>
         <SelectTrigger data-subject id="select-fruit-invalid" aria-invalid>
           SelectTrigger
         </SelectTrigger>
@@ -412,7 +411,6 @@ describe('SelectTrigger', () => {
     cleanup()
     render(
       <Select multiple defaultValue={[]} defaultOpen>
-        <SelectTrigger>SelectTrigger</SelectTrigger>
         <SelectTrigger data-subject>SelectTrigger</SelectTrigger>
       </Select>,
     )
@@ -440,6 +438,13 @@ function classesOfSelectContent(
   props: Partial<Record<keyof ComponentProps<typeof SelectContent>, unknown>> = {},
 ) {
   return renderSelectContent(props)?.getAttribute('class')?.split(' ') ?? []
+}
+
+function htmlOfSelectContent(
+  props: Partial<Record<keyof ComponentProps<typeof SelectContent>, unknown>> = {},
+) {
+  renderSelectContent(props)
+  return document.body.innerHTML.replace(USE_ID, '')
 }
 
 function attributesOfSelectContent(
@@ -479,36 +484,36 @@ describe('SelectContent', () => {
     )
   })
 
-  it('renders with side="left"', () => {
-    expect(renderSelectContent({ side: 'left' })).toBeTruthy()
+  it('renders differently with side="left"', () => {
+    expect(htmlOfSelectContent({ side: 'left' })).not.toBe(htmlOfSelectContent())
   })
 
-  it('renders with side="right"', () => {
-    expect(renderSelectContent({ side: 'right' })).toBeTruthy()
+  it('renders differently with side="right"', () => {
+    expect(htmlOfSelectContent({ side: 'right' })).not.toBe(htmlOfSelectContent())
   })
 
-  it('renders with side="top"', () => {
-    expect(renderSelectContent({ side: 'top' })).toBeTruthy()
+  it('renders differently with side="top"', () => {
+    expect(htmlOfSelectContent({ side: 'top' })).not.toBe(htmlOfSelectContent())
   })
 
-  it('renders with side="inline-start"', () => {
-    expect(renderSelectContent({ side: 'inline-start' })).toBeTruthy()
+  it('renders differently with side="inline-start"', () => {
+    expect(htmlOfSelectContent({ side: 'inline-start' })).not.toBe(htmlOfSelectContent())
   })
 
-  it('renders with side="inline-end"', () => {
-    expect(renderSelectContent({ side: 'inline-end' })).toBeTruthy()
+  it('renders differently with side="inline-end"', () => {
+    expect(htmlOfSelectContent({ side: 'inline-end' })).not.toBe(htmlOfSelectContent())
   })
 
-  it('renders with align="start"', () => {
-    expect(renderSelectContent({ align: 'start' })).toBeTruthy()
+  it('renders differently with align="start"', () => {
+    expect(htmlOfSelectContent({ align: 'start' })).not.toBe(htmlOfSelectContent())
   })
 
-  it('renders with align="end"', () => {
-    expect(renderSelectContent({ align: 'end' })).toBeTruthy()
+  it('renders differently with align="end"', () => {
+    expect(htmlOfSelectContent({ align: 'end' })).not.toBe(htmlOfSelectContent())
   })
 
-  it('renders with alignItemWithTrigger=false', () => {
-    expect(renderSelectContent({ alignItemWithTrigger: false })).toBeTruthy()
+  it('renders differently with alignItemWithTrigger=false', () => {
+    expect(htmlOfSelectContent({ alignItemWithTrigger: false })).not.toBe(htmlOfSelectContent())
   })
 
   it('appends a consumer className last', () => {

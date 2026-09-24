@@ -157,7 +157,6 @@ function renderMenubarTrigger(
   render(
     <Menubar>
       <MenubarMenu defaultOpen>
-        <MenubarTrigger>MenubarTrigger</MenubarTrigger>
         <MenubarTrigger
           data-subject
           {...({ children: 'MenubarTrigger', ...props } as ComponentProps<typeof MenubarTrigger>)}
@@ -210,6 +209,13 @@ function classesOfMenubarContent(
   return renderMenubarContent(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfMenubarContent(
+  props: Partial<Record<keyof ComponentProps<typeof MenubarContent>, unknown>> = {},
+) {
+  renderMenubarContent(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfMenubarContent(
   props: Partial<Record<keyof ComponentProps<typeof MenubarContent>, unknown>> = {},
 ) {
@@ -233,12 +239,12 @@ describe('MenubarContent', () => {
     expect(attributesOfMenubarContent({ sideOffset: 8 })).toEqual(attributesOfMenubarContent())
   })
 
-  it('renders with align="center"', () => {
-    expect(renderMenubarContent({ align: 'center' })).toBeTruthy()
+  it('renders differently with align="center"', () => {
+    expect(htmlOfMenubarContent({ align: 'center' })).not.toBe(htmlOfMenubarContent())
   })
 
-  it('renders with align="end"', () => {
-    expect(renderMenubarContent({ align: 'end' })).toBeTruthy()
+  it('renders differently with align="end"', () => {
+    expect(htmlOfMenubarContent({ align: 'end' })).not.toBe(htmlOfMenubarContent())
   })
 
   it('appends a consumer className last', () => {
@@ -274,6 +280,13 @@ function classesOfMenubarItem(
   return renderMenubarItem(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfMenubarItem(
+  props: Partial<Record<keyof ComponentProps<typeof MenubarItem>, unknown>> = {},
+) {
+  renderMenubarItem(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfMenubarItem(
   props: Partial<Record<keyof ComponentProps<typeof MenubarItem>, unknown>> = {},
 ) {
@@ -293,8 +306,8 @@ describe('MenubarItem', () => {
     expect(attributesOfMenubarItem({ variant: 'default' })).toEqual(attributesOfMenubarItem())
   })
 
-  it('renders with variant="destructive"', () => {
-    expect(renderMenubarItem({ variant: 'destructive' })).toBeTruthy()
+  it('renders differently with variant="destructive"', () => {
+    expect(htmlOfMenubarItem({ variant: 'destructive' })).not.toBe(htmlOfMenubarItem())
   })
 
   it('appends a consumer className last', () => {
@@ -996,7 +1009,6 @@ function renderMenubarSubTrigger(
         <MenubarTrigger>MenubarTrigger</MenubarTrigger>
         <MenubarContent>
           <MenubarSub defaultOpen>
-            <MenubarSubTrigger>MenubarSubTrigger</MenubarSubTrigger>
             <MenubarSubTrigger
               data-subject
               {...({ children: 'MenubarSubTrigger', ...props } as ComponentProps<
@@ -1036,7 +1048,6 @@ describe('MenubarSubTrigger', () => {
           <MenubarTrigger>MenubarTrigger</MenubarTrigger>
           <MenubarContent>
             <MenubarSub defaultOpen>
-              <MenubarSubTrigger inset>MenubarSubTrigger</MenubarSubTrigger>
               <MenubarSubTrigger data-subject inset>
                 MenubarSubTrigger
               </MenubarSubTrigger>

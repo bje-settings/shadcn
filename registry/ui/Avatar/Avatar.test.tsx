@@ -34,6 +34,11 @@ function classesOfAvatar(
   return renderAvatar(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfAvatar(props: Partial<Record<keyof ComponentProps<typeof Avatar>, unknown>> = {}) {
+  renderAvatar(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfAvatar(
   props: Partial<Record<keyof ComponentProps<typeof Avatar>, unknown>> = {},
 ) {
@@ -53,12 +58,12 @@ describe('Avatar', () => {
     expect(attributesOfAvatar({ size: 'default' })).toEqual(attributesOfAvatar())
   })
 
-  it('renders with size="sm"', () => {
-    expect(renderAvatar({ size: 'sm' })).toBeTruthy()
+  it('renders differently with size="sm"', () => {
+    expect(htmlOfAvatar({ size: 'sm' })).not.toBe(htmlOfAvatar())
   })
 
-  it('renders with size="lg"', () => {
-    expect(renderAvatar({ size: 'lg' })).toBeTruthy()
+  it('renders differently with size="lg"', () => {
+    expect(htmlOfAvatar({ size: 'lg' })).not.toBe(htmlOfAvatar())
   })
 
   it('appends a consumer className last', () => {

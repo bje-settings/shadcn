@@ -48,6 +48,7 @@ function ChipBasic() {
     <Example title="Basic">
       <Helper size="sm" />
       <IconPlaceholder data-icon="inline-start" />
+      <svg:g className="border-b" />
       {labels.map((label) => <Button key={label.text}>{label.text}</Button>)}
       <React.Fragment />
     </Example>
@@ -149,6 +150,7 @@ function ChipBasic() {
     <Example title="Basic">
       <Helper size="sm" />
       <IconPlaceholder data-icon="inline-start" />
+      <svg:g className="border-b" />
       {labels.map((label) => <Button key={label.text}>{label.text}</Button>)}
       <React.Fragment />
     </Example>

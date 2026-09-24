@@ -62,6 +62,13 @@ function classesOfScrollBar(
   return renderScrollBar(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfScrollBar(
+  props: Partial<Record<keyof ComponentProps<typeof ScrollBar>, unknown>> = {},
+) {
+  renderScrollBar(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfScrollBar(
   props: Partial<Record<keyof ComponentProps<typeof ScrollBar>, unknown>> = {},
 ) {
@@ -81,8 +88,8 @@ describe('ScrollBar', () => {
     expect(attributesOfScrollBar({ orientation: 'vertical' })).toEqual(attributesOfScrollBar())
   })
 
-  it('renders with orientation="horizontal"', () => {
-    expect(renderScrollBar({ orientation: 'horizontal' })).toBeTruthy()
+  it('renders differently with orientation="horizontal"', () => {
+    expect(htmlOfScrollBar({ orientation: 'horizontal' })).not.toBe(htmlOfScrollBar())
   })
 
   it('appends a consumer className last', () => {

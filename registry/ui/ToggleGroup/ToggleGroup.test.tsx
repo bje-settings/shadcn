@@ -31,6 +31,13 @@ function classesOfToggleGroup(
   return renderToggleGroup(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfToggleGroup(
+  props: Partial<Record<keyof ComponentProps<typeof ToggleGroup>, unknown>> = {},
+) {
+  renderToggleGroup(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfToggleGroup(
   props: Partial<Record<keyof ComponentProps<typeof ToggleGroup>, unknown>> = {},
 ) {
@@ -56,8 +63,8 @@ describe('ToggleGroup', () => {
     )
   })
 
-  it('renders with orientation="vertical"', () => {
-    expect(renderToggleGroup({ orientation: 'vertical' })).toBeTruthy()
+  it('renders differently with orientation="vertical"', () => {
+    expect(htmlOfToggleGroup({ orientation: 'vertical' })).not.toBe(htmlOfToggleGroup())
   })
 
   it('appends a consumer className last', () => {

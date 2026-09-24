@@ -193,6 +193,13 @@ function classesOfButtonGroupSeparator(
   return renderButtonGroupSeparator(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfButtonGroupSeparator(
+  props: Partial<Record<keyof ComponentProps<typeof ButtonGroupSeparator>, unknown>> = {},
+) {
+  renderButtonGroupSeparator(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfButtonGroupSeparator(
   props: Partial<Record<keyof ComponentProps<typeof ButtonGroupSeparator>, unknown>> = {},
 ) {
@@ -216,8 +223,10 @@ describe('ButtonGroupSeparator', () => {
     )
   })
 
-  it('renders with orientation="horizontal"', () => {
-    expect(renderButtonGroupSeparator({ orientation: 'horizontal' })).toBeTruthy()
+  it('renders differently with orientation="horizontal"', () => {
+    expect(htmlOfButtonGroupSeparator({ orientation: 'horizontal' })).not.toBe(
+      htmlOfButtonGroupSeparator(),
+    )
   })
 
   it('appends a consumer className last', () => {

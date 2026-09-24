@@ -15,7 +15,6 @@ describe('TooltipProvider', () => {
     cleanup()
     render(
       <Tooltip defaultOpen>
-        <TooltipTrigger>TooltipTrigger</TooltipTrigger>
         <TooltipProvider>
           <i data-testid="child" />
         </TooltipProvider>
@@ -43,7 +42,6 @@ function renderTooltipTrigger(
   cleanup()
   render(
     <Tooltip defaultOpen>
-      <TooltipTrigger>TooltipTrigger</TooltipTrigger>
       <TooltipTrigger
         data-subject
         {...({ children: 'TooltipTrigger', ...props } as ComponentProps<typeof TooltipTrigger>)}
@@ -83,6 +81,13 @@ function classesOfTooltipContent(
   return renderTooltipContent(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfTooltipContent(
+  props: Partial<Record<keyof ComponentProps<typeof TooltipContent>, unknown>> = {},
+) {
+  renderTooltipContent(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfTooltipContent(
   props: Partial<Record<keyof ComponentProps<typeof TooltipContent>, unknown>> = {},
 ) {
@@ -114,32 +119,32 @@ describe('TooltipContent', () => {
     expect(attributesOfTooltipContent({ alignOffset: 0 })).toEqual(attributesOfTooltipContent())
   })
 
-  it('renders with side="left"', () => {
-    expect(renderTooltipContent({ side: 'left' })).toBeTruthy()
+  it('renders differently with side="left"', () => {
+    expect(htmlOfTooltipContent({ side: 'left' })).not.toBe(htmlOfTooltipContent())
   })
 
-  it('renders with side="right"', () => {
-    expect(renderTooltipContent({ side: 'right' })).toBeTruthy()
+  it('renders differently with side="right"', () => {
+    expect(htmlOfTooltipContent({ side: 'right' })).not.toBe(htmlOfTooltipContent())
   })
 
-  it('renders with side="bottom"', () => {
-    expect(renderTooltipContent({ side: 'bottom' })).toBeTruthy()
+  it('renders differently with side="bottom"', () => {
+    expect(htmlOfTooltipContent({ side: 'bottom' })).not.toBe(htmlOfTooltipContent())
   })
 
-  it('renders with side="inline-start"', () => {
-    expect(renderTooltipContent({ side: 'inline-start' })).toBeTruthy()
+  it('renders differently with side="inline-start"', () => {
+    expect(htmlOfTooltipContent({ side: 'inline-start' })).not.toBe(htmlOfTooltipContent())
   })
 
-  it('renders with side="inline-end"', () => {
-    expect(renderTooltipContent({ side: 'inline-end' })).toBeTruthy()
+  it('renders differently with side="inline-end"', () => {
+    expect(htmlOfTooltipContent({ side: 'inline-end' })).not.toBe(htmlOfTooltipContent())
   })
 
-  it('renders with align="start"', () => {
-    expect(renderTooltipContent({ align: 'start' })).toBeTruthy()
+  it('renders differently with align="start"', () => {
+    expect(htmlOfTooltipContent({ align: 'start' })).not.toBe(htmlOfTooltipContent())
   })
 
-  it('renders with align="end"', () => {
-    expect(renderTooltipContent({ align: 'end' })).toBeTruthy()
+  it('renders differently with align="end"', () => {
+    expect(htmlOfTooltipContent({ align: 'end' })).not.toBe(htmlOfTooltipContent())
   })
 
   it('appends a consumer className last', () => {

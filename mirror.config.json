@@ -88,21 +88,21 @@
   "consumerClasses": [
     {
       "classes": ["border-b", "border-t"],
-      "reason": "Card header and footer pad only when given Tailwind's border-b or border-t, which no element carries here."
+      "reason": "Card's header and footer and InputGroup's addons pad only when a consumer passes Tailwind's border-b or border-t, which no element carries here."
     }
   ],
   "coverageExclusions": {
     "attachment": "AttachmentTrigger's type default when given a render element is a branch the docs example never takes.",
     "calendar": "CalendarDayButton's focus effect and the dropdown caption run only on interaction or with captionLayout set at runtime.",
-    "carousel": "Carousel's scroll handlers, keyboard navigation and API callbacks run only once Embla measures slides and the user scrolls.",
-    "chart": "ChartTooltipContent and ChartLegendContent format Recharts payloads, which exist only inside a rendered chart with data and an active point.",
+    "carousel": "Carousel's scroll state, button handlers, keyboard navigation and API callbacks run only once Embla measures slides and the user scrolls.",
+    "chart": "ChartTooltipContent, ChartLegendContent and their payload formatting render only inside a sized Recharts chart, which jsdom cannot give (about half the file).",
     "drawer": "DrawerContent marks snap points only when given snapPoints, which the docs example never passes as a literal.",
-    "field": "FieldError's handling of an errors list (none, one, or several with duplicates) is logic no render the docs example makes reaches.",
-    "input-group": "InputGroupAddon focuses the input when clicked outside a button: an interaction, not a render.",
+    "field": "FieldError's errors-list handling (none, one, or several deduplicated) and the orientation and alert paths the docs example never renders.",
+    "input-group": "InputGroupAddon's click-to-focus handler and the addon and button alignments the docs example never renders.",
     "input-otp": "InputOTPSlot's fake caret shows only while the input has focus, and its fallback for a missing OTPInput context only outside InputOTP; the docs example renders neither.",
-    "sidebar": "Sidebar's toggle, keyboard shortcut, cookie write and mobile sheet run only on interaction or a mobile viewport.",
+    "sidebar": "Sidebar's toggle, keyboard shortcut, cookie write, rail and mobile sheet run only on interaction or a mobile viewport.",
     "slider": "Slider's branch for a controlled value needs a literal value, which the docs example never passes.",
-    "toast": "Toasts render from the toast manager's state: ToastIcon's per-type icons and the list the Toaster maps need toasts added at runtime, not rendered from props.",
+    "toast": "The toast list, per-type icons and the default manager render only for toasts added at runtime through the manager (about half the file).",
     "use-mobile": "useIsMobile's change handler runs only when the viewport crosses the breakpoint."
   },
   "globalClasses": [
@@ -236,8 +236,8 @@
       "Toaster": "Sonner renders its toaster list, which takes the className, only while a toast shows."
     },
     "chart": {
-      "ChartTooltipContent": "Recharts renders tooltip content only while a data point is active.",
-      "ChartLegendContent": "Recharts passes legend content its payload only inside a rendered chart with data."
+      "ChartTooltipContent": "It renders inside ChartContainer's Recharts ResponsiveContainer, which renders nothing at jsdom's zero size.",
+      "ChartLegendContent": "It renders inside ChartContainer's Recharts ResponsiveContainer, which renders nothing at jsdom's zero size."
     }
   },
   "testProps": {
@@ -279,6 +279,21 @@
         "day": "{ date: new Date(2025, 5, 12) } as ComponentProps<typeof CalendarDayButton>[\"day\"]",
         "modifiers": "{}"
       }
+    }
+  },
+  "sameRenderInTests": {
+    "carousel": {
+      "Carousel.orientation": "it lays out CarouselContent and CarouselItem, which this render has none of."
+    },
+    "combobox": {
+      "ComboboxInput.showClear": "Base UI shows the clear button only once the input has a value."
+    },
+    "navigation-menu": {
+      "NavigationMenu.align": "it positions the popup, which renders only while an item is open."
+    },
+    "sidebar": {
+      "SidebarProvider.defaultOpen": "it sets the state a Sidebar shows, and this render has no Sidebar.",
+      "Sidebar.collapsible": "it shows only once the sidebar is collapsed, and it renders open."
     }
   }
 }

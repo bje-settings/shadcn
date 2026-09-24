@@ -49,10 +49,10 @@ describe('slotToScss', () => {
     expect(dropped).toEqual([])
   })
 
-  it('drops rules needing a marker no mirrored element carries', async () => {
-    const { scss, dropped } = await convert(['flex', 'group-hover/card:block'])
-    expect(scss).toBe(':where(.root) {\n  display: flex;\n}')
-    expect(dropped).toEqual(['needs a group/card marker, which no mirrored component carries.'])
+  it('refuses a rule needing a marker no mirrored element carries', async () => {
+    await expect(convert(['flex', 'group-hover/card:block'])).rejects.toThrow(
+      'needs a group/card marker, which no mirrored element with a data-slot carries',
+    )
   })
 
   it('drops rules gated on a consumer class', async () => {
@@ -158,9 +158,12 @@ describe('slotToScss', () => {
     expect(scss).toMatch(/^:where\(\.root\) \{\n {2}& svg/)
   })
 
-  it('drops a class probe that finds nothing', async () => {
-    const { scss } = await convert(["[&_svg:not([class*='size-'])]:size-4"])
+  it('drops a class probe that finds nothing, and says so', async () => {
+    const { scss, dropped } = await convert(["[&_svg:not([class*='size-'])]:size-4"])
     expect(scss).toContain('  & svg {\n')
+    expect(dropped).toEqual([
+      'upstream skips elements whose classes contain "size-", and no mirrored element does: the default applies to every match.',
+    ])
   })
 
   it('leaves other :not() arguments alone', async () => {

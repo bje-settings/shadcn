@@ -8,8 +8,10 @@
 // cascade order, and only adjacent blocks merge, so no declaration moves past
 // another that could override it.
 //
-// The slot class is wrapped in :where() so a consumer's className always
-// outranks the component's defaults, the job tailwind-merge does upstream.
+// Rules styling the slot's own element nest under :where(.slot), so a
+// consumer's className outranks them, the job tailwind-merge does upstream.
+// Rules styling descendants (`*:w-full`, `& svg`) nest under .slot and keep
+// upstream's specificity.
 
 import postcss, { type AtRule, type Rule } from 'postcss'
 import selectorParser from 'postcss-selector-parser'
@@ -22,16 +24,17 @@ export type Slot = {
 
 export type ScssBlock = {
   scss: string
-  // group/peer marker classes, which have no CSS of their own. Any other class
-  // Tailwind produces no CSS for fails the conversion.
+  // group/peer markers and configured classesWithoutCss, which have no CSS.
+  // Any other class Tailwind produces no CSS for fails the conversion.
   unresolved: string[]
-  // Custom properties the block reads but does not set: the global variables
-  // file has to provide them.
+  // Custom properties the block reads but does not set: global tokens, or
+  // ones an enclosing slot or an inline style sets.
   customProperties: string[]
   // No rule came out: Sass drops the empty block, so the module exports no
   // class for it (a slot holding only a group marker).
   empty: boolean
-  // Why rules were dropped here: a consumer class or an absent marker.
+  // Why rules were dropped or loosened here: a consumer class, or a class
+  // probe no mirrored element matches.
   dropped: string[]
 }
 
@@ -80,7 +83,11 @@ export const MARKER = /^(group|peer)(\/[\w-]+)?$/
 // classes match, or goes when none do. :where() keeps it from adding
 // specificity, so a consumer's own size class on an icon still wins, as it
 // does upstream where the probe excludes that icon.
-function resolveClassProbes(root: selectorParser.Root, classProbe: SlotOptions['classProbe']) {
+function resolveClassProbes(
+  root: selectorParser.Root,
+  classProbe: SlotOptions['classProbe'],
+  unmatched: Set<string>,
+) {
   root.walkPseudos((pseudo) => {
     if (pseudo.value !== ':not') return
     const probes = pseudo.nodes.map((inner) => {
@@ -91,8 +98,10 @@ function resolveClassProbes(root: selectorParser.Root, classProbe: SlotOptions['
     })
     if (!probes.every((probe) => typeof probe === 'string')) return
     const selectors = [...new Set(probes.flatMap((probe) => classProbe(probe)))].sort()
-    if (selectors.length === 0) pseudo.remove()
-    else
+    if (selectors.length === 0) {
+      for (const probe of probes) unmatched.add(probe)
+      pseudo.remove()
+    } else
       pseudo.replaceWith(
         selectorParser().astSync(`:where(:not(${selectors.join(', ')}))`).first.first,
       )
@@ -106,9 +115,10 @@ function nestSelector(
   candidates: Set<string>,
   resolved: Set<string>,
   options: SlotOptions,
+  unmatched: Set<string>,
 ): string {
   return selectorParser((root) => {
-    resolveClassProbes(root, options.classProbe)
+    resolveClassProbes(root, options.classProbe, unmatched)
     root.walkClasses((node) => {
       if (candidates.has(node.value)) {
         resolved.add(node.value)
@@ -173,8 +183,9 @@ function classesIn(selector: string): string[] {
 }
 
 // Why a rule is dropped, if it is: besides the slot's own utilities, it needs
-// a configured consumer class, or a group/peer marker no mirrored element
-// carries, so it never applies.
+// a configured consumer class, so it never applies. A group/peer marker no
+// mirrored element carries fails the build: the item carrying it must be
+// mirrored too.
 function dropReason(
   selector: string,
   candidates: Set<string>,
@@ -184,7 +195,12 @@ function dropReason(
   const consumer = classes.find((c) => options.consumerClasses.has(c))
   if (consumer) return options.consumerClasses.get(consumer)
   const missing = classes.find((c) => MARKER.test(c) && !options.markers.has(c))
-  return missing && `needs a ${missing} marker, which no mirrored component carries.`
+  if (missing) {
+    throw new Error(
+      `selector ${selector} needs a ${missing} marker, which no mirrored element with a data-slot carries`,
+    )
+  }
+  return undefined
 }
 
 // Whether a nested selector styles another element than the slot's own: a
@@ -206,6 +222,7 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
   const candidates = new Set(slot.classes)
   const resolved = new Set<string>()
   const dropped = new Set<string>()
+  const unmatched = new Set<string>()
   // The slot's own rules sit at zero specificity, so a consumer's className
   // wins as tailwind-merge makes it win upstream. Rules styling descendants
   // (Field's `*:w-full`) keep the class's specificity, as upstream's do: a
@@ -235,7 +252,7 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
     // overrides (an icon's size), so it stays at zero specificity even when it
     // styles descendants.
     const nested = kept.map((raw) => {
-      const selector = nestSelector(raw, candidates, resolved, options)
+      const selector = nestSelector(raw, candidates, resolved, options, unmatched)
       return { selector, context: targetsDescendant(selector) && !/\[class\*=/.test(raw) }
     })
     const selectors = [...new Set(nested.map((n) => n.selector))]
@@ -274,6 +291,12 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
     unresolved,
     customProperties: [...reads].filter((name) => !sets.has(name)).sort(),
     empty: root.items.length === 0 && context.items.length === 0,
-    dropped: [...dropped],
+    dropped: [
+      ...dropped,
+      ...[...unmatched].map(
+        (probe) =>
+          `upstream skips elements whose classes contain "${probe}", and no mirrored element does: the default applies to every match.`,
+      ),
+    ],
   }
 }

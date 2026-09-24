@@ -35,7 +35,6 @@ function renderPopoverTrigger(
   cleanup()
   render(
     <Popover defaultOpen>
-      <PopoverTrigger>PopoverTrigger</PopoverTrigger>
       <PopoverTrigger
         data-subject
         {...({ children: 'PopoverTrigger', ...props } as ComponentProps<typeof PopoverTrigger>)}
@@ -75,6 +74,13 @@ function classesOfPopoverContent(
   return renderPopoverContent(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfPopoverContent(
+  props: Partial<Record<keyof ComponentProps<typeof PopoverContent>, unknown>> = {},
+) {
+  renderPopoverContent(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfPopoverContent(
   props: Partial<Record<keyof ComponentProps<typeof PopoverContent>, unknown>> = {},
 ) {
@@ -106,32 +112,32 @@ describe('PopoverContent', () => {
     expect(attributesOfPopoverContent({ sideOffset: 4 })).toEqual(attributesOfPopoverContent())
   })
 
-  it('renders with align="start"', () => {
-    expect(renderPopoverContent({ align: 'start' })).toBeTruthy()
+  it('renders differently with align="start"', () => {
+    expect(htmlOfPopoverContent({ align: 'start' })).not.toBe(htmlOfPopoverContent())
   })
 
-  it('renders with align="end"', () => {
-    expect(renderPopoverContent({ align: 'end' })).toBeTruthy()
+  it('renders differently with align="end"', () => {
+    expect(htmlOfPopoverContent({ align: 'end' })).not.toBe(htmlOfPopoverContent())
   })
 
-  it('renders with side="left"', () => {
-    expect(renderPopoverContent({ side: 'left' })).toBeTruthy()
+  it('renders differently with side="left"', () => {
+    expect(htmlOfPopoverContent({ side: 'left' })).not.toBe(htmlOfPopoverContent())
   })
 
-  it('renders with side="right"', () => {
-    expect(renderPopoverContent({ side: 'right' })).toBeTruthy()
+  it('renders differently with side="right"', () => {
+    expect(htmlOfPopoverContent({ side: 'right' })).not.toBe(htmlOfPopoverContent())
   })
 
-  it('renders with side="top"', () => {
-    expect(renderPopoverContent({ side: 'top' })).toBeTruthy()
+  it('renders differently with side="top"', () => {
+    expect(htmlOfPopoverContent({ side: 'top' })).not.toBe(htmlOfPopoverContent())
   })
 
-  it('renders with side="inline-start"', () => {
-    expect(renderPopoverContent({ side: 'inline-start' })).toBeTruthy()
+  it('renders differently with side="inline-start"', () => {
+    expect(htmlOfPopoverContent({ side: 'inline-start' })).not.toBe(htmlOfPopoverContent())
   })
 
-  it('renders with side="inline-end"', () => {
-    expect(renderPopoverContent({ side: 'inline-end' })).toBeTruthy()
+  it('renders differently with side="inline-end"', () => {
+    expect(htmlOfPopoverContent({ side: 'inline-end' })).not.toBe(htmlOfPopoverContent())
   })
 
   it('appends a consumer className last', () => {

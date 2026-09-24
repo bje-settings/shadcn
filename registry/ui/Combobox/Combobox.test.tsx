@@ -65,7 +65,6 @@ function renderComboboxTrigger(
   cleanup()
   render(
     <Combobox defaultOpen>
-      <ComboboxTrigger>ComboboxTrigger</ComboboxTrigger>
       <ComboboxTrigger
         data-subject
         {...({ children: 'ComboboxTrigger', ...props } as ComponentProps<typeof ComboboxTrigger>)}
@@ -110,6 +109,13 @@ function renderComboboxInput(
   return document.querySelector('[data-subject]')
 }
 
+function htmlOfComboboxInput(
+  props: Partial<Record<keyof ComponentProps<typeof ComboboxInput>, unknown>> = {},
+) {
+  renderComboboxInput(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfComboboxInput(
   props: Partial<Record<keyof ComponentProps<typeof ComboboxInput>, unknown>> = {},
 ) {
@@ -133,16 +139,16 @@ describe('ComboboxInput', () => {
     expect(attributesOfComboboxInput({ showClear: false })).toEqual(attributesOfComboboxInput())
   })
 
-  it('renders with disabled=true', () => {
-    expect(renderComboboxInput({ disabled: true })).toBeTruthy()
+  it('renders differently with disabled=true', () => {
+    expect(htmlOfComboboxInput({ disabled: true })).not.toBe(htmlOfComboboxInput())
   })
 
-  it('renders with showTrigger=false', () => {
-    expect(renderComboboxInput({ showTrigger: false })).toBeTruthy()
+  it('renders differently with showTrigger=false', () => {
+    expect(htmlOfComboboxInput({ showTrigger: false })).not.toBe(htmlOfComboboxInput())
   })
 
-  it('renders with showClear=true', () => {
-    expect(renderComboboxInput({ showClear: true })).toBeTruthy()
+  it('renders with showClear=true, the same here: Base UI shows the clear button only once the input has a value.', () => {
+    expect(() => renderComboboxInput({ showClear: true })).not.toThrow()
   })
 
   it('appends a consumer className last', () => {
@@ -309,6 +315,13 @@ function classesOfComboboxContent(
   return renderComboboxContent(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfComboboxContent(
+  props: Partial<Record<keyof ComponentProps<typeof ComboboxContent>, unknown>> = {},
+) {
+  renderComboboxContent(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfComboboxContent(
   props: Partial<Record<keyof ComponentProps<typeof ComboboxContent>, unknown>> = {},
 ) {
@@ -340,32 +353,32 @@ describe('ComboboxContent', () => {
     expect(attributesOfComboboxContent({ alignOffset: 0 })).toEqual(attributesOfComboboxContent())
   })
 
-  it('renders with side="left"', () => {
-    expect(renderComboboxContent({ side: 'left' })).toBeTruthy()
+  it('renders differently with side="left"', () => {
+    expect(htmlOfComboboxContent({ side: 'left' })).not.toBe(htmlOfComboboxContent())
   })
 
-  it('renders with side="right"', () => {
-    expect(renderComboboxContent({ side: 'right' })).toBeTruthy()
+  it('renders differently with side="right"', () => {
+    expect(htmlOfComboboxContent({ side: 'right' })).not.toBe(htmlOfComboboxContent())
   })
 
-  it('renders with side="top"', () => {
-    expect(renderComboboxContent({ side: 'top' })).toBeTruthy()
+  it('renders differently with side="top"', () => {
+    expect(htmlOfComboboxContent({ side: 'top' })).not.toBe(htmlOfComboboxContent())
   })
 
-  it('renders with side="inline-start"', () => {
-    expect(renderComboboxContent({ side: 'inline-start' })).toBeTruthy()
+  it('renders differently with side="inline-start"', () => {
+    expect(htmlOfComboboxContent({ side: 'inline-start' })).not.toBe(htmlOfComboboxContent())
   })
 
-  it('renders with side="inline-end"', () => {
-    expect(renderComboboxContent({ side: 'inline-end' })).toBeTruthy()
+  it('renders differently with side="inline-end"', () => {
+    expect(htmlOfComboboxContent({ side: 'inline-end' })).not.toBe(htmlOfComboboxContent())
   })
 
-  it('renders with align="center"', () => {
-    expect(renderComboboxContent({ align: 'center' })).toBeTruthy()
+  it('renders differently with align="center"', () => {
+    expect(htmlOfComboboxContent({ align: 'center' })).not.toBe(htmlOfComboboxContent())
   })
 
-  it('renders with align="end"', () => {
-    expect(renderComboboxContent({ align: 'end' })).toBeTruthy()
+  it('renders differently with align="end"', () => {
+    expect(htmlOfComboboxContent({ align: 'end' })).not.toBe(htmlOfComboboxContent())
   })
 
   it('appends a consumer className last', () => {
@@ -812,6 +825,13 @@ function classesOfComboboxChip(
   return renderComboboxChip(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfComboboxChip(
+  props: Partial<Record<keyof ComponentProps<typeof ComboboxChip>, unknown>> = {},
+) {
+  renderComboboxChip(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfComboboxChip(
   props: Partial<Record<keyof ComponentProps<typeof ComboboxChip>, unknown>> = {},
 ) {
@@ -831,8 +851,8 @@ describe('ComboboxChip', () => {
     expect(attributesOfComboboxChip({ showRemove: true })).toEqual(attributesOfComboboxChip())
   })
 
-  it('renders with showRemove=false', () => {
-    expect(renderComboboxChip({ showRemove: false })).toBeTruthy()
+  it('renders differently with showRemove=false', () => {
+    expect(htmlOfComboboxChip({ showRemove: false })).not.toBe(htmlOfComboboxChip())
   })
 
   it('appends a consumer className last', () => {

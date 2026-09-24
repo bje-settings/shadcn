@@ -1626,6 +1626,13 @@ function classesOfQuestionnaireNext(
   return renderQuestionnaireNext(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfQuestionnaireNext(
+  props: Partial<Record<keyof ComponentProps<typeof QuestionnaireNext>, unknown>> = {},
+) {
+  renderQuestionnaireNext(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfQuestionnaireNext(
   props: Partial<Record<keyof ComponentProps<typeof QuestionnaireNext>, unknown>> = {},
 ) {
@@ -1653,8 +1660,8 @@ describe('QuestionnaireNext', () => {
     )
   })
 
-  it('renders its default content without children', () => {
-    expect(renderQuestionnaireNext({ children: undefined })).toBeTruthy()
+  it('renders default content in place of missing children', () => {
+    expect(htmlOfQuestionnaireNext({ children: undefined })).not.toBe(htmlOfQuestionnaireNext())
   })
 
   it('appends a consumer className last', () => {
@@ -1689,6 +1696,13 @@ function classesOfQuestionnaireSubmit(
   return renderQuestionnaireSubmit(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfQuestionnaireSubmit(
+  props: Partial<Record<keyof ComponentProps<typeof QuestionnaireSubmit>, unknown>> = {},
+) {
+  renderQuestionnaireSubmit(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfQuestionnaireSubmit(
   props: Partial<Record<keyof ComponentProps<typeof QuestionnaireSubmit>, unknown>> = {},
 ) {
@@ -1718,8 +1732,8 @@ describe('QuestionnaireSubmit', () => {
     )
   })
 
-  it('renders its default content without children', () => {
-    expect(renderQuestionnaireSubmit({ children: undefined })).toBeTruthy()
+  it('renders default content in place of missing children', () => {
+    expect(htmlOfQuestionnaireSubmit({ children: undefined })).not.toBe(htmlOfQuestionnaireSubmit())
   })
 
   it('appends a consumer className last', () => {

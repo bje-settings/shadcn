@@ -28,6 +28,11 @@ function classesOfCard(props: Partial<Record<keyof ComponentProps<typeof Card>, 
   return renderCard(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfCard(props: Partial<Record<keyof ComponentProps<typeof Card>, unknown>> = {}) {
+  renderCard(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfCard(props: Partial<Record<keyof ComponentProps<typeof Card>, unknown>> = {}) {
   const element = renderCard(props)
   expect(element).toBeTruthy()
@@ -45,8 +50,8 @@ describe('Card', () => {
     expect(attributesOfCard({ size: 'default' })).toEqual(attributesOfCard())
   })
 
-  it('renders with size="sm"', () => {
-    expect(renderCard({ size: 'sm' })).toBeTruthy()
+  it('renders differently with size="sm"', () => {
+    expect(htmlOfCard({ size: 'sm' })).not.toBe(htmlOfCard())
   })
 
   it('appends a consumer className last', () => {

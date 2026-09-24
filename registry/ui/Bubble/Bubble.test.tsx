@@ -58,6 +58,11 @@ function classesOfBubble(
   return renderBubble(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfBubble(props: Partial<Record<keyof ComponentProps<typeof Bubble>, unknown>> = {}) {
+  renderBubble(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfBubble(
   props: Partial<Record<keyof ComponentProps<typeof Bubble>, unknown>> = {},
 ) {
@@ -107,8 +112,8 @@ describe('Bubble', () => {
     expect(attributesOfBubble({ align: 'start' })).toEqual(attributesOfBubble())
   })
 
-  it('renders with align="end"', () => {
-    expect(renderBubble({ align: 'end' })).toBeTruthy()
+  it('renders differently with align="end"', () => {
+    expect(htmlOfBubble({ align: 'end' })).not.toBe(htmlOfBubble())
   })
 
   it('appends a consumer className last', () => {

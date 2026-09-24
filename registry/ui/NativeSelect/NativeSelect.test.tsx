@@ -29,6 +29,13 @@ function classesOfNativeSelect(
   return renderNativeSelect(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfNativeSelect(
+  props: Partial<Record<keyof ComponentProps<typeof NativeSelect>, unknown>> = {},
+) {
+  renderNativeSelect(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfNativeSelect(
   props: Partial<Record<keyof ComponentProps<typeof NativeSelect>, unknown>> = {},
 ) {
@@ -48,8 +55,8 @@ describe('NativeSelect', () => {
     expect(attributesOfNativeSelect({ size: 'default' })).toEqual(attributesOfNativeSelect())
   })
 
-  it('renders with size="sm"', () => {
-    expect(renderNativeSelect({ size: 'sm' })).toBeTruthy()
+  it('renders differently with size="sm"', () => {
+    expect(htmlOfNativeSelect({ size: 'sm' })).not.toBe(htmlOfNativeSelect())
   })
 
   it('appends a consumer className last', () => {

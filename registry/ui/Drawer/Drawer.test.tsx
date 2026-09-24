@@ -137,7 +137,6 @@ function renderDrawerTrigger(
   cleanup()
   render(
     <Drawer defaultOpen>
-      <DrawerTrigger>DrawerTrigger</DrawerTrigger>
       <DrawerTrigger
         data-subject
         {...({ children: 'DrawerTrigger', ...props } as ComponentProps<typeof DrawerTrigger>)}
@@ -158,7 +157,6 @@ describe('DrawerTrigger', () => {
     cleanup()
     render(
       <Drawer showSwipeHandle defaultOpen>
-        <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerTrigger data-subject>DrawerTrigger</DrawerTrigger>
       </Drawer>,
     )
@@ -169,7 +167,6 @@ describe('DrawerTrigger', () => {
     cleanup()
     render(
       <Drawer swipeDirection="down" defaultOpen>
-        <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerTrigger data-subject>DrawerTrigger</DrawerTrigger>
       </Drawer>,
     )
@@ -180,7 +177,6 @@ describe('DrawerTrigger', () => {
     cleanup()
     render(
       <Drawer swipeDirection="up" defaultOpen>
-        <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerTrigger data-subject>DrawerTrigger</DrawerTrigger>
       </Drawer>,
     )
@@ -191,7 +187,6 @@ describe('DrawerTrigger', () => {
     cleanup()
     render(
       <Drawer swipeDirection="left" defaultOpen>
-        <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerTrigger data-subject>DrawerTrigger</DrawerTrigger>
       </Drawer>,
     )
@@ -202,7 +197,6 @@ describe('DrawerTrigger', () => {
     cleanup()
     render(
       <Drawer swipeDirection="right" defaultOpen>
-        <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerTrigger data-subject>DrawerTrigger</DrawerTrigger>
       </Drawer>,
     )
@@ -213,11 +207,9 @@ describe('DrawerTrigger', () => {
     cleanup()
     render(
       <Drawer showSwipeHandle defaultOpen>
-        <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
           <DrawerFooter>
             <Drawer defaultOpen>
-              <DrawerTrigger>DrawerTrigger</DrawerTrigger>
               <DrawerTrigger data-subject>DrawerTrigger</DrawerTrigger>
             </Drawer>
           </DrawerFooter>
@@ -231,15 +223,12 @@ describe('DrawerTrigger', () => {
     cleanup()
     render(
       <Drawer showSwipeHandle defaultOpen>
-        <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerContent>
           <DrawerFooter>
             <Drawer defaultOpen>
-              <DrawerTrigger>DrawerTrigger</DrawerTrigger>
               <DrawerContent>
                 <DrawerFooter>
                   <Drawer defaultOpen>
-                    <DrawerTrigger>DrawerTrigger</DrawerTrigger>
                     <DrawerTrigger data-subject>DrawerTrigger</DrawerTrigger>
                   </Drawer>
                 </DrawerFooter>
@@ -256,7 +245,6 @@ describe('DrawerTrigger', () => {
     cleanup()
     render(
       <Drawer modal={false} disablePointerDismissal swipeDirection="right" defaultOpen>
-        <DrawerTrigger>DrawerTrigger</DrawerTrigger>
         <DrawerTrigger data-subject>DrawerTrigger</DrawerTrigger>
       </Drawer>,
     )

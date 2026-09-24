@@ -34,7 +34,6 @@ function renderCollapsibleTrigger(
   cleanup()
   render(
     <Collapsible defaultOpen>
-      <CollapsibleTrigger>CollapsibleTrigger</CollapsibleTrigger>
       <CollapsibleTrigger
         data-subject
         {...({ children: 'CollapsibleTrigger', ...props } as ComponentProps<

@@ -77,8 +77,8 @@ describe('Carousel', () => {
     expect(attributesOfCarousel({ orientation: 'horizontal' })).toEqual(attributesOfCarousel())
   })
 
-  it('renders with orientation="vertical"', () => {
-    expect(renderCarousel({ orientation: 'vertical' })).toBeTruthy()
+  it('renders with orientation="vertical", the same here: it lays out CarouselContent and CarouselItem, which this render has none of.', () => {
+    expect(() => renderCarousel({ orientation: 'vertical' })).not.toThrow()
   })
 
   it('appends a consumer className last', () => {

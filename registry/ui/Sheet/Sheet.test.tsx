@@ -37,7 +37,6 @@ function renderSheetTrigger(
   cleanup()
   render(
     <Sheet defaultOpen>
-      <SheetTrigger>SheetTrigger</SheetTrigger>
       <SheetTrigger
         data-subject
         {...({ children: 'SheetTrigger', ...props } as ComponentProps<typeof SheetTrigger>)}
@@ -105,6 +104,13 @@ function classesOfSheetContent(
   return renderSheetContent(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfSheetContent(
+  props: Partial<Record<keyof ComponentProps<typeof SheetContent>, unknown>> = {},
+) {
+  renderSheetContent(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfSheetContent(
   props: Partial<Record<keyof ComponentProps<typeof SheetContent>, unknown>> = {},
 ) {
@@ -128,20 +134,20 @@ describe('SheetContent', () => {
     expect(attributesOfSheetContent({ showCloseButton: true })).toEqual(attributesOfSheetContent())
   })
 
-  it('renders with side="left"', () => {
-    expect(renderSheetContent({ side: 'left' })).toBeTruthy()
+  it('renders differently with side="left"', () => {
+    expect(htmlOfSheetContent({ side: 'left' })).not.toBe(htmlOfSheetContent())
   })
 
-  it('renders with side="top"', () => {
-    expect(renderSheetContent({ side: 'top' })).toBeTruthy()
+  it('renders differently with side="top"', () => {
+    expect(htmlOfSheetContent({ side: 'top' })).not.toBe(htmlOfSheetContent())
   })
 
-  it('renders with side="bottom"', () => {
-    expect(renderSheetContent({ side: 'bottom' })).toBeTruthy()
+  it('renders differently with side="bottom"', () => {
+    expect(htmlOfSheetContent({ side: 'bottom' })).not.toBe(htmlOfSheetContent())
   })
 
-  it('renders with showCloseButton=false', () => {
-    expect(renderSheetContent({ showCloseButton: false })).toBeTruthy()
+  it('renders differently with showCloseButton=false', () => {
+    expect(htmlOfSheetContent({ showCloseButton: false })).not.toBe(htmlOfSheetContent())
   })
 
   it('appends a consumer className last', () => {

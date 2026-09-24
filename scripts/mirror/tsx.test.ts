@@ -211,7 +211,7 @@ function Text({ className }) {
     ['a state without a slot', 'state: { open: true },'],
   ])('rejects class strings with %s', (_, options) => {
     expect(() => transformComponent(render(options), 'x', 'bje')).toThrow(
-      'outside an element with data-slot',
+      'outside a nameable element',
     )
   })
 

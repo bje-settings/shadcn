@@ -76,7 +76,6 @@ function renderContextMenuTrigger(
   cleanup()
   render(
     <ContextMenu defaultOpen>
-      <ContextMenuTrigger>ContextMenuTrigger</ContextMenuTrigger>
       <ContextMenuTrigger
         data-subject
         {...({ children: 'ContextMenuTrigger', ...props } as ComponentProps<
@@ -132,6 +131,13 @@ function classesOfContextMenuContent(
   return renderContextMenuContent(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfContextMenuContent(
+  props: Partial<Record<keyof ComponentProps<typeof ContextMenuContent>, unknown>> = {},
+) {
+  renderContextMenuContent(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfContextMenuContent(
   props: Partial<Record<keyof ComponentProps<typeof ContextMenuContent>, unknown>> = {},
 ) {
@@ -173,32 +179,32 @@ describe('ContextMenuContent', () => {
     )
   })
 
-  it('renders with align="center"', () => {
-    expect(renderContextMenuContent({ align: 'center' })).toBeTruthy()
+  it('renders differently with align="center"', () => {
+    expect(htmlOfContextMenuContent({ align: 'center' })).not.toBe(htmlOfContextMenuContent())
   })
 
-  it('renders with align="end"', () => {
-    expect(renderContextMenuContent({ align: 'end' })).toBeTruthy()
+  it('renders differently with align="end"', () => {
+    expect(htmlOfContextMenuContent({ align: 'end' })).not.toBe(htmlOfContextMenuContent())
   })
 
-  it('renders with side="left"', () => {
-    expect(renderContextMenuContent({ side: 'left' })).toBeTruthy()
+  it('renders differently with side="left"', () => {
+    expect(htmlOfContextMenuContent({ side: 'left' })).not.toBe(htmlOfContextMenuContent())
   })
 
-  it('renders with side="top"', () => {
-    expect(renderContextMenuContent({ side: 'top' })).toBeTruthy()
+  it('renders differently with side="top"', () => {
+    expect(htmlOfContextMenuContent({ side: 'top' })).not.toBe(htmlOfContextMenuContent())
   })
 
-  it('renders with side="bottom"', () => {
-    expect(renderContextMenuContent({ side: 'bottom' })).toBeTruthy()
+  it('renders differently with side="bottom"', () => {
+    expect(htmlOfContextMenuContent({ side: 'bottom' })).not.toBe(htmlOfContextMenuContent())
   })
 
-  it('renders with side="inline-start"', () => {
-    expect(renderContextMenuContent({ side: 'inline-start' })).toBeTruthy()
+  it('renders differently with side="inline-start"', () => {
+    expect(htmlOfContextMenuContent({ side: 'inline-start' })).not.toBe(htmlOfContextMenuContent())
   })
 
-  it('renders with side="inline-end"', () => {
-    expect(renderContextMenuContent({ side: 'inline-end' })).toBeTruthy()
+  it('renders differently with side="inline-end"', () => {
+    expect(htmlOfContextMenuContent({ side: 'inline-end' })).not.toBe(htmlOfContextMenuContent())
   })
 
   it('appends a consumer className last', () => {
@@ -357,6 +363,13 @@ function classesOfContextMenuItem(
   return renderContextMenuItem(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfContextMenuItem(
+  props: Partial<Record<keyof ComponentProps<typeof ContextMenuItem>, unknown>> = {},
+) {
+  renderContextMenuItem(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfContextMenuItem(
   props: Partial<Record<keyof ComponentProps<typeof ContextMenuItem>, unknown>> = {},
 ) {
@@ -378,8 +391,8 @@ describe('ContextMenuItem', () => {
     )
   })
 
-  it('renders with variant="destructive"', () => {
-    expect(renderContextMenuItem({ variant: 'destructive' })).toBeTruthy()
+  it('renders differently with variant="destructive"', () => {
+    expect(htmlOfContextMenuItem({ variant: 'destructive' })).not.toBe(htmlOfContextMenuItem())
   })
 
   it('appends a consumer className last', () => {
@@ -511,7 +524,6 @@ function renderContextMenuSubTrigger(
       <ContextMenuTrigger>ContextMenuTrigger</ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuSub defaultOpen>
-          <ContextMenuSubTrigger>ContextMenuSubTrigger</ContextMenuSubTrigger>
           <ContextMenuSubTrigger
             data-subject
             {...({ children: 'ContextMenuSubTrigger', ...props } as ComponentProps<
@@ -551,7 +563,6 @@ describe('ContextMenuSubTrigger', () => {
         <ContextMenuTrigger>ContextMenuTrigger</ContextMenuTrigger>
         <ContextMenuContent>
           <ContextMenuSub defaultOpen>
-            <ContextMenuSubTrigger inset>ContextMenuSubTrigger</ContextMenuSubTrigger>
             <ContextMenuSubTrigger data-subject inset>
               ContextMenuSubTrigger
             </ContextMenuSubTrigger>

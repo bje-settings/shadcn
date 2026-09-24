@@ -65,6 +65,11 @@ function classesOfMessage(
   return renderMessage(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfMessage(props: Partial<Record<keyof ComponentProps<typeof Message>, unknown>> = {}) {
+  renderMessage(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfMessage(
   props: Partial<Record<keyof ComponentProps<typeof Message>, unknown>> = {},
 ) {
@@ -84,8 +89,8 @@ describe('Message', () => {
     expect(attributesOfMessage({ align: 'start' })).toEqual(attributesOfMessage())
   })
 
-  it('renders with align="end"', () => {
-    expect(renderMessage({ align: 'end' })).toBeTruthy()
+  it('renders differently with align="end"', () => {
+    expect(htmlOfMessage({ align: 'end' })).not.toBe(htmlOfMessage())
   })
 
   it('appends a consumer className last', () => {

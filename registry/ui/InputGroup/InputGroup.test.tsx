@@ -220,6 +220,13 @@ function classesOfInputGroupButton(
   return renderInputGroupButton(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfInputGroupButton(
+  props: Partial<Record<keyof ComponentProps<typeof InputGroupButton>, unknown>> = {},
+) {
+  renderInputGroupButton(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfInputGroupButton(
   props: Partial<Record<keyof ComponentProps<typeof InputGroupButton>, unknown>> = {},
 ) {
@@ -267,12 +274,12 @@ describe('InputGroupButton', () => {
     )
   })
 
-  it('renders with type="submit"', () => {
-    expect(renderInputGroupButton({ type: 'submit' })).toBeTruthy()
+  it('renders differently with type="submit"', () => {
+    expect(htmlOfInputGroupButton({ type: 'submit' })).not.toBe(htmlOfInputGroupButton())
   })
 
-  it('renders with type="reset"', () => {
-    expect(renderInputGroupButton({ type: 'reset' })).toBeTruthy()
+  it('renders differently with type="reset"', () => {
+    expect(htmlOfInputGroupButton({ type: 'reset' })).not.toBe(htmlOfInputGroupButton())
   })
 
   it('appends a consumer className last', () => {

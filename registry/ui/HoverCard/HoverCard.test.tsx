@@ -28,9 +28,6 @@ function renderHoverCardTrigger(
   cleanup()
   render(
     <HoverCard defaultOpen>
-      <HoverCardTrigger delay={100} closeDelay={100}>
-        HoverCardTrigger
-      </HoverCardTrigger>
       <HoverCardTrigger
         data-subject
         {...({
@@ -77,6 +74,13 @@ function classesOfHoverCardContent(
   return renderHoverCardContent(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfHoverCardContent(
+  props: Partial<Record<keyof ComponentProps<typeof HoverCardContent>, unknown>> = {},
+) {
+  renderHoverCardContent(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfHoverCardContent(
   props: Partial<Record<keyof ComponentProps<typeof HoverCardContent>, unknown>> = {},
 ) {
@@ -110,32 +114,32 @@ describe('HoverCardContent', () => {
     expect(attributesOfHoverCardContent({ alignOffset: 4 })).toEqual(attributesOfHoverCardContent())
   })
 
-  it('renders with side="left"', () => {
-    expect(renderHoverCardContent({ side: 'left' })).toBeTruthy()
+  it('renders differently with side="left"', () => {
+    expect(htmlOfHoverCardContent({ side: 'left' })).not.toBe(htmlOfHoverCardContent())
   })
 
-  it('renders with side="right"', () => {
-    expect(renderHoverCardContent({ side: 'right' })).toBeTruthy()
+  it('renders differently with side="right"', () => {
+    expect(htmlOfHoverCardContent({ side: 'right' })).not.toBe(htmlOfHoverCardContent())
   })
 
-  it('renders with side="top"', () => {
-    expect(renderHoverCardContent({ side: 'top' })).toBeTruthy()
+  it('renders differently with side="top"', () => {
+    expect(htmlOfHoverCardContent({ side: 'top' })).not.toBe(htmlOfHoverCardContent())
   })
 
-  it('renders with side="inline-start"', () => {
-    expect(renderHoverCardContent({ side: 'inline-start' })).toBeTruthy()
+  it('renders differently with side="inline-start"', () => {
+    expect(htmlOfHoverCardContent({ side: 'inline-start' })).not.toBe(htmlOfHoverCardContent())
   })
 
-  it('renders with side="inline-end"', () => {
-    expect(renderHoverCardContent({ side: 'inline-end' })).toBeTruthy()
+  it('renders differently with side="inline-end"', () => {
+    expect(htmlOfHoverCardContent({ side: 'inline-end' })).not.toBe(htmlOfHoverCardContent())
   })
 
-  it('renders with align="start"', () => {
-    expect(renderHoverCardContent({ align: 'start' })).toBeTruthy()
+  it('renders differently with align="start"', () => {
+    expect(htmlOfHoverCardContent({ align: 'start' })).not.toBe(htmlOfHoverCardContent())
   })
 
-  it('renders with align="end"', () => {
-    expect(renderHoverCardContent({ align: 'end' })).toBeTruthy()
+  it('renders differently with align="end"', () => {
+    expect(htmlOfHoverCardContent({ align: 'end' })).not.toBe(htmlOfHoverCardContent())
   })
 
   it('appends a consumer className last', () => {

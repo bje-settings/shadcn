@@ -41,7 +41,6 @@ function renderAlertDialogTrigger(
   cleanup()
   render(
     <AlertDialog defaultOpen>
-      <AlertDialogTrigger>AlertDialogTrigger</AlertDialogTrigger>
       <AlertDialogTrigger data-subject {...(props as ComponentProps<typeof AlertDialogTrigger>)} />
     </AlertDialog>,
   )
@@ -59,7 +58,6 @@ describe('AlertDialogTrigger', () => {
     cleanup()
     render(
       <AlertDialog defaultOpen>
-        <AlertDialogTrigger>AlertDialogTrigger</AlertDialogTrigger>
         <AlertDialogTrigger data-subject>AlertDialogTrigger</AlertDialogTrigger>
       </AlertDialog>,
     )
@@ -159,6 +157,13 @@ function classesOfAlertDialogContent(
   return renderAlertDialogContent(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfAlertDialogContent(
+  props: Partial<Record<keyof ComponentProps<typeof AlertDialogContent>, unknown>> = {},
+) {
+  renderAlertDialogContent(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfAlertDialogContent(
   props: Partial<Record<keyof ComponentProps<typeof AlertDialogContent>, unknown>> = {},
 ) {
@@ -182,8 +187,8 @@ describe('AlertDialogContent', () => {
     )
   })
 
-  it('renders with size="sm"', () => {
-    expect(renderAlertDialogContent({ size: 'sm' })).toBeTruthy()
+  it('renders differently with size="sm"', () => {
+    expect(htmlOfAlertDialogContent({ size: 'sm' })).not.toBe(htmlOfAlertDialogContent())
   })
 
   it('appends a consumer className last', () => {

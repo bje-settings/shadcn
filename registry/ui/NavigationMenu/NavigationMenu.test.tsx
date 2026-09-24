@@ -58,12 +58,12 @@ describe('NavigationMenu', () => {
     expect(attributesOfNavigationMenu({ align: 'start' })).toEqual(attributesOfNavigationMenu())
   })
 
-  it('renders with align="center"', () => {
-    expect(renderNavigationMenu({ align: 'center' })).toBeTruthy()
+  it('renders with align="center", the same here: it positions the popup, which renders only while an item is open.', () => {
+    expect(() => renderNavigationMenu({ align: 'center' })).not.toThrow()
   })
 
-  it('renders with align="end"', () => {
-    expect(renderNavigationMenu({ align: 'end' })).toBeTruthy()
+  it('renders with align="end", the same here: it positions the popup, which renders only while an item is open.', () => {
+    expect(() => renderNavigationMenu({ align: 'end' })).not.toThrow()
   })
 
   it('appends a consumer className last', () => {

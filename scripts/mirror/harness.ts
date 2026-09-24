@@ -11,26 +11,13 @@ import { relative } from 'node:path'
 import type { MirrorConfig } from './config.ts'
 import type { PreparedExample } from './examples.ts'
 import { camelCase, registryModule } from './names.ts'
-import type { Literal, Part, PartTypes, Scaffold } from './parts.ts'
+import type { PartTypes, Scaffold } from './parts.ts'
+import type { Fixture } from './shapes.ts'
 import { exportedNames } from './tests.ts'
 import type { TransformedComponent, VariantSet } from './tsx.ts'
 import type { TypesetFixture } from './typeset.ts'
 
-export type Fixture = {
-  item: string
-  component: string
-  label: string
-  // The element to hover, focus and disable: its data-slot, if it has one
-  slot?: string
-  // Its scaffold's ancestors, and its props: the scaffold's and a cva option
-  ancestors: Part[]
-  props: Record<string, Literal>
-  // Whether it renders its name as children
-  children: boolean
-  // Whether an ancestor opens: its popup portals out of the case, so the
-  // case renders alone on its page and the screenshot is the viewport.
-  overlay: boolean
-}
+export type { Fixture } from './shapes.ts'
 
 export type HarnessInput = {
   name: string
@@ -71,7 +58,8 @@ export function fixturesFor(input: HarnessInput): Fixture[] {
         ...(component.dataSlot !== undefined ? { slot: component.dataSlot } : {}),
         ancestors: scaffold.ancestors,
         children: scaffold.children,
-        overlay: scaffold.ancestors.some((part) => part.props.defaultOpen === true),
+        // It opens itself (CommandDialog), or an ancestor opens.
+        overlay: [scaffold, ...scaffold.ancestors].some((part) => part.props.defaultOpen === true),
       }
       if (groups.length === 0) {
         return [{ ...base, label: component.name, props: scaffold.props }]
@@ -161,7 +149,13 @@ export function harnessFiles(
     },
     {
       path: `${dir}/fixtures.ts`,
-      content: ts(`export const fixtures = ${JSON.stringify(fixtures, null, 2)}`),
+      content: ts(
+        [
+          "import type { Fixture } from '../../scripts/mirror/shapes'",
+          '',
+          `export const fixtures: Fixture[] = ${JSON.stringify(fixtures, null, 2)}`,
+        ].join('\n'),
+      ),
     },
     {
       path: `${dir}/examples.ts`,

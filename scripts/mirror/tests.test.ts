@@ -13,6 +13,7 @@ const none: Parts = {
   unrendered: {},
   external: new Map(),
   expressions: {},
+  sameRender: {},
 }
 
 const generate = (source: string, parts: Partial<Parts> = {}) =>
@@ -244,8 +245,8 @@ export { Chip, ChipItem, useChip, useChipRef }`)
     expect(test).toContain(
       'expect(() => render(<ChipItem />)).toThrow("useChip must be used within a Chip.")',
     )
-    expect(test).toContain('it("renders with open=true", () => {')
-    expect(test).toContain('expect(renderChip({ open: true })).toBeTruthy()')
+    expect(test).toContain('it("renders differently with open=true", () => {')
+    expect(test).toContain('expect(htmlOfChip({ open: true })).not.toBe(htmlOfChip())')
   })
 
   it('runs a hook inside the provider its error names, the longest when several match', () => {

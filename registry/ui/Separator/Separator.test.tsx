@@ -24,6 +24,13 @@ function classesOfSeparator(
   return renderSeparator(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfSeparator(
+  props: Partial<Record<keyof ComponentProps<typeof Separator>, unknown>> = {},
+) {
+  renderSeparator(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfSeparator(
   props: Partial<Record<keyof ComponentProps<typeof Separator>, unknown>> = {},
 ) {
@@ -43,8 +50,8 @@ describe('Separator', () => {
     expect(attributesOfSeparator({ orientation: 'horizontal' })).toEqual(attributesOfSeparator())
   })
 
-  it('renders with orientation="vertical"', () => {
-    expect(renderSeparator({ orientation: 'vertical' })).toBeTruthy()
+  it('renders differently with orientation="vertical"', () => {
+    expect(htmlOfSeparator({ orientation: 'vertical' })).not.toBe(htmlOfSeparator())
   })
 
   it('appends a consumer className last', () => {

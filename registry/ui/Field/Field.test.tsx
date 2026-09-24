@@ -77,6 +77,13 @@ function classesOfFieldLegend(
   return renderFieldLegend(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfFieldLegend(
+  props: Partial<Record<keyof ComponentProps<typeof FieldLegend>, unknown>> = {},
+) {
+  renderFieldLegend(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfFieldLegend(
   props: Partial<Record<keyof ComponentProps<typeof FieldLegend>, unknown>> = {},
 ) {
@@ -96,8 +103,8 @@ describe('FieldLegend', () => {
     expect(attributesOfFieldLegend({ variant: 'legend' })).toEqual(attributesOfFieldLegend())
   })
 
-  it('renders with variant="label"', () => {
-    expect(renderFieldLegend({ variant: 'label' })).toBeTruthy()
+  it('renders differently with variant="label"', () => {
+    expect(htmlOfFieldLegend({ variant: 'label' })).not.toBe(htmlOfFieldLegend())
   })
 
   it('appends a consumer className last', () => {

@@ -7,9 +7,12 @@
 //   a lookup object and a same-named function with cva's call signature, so
 //   `xVariants({ variant, size, className })` and `VariantProps<typeof
 //   xVariants>` call sites keep working.
-// - `className="..."` on an element with `data-slot`.
-// - `cn("...", ...)` inside such an element's className, or inside a Base UI
-//   `useRender()` whose `state.slot` names the slot; and `cn(xVariants(...))`.
+// - `className="..."` and `cn("...", ...)` on an element, named from its
+//   `data-slot` (or a Base UI `useRender()`'s `state.slot`), else from its
+//   component and tag; a `fooClassName` prop; a keyed `classNames={{ day }}`.
+// - String literals and `String.raw` templates; each branch of a conditional
+//   or `&&`, and each key of clsx's object form, as its own class.
+// - `cn(xVariants(...))`.
 
 import type {
   ArrowFunctionExpression,
@@ -369,10 +372,6 @@ function tagName(ancestors: Node[]): string | undefined {
   return undefined
 }
 
-// The module class for a class string: its element's data-slot, or, on an
-// element without one, the enclosing top-level declaration and the element's
-// tag (`accordionTriggerHeader` for `<AccordionPrimitive.Header>` in
-// AccordionTrigger). A class string in a `fooClassName` prop adds `Foo`.
 // The key of a class string for a keyed part of a component, like
 // react-day-picker's `classNames={{ day: cn(...) }}`: that part is named from
 // the owner and the key, and is not the component's own element.
@@ -389,6 +388,11 @@ function keyedPart(ancestors: Node[]): string | undefined {
   return unsupported(key, `class string under a ${key.type} key`)
 }
 
+// The module class for a class string: under a keyed prop (`classNames={{
+// day }}`), the owner plus the key; else its element's data-slot, or, on an
+// element without one, the enclosing top-level declaration and the element's
+// tag (`accordionTriggerHeader` for `<AccordionPrimitive.Header>` in
+// AccordionTrigger). A class string in a `fooClassName` prop adds `Foo`.
 function slotName(ancestors: Node[]): string | undefined {
   const attribute = ancestors.findLast((node) => node.type === 'JSXAttribute')
   const prop =
@@ -649,8 +653,8 @@ export function transformComponent(
       unsupported(node, 'cva() outside a top-level `const xVariants = cva(...)`')
     }
 
-    // Every data-slot element records its component, styled or not (a Base UI
-    // Root renders only its data-slot).
+    // Every JSX element records its component, styled or not (a Base UI Root
+    // renders only its data-slot).
     if (node.type === 'JSXOpeningElement') track([...ancestors, node], {}, false)
 
     if (
@@ -686,7 +690,10 @@ export function transformComponent(
       track(ancestors, {}, consumer)
       const base = () =>
         slotName(ancestors) ??
-        unsupported(node, 'cn() with class strings outside an element with data-slot')
+        unsupported(
+          node,
+          'cn() with class strings outside a nameable element (no data-slot, owner or tag)',
+        )
       // Each string branch of a conditional argument gets its own class.
       const branches: { literal: StringLiteral; suffix: string }[] = []
       const checkArg = (arg: Node) => {
@@ -711,7 +718,7 @@ export function transformComponent(
           continue
         }
         // clsx's object form, `{ "h-2.5 w-2.5": indicator === "dot" }`: each
-        // class string key becomes a computed `[styles.xDot]` key.
+        // class string key becomes a `cond && styles.xDot` argument.
         if (arg.type === 'ObjectExpression') {
           const conditions: string[] = []
           for (const property of arg.properties) {
@@ -779,7 +786,12 @@ export function transformComponent(
           return false
         }
         const name = slotName([...ancestors, node])
-        if (!name) unsupported(node, 'className string on an element without data-slot')
+        if (!name) {
+          unsupported(
+            node,
+            'className string outside a nameable element (no data-slot, owner or tag)',
+          )
+        }
         const slot = addSlot({ name, classes }, [...ancestors, node])
         track([...ancestors, node], { slot }, false)
         out.overwrite(...span(value), `{styles.${slot}}`)

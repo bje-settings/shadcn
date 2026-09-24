@@ -29,6 +29,13 @@ function classesOfCalendar(
   return renderCalendar(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfCalendar(
+  props: Partial<Record<keyof ComponentProps<typeof Calendar>, unknown>> = {},
+) {
+  renderCalendar(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfCalendar(
   props: Partial<Record<keyof ComponentProps<typeof Calendar>, unknown>> = {},
 ) {
@@ -63,20 +70,20 @@ describe('Calendar', () => {
     expect(attributesOfCalendar({ buttonVariant: 'ghost' })).toEqual(attributesOfCalendar())
   })
 
-  it('renders with showOutsideDays=false', () => {
-    expect(renderCalendar({ showOutsideDays: false })).toBeTruthy()
+  it('renders differently with showOutsideDays=false', () => {
+    expect(htmlOfCalendar({ showOutsideDays: false })).not.toBe(htmlOfCalendar())
   })
 
-  it('renders with captionLayout="dropdown"', () => {
-    expect(renderCalendar({ captionLayout: 'dropdown' })).toBeTruthy()
+  it('renders differently with captionLayout="dropdown"', () => {
+    expect(htmlOfCalendar({ captionLayout: 'dropdown' })).not.toBe(htmlOfCalendar())
   })
 
-  it('renders with captionLayout="dropdown-months"', () => {
-    expect(renderCalendar({ captionLayout: 'dropdown-months' })).toBeTruthy()
+  it('renders differently with captionLayout="dropdown-months"', () => {
+    expect(htmlOfCalendar({ captionLayout: 'dropdown-months' })).not.toBe(htmlOfCalendar())
   })
 
-  it('renders with captionLayout="dropdown-years"', () => {
-    expect(renderCalendar({ captionLayout: 'dropdown-years' })).toBeTruthy()
+  it('renders differently with captionLayout="dropdown-years"', () => {
+    expect(htmlOfCalendar({ captionLayout: 'dropdown-years' })).not.toBe(htmlOfCalendar())
   })
 
   it('appends a consumer className last', () => {

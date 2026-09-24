@@ -73,7 +73,7 @@ describe('ChartStyle', () => {
 })
 
 describe('ChartTooltipContent', () => {
-  it('renders nothing in jsdom: Recharts renders tooltip content only while a data point is active.', () => {
+  it("renders nothing in jsdom: It renders inside ChartContainer's Recharts ResponsiveContainer, which renders nothing at jsdom's zero size.", () => {
     cleanup()
     render(
       <ChartContainer config={{ desktop: { label: 'Desktop', color: 'var(--chart-1)' } }}>
@@ -85,7 +85,7 @@ describe('ChartTooltipContent', () => {
 })
 
 describe('ChartLegendContent', () => {
-  it('renders nothing in jsdom: Recharts passes legend content its payload only inside a rendered chart with data.', () => {
+  it("renders nothing in jsdom: It renders inside ChartContainer's Recharts ResponsiveContainer, which renders nothing at jsdom's zero size.", () => {
     cleanup()
     render(
       <ChartContainer config={{ desktop: { label: 'Desktop', color: 'var(--chart-1)' } }}>

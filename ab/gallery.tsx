@@ -36,7 +36,7 @@ export function Gallery({ side }: { side: Side }) {
       style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 8, padding: 16 }}
     >
       {cases
-        // An overlay case renders only on its own page.
+        // An overlay case renders only when the page is narrowed to it.
         .filter((c) => c.theme === theme && (only === null ? !c.overlay : c.id === only))
         .map((c) => (
           <div

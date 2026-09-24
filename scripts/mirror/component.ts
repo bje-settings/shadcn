@@ -34,6 +34,8 @@ export type GeneratedComponent = {
   files: { path: string; content: string }[]
   // Upstream classes Tailwind produced no CSS for, by module class.
   unresolved: Record<string, string[]>
+  // Why rules were dropped or loosened, as the module's header lists them
+  dropped: string[]
   // Every upstream class the component uses, for the global stylesheets.
   classes: string[]
   // Upstream's source and what the transform learned, for the A/B harness.
@@ -216,7 +218,10 @@ export async function buildComponent(
 
   const scss = [
     generated,
-    ...wrap('Custom properties read here and provided globally:', [...properties].sort()),
+    ...wrap(
+      'Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):',
+      [...properties].sort(),
+    ),
     ...wrap('Upstream classes with no CSS output, dropped:', Object.values(unresolved).flat()),
     ...[...dropped].flatMap((reason) => ['//', `// Dropped rules: ${reason}`]),
     '',
@@ -230,6 +235,7 @@ export async function buildComponent(
     unrendered: config.unrenderedInTests[upstream.name] ?? {},
     ...(hook ? { module: upstream.name } : {}),
     expressions: config.testExpressions[upstream.name] ?? {},
+    sameRender: config.sameRenderInTests[upstream.name] ?? {},
   })
   const files = [
     {
@@ -264,6 +270,7 @@ export async function buildComponent(
     },
     files,
     unresolved,
+    dropped: [...dropped],
     classes: [...new Set(source.slots.flatMap((slot) => slot.classes))],
     upstreamSource: prepared.installed,
     transformed: source,

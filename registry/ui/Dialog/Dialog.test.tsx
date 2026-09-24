@@ -54,17 +54,6 @@ describe('DialogTrigger', () => {
     const element = document.querySelector('.consumer')
     expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
   })
-
-  it("renders as upstream's example uses it (2)", () => {
-    cleanup()
-    render(
-      <Dialog defaultOpen>
-        <DialogTrigger>DialogTrigger</DialogTrigger>
-        <DialogTrigger data-subject>DialogTrigger</DialogTrigger>
-      </Dialog>,
-    )
-    expect(document.querySelector('[data-subject]')).not.toBeNull()
-  })
 })
 
 function renderDialogPortal(
@@ -206,6 +195,13 @@ function classesOfDialogContent(
   return renderDialogContent(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfDialogContent(
+  props: Partial<Record<keyof ComponentProps<typeof DialogContent>, unknown>> = {},
+) {
+  renderDialogContent(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfDialogContent(
   props: Partial<Record<keyof ComponentProps<typeof DialogContent>, unknown>> = {},
 ) {
@@ -227,8 +223,8 @@ describe('DialogContent', () => {
     )
   })
 
-  it('renders with showCloseButton=false', () => {
-    expect(renderDialogContent({ showCloseButton: false })).toBeTruthy()
+  it('renders differently with showCloseButton=false', () => {
+    expect(htmlOfDialogContent({ showCloseButton: false })).not.toBe(htmlOfDialogContent())
   })
 
   it('appends a consumer className last', () => {
@@ -346,6 +342,13 @@ function classesOfDialogFooter(
   return renderDialogFooter(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfDialogFooter(
+  props: Partial<Record<keyof ComponentProps<typeof DialogFooter>, unknown>> = {},
+) {
+  renderDialogFooter(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfDialogFooter(
   props: Partial<Record<keyof ComponentProps<typeof DialogFooter>, unknown>> = {},
 ) {
@@ -365,8 +368,8 @@ describe('DialogFooter', () => {
     expect(attributesOfDialogFooter({ showCloseButton: false })).toEqual(attributesOfDialogFooter())
   })
 
-  it('renders with showCloseButton=true', () => {
-    expect(renderDialogFooter({ showCloseButton: true })).toBeTruthy()
+  it('renders differently with showCloseButton=true', () => {
+    expect(htmlOfDialogFooter({ showCloseButton: true })).not.toBe(htmlOfDialogFooter())
   })
 
   it('appends a consumer className last', () => {

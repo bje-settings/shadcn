@@ -1,9 +1,10 @@
 // Generates the test file shipped with each component. Upstream publishes no
 // tests, so they are derived from what the transform learned: each exported
 // component's data-slot, its own module class, the cva() variant groups it
-// applies, and its literal prop defaults. Assertions go through the `styles`
-// import, so they hold whatever class names the consumer's CSS module setup
-// produces.
+// applies and its literal prop defaults, rendered in the scaffold its docs
+// example gives it (parts.ts), plus its exported hooks and re-exported values
+// (README, Mirror step 5). Assertions go through the `styles` import, so they
+// hold whatever class names the consumer's CSS module setup produces.
 
 import type { Node } from '@babel/types'
 import { parseModule } from './ast.ts'
@@ -153,8 +154,8 @@ function scaffolded(ancestors: Part[], inner: string, attributes: Attributes): s
 }
 
 // One test per other way upstream's docs example renders the component,
-// each checking the component rendered: `probe` is what it renders (its own
-// data-testid, or a child's).
+// each checking the component rendered: `probe` finds what it renders (its
+// own [data-subject], or for a part with no element, its data-testid child).
 function usageTests(
   others: Usage[],
   element: (usage: Usage) => string,
@@ -191,7 +192,7 @@ function functionChildrenTest(
 }
 
 // A part jsdom renders nothing for under its scaffold (NavigationMenu's
-// indicator mounts only while an item is open): its test renders it for
+// positioner mounts only while an item is open): its test renders it for
 // coverage and checks it renders nothing, for the configured reason.
 function unrenderedTest(
   component: RenderedComponent,
@@ -264,10 +265,13 @@ function componentTests(
   options: Record<string, string[]>,
   // Props given as TypeScript expressions (CalendarDayButton's day)
   expressions: Record<string, string>,
+  // Props whose other values render the same here, with the reason
+  sameRender: Record<string, string>,
 ): string[] {
   const render = `render${component.name}`
   const classes = `classesOf${component.name}`
   const attributesOf = `attributesOf${component.name}`
+  const html = `htmlOf${component.name}`
   // With several branches, which one renders depends on props and context:
   // the test checks it carries one of them.
   const branches = (component.branches ?? []).filter((slot) => !unstyled.has(slot))
@@ -337,6 +341,23 @@ function componentTests(
         ]
       : []),
   ]
+  // The whole document a render produces, ids aside, for the tests that
+  // compare other prop values against the default.
+  if (
+    explicit.some(
+      (d) =>
+        (d.value === 'true' || d.value === 'false' || options[d.prop]) && !(d.prop in sameRender),
+    ) ||
+    (component.defaultChildren && scaffold.children)
+  ) {
+    lines.push(
+      `function ${html}(${params}) {`,
+      `  ${render}(props)`,
+      '  return document.body.innerHTML.replace(USE_ID, "")',
+      '}',
+      '',
+    )
+  }
   if (explicit.length > 0) {
     lines.push(
       `function ${attributesOf}(${params}) {`,
@@ -408,18 +429,26 @@ function componentTests(
     )
   }
   // A default switches something on or off (DialogFooter's close button) or
-  // picks one of a union's values (MessageScrollerButton's direction): the
-  // other values render too.
+  // picks one of a union's values (MessageScrollerButton's direction): each
+  // other value changes what renders.
   for (const { prop, value } of explicit) {
     const others =
       value === 'true' || value === 'false'
         ? [value === 'true' ? 'false' : 'true']
         : (options[prop] ?? []).map(q).filter((option) => option !== value)
+    const same = sameRender[prop]
     for (const other of others) {
       lines.push(
         '',
-        `  it(${q(`renders with ${prop}=${other}`)}, () => {`,
-        `    expect(${render}({ ${prop}: ${other} })).toBeTruthy()`,
+        ...(same === undefined
+          ? [
+              `  it(${q(`renders differently with ${prop}=${other}`)}, () => {`,
+              `    expect(${html}({ ${prop}: ${other} })).not.toBe(${html}())`,
+            ]
+          : [
+              `  it(${q(`renders with ${prop}=${other}, the same here: ${same}`)}, () => {`,
+              `    expect(() => ${render}({ ${prop}: ${other} })).not.toThrow()`,
+            ]),
         '  })',
       )
     }
@@ -427,8 +456,8 @@ function componentTests(
   if (component.defaultChildren && scaffold.children) {
     lines.push(
       '',
-      '  it("renders its default content without children", () => {',
-      `    expect(${render}({ children: undefined })).toBeTruthy()`,
+      '  it("renders default content in place of missing children", () => {',
+      `    expect(${html}({ children: undefined })).not.toBe(${html}())`,
       '  })',
     )
   }
@@ -483,6 +512,8 @@ export function generateTest(
     module?: string
     // Props given as TypeScript expressions, by part
     expressions: Record<string, Record<string, string>>
+    // Props whose other values render the same, by `Part.prop`
+    sameRender: Record<string, string>
   },
 ): string {
   const file = pascalCase(name)
@@ -524,7 +555,6 @@ export function generateTest(
     parts.scaffolds.get(component) ?? { ancestors: [], props: {}, children: true, others: [] }
   const elementless = (component: RenderedComponent) =>
     parts.types.get(component.name)?.className === false
-  // Exported hooks run inside the item's root component, when it has one.
   // Hooks run inside the provider their error names (useSidebar's
   // SidebarProvider), or else the item's root component.
   const named = (hook: Hook) =>
@@ -568,6 +598,11 @@ export function generateTest(
                 parts.external.get(component.tag ?? '')?.className === false,
                 parts.types.get(component.name)?.options ?? {},
                 parts.expressions[component.name] ?? {},
+                Object.fromEntries(
+                  Object.entries(parts.sameRender)
+                    .filter(([key]) => key.startsWith(`${component.name}.`))
+                    .map(([key, reason]) => [key.slice(component.name.length + 1), reason]),
+                ),
               )),
     ]),
     ...(forwarded.length > 0

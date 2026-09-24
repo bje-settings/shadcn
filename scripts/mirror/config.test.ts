@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { colorsUrl, consumerClassReasons, parseConfig, upstreamUrl } from './config.ts'
+import {
+  checkConfiguredParts,
+  colorsUrl,
+  consumerClassReasons,
+  parseConfig,
+  upstreamUrl,
+} from './config.ts'
 
 const valid = {
   namespace: 'bje',
@@ -28,6 +34,7 @@ const valid = {
   unrenderedInTests: { button: { Button: 'why' } },
   testProps: { button: { Button: { size: 'sm' } } },
   testExpressions: { button: { Button: { day: 'new Date()' } } },
+  sameRenderInTests: { button: { 'Button.size': 'why' } },
 }
 
 function withChange(change: Record<string, unknown>) {
@@ -122,6 +129,16 @@ describe('parseConfig', () => {
       'unrenderedInTests.button.Button must be a non-empty string',
     ],
     [
+      'a null test prop',
+      withChange({ testProps: { button: { Button: { size: null } } } }),
+      'testProps.button.Button.size must be a JSON literal without null',
+    ],
+    [
+      'a nested null test prop',
+      withChange({ testProps: { button: { Button: { list: [{ a: null }] } } } }),
+      'testProps.button.Button.list must be a JSON literal without null',
+    ],
+    [
       'non-object test props',
       withChange({ testProps: { button: { Button: 'x' } } }),
       'testProps.button.Button must be an object',
@@ -156,5 +173,19 @@ describe('parseConfig', () => {
     ['a missing outputDir', withChange({ outputDir: '' }), 'outputDir must be'],
   ])('rejects %s', (_, raw, message) => {
     expect(() => parseConfig(raw)).toThrow(message)
+  })
+})
+
+describe('checkConfiguredParts', () => {
+  const config = parseConfig(valid)
+
+  it('accepts parts the items export, and a Part.prop key by its part', () => {
+    expect(() => checkConfiguredParts(config, () => new Set(['Button']))).not.toThrow()
+  })
+
+  it('names a configured part the item does not export', () => {
+    expect(() => checkConfiguredParts(config, () => new Set(['Other']))).toThrow(
+      'testProps.button.Button is not a part button exports',
+    )
   })
 })

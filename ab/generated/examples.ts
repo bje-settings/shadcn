@@ -147,6 +147,10 @@ export const examples = [
   },
   {
     example: 'card-example',
+    name: 'CardContentEdgeToEdge',
+  },
+  {
+    example: 'card-example',
     name: 'CardCustomSpacing',
   },
   {
@@ -1568,6 +1572,26 @@ export const examples = [
   {
     example: 'calendar-example',
     name: 'CalendarBookedDates',
+  },
+  {
+    example: 'calendar-example',
+    name: 'CalendarRange',
+  },
+  {
+    example: 'calendar-example',
+    name: 'CalendarCustomDays',
+  },
+  {
+    example: 'calendar-example',
+    name: 'DatePickerSimple',
+  },
+  {
+    example: 'calendar-example',
+    name: 'DataPickerWithDropdowns',
+  },
+  {
+    example: 'calendar-example',
+    name: 'DatePickerWithRange',
   },
   {
     example: 'calendar-example',

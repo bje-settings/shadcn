@@ -27,6 +27,11 @@ function classesOfSwitch(
   return renderSwitch(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfSwitch(props: Partial<Record<keyof ComponentProps<typeof Switch>, unknown>> = {}) {
+  renderSwitch(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfSwitch(
   props: Partial<Record<keyof ComponentProps<typeof Switch>, unknown>> = {},
 ) {
@@ -46,8 +51,8 @@ describe('Switch', () => {
     expect(attributesOfSwitch({ size: 'default' })).toEqual(attributesOfSwitch())
   })
 
-  it('renders with size="sm"', () => {
-    expect(renderSwitch({ size: 'sm' })).toBeTruthy()
+  it('renders differently with size="sm"', () => {
+    expect(htmlOfSwitch({ size: 'sm' })).not.toBe(htmlOfSwitch())
   })
 
   it('appends a consumer className last', () => {

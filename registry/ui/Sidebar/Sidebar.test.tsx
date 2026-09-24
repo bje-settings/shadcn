@@ -86,8 +86,8 @@ describe('SidebarProvider', () => {
     )
   })
 
-  it('renders with defaultOpen=false', () => {
-    expect(renderSidebarProvider({ defaultOpen: false })).toBeTruthy()
+  it('renders with defaultOpen=false, the same here: it sets the state a Sidebar shows, and this render has no Sidebar.', () => {
+    expect(() => renderSidebarProvider({ defaultOpen: false })).not.toThrow()
   })
 
   it('appends a consumer className last', () => {
@@ -114,6 +114,11 @@ function classesOfSidebar(
   props: Partial<Record<keyof ComponentProps<typeof Sidebar>, unknown>> = {},
 ) {
   return renderSidebar(props)?.getAttribute('class')?.split(' ') ?? []
+}
+
+function htmlOfSidebar(props: Partial<Record<keyof ComponentProps<typeof Sidebar>, unknown>> = {}) {
+  renderSidebar(props)
+  return document.body.innerHTML.replace(USE_ID, '')
 }
 
 function attributesOfSidebar(
@@ -144,24 +149,24 @@ describe('Sidebar', () => {
     expect(attributesOfSidebar({ collapsible: 'offcanvas' })).toEqual(attributesOfSidebar())
   })
 
-  it('renders with side="right"', () => {
-    expect(renderSidebar({ side: 'right' })).toBeTruthy()
+  it('renders differently with side="right"', () => {
+    expect(htmlOfSidebar({ side: 'right' })).not.toBe(htmlOfSidebar())
   })
 
-  it('renders with variant="floating"', () => {
-    expect(renderSidebar({ variant: 'floating' })).toBeTruthy()
+  it('renders differently with variant="floating"', () => {
+    expect(htmlOfSidebar({ variant: 'floating' })).not.toBe(htmlOfSidebar())
   })
 
-  it('renders with variant="inset"', () => {
-    expect(renderSidebar({ variant: 'inset' })).toBeTruthy()
+  it('renders differently with variant="inset"', () => {
+    expect(htmlOfSidebar({ variant: 'inset' })).not.toBe(htmlOfSidebar())
   })
 
-  it('renders with collapsible="icon"', () => {
-    expect(renderSidebar({ collapsible: 'icon' })).toBeTruthy()
+  it('renders with collapsible="icon", the same here: it shows only once the sidebar is collapsed, and it renders open.', () => {
+    expect(() => renderSidebar({ collapsible: 'icon' })).not.toThrow()
   })
 
-  it('renders with collapsible="none"', () => {
-    expect(renderSidebar({ collapsible: 'none' })).toBeTruthy()
+  it('renders with collapsible="none", the same here: it shows only once the sidebar is collapsed, and it renders open.', () => {
+    expect(() => renderSidebar({ collapsible: 'none' })).not.toThrow()
   })
 
   it('throws outside its root: useSidebar must be used within a SidebarProvider.', () => {
@@ -819,6 +824,13 @@ function classesOfSidebarMenuButton(
   return renderSidebarMenuButton(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfSidebarMenuButton(
+  props: Partial<Record<keyof ComponentProps<typeof SidebarMenuButton>, unknown>> = {},
+) {
+  renderSidebarMenuButton(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfSidebarMenuButton(
   props: Partial<Record<keyof ComponentProps<typeof SidebarMenuButton>, unknown>> = {},
 ) {
@@ -875,8 +887,8 @@ describe('SidebarMenuButton', () => {
     )
   })
 
-  it('renders with isActive=true', () => {
-    expect(renderSidebarMenuButton({ isActive: true })).toBeTruthy()
+  it('renders differently with isActive=true', () => {
+    expect(htmlOfSidebarMenuButton({ isActive: true })).not.toBe(htmlOfSidebarMenuButton())
   })
 
   it('throws outside its root: useSidebar must be used within a SidebarProvider.', () => {
@@ -946,6 +958,13 @@ function classesOfSidebarMenuAction(
   return renderSidebarMenuAction(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfSidebarMenuAction(
+  props: Partial<Record<keyof ComponentProps<typeof SidebarMenuAction>, unknown>> = {},
+) {
+  renderSidebarMenuAction(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfSidebarMenuAction(
   props: Partial<Record<keyof ComponentProps<typeof SidebarMenuAction>, unknown>> = {},
 ) {
@@ -967,8 +986,8 @@ describe('SidebarMenuAction', () => {
     )
   })
 
-  it('renders with showOnHover=true', () => {
-    expect(renderSidebarMenuAction({ showOnHover: true })).toBeTruthy()
+  it('renders differently with showOnHover=true', () => {
+    expect(htmlOfSidebarMenuAction({ showOnHover: true })).not.toBe(htmlOfSidebarMenuAction())
   })
 
   it('appends a consumer className last', () => {
@@ -1052,6 +1071,13 @@ function classesOfSidebarMenuSkeleton(
   return renderSidebarMenuSkeleton(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfSidebarMenuSkeleton(
+  props: Partial<Record<keyof ComponentProps<typeof SidebarMenuSkeleton>, unknown>> = {},
+) {
+  renderSidebarMenuSkeleton(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfSidebarMenuSkeleton(
   props: Partial<Record<keyof ComponentProps<typeof SidebarMenuSkeleton>, unknown>> = {},
 ) {
@@ -1075,8 +1101,8 @@ describe('SidebarMenuSkeleton', () => {
     )
   })
 
-  it('renders with showIcon=true', () => {
-    expect(renderSidebarMenuSkeleton({ showIcon: true })).toBeTruthy()
+  it('renders differently with showIcon=true', () => {
+    expect(htmlOfSidebarMenuSkeleton({ showIcon: true })).not.toBe(htmlOfSidebarMenuSkeleton())
   })
 
   it('appends a consumer className last', () => {
@@ -1205,6 +1231,13 @@ function classesOfSidebarMenuSubButton(
   return renderSidebarMenuSubButton(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfSidebarMenuSubButton(
+  props: Partial<Record<keyof ComponentProps<typeof SidebarMenuSubButton>, unknown>> = {},
+) {
+  renderSidebarMenuSubButton(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfSidebarMenuSubButton(
   props: Partial<Record<keyof ComponentProps<typeof SidebarMenuSubButton>, unknown>> = {},
 ) {
@@ -1234,12 +1267,12 @@ describe('SidebarMenuSubButton', () => {
     )
   })
 
-  it('renders with size="sm"', () => {
-    expect(renderSidebarMenuSubButton({ size: 'sm' })).toBeTruthy()
+  it('renders differently with size="sm"', () => {
+    expect(htmlOfSidebarMenuSubButton({ size: 'sm' })).not.toBe(htmlOfSidebarMenuSubButton())
   })
 
-  it('renders with isActive=true', () => {
-    expect(renderSidebarMenuSubButton({ isActive: true })).toBeTruthy()
+  it('renders differently with isActive=true', () => {
+    expect(htmlOfSidebarMenuSubButton({ isActive: true })).not.toBe(htmlOfSidebarMenuSubButton())
   })
 
   it('appends a consumer className last', () => {

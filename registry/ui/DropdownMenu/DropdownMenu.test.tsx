@@ -115,7 +115,6 @@ function renderDropdownMenuTrigger(
   cleanup()
   render(
     <DropdownMenu defaultOpen>
-      <DropdownMenuTrigger>DropdownMenuTrigger</DropdownMenuTrigger>
       <DropdownMenuTrigger
         data-subject
         {...({ children: 'DropdownMenuTrigger', ...props } as ComponentProps<
@@ -159,6 +158,13 @@ function classesOfDropdownMenuContent(
   return renderDropdownMenuContent(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfDropdownMenuContent(
+  props: Partial<Record<keyof ComponentProps<typeof DropdownMenuContent>, unknown>> = {},
+) {
+  renderDropdownMenuContent(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfDropdownMenuContent(
   props: Partial<Record<keyof ComponentProps<typeof DropdownMenuContent>, unknown>> = {},
 ) {
@@ -200,32 +206,34 @@ describe('DropdownMenuContent', () => {
     )
   })
 
-  it('renders with align="center"', () => {
-    expect(renderDropdownMenuContent({ align: 'center' })).toBeTruthy()
+  it('renders differently with align="center"', () => {
+    expect(htmlOfDropdownMenuContent({ align: 'center' })).not.toBe(htmlOfDropdownMenuContent())
   })
 
-  it('renders with align="end"', () => {
-    expect(renderDropdownMenuContent({ align: 'end' })).toBeTruthy()
+  it('renders differently with align="end"', () => {
+    expect(htmlOfDropdownMenuContent({ align: 'end' })).not.toBe(htmlOfDropdownMenuContent())
   })
 
-  it('renders with side="left"', () => {
-    expect(renderDropdownMenuContent({ side: 'left' })).toBeTruthy()
+  it('renders differently with side="left"', () => {
+    expect(htmlOfDropdownMenuContent({ side: 'left' })).not.toBe(htmlOfDropdownMenuContent())
   })
 
-  it('renders with side="right"', () => {
-    expect(renderDropdownMenuContent({ side: 'right' })).toBeTruthy()
+  it('renders differently with side="right"', () => {
+    expect(htmlOfDropdownMenuContent({ side: 'right' })).not.toBe(htmlOfDropdownMenuContent())
   })
 
-  it('renders with side="top"', () => {
-    expect(renderDropdownMenuContent({ side: 'top' })).toBeTruthy()
+  it('renders differently with side="top"', () => {
+    expect(htmlOfDropdownMenuContent({ side: 'top' })).not.toBe(htmlOfDropdownMenuContent())
   })
 
-  it('renders with side="inline-start"', () => {
-    expect(renderDropdownMenuContent({ side: 'inline-start' })).toBeTruthy()
+  it('renders differently with side="inline-start"', () => {
+    expect(htmlOfDropdownMenuContent({ side: 'inline-start' })).not.toBe(
+      htmlOfDropdownMenuContent(),
+    )
   })
 
-  it('renders with side="inline-end"', () => {
-    expect(renderDropdownMenuContent({ side: 'inline-end' })).toBeTruthy()
+  it('renders differently with side="inline-end"', () => {
+    expect(htmlOfDropdownMenuContent({ side: 'inline-end' })).not.toBe(htmlOfDropdownMenuContent())
   })
 
   it('appends a consumer className last', () => {
@@ -403,6 +411,13 @@ function classesOfDropdownMenuItem(
   return renderDropdownMenuItem(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfDropdownMenuItem(
+  props: Partial<Record<keyof ComponentProps<typeof DropdownMenuItem>, unknown>> = {},
+) {
+  renderDropdownMenuItem(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfDropdownMenuItem(
   props: Partial<Record<keyof ComponentProps<typeof DropdownMenuItem>, unknown>> = {},
 ) {
@@ -424,8 +439,8 @@ describe('DropdownMenuItem', () => {
     )
   })
 
-  it('renders with variant="destructive"', () => {
-    expect(renderDropdownMenuItem({ variant: 'destructive' })).toBeTruthy()
+  it('renders differently with variant="destructive"', () => {
+    expect(htmlOfDropdownMenuItem({ variant: 'destructive' })).not.toBe(htmlOfDropdownMenuItem())
   })
 
   it('appends a consumer className last', () => {
@@ -629,7 +644,6 @@ function renderDropdownMenuSubTrigger(
       <DropdownMenuContent>
         <DropdownMenuGroup>
           <DropdownMenuSub defaultOpen>
-            <DropdownMenuSubTrigger>DropdownMenuSubTrigger</DropdownMenuSubTrigger>
             <DropdownMenuSubTrigger
               data-subject
               {...({ children: 'DropdownMenuSubTrigger', ...props } as ComponentProps<
@@ -672,7 +686,6 @@ describe('DropdownMenuSubTrigger', () => {
         <DropdownMenuTrigger>DropdownMenuTrigger</DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuSub defaultOpen>
-            <DropdownMenuSubTrigger>DropdownMenuSubTrigger</DropdownMenuSubTrigger>
             <DropdownMenuSubTrigger data-subject>DropdownMenuSubTrigger</DropdownMenuSubTrigger>
           </DropdownMenuSub>
         </DropdownMenuContent>
@@ -688,7 +701,6 @@ describe('DropdownMenuSubTrigger', () => {
         <DropdownMenuTrigger>DropdownMenuTrigger</DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuSub defaultOpen>
-            <DropdownMenuSubTrigger inset>DropdownMenuSubTrigger</DropdownMenuSubTrigger>
             <DropdownMenuSubTrigger data-subject inset>
               DropdownMenuSubTrigger
             </DropdownMenuSubTrigger>
@@ -735,6 +747,13 @@ function classesOfDropdownMenuSubContent(
   return renderDropdownMenuSubContent(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
+function htmlOfDropdownMenuSubContent(
+  props: Partial<Record<keyof ComponentProps<typeof DropdownMenuSubContent>, unknown>> = {},
+) {
+  renderDropdownMenuSubContent(props)
+  return document.body.innerHTML.replace(USE_ID, '')
+}
+
 function attributesOfDropdownMenuSubContent(
   props: Partial<Record<keyof ComponentProps<typeof DropdownMenuSubContent>, unknown>> = {},
 ) {
@@ -770,32 +789,40 @@ describe('DropdownMenuSubContent', () => {
     )
   })
 
-  it('renders with align="center"', () => {
-    expect(renderDropdownMenuSubContent({ align: 'center' })).toBeTruthy()
+  it('renders differently with align="center"', () => {
+    expect(htmlOfDropdownMenuSubContent({ align: 'center' })).not.toBe(
+      htmlOfDropdownMenuSubContent(),
+    )
   })
 
-  it('renders with align="end"', () => {
-    expect(renderDropdownMenuSubContent({ align: 'end' })).toBeTruthy()
+  it('renders differently with align="end"', () => {
+    expect(htmlOfDropdownMenuSubContent({ align: 'end' })).not.toBe(htmlOfDropdownMenuSubContent())
   })
 
-  it('renders with side="left"', () => {
-    expect(renderDropdownMenuSubContent({ side: 'left' })).toBeTruthy()
+  it('renders differently with side="left"', () => {
+    expect(htmlOfDropdownMenuSubContent({ side: 'left' })).not.toBe(htmlOfDropdownMenuSubContent())
   })
 
-  it('renders with side="top"', () => {
-    expect(renderDropdownMenuSubContent({ side: 'top' })).toBeTruthy()
+  it('renders differently with side="top"', () => {
+    expect(htmlOfDropdownMenuSubContent({ side: 'top' })).not.toBe(htmlOfDropdownMenuSubContent())
   })
 
-  it('renders with side="bottom"', () => {
-    expect(renderDropdownMenuSubContent({ side: 'bottom' })).toBeTruthy()
+  it('renders differently with side="bottom"', () => {
+    expect(htmlOfDropdownMenuSubContent({ side: 'bottom' })).not.toBe(
+      htmlOfDropdownMenuSubContent(),
+    )
   })
 
-  it('renders with side="inline-start"', () => {
-    expect(renderDropdownMenuSubContent({ side: 'inline-start' })).toBeTruthy()
+  it('renders differently with side="inline-start"', () => {
+    expect(htmlOfDropdownMenuSubContent({ side: 'inline-start' })).not.toBe(
+      htmlOfDropdownMenuSubContent(),
+    )
   })
 
-  it('renders with side="inline-end"', () => {
-    expect(renderDropdownMenuSubContent({ side: 'inline-end' })).toBeTruthy()
+  it('renders differently with side="inline-end"', () => {
+    expect(htmlOfDropdownMenuSubContent({ side: 'inline-end' })).not.toBe(
+      htmlOfDropdownMenuSubContent(),
+    )
   })
 
   it('appends a consumer className last', () => {
