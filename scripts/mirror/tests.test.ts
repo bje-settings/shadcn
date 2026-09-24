@@ -1,11 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import type { PartTypes, Scaffold } from './parts.ts'
-import { generateTest } from './tests.ts'
+import { generateTest, type TestInput } from './tests.ts'
 import { transformComponent } from './tsx.ts'
 
-type Parts = Parameters<typeof generateTest>[2]
-
-const none: Parts = {
+const none: TestInput = {
   types: new Map(),
   scaffolds: new Map(),
   setup: [],
@@ -16,7 +14,7 @@ const none: Parts = {
   sameRender: {},
 }
 
-const generate = (source: string, parts: Partial<Parts> = {}) =>
+const generate = (source: string, parts: Partial<TestInput> = {}) =>
   generateTest('chip', transformComponent(source, 'chip', 'bje'), { ...none, ...parts })
 
 const part: PartTypes = {

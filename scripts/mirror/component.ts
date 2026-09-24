@@ -4,8 +4,8 @@ import { parseModule } from './ast.ts'
 import { consumerClassReasons, type MirrorConfig } from './config.ts'
 import { installTransforms } from './install.ts'
 import { pascalCase } from './names.ts'
-import type { PartTypes, Scaffold } from './parts.ts'
-import { slotToScss } from './scss.ts'
+import type { ItemParts } from './parts.ts'
+import { type SlotOptions, slotToScss } from './scss.ts'
 import { generateTest } from './tests.ts'
 import { type TransformedComponent, transformComponent } from './tsx.ts'
 
@@ -157,20 +157,28 @@ export function classProbe(components: PreparedComponent[]): (fragment: string) 
     )
 }
 
+// What slotToScss reads besides each component's own markers: the same for
+// every component, so built once.
+export function sharedSlotOptions(
+  config: MirrorConfig,
+  components: PreparedComponent[],
+): Omit<SlotOptions, 'markers'> {
+  return {
+    classProbe: classProbe(components),
+    consumerClasses: consumerClassReasons(config),
+    globalClasses: new Set(config.globalClasses.flatMap(({ classes }) => classes)),
+    withoutCss: new Set(config.classesWithoutCss.flatMap(({ classes }) => classes)),
+  }
+}
+
 export async function buildComponent(
   prepared: PreparedComponent,
   config: MirrorConfig,
   compile: (candidates: string[]) => Promise<string>,
-  context: {
-    markers: Map<string, string>
-    classProbe: (fragment: string) => string[]
-    types: Map<string, PartTypes>
-    scaffolds: Map<string, Scaffold>
-    external: Map<string, PartTypes>
-  },
+  context: ItemParts & { slotOptions: SlotOptions },
 ): Promise<GeneratedComponent> {
-  const setup = config.testSetup.filter(({ items }) => items.includes(prepared.upstream.name))
   const { upstream, transformed: source } = prepared
+  const setup = config.testSetup.filter(({ items }) => items.includes(upstream.name))
   const component = pascalCase(upstream.name)
   const hook = upstream.type === 'registry:hook'
   // A component in its PascalCase folder; a hook by name, as upstream.
@@ -198,17 +206,10 @@ export async function buildComponent(
   const unresolved: Record<string, string[]> = {}
   const properties = new Set<string>()
   const dropped = new Set<string>()
-  const options = {
-    markers: context.markers,
-    classProbe: context.classProbe,
-    consumerClasses: consumerClassReasons(config),
-    globalClasses: new Set(config.globalClasses.flatMap(({ classes }) => classes)),
-    withoutCss: new Set(config.classesWithoutCss.flatMap(({ classes }) => classes)),
-  }
   // Slots the module exports no class for.
   const unstyled = new Set<string>()
   for (const slot of source.slots) {
-    const block = slotToScss(await compile(slot.classes), slot, options)
+    const block = slotToScss(await compile(slot.classes), slot, context.slotOptions)
     blocks.push(block.scss)
     if (block.empty) unstyled.add(slot.name)
     if (block.unresolved.length > 0) unresolved[slot.name] = block.unresolved
@@ -229,7 +230,9 @@ export async function buildComponent(
     '',
   ].join('\n')
   const test = generateTest(upstream.name, source, {
-    ...context,
+    types: context.types,
+    scaffolds: context.scaffolds,
+    external: context.external,
     setup,
     unstyled,
     unrendered: config.unrenderedInTests[upstream.name] ?? {},

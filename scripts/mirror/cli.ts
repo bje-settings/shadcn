@@ -9,10 +9,10 @@ import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import {
   buildComponent,
-  classProbe,
   markerSelectors,
   prepareComponent,
   type RegistryItem,
+  sharedSlotOptions,
 } from './component.ts'
 import {
   checkConfiguredParts,
@@ -204,13 +204,12 @@ async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
   const items: RegistryItem[] = []
   const harness: HarnessInput[] = []
   const classes = new Set<string>()
-  const probe = classProbe(prepared)
+  const shared = sharedSlotOptions(config, prepared)
   for (const component of prepared) {
     const { name } = component.upstream
     const itemTypes = types.get(name) as Map<string, PartTypes>
     const context = {
-      markers: markerSelectors(prepared, component),
-      classProbe: probe,
+      slotOptions: { ...shared, markers: markerSelectors(prepared, component) },
       types: itemTypes,
       scaffolds: scaffolds(
         name,

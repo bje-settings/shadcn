@@ -8,8 +8,9 @@
 
 import type { Node } from '@babel/types'
 import { parseModule } from './ast.ts'
+import type { TestSetup } from './config.ts'
 import { camelCase, pascalCase } from './names.ts'
-import type { Literal, Part, PartTypes, Scaffold, Usage } from './parts.ts'
+import type { ItemParts, Literal, Part, PartTypes, Scaffold, Usage } from './parts.ts'
 import type { Hook, RenderedComponent, TransformedComponent, VariantSet } from './tsx.ts'
 
 // The values a module exports by name; types are not tested.
@@ -172,14 +173,14 @@ function usageTests(
   ])
 }
 
+// A component under test: rendered inside its scaffold, with JSX attributes
+// for literal props.
+type Subject = { component: RenderedComponent; scaffold: Scaffold; attributes: Attributes }
+
 // A part whose children are a function of each item (ComboboxCollection)
 // renders nothing without items, which the example passes as a variable: its
 // test renders it for coverage and checks only that it does not throw.
-function functionChildrenTest(
-  component: RenderedComponent,
-  scaffold: Scaffold,
-  attributes: Attributes,
-): string[] {
+function functionChildrenTest({ component, scaffold, attributes }: Subject): string[] {
   const element = `<${component.name}${attributes(component.name, scaffold.props)}>{() => <i />}</${component.name}>`
   return [
     `describe(${q(component.name)}, () => {`,
@@ -194,12 +195,7 @@ function functionChildrenTest(
 // A part jsdom renders nothing for under its scaffold (NavigationMenu's
 // positioner mounts only while an item is open): its test renders it for
 // coverage and checks it renders nothing, for the configured reason.
-function unrenderedTest(
-  component: RenderedComponent,
-  scaffold: Scaffold,
-  attributes: Attributes,
-  reason: string,
-): string[] {
+function unrenderedTest({ component, scaffold, attributes }: Subject, reason: string): string[] {
   const element = `<${component.name} data-subject${attributes(component.name, scaffold.props)} />`
   return [
     `describe(${q(component.name)}, () => {`,
@@ -214,11 +210,7 @@ function unrenderedTest(
 
 // A part that renders no element for a className and takes no children
 // (ChartStyle's <style>) is rendered and checked not to throw.
-function rendersTest(
-  component: RenderedComponent,
-  scaffold: Scaffold,
-  attributes: Attributes,
-): string[] {
+function rendersTest({ component, scaffold, attributes }: Subject): string[] {
   const element = `<${component.name}${attributes(component.name, scaffold.props)} />`
   return [
     `describe(${q(component.name)}, () => {`,
@@ -232,11 +224,7 @@ function rendersTest(
 
 // A part that renders no element of its own (Dialog's Root) is tested by what
 // it renders: its children.
-function childrenTest(
-  component: RenderedComponent,
-  scaffold: Scaffold,
-  attributes: Attributes,
-): string[] {
+function childrenTest({ component, scaffold, attributes }: Subject): string[] {
   const element = (usage: Usage) =>
     `<${component.name}${attributes(component.name, usage.props)}><i data-testid="child" /></${component.name}>`
   return [
@@ -251,22 +239,27 @@ function childrenTest(
   ]
 }
 
-function componentTests(
-  component: RenderedComponent,
-  set: VariantSet | undefined,
-  scaffold: Scaffold,
-  attributes: Attributes,
-  unstyled: Set<string>,
+// What an element's tests check beyond its scaffold.
+type ElementChecks = {
+  // Its cva() variants, with unstyled options' classes left out
+  set: VariantSet | undefined
+  // Slots the module exports no class for
+  unstyled: Set<string>
   // Its props land on another item's part that renders no element
   // (CommandDialog spreads them onto Dialog's root): only its className,
   // passed on to an element, can be checked.
-  detached: boolean,
+  detached: boolean
   // Its props' string-literal union values
-  options: Record<string, string[]>,
+  options: Record<string, string[]>
   // Props given as TypeScript expressions (CalendarDayButton's day)
-  expressions: Record<string, string>,
+  expressions: Record<string, string>
   // Props whose other values render the same here, with the reason
-  sameRender: Record<string, string>,
+  sameRender: Record<string, string>
+}
+
+function componentTests(
+  { component, scaffold, attributes }: Subject,
+  { set, unstyled, detached, options, expressions, sameRender }: ElementChecks,
 ): string[] {
   const render = `render${component.name}`
   const classes = `classesOf${component.name}`
@@ -494,27 +487,26 @@ function componentTests(
   return lines
 }
 
+// What the tests are generated from, besides the transformed module.
+export type TestInput = ItemParts & {
+  // Lines to run first, each group with its reason
+  setup: Omit<TestSetup, 'items'>[]
+  // Slots the module exports no class for
+  unstyled: Set<string>
+  // Parts jsdom renders nothing for, with the reason
+  unrendered: Record<string, string>
+  // The module's file name, when it is not the PascalCase item (a hook's)
+  module?: string
+  // Props given as TypeScript expressions, by part
+  expressions: Record<string, Record<string, string>>
+  // Props whose other values render the same, by `Part.prop`
+  sameRender: Record<string, string>
+}
+
 export function generateTest(
   name: string,
   transformed: TransformedComponent,
-  parts: {
-    types: Map<string, PartTypes>
-    scaffolds: Map<string, Scaffold>
-    // Lines to run first, each group with its reason
-    setup: { lines: string[]; reason: string }[]
-    // Slots the module exports no class for
-    unstyled: Set<string>
-    // Parts of other mirrored items this module renders, by name
-    external: Map<string, PartTypes>
-    // Parts jsdom renders nothing for, with the reason
-    unrendered: Record<string, string>
-    // The module's file name, when it is not the PascalCase item (a hook's)
-    module?: string
-    // Props given as TypeScript expressions, by part
-    expressions: Record<string, Record<string, string>>
-    // Props whose other values render the same, by `Part.prop`
-    sameRender: Record<string, string>
-  },
+  parts: TestInput,
 ): string {
   const file = pascalCase(name)
   const module = parts.module ?? file
@@ -553,8 +545,6 @@ export function generateTest(
   const functions = [...sets.values()].filter((set) => exported.has(set.variable))
   const scaffold = (component: string): Scaffold =>
     parts.scaffolds.get(component) ?? { ancestors: [], props: {}, children: true, others: [] }
-  const elementless = (component: RenderedComponent) =>
-    parts.types.get(component.name)?.className === false
   // Hooks run inside the provider their error names (useSidebar's
   // SidebarProvider), or else the item's root component.
   const named = (hook: Hook) =>
@@ -572,39 +562,31 @@ export function generateTest(
   ])
 
   const attributes = attributesFor(parts.types)
+  const testsFor = (component: RenderedComponent): string[] => {
+    const subject = { component, scaffold: scaffold(component.name), attributes }
+    const types = parts.types.get(component.name)
+    const unrendered = parts.unrendered[component.name]
+    if (unrendered !== undefined) return unrenderedTest(subject, unrendered)
+    if (types?.childrenFunction) return functionChildrenTest(subject)
+    if (types?.className === false) {
+      return types.text === false ? rendersTest(subject) : childrenTest(subject)
+    }
+    return componentTests(subject, {
+      set: component.variantSet ? sets.get(component.variantSet) : undefined,
+      unstyled: parts.unstyled,
+      detached: parts.external.get(component.tag ?? '')?.className === false,
+      options: types?.options ?? {},
+      expressions: parts.expressions[component.name] ?? {},
+      sameRender: Object.fromEntries(
+        Object.entries(parts.sameRender)
+          .filter(([key]) => key.startsWith(`${component.name}.`))
+          .map(([key, reason]) => [key.slice(component.name.length + 1), reason]),
+      ),
+    })
+  }
   const body = [
     ...parts.setup.flatMap(({ lines, reason }) => ['', `// ${reason}`, ...lines]),
-    ...components.flatMap((component) => [
-      '',
-      ...(component.name in parts.unrendered
-        ? unrenderedTest(
-            component,
-            scaffold(component.name),
-            attributes,
-            parts.unrendered[component.name] as string,
-          )
-        : parts.types.get(component.name)?.childrenFunction
-          ? functionChildrenTest(component, scaffold(component.name), attributes)
-          : elementless(component)
-            ? parts.types.get(component.name)?.text === false
-              ? rendersTest(component, scaffold(component.name), attributes)
-              : childrenTest(component, scaffold(component.name), attributes)
-            : componentTests(
-                component,
-                component.variantSet ? sets.get(component.variantSet) : undefined,
-                scaffold(component.name),
-                attributes,
-                parts.unstyled,
-                parts.external.get(component.tag ?? '')?.className === false,
-                parts.types.get(component.name)?.options ?? {},
-                parts.expressions[component.name] ?? {},
-                Object.fromEntries(
-                  Object.entries(parts.sameRender)
-                    .filter(([key]) => key.startsWith(`${component.name}.`))
-                    .map(([key, reason]) => [key.slice(component.name.length + 1), reason]),
-                ),
-              )),
-    ]),
+    ...components.flatMap((component) => ['', ...testsFor(component)]),
     ...(forwarded.length > 0
       ? [
           '',

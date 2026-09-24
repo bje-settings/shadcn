@@ -53,6 +53,14 @@ export type PartTypes = {
   options: Record<string, string[]>
 }
 
+// What one item's tests and fixtures know of its parts.
+export type ItemParts = {
+  types: Map<string, PartTypes>
+  scaffolds: Map<string, Scaffold>
+  // Parts of other mirrored items this module renders, by name
+  external: Map<string, PartTypes>
+}
+
 // This repo's root: upstream's imports resolve against its node_modules
 // wherever the build writes.
 const repo = fileURLToPath(new URL('../..', import.meta.url))
@@ -89,10 +97,14 @@ export function partTypes(
         const [param] = declaration?.getType().getCallSignatures()[0]?.getParameters() ?? []
         if (!declaration || !param || !/^[A-Z]/.test(name)) continue
         const type = param.getTypeAtLocation(declaration)
-        const props = new Set(type.getApparentProperties().map((p) => p.getName()))
+        const properties = type.getApparentProperties()
+        const props = new Set(properties.map((p) => p.getName()))
         const children = type.getProperty('children')?.getTypeAtLocation(declaration)
+        const text =
+          children !== undefined &&
+          checker.isTypeAssignableTo(checker.getStringType(), children.compilerType)
         const options: Record<string, string[]> = {}
-        for (const prop of type.getApparentProperties()) {
+        for (const prop of properties) {
           const members = prop.getTypeAtLocation(declaration).getUnionTypes()
           const values = members.filter((m) => m.isStringLiteral()).map((m) => m.getLiteralValue())
           // Only unions of string literals, and undefined when optional.
@@ -104,18 +116,15 @@ export function partTypes(
           className: props.has('className'),
           opens: props.has('defaultOpen'),
           keepMounted: props.has('keepMounted'),
-          required: type
-            .getApparentProperties()
+          required: properties
             .filter((p) => !p.isOptional())
             .map((p) => p.getName())
             .sort(),
-          text:
-            children !== undefined &&
-            checker.isTypeAssignableTo(checker.getStringType(), children.compilerType),
+          text,
           // Only a function: Dialog's root also takes one, but takes nodes too.
           childrenFunction:
             children !== undefined &&
-            !checker.isTypeAssignableTo(checker.getStringType(), children.compilerType) &&
+            !text &&
             (children.isUnion() ? children.getUnionTypes() : [children]).some(
               (member) => member.getCallSignatures().length > 0,
             ),
@@ -298,29 +307,30 @@ export function scaffolds(
   }
   // The part a trigger opens: its first child that is the item's `*Trigger`.
   const triggerOf = (element: JSXElement): Part | undefined => {
-    const trigger = element.children.find(
-      (child): child is JSXElement =>
-        child.type === 'JSXElement' &&
-        types.has(elementName(child) ?? '') &&
-        (elementName(child) as string).endsWith('Trigger'),
-    )
-    return trigger && { component: elementName(trigger) as string, props: literalProps(trigger) }
+    for (const child of element.children) {
+      if (child.type !== 'JSXElement') continue
+      const component = elementName(child)
+      if (component && types.has(component) && component.endsWith('Trigger')) {
+        return { component, props: literalProps(child) }
+      }
+    }
+    return undefined
   }
   // The same item's parts enclosing a use of `name`, outermost first.
-  const enclosing = (path: JSXElement[]): Part[] =>
-    path
-      .slice(0, -1)
-      .filter((ancestor) => types.has(elementName(ancestor) ?? ''))
-      .map((ancestor) => {
-        const component = elementName(ancestor) as string
-        // Not when the trigger is the part being scaffolded, which would
-        // render it twice.
-        const found = types.get(component)?.opens ? triggerOf(ancestor) : undefined
-        const trigger =
-          found?.component === elementName(path.at(-1) as JSXElement) ? undefined : found
-        const props = { ...literalProps(ancestor), ...given[component] }
-        return { component, props, ...(trigger ? { trigger } : {}) }
-      })
+  const enclosing = (path: JSXElement[]): Part[] => {
+    const last = path.at(-1)
+    const own = last && elementName(last)
+    return path.slice(0, -1).flatMap((ancestor) => {
+      const component = elementName(ancestor)
+      if (component === undefined || !types.has(component)) return []
+      // Not when the trigger is the part being scaffolded, which would
+      // render it twice.
+      const found = types.get(component)?.opens ? triggerOf(ancestor) : undefined
+      const trigger = found?.component === own ? undefined : found
+      const props = { ...literalProps(ancestor), ...given[component] }
+      return [{ component, props, ...(trigger ? { trigger } : {}) }]
+    })
+  }
   // Where a part the example never renders, nor another part uses, can
   // render: the deepest place the example renders any part, which has the
   // most of the item's context around it (NavigationMenuIndicator needs an
@@ -357,7 +367,7 @@ export function scaffolds(
         ...(type?.keepMounted ? { keepMounted: true } : {}),
       },
       children:
-        types.get(name)?.text !== false &&
+        type?.text !== false &&
         !CHILDLESS.has(rendered.get(name)?.tag ?? '') &&
         (element ? hasChildren(element) : true),
     }
@@ -372,18 +382,15 @@ export function scaffolds(
       // A part whose children are a function of each item (ComboboxCollection)
       // cannot hold another part's element: those uses are left out, and the
       // first leaves it out of its chain.
-      const expressible = (u: Usage) =>
-        !u.ancestors.some((part) => types.get(part.component)?.childrenFunction)
+      const holdsElements = (part: Part) => !types.get(part.component)?.childrenFunction
       const others = rest
         .map((path) => usage(name, path, OMIT))
-        .filter(expressible)
+        .filter((other) => other.ancestors.every(holdsElements))
         .filter((other) => {
           const key = JSON.stringify(other)
           return !seen.has(key) && seen.add(key)
         })
-      const ancestors = scaffold.ancestors.filter(
-        (part) => !types.get(part.component)?.childrenFunction,
-      )
+      const ancestors = scaffold.ancestors.filter(holdsElements)
       return [name, { ...scaffold, ancestors, others }]
     }),
   )

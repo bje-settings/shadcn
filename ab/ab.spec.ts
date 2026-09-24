@@ -195,13 +195,11 @@ for (const c of cases) {
   test(c.id, async ({ pages }, testInfo) => {
     const sides = [pages.upstream[c.theme], pages.ours[c.theme]]
     const [upstreamPage, oursPage] = sides as [Page, Page]
+    const reported = () => sides.flatMap((page) => errors.get(page) ?? [])
     // Each case clears its pages' errors when it ends (afterEach), so any
     // here arrived after the previous case finished: nothing reaches the
     // console unaccounted for.
-    expect(
-      sides.flatMap((page) => errors.get(page) ?? []),
-      'errors after the previous case',
-    ).toEqual([])
+    expect(reported(), 'errors after the previous case').toEqual([])
     const settled = await Promise.all(sides.map((page) => show(page, c)))
     if (settled.includes(false)) {
       // Still changing after 3s (an endless animation): compared as it is.
@@ -241,6 +239,6 @@ for (const c of cases) {
       size: `${upstream.width}x${upstream.height}`,
       pixels: 0,
     })
-    expect(sides.flatMap((page) => errors.get(page) ?? [])).toEqual([])
+    expect(reported()).toEqual([])
   })
 }

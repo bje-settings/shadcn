@@ -20,8 +20,7 @@ export type Case = {
   // data-slot of the element a state applies to; else the case's first child
   slot?: string
   // Renders only when the page is narrowed to it and is compared as the
-  // whole viewport, since
-  // its popup portals out of the case
+  // whole viewport, since its popup portals out of the case
   overlay: boolean
   render: (side: Side) => ReactNode
 }

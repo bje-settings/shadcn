@@ -113,9 +113,10 @@ export function harnessFiles(
   const dir = config.harnessDir
   const indexCss = `${config.snapshotDir}/${config.upstream.style}/index.css`
   const typesetCss = `${config.snapshotDir}/typeset/typeset.css`
-  const components = harness.components.filter(({ hook }) => !hook).map(({ name }) => name)
+  const items = harness.components.filter(({ hook }) => !hook)
+  const components = items.map(({ name }) => name)
   const examples = harness.examples.map(({ name }) => name)
-  const fixtures = harness.components.filter(({ hook }) => !hook).flatMap(fixturesFor)
+  const fixtures = items.flatMap(fixturesFor)
   const cases = harness.examples.flatMap(({ name, prepared }) =>
     prepared.kept.map((sub) => ({ example: name, name: sub })),
   )

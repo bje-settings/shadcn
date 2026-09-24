@@ -6,6 +6,7 @@ import {
   dependenciesOf,
   markerSelectors,
   prepareComponent,
+  sharedSlotOptions,
   type UpstreamItem,
 } from './component.ts'
 import { parseConfig } from './config.ts'
@@ -38,8 +39,10 @@ const cssPath = join(root, 'upstream/base-vega/index.css')
 async function build(item: UpstreamItem, compiler = compile) {
   const prepared = await prepareComponent(item, config, cssPath)
   const context = {
-    markers: markerSelectors([prepared], prepared),
-    classProbe: classProbe([prepared]),
+    slotOptions: {
+      ...sharedSlotOptions(config, [prepared]),
+      markers: markerSelectors([prepared], prepared),
+    },
     types: new Map(),
     scaffolds: new Map(),
     external: new Map(),
