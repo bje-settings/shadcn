@@ -28,3 +28,13 @@ pnpm test      # vitest with 100% coverage thresholds
 ## Hosting
 
 Not decided yet. Publishing to the shadcn registry directory is tracked in #1.
+
+## Claude Code
+
+`.claude/settings.json` enables the TypeScript LSP plugin and disables auto memory and attribution.
+The `shadcn` skill from [shadcn/ui](https://github.com/shadcn-ui/ui/tree/main/skills/shadcn) is
+vendored in `.claude/skills/shadcn/` and pinned in `skills-lock.json`. Update it with:
+
+```bash
+npx skills update shadcn
+```
