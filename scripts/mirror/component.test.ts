@@ -12,6 +12,11 @@ const config = parseConfig({
   },
   theme: { baseColor: 'neutral', font: 'inter' },
   components: ['badge'],
+  typeset: {
+    stylesheet: 'https://example.com/typeset.css',
+    fixturesUrl: 'https://example.com/fixtures/{name}.ts',
+    fixtures: [],
+  },
   snapshotDir: 'upstream',
   outputDir: 'registry/ui',
   globalsDir: 'registry/styles',

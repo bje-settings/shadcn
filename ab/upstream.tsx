@@ -4,6 +4,9 @@ import '@fontsource-variable/inter'
 import './generated/upstream.css'
 import { createRoot } from 'react-dom/client'
 import { Gallery } from './gallery'
+import { upstreamExamples } from './generated/examples-upstream'
 import { upstream } from './generated/upstream'
 
-createRoot(document.getElementById('root') as HTMLElement).render(<Gallery ui={upstream} />)
+createRoot(document.getElementById('root') as HTMLElement).render(
+  <Gallery side={{ ui: upstream, examples: upstreamExamples }} />,
+)

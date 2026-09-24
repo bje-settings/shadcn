@@ -10,6 +10,11 @@
     "font": "inter"
   },
   "components": ["button", "button-group", "separator"],
+  "typeset": {
+    "stylesheet": "https://ui.shadcn.com/typeset.css",
+    "fixturesUrl": "https://raw.githubusercontent.com/shadcn-ui/ui/main/apps/v4/app/(app)/(typeset)/lib/fixtures/{name}.ts",
+    "fixtures": ["docs", "chat", "changelog", "notes", "recipe", "elements"]
+  },
   "snapshotDir": "upstream",
   "outputDir": "registry/ui",
   "globalsDir": "registry/styles",

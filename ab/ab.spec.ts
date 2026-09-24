@@ -1,6 +1,6 @@
 // Screenshots every case on the upstream and ours pages and diffs them with
-// pixelmatch. Each worker opens both pages once and walks its share of cases.
-// The report attaches upstream, ours and diff images for every case.
+// pixelmatch. Each worker opens each side once per theme and walks its share
+// of cases. The report attaches upstream, ours and diff images for every case.
 
 import { test as base, expect, type Page } from '@playwright/test'
 import pixelmatch from 'pixelmatch'
@@ -8,21 +8,28 @@ import { PNG } from 'pngjs'
 import { type Case, cases } from './cases'
 import { PORT } from './playwright.config'
 
-type Pages = { upstream: Page; ours: Page }
+type Theme = Case['theme']
+type Pages = Record<'upstream' | 'ours', Record<Theme, Page>>
 
 const test = base.extend<object, { pages: Pages }>({
   pages: [
     async ({ browser }, use) => {
-      const open = async (side: string) => {
+      const open = async (side: string, theme: Theme) => {
         const page = await browser.newPage({ viewport: { width: 1280, height: 800 } })
-        await page.goto(`http://localhost:${PORT}/${side}.html`)
+        await page.goto(`http://localhost:${PORT}/${side}.html?theme=${theme}`)
         await page.locator('[data-case]').first().waitFor()
         await page.evaluate(() => document.fonts.ready)
         return page
       }
-      const pages = { upstream: await open('upstream'), ours: await open('ours') }
+      const both = async (side: string) => ({
+        light: await open(side, 'light'),
+        dark: await open(side, 'dark'),
+      })
+      const pages = { upstream: await both('upstream'), ours: await both('ours') }
       await use(pages)
-      await Promise.all([pages.upstream.close(), pages.ours.close()])
+      for (const side of Object.values(pages)) {
+        await Promise.all(Object.values(side).map((page) => page.close()))
+      }
     },
     { scope: 'worker' },
   ],
@@ -56,7 +63,10 @@ test.describe.configure({ mode: 'parallel' })
 
 for (const c of cases) {
   test(c.id, async ({ pages }, testInfo) => {
-    const [upstream, ours] = await Promise.all([capture(pages.upstream, c), capture(pages.ours, c)])
+    const [upstream, ours] = await Promise.all([
+      capture(pages.upstream[c.theme], c),
+      capture(pages.ours[c.theme], c),
+    ])
     const width = Math.max(upstream.width, ours.width)
     const height = Math.max(upstream.height, ours.height)
     const diff = new PNG({ width, height })

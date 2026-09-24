@@ -18,6 +18,9 @@ export default defineConfig({
     alias: {
       [`@/registry/${config.namespace}/ui`]: `${repo}registry/ui`,
       [`@/registry/${config.upstream.style}/ui`]: `${ab}generated/upstream`,
+      // Docs-only imports in upstream's examples, replaced by stand-ins.
+      [`@/registry/${config.upstream.style}/components/example`]: `${ab}stubs/example.tsx`,
+      '@/app/(create)/components/icon-placeholder': `${ab}stubs/icon-placeholder.tsx`,
     },
   },
   server: { fs: { allow: [repo] } },

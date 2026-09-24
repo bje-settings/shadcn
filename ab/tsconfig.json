@@ -9,7 +9,9 @@
     "types": ["node", "vite/client"],
     "paths": {
       "@/registry/bje/ui/*": ["../registry/ui/*"],
-      "@/registry/base-vega/ui/*": ["./generated/upstream/*"]
+      "@/registry/base-vega/ui/*": ["./generated/upstream/*"],
+      "@/registry/base-vega/components/example": ["./stubs/example.tsx"],
+      "@/app/(create)/components/icon-placeholder": ["./stubs/icon-placeholder.tsx"]
     }
   },
   "include": ["."]

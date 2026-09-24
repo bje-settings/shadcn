@@ -25,6 +25,13 @@ export type MirrorConfig = {
     font: string
   }
   components: string[]
+  // shadcn/typeset: the stylesheet (shipped as @<namespace>/typeset) and the
+  // content fixtures its builder previews, which the A/B harness renders.
+  typeset: {
+    stylesheet: string
+    fixturesUrl: string
+    fixtures: string[]
+  }
   snapshotDir: string
   outputDir: string
   // Generated global stylesheets (the @<namespace>/globals item)
@@ -71,6 +78,18 @@ export function parseConfig(raw: unknown): MirrorConfig {
     fail('components must be a non-empty array of kebab-case item names')
   }
 
+  const typeset = raw.typeset
+  if (!isRecord(typeset)) fail('typeset must be an object')
+  const fixturesUrl = string(typeset, 'fixturesUrl', 'typeset.')
+  if (!fixturesUrl.includes('{name}')) fail('typeset.fixturesUrl must contain {name}')
+  const fixtures = typeset.fixtures
+  if (
+    !Array.isArray(fixtures) ||
+    !fixtures.every((f) => typeof f === 'string' && /^[a-z0-9-]+$/.test(f))
+  ) {
+    fail('typeset.fixtures must be an array of kebab-case names')
+  }
+
   const rewrites = raw.selectorRewrites ?? []
   if (!Array.isArray(rewrites)) fail('selectorRewrites must be an array')
   const selectorRewrites = rewrites.map((rewrite, i) => {
@@ -99,6 +118,7 @@ export function parseConfig(raw: unknown): MirrorConfig {
       font: string(theme, 'font', 'theme.'),
     },
     components,
+    typeset: { stylesheet: string(typeset, 'stylesheet', 'typeset.'), fixturesUrl, fixtures },
     snapshotDir: string(raw, 'snapshotDir', ''),
     outputDir: string(raw, 'outputDir', ''),
     globalsDir: string(raw, 'globalsDir', ''),

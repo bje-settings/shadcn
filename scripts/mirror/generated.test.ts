@@ -33,6 +33,9 @@ beforeAll(async () => {
   for (const path of await files(root, snapshots)) {
     if (path.endsWith('.json')) await cp(join(root, path), join(built, path), { recursive: true })
   }
+  await cp(join(root, config.snapshotDir, 'typeset'), join(built, config.snapshotDir, 'typeset'), {
+    recursive: true,
+  })
   await run(['build'], {
     root: built,
     fetch: () => Promise.reject(new Error('build must not fetch')),

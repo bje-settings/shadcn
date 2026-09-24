@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { projectCss } from './project-css.ts'
+import { layoutCss, projectCss } from './project-css.ts'
 
 const color = {
   cssVarsV4: {
@@ -44,5 +44,18 @@ describe('projectCss', () => {
 
   it('handles a style with no css', () => {
     expect(projectCss({}, color, font)).toContain('@layer base {\n  html {')
+  })
+})
+
+describe('layoutCss', () => {
+  it('compiles only unlayered utilities for the given source, with the same theme setup', () => {
+    const css = layoutCss({ css: { '@import "tw-animate-css"': {} } }, color, font, './examples')
+    expect(css).toContain('@import "tailwindcss/theme.css" layer(theme);')
+    expect(css).toContain('@import "tailwindcss/utilities.css" source(none);')
+    expect(css).toContain('@import "tw-animate-css";')
+    expect(css).toContain('  --color-background: var(--background);')
+    expect(css).not.toContain(':root {')
+    expect(css).not.toContain('@layer base')
+    expect(css.trimEnd().endsWith('@source "./examples";')).toBe(true)
   })
 })

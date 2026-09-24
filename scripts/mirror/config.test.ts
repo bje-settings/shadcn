@@ -10,6 +10,11 @@ const valid = {
   },
   theme: { baseColor: 'neutral', font: 'inter' },
   components: ['button', 'icon-button'],
+  typeset: {
+    stylesheet: 'https://example.com/typeset.css',
+    fixturesUrl: 'https://example.com/fixtures/{name}.ts',
+    fixtures: ['docs'],
+  },
   snapshotDir: 'upstream',
   outputDir: 'registry/ui',
   globalsDir: 'registry/styles',
@@ -97,6 +102,22 @@ describe('parseConfig', () => {
       'selectorRewrites[0].reason',
     ],
     ['a missing namespace', withChange({ namespace: '' }), 'namespace must be'],
+    ['a missing typeset', withChange({ typeset: [] }), 'typeset must be an object'],
+    [
+      'a typeset fixturesUrl without {name}',
+      withChange({ typeset: { ...valid.typeset, fixturesUrl: 'https://example.com/x.ts' } }),
+      'typeset.fixturesUrl must contain {name}',
+    ],
+    [
+      'non-kebab typeset fixtures',
+      withChange({ typeset: { ...valid.typeset, fixtures: ['Docs'] } }),
+      'typeset.fixtures must be',
+    ],
+    [
+      'a non-array of typeset fixtures',
+      withChange({ typeset: { ...valid.typeset, fixtures: 'docs' } }),
+      'typeset.fixtures must be',
+    ],
     ['a missing outputDir', withChange({ outputDir: '' }), 'outputDir must be'],
   ])('rejects %s', (_, raw, message) => {
     expect(() => parseConfig(raw)).toThrow(message)
