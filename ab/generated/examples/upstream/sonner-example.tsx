@@ -2,4 +2,37 @@
 
 'use client'
 
-export {}
+import { toast } from 'sonner'
+
+import { Example } from '@/registry/base-vega/components/example'
+import { Button } from '@/registry/base-vega/ui/button'
+
+function SonnerBasic() {
+  return (
+    <Example title="Basic" className="items-center justify-center">
+      <Button onClick={() => toast('Event has been created')} variant="outline" className="w-fit">
+        Show Toast
+      </Button>
+    </Example>
+  )
+}
+
+function SonnerWithDescription() {
+  return (
+    <Example title="With Description" className="items-center justify-center">
+      <Button
+        onClick={() =>
+          toast('Event has been created', {
+            description: 'Monday, January 3rd at 6:00pm',
+          })
+        }
+        variant="outline"
+        className="w-fit"
+      >
+        Show Toast
+      </Button>
+    </Example>
+  )
+}
+
+export { SonnerBasic, SonnerWithDescription }

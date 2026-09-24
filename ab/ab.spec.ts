@@ -49,9 +49,9 @@ async function open(browser: Browser, side: Side, theme: Theme): Promise<Page> {
 }
 
 // Shows one case and waits for it to settle: its fonts and images (a Base UI
-// avatar swaps its fallback for the image once it loads), then its finite
-// animations (a popup's open transition) and two more frames, in which
-// Base UI moves initial focus and measures positioned popups.
+// avatar swaps its fallback for the image once it loads), its finite
+// animations (a popup's open transition) and two more frames, in which Base
+// UI moves initial focus and measures positioned popups, then a quiet DOM.
 async function show(page: Page, c: Case): Promise<void> {
   await page.evaluate((id) => {
     ;(window as Window & { showCase?: (id: string) => void }).showCase?.(id)
@@ -81,6 +81,23 @@ async function show(page: Page, c: Case): Promise<void> {
     for (let frame = 0; frame < 2; frame++) {
       await new Promise((resolve) => requestAnimationFrame(resolve))
     }
+    // Script-driven animation (Recharts grows its bars by rewriting SVG
+    // attributes) settles when the DOM stays quiet for 250ms.
+    await new Promise<void>((resolve) => {
+      let timer = setTimeout(done, 250)
+      const cap = setTimeout(done, 3000)
+      const observer = new MutationObserver(() => {
+        clearTimeout(timer)
+        timer = setTimeout(done, 250)
+      })
+      observer.observe(document.body, { subtree: true, attributes: true, childList: true })
+      function done() {
+        observer.disconnect()
+        clearTimeout(timer)
+        clearTimeout(cap)
+        resolve()
+      }
+    })
   })
 }
 

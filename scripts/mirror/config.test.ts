@@ -17,6 +17,7 @@ const valid = {
   },
   snapshotDir: 'upstream',
   outputDir: 'registry/ui',
+  hooksDir: 'registry/hooks',
   globalsDir: 'registry/styles',
   harnessDir: 'ab/generated',
   consumerClasses: [{ classes: ['border-b'], reason: 'consumer' }],
@@ -26,6 +27,7 @@ const valid = {
   testSetup: [{ items: ['button'], lines: ['stub()'], reason: 'jsdom' }],
   unrenderedInTests: { button: { Button: 'why' } },
   testProps: { button: { Button: { size: 'sm' } } },
+  testExpressions: { button: { Button: { day: 'new Date()' } } },
 }
 
 function withChange(change: Record<string, unknown>) {

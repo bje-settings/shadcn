@@ -17,7 +17,9 @@ export default defineConfig({
   resolve: {
     alias: {
       [`@/registry/${config.namespace}/ui`]: `${repo}registry/ui`,
+      [`@/registry/${config.namespace}/hooks`]: `${repo}registry/hooks`,
       [`@/registry/${config.upstream.style}/ui`]: `${ab}generated/upstream`,
+      [`@/registry/${config.upstream.style}/hooks`]: `${ab}generated/upstream/hooks`,
       // Docs-only imports in upstream's examples, replaced by stand-ins.
       [`@/registry/${config.upstream.style}/components/example`]: `${ab}stubs/example.tsx`,
       '@/app/(create)/components/icon-placeholder': `${ab}stubs/icon-placeholder.tsx`,

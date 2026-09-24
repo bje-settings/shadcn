@@ -57,6 +57,10 @@ import * as toastExample from './examples/ours/toast-example'
 import * as resizableExample from './examples/ours/resizable-example'
 import * as questionnaireExample from './examples/ours/questionnaire-example'
 import * as messageScrollerExample from './examples/ours/message-scroller-example'
+import * as sidebarExample from './examples/ours/sidebar-example'
+import * as calendarExample from './examples/ours/calendar-example'
+import * as carouselExample from './examples/ours/carousel-example'
+import * as chartExample from './examples/ours/chart-example'
 
 export const oursExamples = {
   'button-example': buttonExample,
@@ -116,4 +120,8 @@ export const oursExamples = {
   'resizable-example': resizableExample,
   'questionnaire-example': questionnaireExample,
   'message-scroller-example': messageScrollerExample,
+  'sidebar-example': sidebarExample,
+  'calendar-example': calendarExample,
+  'carousel-example': carouselExample,
+  'chart-example': chartExample,
 }

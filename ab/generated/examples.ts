@@ -743,11 +743,23 @@ export const examples = [
   },
   {
     example: 'input-otp-example',
+    name: 'InputOTPPattern',
+  },
+  {
+    example: 'input-otp-example',
     name: 'InputOTPWithSeparator',
   },
   {
     example: 'input-otp-example',
+    name: 'InputOTPAlphanumeric',
+  },
+  {
+    example: 'input-otp-example',
     name: 'InputOTPDisabled',
+  },
+  {
+    example: 'input-otp-example',
+    name: 'InputOTPFourDigits',
   },
   {
     example: 'input-otp-example',
@@ -787,6 +799,10 @@ export const examples = [
   },
   {
     example: 'field-example',
+    name: 'InputOTPFields',
+  },
+  {
+    example: 'field-example',
     name: 'HorizontalFields',
   },
   {
@@ -795,7 +811,15 @@ export const examples = [
   },
   {
     example: 'input-group-example',
+    name: 'InputGroupWithAddons',
+  },
+  {
+    example: 'input-group-example',
     name: 'InputGroupWithButtons',
+  },
+  {
+    example: 'input-group-example',
+    name: 'InputGroupWithTooltip',
   },
   {
     example: 'input-group-example',
@@ -895,6 +919,10 @@ export const examples = [
   },
   {
     example: 'marker-example',
+    name: 'MarkerExample',
+  },
+  {
+    example: 'marker-example',
     name: 'MarkerBorder',
   },
   {
@@ -963,7 +991,15 @@ export const examples = [
   },
   {
     example: 'bubble-example',
+    name: 'BubbleButtonLinks',
+  },
+  {
+    example: 'bubble-example',
     name: 'BubbleWithReactions',
+  },
+  {
+    example: 'bubble-example',
+    name: 'BubbleReactionsButtons',
   },
   {
     example: 'attachment-example',
@@ -1399,6 +1435,10 @@ export const examples = [
   },
   {
     example: 'combobox-example',
+    name: 'ComboboxWithForm',
+  },
+  {
+    example: 'combobox-example',
     name: 'ComboboxMultiple',
   },
   {
@@ -1416,6 +1456,10 @@ export const examples = [
   {
     example: 'combobox-example',
     name: 'ComboboxWithCustomItems',
+  },
+  {
+    example: 'combobox-example',
+    name: 'ComboboxInDialog',
   },
   {
     example: 'combobox-example',
@@ -1446,6 +1490,14 @@ export const examples = [
     name: 'CommandManyItems',
   },
   {
+    example: 'sonner-example',
+    name: 'SonnerBasic',
+  },
+  {
+    example: 'sonner-example',
+    name: 'SonnerWithDescription',
+  },
+  {
     example: 'toast-example',
     name: 'ToastBasic',
   },
@@ -1472,5 +1524,93 @@ export const examples = [
   {
     example: 'resizable-example',
     name: 'ResizableNested',
+  },
+  {
+    example: 'resizable-example',
+    name: 'ResizableControlled',
+  },
+  {
+    example: 'questionnaire-example',
+    name: 'QuestionnaireStandalone',
+  },
+  {
+    example: 'questionnaire-example',
+    name: 'QuestionnaireCard',
+  },
+  {
+    example: 'questionnaire-example',
+    name: 'QuestionnaireDialog',
+  },
+  {
+    example: 'questionnaire-example',
+    name: 'QuestionnaireNoDescription',
+  },
+  {
+    example: 'questionnaire-example',
+    name: 'QuestionnaireDisabled',
+  },
+  {
+    example: 'sidebar-example',
+    name: 'SidebarExample',
+  },
+  {
+    example: 'calendar-example',
+    name: 'CalendarSingle',
+  },
+  {
+    example: 'calendar-example',
+    name: 'CalendarMultiple',
+  },
+  {
+    example: 'calendar-example',
+    name: 'CalendarWeekNumbers',
+  },
+  {
+    example: 'calendar-example',
+    name: 'CalendarBookedDates',
+  },
+  {
+    example: 'calendar-example',
+    name: 'CalendarInCard',
+  },
+  {
+    example: 'calendar-example',
+    name: 'CalendarInPopover',
+  },
+  {
+    example: 'carousel-example',
+    name: 'CarouselBasic',
+  },
+  {
+    example: 'carousel-example',
+    name: 'CarouselMultiple',
+  },
+  {
+    example: 'carousel-example',
+    name: 'CarouselWithGap',
+  },
+  {
+    example: 'chart-example',
+    name: 'ChartAreaExample',
+  },
+  {
+    example: 'chart-example',
+    name: 'ChartBarExample',
+  },
+  {
+    example: 'chart-example',
+    name: 'ChartLineExample',
+  },
+  {
+    example: 'chart-example',
+    name: 'ChartPieExample',
+  },
+  {
+    example: 'chart-example',
+    name: 'ChartRadialExample',
+  },
+  {
+    example: 'chart-example',
+    name: 'ChartRadarExample',
   },
 ]

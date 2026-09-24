@@ -15,11 +15,11 @@
   font-weight: var(--font-weight-medium);
   -webkit-user-select: none;
   user-select: none;
-  &:is(:where(:is([data-slot="navigation-menu-list"], [data-slot="navigation-menu-trigger"]))[data-disabled="true"] *) {
+  &:is(:where(:is([data-slot="navigation-menu-list"], [data-slot="navigation-menu-trigger"], [data-slot="sidebar"]))[data-disabled="true"] *) {
     pointer-events: none;
     opacity: .5;
   }
-  &:is(:where(:is([data-slot="checkbox"], [data-slot="radio-group-item"], [data-slot="switch"])):disabled ~ *) {
+  &:is(:where(:is([data-slot="checkbox"], [data-slot="radio-group-item"], [data-slot="sidebar"], [data-slot="switch"])):disabled ~ *) {
     cursor: not-allowed;
     opacity: .5;
   }

@@ -58,6 +58,10 @@ import * as toast from '@/registry/bje/ui/Toast/Toast'
 import * as resizable from '@/registry/bje/ui/Resizable/Resizable'
 import * as questionnaire from '@/registry/bje/ui/Questionnaire/Questionnaire'
 import * as messageScroller from '@/registry/bje/ui/MessageScroller/MessageScroller'
+import * as sidebar from '@/registry/bje/ui/Sidebar/Sidebar'
+import * as calendar from '@/registry/bje/ui/Calendar/Calendar'
+import * as carousel from '@/registry/bje/ui/Carousel/Carousel'
+import * as chart from '@/registry/bje/ui/Chart/Chart'
 
 export const ours = {
   button: button,
@@ -118,4 +122,8 @@ export const ours = {
   resizable: resizable,
   questionnaire: questionnaire,
   'message-scroller': messageScroller,
+  sidebar: sidebar,
+  calendar: calendar,
+  carousel: carousel,
+  chart: chart,
 }

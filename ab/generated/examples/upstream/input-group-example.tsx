@@ -2,8 +2,11 @@
 
 'use client'
 
+import { toast } from 'sonner'
+
 import { Example } from '@/registry/base-vega/components/example'
 import { Button } from '@/registry/base-vega/ui/button'
+import { ButtonGroup, ButtonGroupText } from '@/registry/base-vega/ui/button-group'
 import {
   Card,
   CardContent,
@@ -12,6 +15,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@/registry/base-vega/ui/card'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/registry/base-vega/ui/dropdown-menu'
 import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/registry/base-vega/ui/field'
 import { Input } from '@/registry/base-vega/ui/input'
 import {
@@ -23,7 +32,16 @@ import {
   InputGroupTextarea,
 } from '@/registry/base-vega/ui/input-group'
 import { Kbd, KbdGroup } from '@/registry/base-vega/ui/kbd'
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from '@/registry/base-vega/ui/popover'
 import { Spinner } from '@/registry/base-vega/ui/spinner'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/registry/base-vega/ui/tooltip'
 import { IconPlaceholder } from '@/app/(create)/components/icon-placeholder'
 
 function InputGroupBasic() {
@@ -54,6 +72,171 @@ function InputGroupBasic() {
               placeholder="This field is invalid"
               aria-invalid="true"
             />
+          </InputGroup>
+        </Field>
+      </FieldGroup>
+    </Example>
+  )
+}
+
+function InputGroupWithAddons() {
+  return (
+    <Example title="With Addons">
+      <FieldGroup>
+        <Field>
+          <FieldLabel htmlFor="input-icon-left-05">Addon (inline-start)</FieldLabel>
+          <InputGroup>
+            <InputGroupInput id="input-icon-left-05" />
+            <InputGroupAddon>
+              <IconPlaceholder
+                lucide="SearchIcon"
+                tabler="IconSearch"
+                hugeicons="SearchIcon"
+                phosphor="MagnifyingGlassIcon"
+                remixicon="RiSearchLine"
+                className="text-muted-foreground"
+              />
+            </InputGroupAddon>
+          </InputGroup>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="input-icon-right-07">Addon (inline-end)</FieldLabel>
+          <InputGroup>
+            <InputGroupInput id="input-icon-right-07" />
+            <InputGroupAddon align="inline-end">
+              <IconPlaceholder
+                lucide="EyeOffIcon"
+                tabler="IconEyeClosed"
+                hugeicons="ViewOffIcon"
+                phosphor="EyeSlashIcon"
+                remixicon="RiEyeOffLine"
+              />
+            </InputGroupAddon>
+          </InputGroup>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="input-icon-both-09">Addon (inline-start and inline-end)</FieldLabel>
+          <InputGroup>
+            <InputGroupInput id="input-icon-both-09" />
+            <InputGroupAddon>
+              <IconPlaceholder
+                lucide="MicIcon"
+                tabler="IconMicrophone"
+                hugeicons="VoiceIcon"
+                phosphor="MicrophoneIcon"
+                remixicon="RiMicLine"
+                className="text-muted-foreground"
+              />
+            </InputGroupAddon>
+            <InputGroupAddon align="inline-end">
+              <IconPlaceholder
+                lucide="RadioIcon"
+                tabler="IconPlayerRecordFilled"
+                hugeicons="RecordIcon"
+                phosphor="RecordIcon"
+                remixicon="RiRecordCircleLine"
+                className="animate-pulse text-red-500"
+              />
+            </InputGroupAddon>
+          </InputGroup>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="input-addon-20">Addon (block-start)</FieldLabel>
+          <InputGroup className="h-auto">
+            <InputGroupInput id="input-addon-20" />
+            <InputGroupAddon align="block-start">
+              <InputGroupText>First Name</InputGroupText>
+              <IconPlaceholder
+                lucide="InfoIcon"
+                tabler="IconInfoCircle"
+                hugeicons="AlertCircleIcon"
+                phosphor="InfoIcon"
+                remixicon="RiInformationLine"
+                className="ml-auto text-muted-foreground"
+              />
+            </InputGroupAddon>
+          </InputGroup>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="input-addon-21">Addon (block-end)</FieldLabel>
+          <InputGroup className="h-auto">
+            <InputGroupInput id="input-addon-21" />
+            <InputGroupAddon align="block-end">
+              <InputGroupText>20/240 characters</InputGroupText>
+              <IconPlaceholder
+                lucide="InfoIcon"
+                tabler="IconInfoCircle"
+                hugeicons="AlertCircleIcon"
+                phosphor="InfoIcon"
+                remixicon="RiInformationLine"
+                className="ml-auto text-muted-foreground"
+              />
+            </InputGroupAddon>
+          </InputGroup>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="input-icon-both-10">Multiple Icons</FieldLabel>
+          <InputGroup>
+            <InputGroupInput id="input-icon-both-10" />
+            <InputGroupAddon align="inline-end">
+              <IconPlaceholder
+                lucide="StarIcon"
+                tabler="IconStar"
+                hugeicons="StarIcon"
+                phosphor="StarIcon"
+                remixicon="RiStarLine"
+              />
+              <InputGroupButton size="icon-xs" onClick={() => toast('Copied to clipboard')}>
+                <IconPlaceholder
+                  lucide="CopyIcon"
+                  tabler="IconCopy"
+                  hugeicons="CopyIcon"
+                  phosphor="CopyIcon"
+                  remixicon="RiFileCopyLine"
+                />
+              </InputGroupButton>
+            </InputGroupAddon>
+            <InputGroupAddon>
+              <IconPlaceholder
+                lucide="RadioIcon"
+                tabler="IconPlayerRecordFilled"
+                hugeicons="RecordIcon"
+                phosphor="RecordIcon"
+                remixicon="RiRecordCircleLine"
+                className="animate-pulse text-red-500"
+              />
+            </InputGroupAddon>
+          </InputGroup>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="input-description-10">Description</FieldLabel>
+          <InputGroup>
+            <InputGroupInput id="input-description-10" />
+            <InputGroupAddon align="inline-end">
+              <IconPlaceholder
+                lucide="InfoIcon"
+                tabler="IconInfoCircle"
+                hugeicons="AlertCircleIcon"
+                phosphor="InfoIcon"
+                remixicon="RiInformationLine"
+              />
+            </InputGroupAddon>
+          </InputGroup>
+          <FieldDescription>This is a description of the input group.</FieldDescription>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="input-label-10">Label</FieldLabel>
+          <InputGroup>
+            <InputGroupAddon>
+              <FieldLabel htmlFor="input-label-10">Label</FieldLabel>
+            </InputGroupAddon>
+            <InputGroupInput id="input-label-10" />
+          </InputGroup>
+          <InputGroup>
+            <InputGroupInput id="input-optional-12" aria-label="Optional" />
+            <InputGroupAddon align="inline-end">
+              <InputGroupText>(optional)</InputGroupText>
+            </InputGroupAddon>
           </InputGroup>
         </Field>
       </FieldGroup>
@@ -119,6 +302,137 @@ function InputGroupWithButtons() {
               </InputGroupButton>
             </InputGroupAddon>
           </InputGroup>
+        </Field>
+      </FieldGroup>
+    </Example>
+  )
+}
+
+function InputGroupWithTooltip({
+  country,
+  setCountry,
+}: {
+  country: string
+  setCountry: (value: string) => void
+}) {
+  return (
+    <Example title="With Tooltip, Dropdown, Popover">
+      <FieldGroup>
+        <Field>
+          <FieldLabel htmlFor="input-tooltip-20">Tooltip</FieldLabel>
+          <InputGroup>
+            <InputGroupInput id="input-tooltip-20" />
+            <InputGroupAddon align="inline-end">
+              <Tooltip>
+                <TooltipTrigger
+                  render={<InputGroupButton className="rounded-full" size="icon-xs" />}
+                >
+                  <IconPlaceholder
+                    lucide="InfoIcon"
+                    tabler="IconInfoCircle"
+                    hugeicons="AlertCircleIcon"
+                    phosphor="InfoIcon"
+                    remixicon="RiInformationLine"
+                  />
+                </TooltipTrigger>
+                <TooltipContent>This is content in a tooltip.</TooltipContent>
+              </Tooltip>
+            </InputGroupAddon>
+          </InputGroup>
+          <FieldDescription>This is a description of the input group.</FieldDescription>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="input-dropdown-21">Dropdown</FieldLabel>
+          <InputGroup>
+            <InputGroupInput id="input-dropdown-21" />
+            <InputGroupAddon>
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={<InputGroupButton className="text-muted-foreground tabular-nums" />}
+                >
+                  {country}{' '}
+                  <IconPlaceholder
+                    lucide="ChevronDownIcon"
+                    tabler="IconChevronDown"
+                    hugeicons="ArrowDownIcon"
+                    phosphor="CaretDownIcon"
+                    remixicon="RiArrowDownSLine"
+                  />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="start"
+                  className="min-w-16"
+                  sideOffset={10}
+                  alignOffset={-8}
+                >
+                  <DropdownMenuItem onClick={() => setCountry('+1')}>+1</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setCountry('+44')}>+44</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setCountry('+46')}>+46</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </InputGroupAddon>
+          </InputGroup>
+          <FieldDescription>This is a description of the input group.</FieldDescription>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="input-secure-19">Popover</FieldLabel>
+          <InputGroup>
+            <Popover>
+              <PopoverTrigger render={<InputGroupAddon />} nativeButton={false}>
+                <InputGroupButton variant="secondary" size="icon-xs">
+                  <IconPlaceholder
+                    lucide="InfoIcon"
+                    tabler="IconInfoCircle"
+                    hugeicons="AlertCircleIcon"
+                    phosphor="InfoIcon"
+                    remixicon="RiInformationLine"
+                  />
+                </InputGroupButton>
+              </PopoverTrigger>
+              <PopoverContent align="start">
+                <PopoverHeader>
+                  <PopoverTitle>Your connection is not secure.</PopoverTitle>
+                  <PopoverDescription>
+                    You should not enter any sensitive information on this site.
+                  </PopoverDescription>
+                </PopoverHeader>
+              </PopoverContent>
+            </Popover>
+            <InputGroupAddon className="pl-1 text-muted-foreground">https://</InputGroupAddon>
+            <InputGroupInput id="input-secure-19" />
+            <InputGroupAddon align="inline-end">
+              <InputGroupButton size="icon-xs" onClick={() => toast('Added to favorites')}>
+                <IconPlaceholder
+                  lucide="StarIcon"
+                  tabler="IconStar"
+                  hugeicons="StarIcon"
+                  phosphor="StarIcon"
+                  remixicon="RiStarLine"
+                />
+              </InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
+          <FieldDescription>This is a description of the input group.</FieldDescription>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="url">Button Group</FieldLabel>
+          <ButtonGroup>
+            <ButtonGroupText>https://</ButtonGroupText>
+            <InputGroup>
+              <InputGroupInput id="url" />
+              <InputGroupAddon align="inline-end">
+                <IconPlaceholder
+                  lucide="InfoIcon"
+                  tabler="IconInfoCircle"
+                  hugeicons="AlertCircleIcon"
+                  phosphor="InfoIcon"
+                  remixicon="RiInformationLine"
+                />
+              </InputGroupAddon>
+            </InputGroup>
+            <ButtonGroupText>.com</ButtonGroupText>
+          </ButtonGroup>
+          <FieldDescription>This is a description of the input group.</FieldDescription>
         </Field>
       </FieldGroup>
     </Example>
@@ -336,4 +650,11 @@ function InputGroupInCard() {
   )
 }
 
-export { InputGroupBasic, InputGroupWithButtons, InputGroupWithKbd, InputGroupInCard }
+export {
+  InputGroupBasic,
+  InputGroupWithAddons,
+  InputGroupWithButtons,
+  InputGroupWithTooltip,
+  InputGroupWithKbd,
+  InputGroupInCard,
+}

@@ -9,7 +9,7 @@ import type { Node } from '@babel/types'
 import { parseModule } from './ast.ts'
 import { camelCase, pascalCase } from './names.ts'
 import type { Literal, Part, PartTypes, Scaffold, Usage } from './parts.ts'
-import type { RenderedComponent, TransformedComponent, VariantSet } from './tsx.ts'
+import type { Hook, RenderedComponent, TransformedComponent, VariantSet } from './tsx.ts'
 
 // The values a module exports by name; types are not tested.
 export function exportedNames(code: string): Set<string> {
@@ -108,10 +108,16 @@ function defaultClasses(set: VariantSet): string[] {
   ]
 }
 
-function objectLiteral(props: Record<string, Literal>, rest?: string): string {
-  const entries = Object.entries(props).map(
-    ([name, value]) => `${q(name)}: ${JSON.stringify(value)}`,
-  )
+// Literal props, then props as TypeScript expressions (a Date), then a rest.
+function objectLiteral(
+  props: Record<string, Literal>,
+  rest?: string,
+  code: Record<string, string> = {},
+): string {
+  const entries = [
+    ...Object.entries(props).map(([name, value]) => `${q(name)}: ${JSON.stringify(value)}`),
+    ...Object.entries(code).map(([name, expression]) => `${q(name)}: ${expression}`),
+  ]
   return `{ ${[...entries, ...(rest ? [`...${rest}`] : [])].join(', ')} }`
 }
 
@@ -205,6 +211,24 @@ function unrenderedTest(
   ]
 }
 
+// A part that renders no element for a className and takes no children
+// (ChartStyle's <style>) is rendered and checked not to throw.
+function rendersTest(
+  component: RenderedComponent,
+  scaffold: Scaffold,
+  attributes: Attributes,
+): string[] {
+  const element = `<${component.name}${attributes(component.name, scaffold.props)} />`
+  return [
+    `describe(${q(component.name)}, () => {`,
+    '  it("renders", () => {',
+    '    cleanup()',
+    `    expect(() => render(${scaffolded(scaffold.ancestors, element, attributes)})).not.toThrow()`,
+    '  })',
+    '})',
+  ]
+}
+
 // A part that renders no element of its own (Dialog's Root) is tested by what
 // it renders: its children.
 function childrenTest(
@@ -238,14 +262,21 @@ function componentTests(
   detached: boolean,
   // Its props' string-literal union values
   options: Record<string, string[]>,
+  // Props given as TypeScript expressions (CalendarDayButton's day)
+  expressions: Record<string, string>,
 ): string[] {
   const render = `render${component.name}`
   const classes = `classesOf${component.name}`
   const attributesOf = `attributesOf${component.name}`
+  // With several branches, which one renders depends on props and context:
+  // the test checks it carries one of them.
+  const branches = (component.branches ?? []).filter((slot) => !unstyled.has(slot))
   const expected = detached
     ? []
     : [
-        ...(component.slot && !unstyled.has(component.slot) ? [`styles.${component.slot}`] : []),
+        ...(component.slot && !unstyled.has(component.slot) && branches.length === 0
+          ? [`styles.${component.slot}`]
+          : []),
         ...(set ? defaultClasses(set) : []),
       ]
   const groups = detached ? [] : (set?.groups ?? [])
@@ -271,7 +302,10 @@ function componentTests(
     ...scaffold.props,
     ...(scaffold.children ? { children: component.name } : {}),
   }
-  const spread = Object.keys(own).length > 0 ? objectLiteral(own, 'props') : 'props'
+  const spread =
+    Object.keys(own).length + Object.keys(expressions).length > 0
+      ? objectLiteral(own, 'props', expressions)
+      : 'props'
   const rendered = scaffolded(
     scaffold.ancestors,
     `<${component.name} data-subject {...(${spread} as ${props})} />`,
@@ -294,7 +328,7 @@ function componentTests(
     '}',
     '',
     // Only an element with classes of its own, or cva() groups, checks them.
-    ...(expected.length > 0 || groups.length > 0
+    ...(expected.length > 0 || groups.length > 0 || branches.length > 0
       ? [
           `function ${classes}(${params}) {`,
           `  return ${render}(props)?.getAttribute("class")?.split(" ") ?? []`,
@@ -317,6 +351,15 @@ function componentTests(
     )
   }
   lines.push(`describe(${q(component.name)}, () => {`)
+  if (branches.length > 0) {
+    lines.push(
+      `  it(${q('renders the class of one of its branches')}, () => {`,
+      `    const branches = [${branches.map((slot) => `styles.${slot}`).join(', ')}]`,
+      `    expect(${classes}().some((className) => branches.includes(className))).toBe(true)`,
+      '  })',
+      '',
+    )
+  }
   // An element only the consumer's className styles has no classes of its
   // own; the className test below still finds it by its data-slot.
   if (expected.length > 0) {
@@ -407,8 +450,9 @@ function componentTests(
     '    const element = document.querySelector(".consumer")',
     '    expect(element?.getAttribute("class")?.split(" ").at(-1)).toBe("consumer")',
     '  })',
+    // Other uses would lack the expression props.
     ...usageTests(
-      detached ? [] : scaffold.others,
+      detached || Object.keys(expressions).length > 0 ? [] : scaffold.others,
       (usage) => {
         const open = `<${component.name} data-subject${attributes(component.name, usage.props)}`
         return usage.children ? `${open}>${component.name}</${component.name}>` : `${open} />`
@@ -435,9 +479,14 @@ export function generateTest(
     external: Map<string, PartTypes>
     // Parts jsdom renders nothing for, with the reason
     unrendered: Record<string, string>
+    // The module's file name, when it is not the PascalCase item (a hook's)
+    module?: string
+    // Props given as TypeScript expressions, by part
+    expressions: Record<string, Record<string, string>>
   },
 ): string {
   const file = pascalCase(name)
+  const module = parts.module ?? file
   const exported = exportedNames(transformed.code)
   const components = transformed.components.filter((c) => exported.has(c.name))
   const forwarded = forwardedValues(transformed.code, exported)
@@ -476,10 +525,17 @@ export function generateTest(
   const elementless = (component: RenderedComponent) =>
     parts.types.get(component.name)?.className === false
   // Exported hooks run inside the item's root component, when it has one.
-  const root = [...exported].find((n) => n.toLowerCase() === file.toLowerCase())
+  // Hooks run inside the provider their error names (useSidebar's
+  // SidebarProvider), or else the item's root component.
+  const named = (hook: Hook) =>
+    [...exported]
+      .filter((n) => /^[A-Z]/.test(n) && new RegExp(`\\b${n}\\b`).test(hook.throws ?? ''))
+      .sort((a, b) => b.length - a.length)[0]
+  const itemRoot = [...exported].find((n) => n.toLowerCase() === file.toLowerCase())
+  const rootOf = (hook: Hook) => named(hook) ?? itemRoot
   const imports = new Set([
     ...hooks.map((hook) => hook.name),
-    ...(hooks.length > 0 && root ? [root] : []),
+    ...hooks.flatMap((hook) => rootOf(hook) ?? []),
     ...components.flatMap((c) => [c.name, ...scaffold(c.name).ancestors.map((a) => a.component)]),
     ...functions.map((set) => set.variable),
     ...forwarded.map((r) => r.name),
@@ -500,7 +556,9 @@ export function generateTest(
         : parts.types.get(component.name)?.childrenFunction
           ? functionChildrenTest(component, scaffold(component.name), attributes)
           : elementless(component)
-            ? childrenTest(component, scaffold(component.name), attributes)
+            ? parts.types.get(component.name)?.text === false
+              ? rendersTest(component, scaffold(component.name), attributes)
+              : childrenTest(component, scaffold(component.name), attributes)
             : componentTests(
                 component,
                 component.variantSet ? sets.get(component.variantSet) : undefined,
@@ -509,6 +567,7 @@ export function generateTest(
                 parts.unstyled,
                 parts.external.get(component.tag ?? '')?.className === false,
                 parts.types.get(component.name)?.options ?? {},
+                parts.expressions[component.name] ?? {},
               )),
     ]),
     ...(forwarded.length > 0
@@ -524,26 +583,29 @@ export function generateTest(
           '})',
         ]
       : []),
-    ...hooks.flatMap((hook) => [
-      '',
-      `describe(${q(hook.name)}, () => {`,
-      `  it(${q(root ? `runs inside ${root}` : 'runs in a component')}, () => {`,
-      '    cleanup()',
-      root
-        ? `    const { result } = renderHook(() => ${hook.name}(), { wrapper: ({ children }) => <${root}${attributes(root, scaffold(root).props)}>{children}</${root}> })`
-        : `    const { result } = renderHook(() => ${hook.name}())`,
-      '    expect(result.current).toBeDefined()',
-      '  })',
-      ...(hook.throws === undefined
-        ? []
-        : [
-            '',
-            `  it(${q(`throws outside its root: ${hook.throws}`)}, () => {`,
-            `    expect(() => renderHook(() => ${hook.name}())).toThrow(${q(hook.throws)})`,
-            '  })',
-          ]),
-      '})',
-    ]),
+    ...hooks.flatMap((hook) => {
+      const root = rootOf(hook)
+      return [
+        '',
+        `describe(${q(hook.name)}, () => {`,
+        `  it(${q(root ? `runs inside ${root}` : 'runs in a component')}, () => {`,
+        '    cleanup()',
+        root
+          ? `    const { result } = renderHook(() => ${hook.name}(), { wrapper: ({ children }) => <${root}${attributes(root, scaffold(root).props)}>{children}</${root}> })`
+          : `    const { result } = renderHook(() => ${hook.name}())`,
+        '    expect(result.current).toBeDefined()',
+        '  })',
+        ...(hook.throws === undefined
+          ? []
+          : [
+              '',
+              `  it(${q(`throws outside its root: ${hook.throws}`)}, () => {`,
+              `    expect(() => renderHook(() => ${hook.name}())).toThrow(${q(hook.throws)})`,
+              '  })',
+            ]),
+        '})',
+      ]
+    }),
     ...functions.flatMap((set) => [
       '',
       `describe(${q(set.variable)}, () => {`,
@@ -572,8 +634,8 @@ export function generateTest(
     ...new Set(forwarded.map((f) => f.importLine)),
     ...(body.includes('ComponentProps<') ? ['import type { ComponentProps } from "react"'] : []),
     'import { describe, expect, it } from "vitest"',
-    `import { ${[...imports].sort().join(', ')} } from "./${file}"`,
-    ...(body.includes('styles.') ? [`import styles from "./${file}.module.scss"`] : []),
+    `import { ${[...imports].sort().join(', ')} } from "./${module}"`,
+    ...(body.includes('styles.') ? [`import styles from "./${module}.module.scss"`] : []),
     ...useId,
     body,
   ].join('\n')

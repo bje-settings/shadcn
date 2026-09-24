@@ -105,6 +105,7 @@ beforeEach(async () => {
       },
       snapshotDir: 'upstream',
       outputDir: 'registry/ui',
+      hooksDir: 'registry/hooks',
       globalsDir: 'registry/styles',
       harnessDir: 'ab/generated',
     }),

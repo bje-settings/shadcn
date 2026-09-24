@@ -2,6 +2,8 @@
 
 'use client'
 
+import { toast } from 'sonner'
+
 import { Example } from '@/registry/base-vega/components/example'
 import {
   Accordion,
@@ -23,6 +25,114 @@ import {
 import { Marker, MarkerContent, MarkerIcon } from '@/registry/base-vega/ui/marker'
 import { Spinner } from '@/registry/base-vega/ui/spinner'
 import { IconPlaceholder } from '@/app/(create)/components/icon-placeholder'
+
+function MarkerExample() {
+  return (
+    <Example title="Markers" className="gap-8">
+      <Marker>
+        <MarkerContent>A default marker</MarkerContent>
+      </Marker>
+      <Marker>
+        <MarkerIcon>
+          <IconPlaceholder
+            lucide="FileTextIcon"
+            tabler="IconFileDescription"
+            hugeicons="File01Icon"
+            phosphor="FileTextIcon"
+            remixicon="RiFileTextLine"
+          />
+        </MarkerIcon>
+        <MarkerContent>Marker with icon</MarkerContent>
+      </Marker>
+      <Marker role="status">
+        <MarkerIcon>
+          <Spinner />
+        </MarkerIcon>
+        <MarkerContent>Marker with a spinner</MarkerContent>
+      </Marker>
+      <Marker role="status">
+        <MarkerIcon>
+          <Spinner />
+        </MarkerIcon>
+        <MarkerContent className="shimmer">Marker with shimmer effect</MarkerContent>
+      </Marker>
+      <Marker role="status">
+        <MarkerContent className="shimmer">Thinking...</MarkerContent>
+      </Marker>
+      <Marker render={<a href="#" />}>
+        <MarkerIcon>
+          <IconPlaceholder
+            lucide="GitBranchIcon"
+            tabler="IconGitBranch"
+            hugeicons="GitBranchIcon"
+            phosphor="GitBranchIcon"
+            remixicon="RiGitBranchLine"
+          />
+        </MarkerIcon>
+        <MarkerContent>Marker as a link</MarkerContent>
+      </Marker>
+      <Marker
+        render={
+          <button
+            onClick={() => toast('You clicked the button')}
+            className="transition-colors hover:text-foreground"
+          />
+        }
+      >
+        <MarkerIcon>
+          <IconPlaceholder
+            lucide="ClockIcon"
+            tabler="IconClock"
+            hugeicons="Clock01Icon"
+            phosphor="ClockIcon"
+            remixicon="RiTimeLine"
+          />
+        </MarkerIcon>
+        <MarkerContent className="flex-1">
+          <div>Marker as a button</div>
+        </MarkerContent>
+        <MarkerIcon>
+          <IconPlaceholder
+            lucide="ChevronRightIcon"
+            tabler="IconChevronRight"
+            hugeicons="ArrowRight01Icon"
+            phosphor="CaretRightIcon"
+            remixicon="RiArrowRightSLine"
+          />
+        </MarkerIcon>
+      </Marker>
+      <Marker>
+        <MarkerIcon>
+          <IconPlaceholder
+            lucide="CircleUserIcon"
+            tabler="IconUserCircle"
+            hugeicons="UserCircleIcon"
+            phosphor="UserCircleIcon"
+            remixicon="RiUserSmileLine"
+          />
+        </MarkerIcon>
+        <MarkerContent>Rhea joined the chat</MarkerContent>
+      </Marker>
+      <Marker className="justify-center">
+        <MarkerContent>
+          <strong className="font-medium">Olivia Rose</strong> left the chat
+        </MarkerContent>
+      </Marker>
+      <Marker className="flex-col">
+        <MarkerIcon>
+          <IconPlaceholder
+            lucide="FileTextIcon"
+            tabler="IconFileDescription"
+            hugeicons="File01Icon"
+            phosphor="FileTextIcon"
+            remixicon="RiFileTextLine"
+          />
+        </MarkerIcon>
+        <MarkerContent>Marker with icon at the top</MarkerContent>
+      </Marker>
+    </Example>
+  )
+}
 
 function MarkerBorder() {
   return (
@@ -193,4 +303,4 @@ function MarkerDrawer() {
   )
 }
 
-export { MarkerBorder, MarkerSeparator, MarkerAccordion, MarkerDrawer }
+export { MarkerExample, MarkerBorder, MarkerSeparator, MarkerAccordion, MarkerDrawer }

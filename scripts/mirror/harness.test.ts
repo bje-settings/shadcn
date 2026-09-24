@@ -20,6 +20,7 @@ const config = parseConfig({
   },
   snapshotDir: 'upstream',
   outputDir: 'registry/ui',
+  hooksDir: 'registry/hooks',
   globalsDir: 'registry/styles',
   harnessDir: 'ab/generated',
 })
@@ -73,7 +74,13 @@ describe('fixturesFor', () => {
     const transformed = transformComponent(chip, 'chip', 'bje')
     const base = { item: 'chip', ancestors: [], children: true, overlay: false }
     expect(
-      fixturesFor({ name: 'chip', upstreamSource: chip, transformed, ...parts(transformed) }),
+      fixturesFor({
+        name: 'chip',
+        upstreamSource: chip,
+        hook: false,
+        transformed,
+        ...parts(transformed),
+      }),
     ).toEqual([
       {
         ...base,
@@ -106,6 +113,7 @@ describe('fixturesFor', () => {
     const fixtures = fixturesFor({
       name: 'chip',
       upstreamSource: chip,
+      hook: false,
       transformed,
       types: new Map([
         [
@@ -145,7 +153,13 @@ describe('harnessFiles', () => {
       config,
       {
         components: [
-          { name: 'chip-set', upstreamSource: chip, transformed, ...parts(transformed) },
+          {
+            name: 'chip-set',
+            upstreamSource: chip,
+            hook: false,
+            transformed,
+            ...parts(transformed),
+          },
         ],
         examples: [
           {

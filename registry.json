@@ -1668,6 +1668,146 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "use-mobile",
+      "type": "registry:hook",
+      "title": "UseMobile",
+      "dependencies": [],
+      "devDependencies": ["@testing-library/dom", "@testing-library/react", "jsdom", "vitest"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/hooks/use-mobile.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/hooks/use-mobile.test.tsx",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
+      "name": "sidebar",
+      "type": "registry:ui",
+      "title": "Sidebar",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": [
+        "@bje/button",
+        "@bje/input",
+        "@bje/separator",
+        "@bje/sheet",
+        "@bje/skeleton",
+        "@bje/tooltip",
+        "@bje/use-mobile",
+        "@bje/globals"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/Sidebar/Sidebar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Sidebar/Sidebar.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Sidebar/Sidebar.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "calendar",
+      "type": "registry:ui",
+      "title": "Calendar",
+      "dependencies": ["clsx", "lucide-react", "react-day-picker@latest"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Calendar/Calendar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Calendar/Calendar.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Calendar/Calendar.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "carousel",
+      "type": "registry:ui",
+      "title": "Carousel",
+      "dependencies": ["clsx", "embla-carousel-react", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Carousel/Carousel.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Carousel/Carousel.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Carousel/Carousel.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "chart",
+      "type": "registry:ui",
+      "title": "Chart",
+      "dependencies": ["clsx", "recharts@3.8.0"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "recharts",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/card", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Chart/Chart.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Chart/Chart.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Chart/Chart.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

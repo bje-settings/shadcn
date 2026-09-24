@@ -83,6 +83,28 @@ function ChipBoth() {
 const mirrored = new Set(['button', 'chip', 'odd'])
 
 describe('prepareExample', () => {
+  it('uses a default export that renders the page itself as the one sub-example', () => {
+    const source = `import { Chip } from "@/registry/base-vega/ui/chip"
+export default function ChipPage() {
+  const items = ["a"]
+  return <div>{items.map((item) => <Chip key={item} />)}</div>
+}`
+    const prepared = prepareExample(source, 'base-vega', 'bje', mirrored, new Set())
+    expect(prepared.kept).toEqual(['ChipPage'])
+    const withIcons = prepareExample(
+      example,
+      'base-vega',
+      'bje',
+      mirrored,
+      new Set(),
+      new Set(['lucide-react']),
+    )
+    expect(withIcons.kept).toContain('ChipIcons')
+    expect(prepared.ours).toContain('\nfunction ChipPage() {')
+    expect(prepared.ours).not.toContain('export default')
+    expect(prepared.ours).toContain('export { ChipPage }')
+  })
+
   const dropped = new Set(['border-b', 'border-t'])
   const prepared = prepareExample(example, 'base-vega', 'bje', mirrored, dropped)
 
@@ -163,6 +185,11 @@ export { ChipBasic, ChipOdd }
       'a destructured declaration',
       'export default function E() { return <A /> }\nfunction A() {}\nconst { b } = c',
       'unsupported top-level VariableDeclaration at line 3',
+    ],
+    [
+      'an anonymous default export with no sub-examples',
+      'export default () => <div />',
+      'the default export renders no sub-example functions',
     ],
     [
       'a side-effect statement',

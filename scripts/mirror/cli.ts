@@ -228,17 +228,20 @@ async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
     // The component's folder is all generated: clear it so a file the
     // pipeline stopped writing (a module for a component that lost its
     // classes) does not linger.
-    const dir = join(io.root, config.outputDir, pascalCase(name))
-    await rm(dir, { recursive: true, force: true })
+    if (component.upstream.type === 'registry:ui') {
+      await rm(join(io.root, config.outputDir, pascalCase(name)), { recursive: true, force: true })
+    }
     for (const file of built.files) await writeFormatted(io, file.path, file.content)
     for (const c of built.classes) classes.add(c)
     items.push(built.item)
     harness.push({
       name,
+      hook: component.upstream.type === 'registry:hook',
       upstreamSource: built.upstreamSource,
       transformed: built.transformed,
       types: itemTypes,
       scaffolds: context.scaffolds,
+      expressionParts: Object.keys(config.testExpressions[name] ?? {}),
     })
     io.log(`built ${name}: ${built.files.map((file) => file.path).join(', ')}`)
     for (const [slot, unresolved] of Object.entries(built.unresolved)) {
@@ -296,11 +299,15 @@ async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
 
   const mirrored = new Set(config.components)
   const dropped = new Set(consumerClassReasons(config).keys())
+  // Without upstream's version pins (recharts@3.8.0).
+  const packages = new Set(
+    items.flatMap((item) => item.dependencies.map((d) => d.replace(/(?<=.)@[^@]*$/, ''))),
+  )
   const examples: HarnessExample[] = []
   for (const [name, source] of exampleSources) {
     if (source === undefined) continue
     const example = `${name}-example`
-    const prepared = prepareExample(source, style, config.namespace, mirrored, dropped)
+    const prepared = prepareExample(source, style, config.namespace, mirrored, dropped, packages)
     examples.push({ name: example, prepared })
     io.log(
       `example ${example}: ${prepared.kept.length} of ${prepared.kept.length + prepared.skipped.length} sub-examples`,
@@ -324,7 +331,9 @@ async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
   io.log(`built A/B harness inputs in ${config.harnessDir}`)
 
   const registryPath = join(io.root, 'registry.json')
-  const generatedDirs = [config.outputDir, config.globalsDir].map((dir) => `${dir}/`)
+  const generatedDirs = [config.outputDir, config.hooksDir, config.globalsDir].map(
+    (dir) => `${dir}/`,
+  )
   const registry = upsertItems(parseRegistry(await readJson(registryPath), registryPath), items, {
     // Items the mirror generated before and config no longer produces.
     owned: (item) =>

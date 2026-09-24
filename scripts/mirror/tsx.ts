@@ -69,6 +69,9 @@ export type RenderedComponent = {
   throwsOutside?: string
   // It renders default content without children (`children ?? "Next"`)
   defaultChildren?: true
+  // Its own element's class in each of its render branches, when they
+  // differ (Sidebar's collapsible, mobile and desktop branches)
+  branches?: string[]
 }
 
 // A hook the module declares, and the error it throws, if it throws one
@@ -130,7 +133,29 @@ function isCallTo(node: Node | null | undefined, name?: string): node is NamedCa
 const STYLE_HOOK = /^cn-[a-z-]+$/
 
 function classList(literal: StringLiteral): string[] {
-  return literal.value.split(/\s+/).filter((c) => c !== '' && !STYLE_HOOK.test(c))
+  return classesOf(literal.value)
+}
+
+function classesOf(value: string): string[] {
+  return value.split(/\s+/).filter((c) => c !== '' && !STYLE_HOOK.test(c))
+}
+
+// A class string written as String.raw`...` with no substitutions (Calendar
+// escapes underscores in arbitrary variants that way), or a plain literal.
+function staticClasses(node: Node): string[] | undefined {
+  if (node.type === 'StringLiteral') return classList(node)
+  if (
+    node.type === 'TaggedTemplateExpression' &&
+    node.tag.type === 'MemberExpression' &&
+    node.tag.object.type === 'Identifier' &&
+    node.tag.object.name === 'String' &&
+    node.tag.property.type === 'Identifier' &&
+    node.tag.property.name === 'raw' &&
+    node.quasi.expressions.length === 0
+  ) {
+    return classesOf(node.quasi.quasis.map((quasi) => quasi.value.raw).join(''))
+  }
+  return undefined
 }
 
 function objectEntries(object: Node): [string, Node][] {
@@ -348,6 +373,22 @@ function tagName(ancestors: Node[]): string | undefined {
 // element without one, the enclosing top-level declaration and the element's
 // tag (`accordionTriggerHeader` for `<AccordionPrimitive.Header>` in
 // AccordionTrigger). A class string in a `fooClassName` prop adds `Foo`.
+// The key of a class string for a keyed part of a component, like
+// react-day-picker's `classNames={{ day: cn(...) }}`: that part is named from
+// the owner and the key, and is not the component's own element.
+function keyedPart(ancestors: Node[]): string | undefined {
+  const attribute = ancestors.findLast((node) => node.type === 'JSXAttribute')
+  if (attribute?.type !== 'JSXAttribute' || attribute.name.name === 'className') return undefined
+  const property = ancestors
+    .slice(ancestors.indexOf(attribute) + 1)
+    .find((node) => node.type === 'ObjectProperty')
+  if (property?.type !== 'ObjectProperty') return undefined
+  const { key } = property
+  if (key.type === 'Identifier') return key.name
+  if (key.type === 'StringLiteral' || key.type === 'NumericLiteral') return String(key.value)
+  return unsupported(key, `class string under a ${key.type} key`)
+}
+
 function slotName(ancestors: Node[]): string | undefined {
   const attribute = ancestors.findLast((node) => node.type === 'JSXAttribute')
   const prop =
@@ -355,6 +396,11 @@ function slotName(ancestors: Node[]): string | undefined {
       ? attribute.name.name
       : 'className'
   const suffix = prop.endsWith('ClassName') ? pascalCase(prop.replace(/ClassName$/, '')) : ''
+  const key = keyedPart(ancestors)
+  if (key !== undefined) {
+    const owner = ownerName(ancestors)
+    return owner === undefined ? undefined : camelCase(owner) + pascalCase(key)
+  }
   const slot = dataSlot(ancestors)
   if (slot !== undefined) return camelCase(slot) + suffix
   const owner = ownerName(ancestors)
@@ -365,7 +411,7 @@ function slotName(ancestors: Node[]): string | undefined {
 
 // A name for each branch of a conditional class: `cond ? "a" : "b"` on slot
 // `x` gives `xCond` and `xNotCond`, `mode === "y" ? ...` gives `xY` and
-// `xNotY`, and `cond && "a"` gives `xCond`.
+// `xNotY`, `a || b` gives `xAOrB`, and `cond && "a"` gives `xCond`.
 function conditionName(test: Node): string {
   if (test.type === 'Identifier') return pascalCase(test.name)
   if (
@@ -377,6 +423,11 @@ function conditionName(test: Node): string {
   }
   if (test.type === 'MemberExpression' && test.property.type === 'Identifier') {
     return pascalCase(test.property.name)
+  }
+  // `variant === "floating" || variant === "inset"` gives FloatingOrInset.
+  if (test.type === 'LogicalExpression' && test.operator !== '??') {
+    const joiner = test.operator === '||' ? 'Or' : 'And'
+    return `${conditionName(test.left)}${joiner}${conditionName(test.right)}`
   }
   return unsupported(test, `class condition ${test.type}`)
 }
@@ -422,7 +473,7 @@ function removeArgument(out: MagicString, call: CallExpression, arg: Node): void
   else out.remove(...span(arg))
 }
 
-const REGISTRY_IMPORT = /^@\/registry\/[^/]+\/ui\/([a-z0-9-]+)$/
+const REGISTRY_IMPORT = /^@\/registry\/[^/]+\/(ui|hooks)\/([a-z0-9-]+)$/
 
 export function transformComponent(
   source: string,
@@ -462,6 +513,21 @@ export function transformComponent(
     const { name, fn } = owner
     const rank = spreadsProps(element, fn) ? 2 : consumer ? 1 : 0
     const bound = elements.get(name)
+    const record = components.get(name)
+    // Another branch's element with the same data-slot (the test finds its
+    // data-slot around the element given the consumer's props).
+    if (
+      bound &&
+      record &&
+      bound.element !== element &&
+      update.slot !== undefined &&
+      dataSlot(ancestors) === record.dataSlot &&
+      record.slot !== undefined &&
+      record.slot !== update.slot
+    ) {
+      record.branches = [...new Set([...(record.branches ?? [record.slot]), update.slot])]
+      return
+    }
     if (bound?.element === element) {
       bound.rank = Math.max(bound.rank, rank)
       Object.assign(components.get(name) as RenderedComponent, update)
@@ -541,10 +607,11 @@ export function transformComponent(
         out.remove(source[start - 1] === '\n' ? start - 1 : start, statement.end as number)
         continue
       }
-      const item = REGISTRY_IMPORT.exec(statement.source.value)?.[1]
+      const [, kind, item] = REGISTRY_IMPORT.exec(statement.source.value) ?? []
       if (item) {
         registryImports.push(item)
-        out.overwrite(...span(statement.source), JSON.stringify(registryModule(namespace, item)))
+        const module = registryModule(namespace, item, kind as 'ui' | 'hooks')
+        out.overwrite(...span(statement.source), JSON.stringify(module))
         continue
       }
       if (names.includes('cn')) {
@@ -643,12 +710,43 @@ export function transformComponent(
           }
           continue
         }
+        // clsx's object form, `{ "h-2.5 w-2.5": indicator === "dot" }`: each
+        // class string key becomes a computed `[styles.xDot]` key.
+        if (arg.type === 'ObjectExpression') {
+          const conditions: string[] = []
+          for (const property of arg.properties) {
+            if (
+              property.type !== 'ObjectProperty' ||
+              property.computed ||
+              property.key.type !== 'StringLiteral'
+            ) {
+              unsupported(property, 'cn() object member other than "classes": condition')
+            }
+            const classes = classList(property.key)
+            if (classes.length === 0) unsupported(property, 'cn() object key without classes')
+            const name = base() + conditionName(property.value)
+            const slot = addSlot({ name, classes }, ancestors)
+            const test = source.slice(...span(property.value))
+            const simple = ![
+              'ConditionalExpression',
+              'AssignmentExpression',
+              'SequenceExpression',
+            ].includes(property.value.type)
+            conditions.push(
+              `${simple && !/\|\||\?\?/.test(test) ? test : `(${test})`} && styles.${slot}`,
+            )
+          }
+          // As clsx arguments: a computed key would need styles.x typed as a
+          // string, which a consumer's CSS module types may not give.
+          out.overwrite(...span(arg), conditions.join(', '))
+          continue
+        }
         if (arg.type === 'LogicalExpression' && arg.operator === '&&') {
           if (arg.right.type !== 'StringLiteral') unsupported(arg, 'cn() && without a string')
           branches.push({ literal: arg.right, suffix: conditionName(arg.left) })
           continue
         }
-        checkArg(arg)
+        if (staticClasses(arg) === undefined) checkArg(arg)
       }
       for (const { literal, suffix } of branches) {
         const classes = classList(literal)
@@ -656,12 +754,12 @@ export function transformComponent(
           classes.length > 0 ? addSlot({ name: base() + suffix, classes }, ancestors) : ''
         out.overwrite(...span(literal), slot ? `styles.${slot}` : 'null')
       }
-      const literals = node.arguments.filter((arg) => arg.type === 'StringLiteral')
-      const classes = literals.flatMap(classList)
+      const literals = node.arguments.filter((arg) => staticClasses(arg) !== undefined)
+      const classes = literals.flatMap((arg) => staticClasses(arg) as string[])
       if (classes.length > 0) {
         const slot = addSlot({ name: base(), classes }, ancestors)
-        track(ancestors, { slot }, consumer)
-        out.overwrite(...span(literals[0] as StringLiteral), `styles.${slot}`)
+        if (keyedPart(ancestors) === undefined) track(ancestors, { slot }, consumer)
+        out.overwrite(...span(literals[0] as Node), `styles.${slot}`)
       }
       // Literals merged into the first, or with no classes left at all.
       for (const literal of classes.length > 0 ? literals.slice(1) : literals) {

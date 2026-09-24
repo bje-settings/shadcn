@@ -27,6 +27,7 @@ const config = parseConfig({
   },
   snapshotDir: 'upstream',
   outputDir: 'registry/ui',
+  hooksDir: 'registry/hooks',
   globalsDir: 'registry/styles',
   harnessDir: 'ab/generated',
 })

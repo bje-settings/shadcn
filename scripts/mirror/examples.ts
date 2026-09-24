@@ -10,7 +10,14 @@
 // ours points registry imports at this registry's components. Everything else
 // is upstream's code as written.
 
-import type { Identifier, ImportDeclaration, Node, SourceLocation, Statement } from '@babel/types'
+import type {
+  ExportDefaultDeclaration,
+  Identifier,
+  ImportDeclaration,
+  Node,
+  SourceLocation,
+  Statement,
+} from '@babel/types'
 import MagicString from 'magic-string'
 import { childNodes, parseModule, span } from './ast.ts'
 import { registryModule } from './names.ts'
@@ -101,12 +108,17 @@ export function prepareExample(
   mirrored: Set<string>,
   // Consumer classes whose upstream styling the mirror drops
   dropped: Set<string>,
+  // Packages mirrored items depend on (recharts), which examples may import
+  packages: Set<string> = new Set(),
 ): PreparedExample {
   const ast = parseModule(source)
   const registry = `@/registry/${style}/`
   const imports = new Map<string, ImportDeclaration>()
   const declarations = new Map<string, Statement>()
   let order: string[] = []
+  // The default export's own function, which is the one sub-example when it
+  // renders the whole page itself (sidebar-example).
+  let whole: { name: string; statement: Statement } | undefined
 
   for (const statement of ast.program.body) {
     if (statement.type === 'ImportDeclaration') {
@@ -114,6 +126,10 @@ export function prepareExample(
     } else if (statement.type === 'ExportDefaultDeclaration') {
       const listed = references(statement.declaration)
       order = [...listed].filter((name) => /^[A-Z]/.test(name))
+      const { declaration } = statement
+      if (declaration.type === 'FunctionDeclaration' && declaration.id) {
+        whole = { name: declaration.id.name, statement }
+      }
     } else {
       // Trimming removes whatever no kept sub-example reaches, so only
       // statements whose names can be followed are safe to see here.
@@ -127,6 +143,10 @@ export function prepareExample(
     }
   }
   order = order.filter((name) => declarations.has(name))
+  if (order.length === 0 && whole) {
+    order = [whole.name]
+    declarations.set(whole.name, whole.statement)
+  }
   if (order.length === 0) {
     throw new Error('example: the default export renders no sub-example functions')
   }
@@ -149,7 +169,7 @@ export function prepareExample(
   // What an import needs that the harness lacks, or undefined when it has it:
   // an unmirrored item by name, anything else by specifier.
   const unavailable = (from: string): string | undefined => {
-    if (from === 'react') return undefined
+    if (from === 'react' || packages.has(from)) return undefined
     const local = from.startsWith(registry) ? from.slice(registry.length) : from
     if (STUBBED.has(local)) return undefined
     if (!local.startsWith('ui/')) return from
@@ -208,6 +228,10 @@ export function prepareExample(
         if (rewrite && item) {
           out.overwrite(...span(statement.source), JSON.stringify(registryModule(namespace, item)))
         }
+      } else if (statement === whole?.statement && keep.has(whole.name)) {
+        // Exported by name below with the other kept sub-examples.
+        const { declaration } = statement as ExportDefaultDeclaration
+        out.remove(statement.start as number, declaration.start as number)
       } else if (!declared(statement).some((name) => keep.has(name))) {
         remove(statement)
       }

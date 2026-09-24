@@ -57,6 +57,10 @@ import * as toastExample from './examples/upstream/toast-example'
 import * as resizableExample from './examples/upstream/resizable-example'
 import * as questionnaireExample from './examples/upstream/questionnaire-example'
 import * as messageScrollerExample from './examples/upstream/message-scroller-example'
+import * as sidebarExample from './examples/upstream/sidebar-example'
+import * as calendarExample from './examples/upstream/calendar-example'
+import * as carouselExample from './examples/upstream/carousel-example'
+import * as chartExample from './examples/upstream/chart-example'
 
 export const upstreamExamples = {
   'button-example': buttonExample,
@@ -116,4 +120,8 @@ export const upstreamExamples = {
   'resizable-example': resizableExample,
   'questionnaire-example': questionnaireExample,
   'message-scroller-example': messageScrollerExample,
+  'sidebar-example': sidebarExample,
+  'calendar-example': calendarExample,
+  'carousel-example': carouselExample,
+  'chart-example': chartExample,
 }

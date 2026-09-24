@@ -251,6 +251,11 @@ export function scaffolds(
           if (name && name !== owner) {
             uses.set(name, [...(uses.get(name) ?? []), { path: next, ...(owner ? { owner } : {}) }])
           }
+          // JSX in a prop (content={<ChartTooltipContent />}) is not the
+          // element's child: it keeps the element's own ancestors.
+          visit(node.openingElement, ancestors)
+          for (const child of node.children) visit(child, next)
+          return
         }
         for (const child of childNodes(node)) visit(child, next)
       }
@@ -264,9 +269,15 @@ export function scaffolds(
     sources.map((uses) => uses.get(name)?.[0]).find((use) => use !== undefined)
   // A path inside a component (the example's ListItem, the module's
   // DialogContent) continues from where that component is first rendered.
+  // The owner encloses the path, for its context (Progress around the
+  // ProgressTrack it renders), unless it takes no children (Calendar renders
+  // CalendarDayButton through react-day-picker, not as a child).
   const extend = ({ path, owner }: Use, seen: Set<string>): JSXElement[] => {
     const use = owner === undefined || seen.has(owner) ? undefined : firstUse(owner)
-    return use ? [...extend(use, new Set([...seen, owner as string])), ...path] : path
+    if (!use) return path
+    const around = extend(use, new Set([...seen, owner as string]))
+    const takesChildren = types.get(owner as string)?.text !== false
+    return [...(takesChildren ? around : around.slice(0, -1)), ...path]
   }
   // Every place a part is rendered: the example's uses, or else the module's.
   const found = new Map<string, JSXElement[][]>()

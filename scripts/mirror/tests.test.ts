@@ -12,6 +12,7 @@ const none: Parts = {
   unstyled: new Set(),
   unrendered: {},
   external: new Map(),
+  expressions: {},
 }
 
 const generate = (source: string, parts: Partial<Parts> = {}) =>
@@ -245,6 +246,21 @@ export { Chip, ChipItem, useChip, useChipRef }`)
     )
     expect(test).toContain('it("renders with open=true", () => {')
     expect(test).toContain('expect(renderChip({ open: true })).toBeTruthy()')
+  })
+
+  it('runs a hook inside the provider its error names, the longest when several match', () => {
+    const test = generate(`${header}
+function usePanel() {
+  const context = React.useContext(Ctx)
+  if (!context) throw new Error("usePanel must be used within a PanelProvider or Panel.")
+  return context
+}
+function Panel({ className }) { return <div data-slot="panel" className={cn("x", className)} /> }
+function PanelProvider({ children }) { return <Ctx.Provider value={1}>{children}</Ctx.Provider> }
+export { Panel, PanelProvider, usePanel }`)
+    expect(test).toContain(
+      'const { result } = renderHook(() => usePanel(), { wrapper: ({ children }) => <PanelProvider>{children}</PanelProvider> })',
+    )
   })
 
   it('runs a hook in a component when the item has no root, and imports no render', () => {

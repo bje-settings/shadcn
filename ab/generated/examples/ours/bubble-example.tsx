@@ -3,6 +3,7 @@
 'use client'
 
 import * as React from 'react'
+import { toast } from 'sonner'
 
 import { Example } from '@/registry/base-vega/components/example'
 import {
@@ -308,6 +309,68 @@ function BubbleWithReactions() {
   )
 }
 
+function BubbleReactionsButtons() {
+  return (
+    <Example title="Reactions Buttons">
+      <div className="flex w-full max-w-md flex-col gap-8">
+        <Bubble>
+          <BubbleContent>This is a one line message.</BubbleContent>
+          <BubbleReactions>
+            <Button
+              variant="outline"
+              size="xs"
+              onClick={() => toast('You clicked the button in the bubble reaction')}
+            >
+              Button
+            </Button>
+          </BubbleReactions>
+        </Bubble>
+        <Bubble align="end">
+          <BubbleContent>This is a one line message.</BubbleContent>
+          <BubbleReactions align="start">
+            <Button variant="ghost" size="icon-xs" onClick={() => toast('Confetti!')}>
+              🎉
+            </Button>
+          </BubbleReactions>
+        </Bubble>
+        <Bubble variant="tinted">
+          <BubbleContent>We are going to the movies first then dinner. Are you in?</BubbleContent>
+          <BubbleReactions className="gap-1 bg-background">
+            <Button
+              variant="secondary"
+              size="icon-xs"
+              aria-label="Thumbs up"
+              onClick={() => toast('You agree!')}
+            >
+              <IconPlaceholder
+                lucide="ThumbsUpIcon"
+                tabler="IconThumbUp"
+                hugeicons="ThumbsUpIcon"
+                phosphor="ThumbsUpIcon"
+                remixicon="RiThumbUpLine"
+              />
+            </Button>
+            <Button
+              variant="secondary"
+              size="icon-xs"
+              aria-label="Thumbs down"
+              onClick={() => toast('You disagree!')}
+            >
+              <IconPlaceholder
+                lucide="ThumbsDownIcon"
+                tabler="IconThumbDown"
+                hugeicons="ThumbsDownIcon"
+                phosphor="ThumbsDownIcon"
+                remixicon="RiThumbDownLine"
+              />
+            </Button>
+          </BubbleReactions>
+        </Bubble>
+      </div>
+    </Example>
+  )
+}
+
 function BubbleAlignment() {
   return (
     <Example title="Alignment">
@@ -335,11 +398,68 @@ function BubbleAlignment() {
   )
 }
 
+const quickReplies = [
+  {
+    label: 'I need help with my account.',
+    message: 'I need help with my account.',
+  },
+  {
+    label: 'I forgot my password.',
+    message: 'I forgot my password.',
+  },
+  {
+    label: "I have another question. I'd like to talk to a human. Can you help me?",
+    message: 'I have another question.',
+  },
+]
+
+function BubbleButtonLinks() {
+  return (
+    <Example title="Button & Links">
+      <div className="flex w-full max-w-md flex-col gap-8">
+        <Bubble>
+          <BubbleContent render={<a href="#" />}>This bubble is a link.</BubbleContent>
+        </Bubble>
+        <Bubble variant="secondary">
+          <BubbleContent render={<button type="button" />}>
+            This one is a button you can click.
+          </BubbleContent>
+        </Bubble>
+        <Bubble variant="muted">
+          <BubbleContent render={<button type="button" />}>
+            You can also do tinted buttons. Even ones that are multilines.
+          </BubbleContent>
+        </Bubble>
+        <Marker variant="separator">
+          <MarkerContent>Chat Suggestions</MarkerContent>
+        </Marker>
+        <Bubble>
+          <BubbleContent>How can I help you today?</BubbleContent>
+        </Bubble>
+        <BubbleGroup>
+          {quickReplies.map((reply) => (
+            <Bubble key={reply.label} variant="outline" align="end">
+              <BubbleContent
+                className="border-dashed border-primary"
+                render={<button type="button" onClick={() => toast(reply.message)} />}
+              >
+                {reply.label}
+              </BubbleContent>
+            </Bubble>
+          ))}
+        </BubbleGroup>
+      </div>
+    </Example>
+  )
+}
+
 export {
   BubbleSizes,
   BubbleVariants,
   BubbleAlignment,
   BubbleGrouped,
   BubbleCollapsible,
+  BubbleButtonLinks,
   BubbleWithReactions,
+  BubbleReactionsButtons,
 }

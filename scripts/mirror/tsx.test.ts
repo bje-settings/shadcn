@@ -317,6 +317,46 @@ function Again() { return <><i data-slot="field-label" className="a" /><i data-s
     ])
   })
 
+  it('names keyed parts from the owner and key, and clsx objects from their conditions', () => {
+    const { code, slots, components } = transform(`function Cal({ className, mode, open }) {
+  return <Picker data-slot="cal" className={cn(String.raw\`[&_.x\\_y]:flex\`, className)} classNames={{ root: cn("a"), "day-button": cn("b"), 1: cn("c"), [k]: cn("z") }}>
+    <i data-slot="dot" className={cn("d", { "e f": mode === "dot", "g": open || mode === "line" })} />
+  </Picker>
+}`)
+    expect(slots.map((slot) => slot.name)).toEqual([
+      'cal',
+      'calRoot',
+      'calDayButton',
+      'cal1',
+      'calK',
+      'dotDot',
+      'dotOpenOrLine',
+      'dot',
+    ])
+    expect(code).toContain(
+      'clsx(styles.dot, mode === "dot" && styles.dotDot, (open || mode === "line") && styles.dotOpenOrLine)',
+    )
+    expect(components.find((c) => c.name === 'Cal')?.slot).toBe('cal')
+  })
+
+  it.each([
+    ['a spread in a clsx object', 'const c = <i data-slot="a" className={cn({ ...x })} />'],
+    [
+      'a keyed class string in an unnamed component',
+      'export default () => <P classNames={{ root: cn("x") }} />',
+    ],
+    [
+      'a keyed class string under a computed template key',
+      'const c = <P data-slot="a" classNames={{ [`k`]: cn("x") }} />',
+    ],
+    [
+      'a clsx object key without classes',
+      'const c = <i data-slot="a" className={cn({ "": x })} />',
+    ],
+  ])('rejects %s', (_, body) => {
+    expect(() => transform(body)).toThrow(/^Unsupported at/)
+  })
+
   it("drops shadcn's cn-* style hooks, and a className left empty", () => {
     const { code, slots } = transform(`function C({ className }) {
   return <i data-slot="c" className={cn("cn-rtl-flip", className)}><b className="cn-rtl-flip" /><u className={cn("x", "cn-a", className)} /><s className={cn("cn-b")} /></i>

@@ -204,9 +204,10 @@ function attributesOfPaginationPrevious(
 }
 
 describe('PaginationPrevious', () => {
-  it('renders with its classes', () => {
-    expect(classesOfPaginationPrevious()).toEqual(
-      expect.arrayContaining([styles.paginationPreviousPaginationLink]),
+  it('renders the class of one of its branches', () => {
+    const branches = [styles.paginationPreviousPaginationLink, styles.paginationPreviousSpan]
+    expect(classesOfPaginationPrevious().some((className) => branches.includes(className))).toBe(
+      true,
     )
   })
 
@@ -259,10 +260,9 @@ function attributesOfPaginationNext(
 }
 
 describe('PaginationNext', () => {
-  it('renders with its classes', () => {
-    expect(classesOfPaginationNext()).toEqual(
-      expect.arrayContaining([styles.paginationNextPaginationLink]),
-    )
+  it('renders the class of one of its branches', () => {
+    const branches = [styles.paginationNextPaginationLink, styles.paginationNextSpan]
+    expect(classesOfPaginationNext().some((className) => branches.includes(className))).toBe(true)
   })
 
   it('renders the same with text="Next" passed explicitly', () => {

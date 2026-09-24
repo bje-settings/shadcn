@@ -3,9 +3,11 @@
 'use client'
 
 import * as React from 'react'
+import { toast } from 'sonner'
 
 import { Example } from '@/registry/base-vega/components/example'
 import { Button } from '@/registry/base-vega/ui/button'
+import { Card, CardContent, CardFooter } from '@/registry/base-vega/ui/card'
 import {
   Combobox,
   ComboboxChip,
@@ -24,7 +26,22 @@ import {
   ComboboxValue,
   useComboboxAnchor,
 } from '@/registry/base-vega/ui/combobox'
-import { Field, FieldDescription, FieldError, FieldLabel } from '@/registry/base-vega/ui/field'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/registry/base-vega/ui/dialog'
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/registry/base-vega/ui/field'
 import { Input } from '@/registry/base-vega/ui/input'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/registry/base-vega/ui/input-group'
 import { Item, ItemContent, ItemDescription, ItemTitle } from '@/registry/base-vega/ui/item'
@@ -695,6 +712,54 @@ function ComboboxWithGroupsAndSeparator() {
   )
 }
 
+function ComboboxWithForm() {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const formData = new FormData(event.target as HTMLFormElement)
+    const framework = formData.get('framework') as string
+    toast(`You selected ${framework} as your framework.`)
+  }
+
+  return (
+    <Example title="Form with Combobox">
+      <Card className="w-full max-w-sm" size="sm">
+        <CardContent>
+          <form id="form-with-combobox" className="w-full" onSubmit={handleSubmit}>
+            <FieldGroup>
+              <Field>
+                <FieldLabel htmlFor="framework">Framework</FieldLabel>
+                <Combobox items={frameworks}>
+                  <ComboboxInput
+                    id="framework"
+                    name="framework"
+                    placeholder="Select a framework"
+                    required
+                  />
+                  <ComboboxContent>
+                    <ComboboxEmpty>No items found.</ComboboxEmpty>
+                    <ComboboxList>
+                      {(item) => (
+                        <ComboboxItem key={item} value={item}>
+                          {item}
+                        </ComboboxItem>
+                      )}
+                    </ComboboxList>
+                  </ComboboxContent>
+                </Combobox>
+              </Field>
+            </FieldGroup>
+          </form>
+        </CardContent>
+        <CardFooter>
+          <Button type="submit" form="form-with-combobox">
+            Submit
+          </Button>
+        </CardFooter>
+      </Card>
+    </Example>
+  )
+}
+
 const largeListItems = Array.from({ length: 100 }, (_, i) => `Item ${i + 1}`)
 
 function ComboboxLargeList() {
@@ -1016,6 +1081,58 @@ function ComboboxWithCustomItems() {
   )
 }
 
+function ComboboxInDialog() {
+  const [open, setOpen] = React.useState(false)
+
+  return (
+    <Example title="Combobox in Dialog">
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger render={<Button variant="outline" />}>Open Dialog</DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Select Framework</DialogTitle>
+            <DialogDescription>
+              Choose your preferred framework from the list below.
+            </DialogDescription>
+          </DialogHeader>
+          <Field>
+            <FieldLabel htmlFor="framework-dialog" className="sr-only">
+              Framework
+            </FieldLabel>
+            <Combobox items={frameworks}>
+              <ComboboxInput id="framework-dialog" placeholder="Select a framework" />
+              <ComboboxContent>
+                <ComboboxEmpty>No items found.</ComboboxEmpty>
+                <ComboboxList>
+                  {(item) => (
+                    <ComboboxItem key={item} value={item}>
+                      {item}
+                    </ComboboxItem>
+                  )}
+                </ComboboxList>
+              </ComboboxContent>
+            </Combobox>
+          </Field>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={() => {
+                toast('Framework selected.')
+                setOpen(false)
+              }}
+            >
+              Confirm
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </Example>
+  )
+}
+
 const items = [
   {
     label: 'Select a framework',
@@ -1120,11 +1237,13 @@ export {
   ComboboxLargeList,
   ComboxboxInputAddon,
   ComboboxInPopup,
+  ComboboxWithForm,
   ComboboxMultiple,
   ComboboxMultipleDisabled,
   ComboboxMultipleInvalid,
   ComboboxMultipleNoRemove,
   ComboboxWithCustomItems,
+  ComboboxInDialog,
   ComboboxWithOtherInputs,
   ComboboxDisabledItems,
 }

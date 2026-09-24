@@ -34,10 +34,16 @@ export type Fixture = {
 
 export type HarnessInput = {
   name: string
+  // A hook item: its upstream copy serves upstream components' imports; it
+  // has no fixtures or module map entry
+  hook: boolean
   upstreamSource: string
   transformed: TransformedComponent
   types: Map<string, PartTypes>
   scaffolds: Map<string, Scaffold>
+  // Parts that need props JSON cannot hold (config testExpressions): no
+  // fixture renders them; their item's docs examples do
+  expressionParts?: string[]
 }
 
 // One fixture per cva() option of each exported component that renders an
@@ -49,7 +55,9 @@ export function fixturesFor(input: HarnessInput): Fixture[] {
   return transformed.components
     .filter(
       (component) =>
-        exported.has(component.name) && input.types.get(component.name)?.className !== false,
+        exported.has(component.name) &&
+        input.types.get(component.name)?.className !== false &&
+        !input.expressionParts?.includes(component.name),
     )
     .flatMap((component) => {
       // A component's variantSet always names a cva() the transform recorded.
@@ -117,16 +125,16 @@ export function harnessFiles(
   const dir = config.harnessDir
   const indexCss = `${config.snapshotDir}/${config.upstream.style}/index.css`
   const typesetCss = `${config.snapshotDir}/typeset/typeset.css`
-  const components = harness.components.map(({ name }) => name)
+  const components = harness.components.filter(({ hook }) => !hook).map(({ name }) => name)
   const examples = harness.examples.map(({ name }) => name)
-  const fixtures = harness.components.flatMap(fixturesFor)
+  const fixtures = harness.components.filter(({ hook }) => !hook).flatMap(fixturesFor)
   const cases = harness.examples.flatMap(({ name, prepared }) =>
     prepared.kept.map((sub) => ({ example: name, name: sub })),
   )
   const ts = (content: string) => `${header}\n\n${content}\n`
   return [
-    ...harness.components.map(({ name, upstreamSource }) => ({
-      path: `${dir}/upstream/${name}.tsx`,
+    ...harness.components.map(({ name, upstreamSource, hook }) => ({
+      path: hook ? `${dir}/upstream/hooks/${name}.ts` : `${dir}/upstream/${name}.tsx`,
       content: `${header}\n\n${upstreamSource}`,
     })),
     ...harness.examples.flatMap(({ name, prepared }) =>

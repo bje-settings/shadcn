@@ -2,6 +2,9 @@
 
 'use client'
 
+import * as React from 'react'
+import type { Layout } from 'react-resizable-panels'
+
 import { Example } from '@/registry/base-vega/components/example'
 import {
   ResizableHandle,
@@ -99,4 +102,36 @@ function ResizableNested() {
   )
 }
 
-export { ResizableHorizontal, ResizableVertical, ResizableWithHandle, ResizableNested }
+function ResizableControlled() {
+  const [layout, setLayout] = React.useState<Layout>({})
+
+  return (
+    <Example title="Controlled">
+      <ResizablePanelGroup
+        orientation="horizontal"
+        className="min-h-[200px] rounded-lg border"
+        onLayoutChange={setLayout}
+      >
+        <ResizablePanel defaultSize="30%" id="left" minSize="20%">
+          <div className="flex h-full flex-col items-center justify-center gap-2 p-6">
+            <span className="font-semibold">{Math.round(layout.left ?? 30)}%</span>
+          </div>
+        </ResizablePanel>
+        <ResizableHandle />
+        <ResizablePanel defaultSize="70%" id="right" minSize="30%">
+          <div className="flex h-full flex-col items-center justify-center gap-2 p-6">
+            <span className="font-semibold">{Math.round(layout.right ?? 70)}%</span>
+          </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    </Example>
+  )
+}
+
+export {
+  ResizableHorizontal,
+  ResizableVertical,
+  ResizableWithHandle,
+  ResizableNested,
+  ResizableControlled,
+}

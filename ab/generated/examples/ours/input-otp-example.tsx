@@ -3,6 +3,7 @@
 'use client'
 
 import * as React from 'react'
+import { REGEXP_ONLY_DIGITS, REGEXP_ONLY_DIGITS_AND_CHARS } from 'input-otp'
 
 import { Example } from '@/registry/base-vega/components/example'
 import { Button } from '@/registry/bje/ui/Button/Button'
@@ -46,6 +47,26 @@ function InputOTPSimple() {
   )
 }
 
+function InputOTPPattern() {
+  return (
+    <Example title="Digits Only">
+      <Field>
+        <FieldLabel htmlFor="digits-only">Digits Only</FieldLabel>
+        <InputOTP id="digits-only" maxLength={6} pattern={REGEXP_ONLY_DIGITS}>
+          <InputOTPGroup>
+            <InputOTPSlot index={0} />
+            <InputOTPSlot index={1} />
+            <InputOTPSlot index={2} />
+            <InputOTPSlot index={3} />
+            <InputOTPSlot index={4} />
+            <InputOTPSlot index={5} />
+          </InputOTPGroup>
+        </InputOTP>
+      </Field>
+    </Example>
+  )
+}
+
 function InputOTPWithSeparator() {
   const [value, setValue] = React.useState('123456')
 
@@ -74,6 +95,30 @@ function InputOTPWithSeparator() {
   )
 }
 
+function InputOTPAlphanumeric() {
+  return (
+    <Example title="Alphanumeric">
+      <Field>
+        <FieldLabel htmlFor="alphanumeric">Alphanumeric</FieldLabel>
+        <FieldDescription>Accepts both letters and numbers.</FieldDescription>
+        <InputOTP id="alphanumeric" maxLength={6} pattern={REGEXP_ONLY_DIGITS_AND_CHARS}>
+          <InputOTPGroup>
+            <InputOTPSlot index={0} />
+            <InputOTPSlot index={1} />
+            <InputOTPSlot index={2} />
+          </InputOTPGroup>
+          <InputOTPSeparator />
+          <InputOTPGroup>
+            <InputOTPSlot index={3} />
+            <InputOTPSlot index={4} />
+            <InputOTPSlot index={5} />
+          </InputOTPGroup>
+        </InputOTP>
+      </Field>
+    </Example>
+  )
+}
+
 function InputOTPDisabled() {
   return (
     <Example title="Disabled">
@@ -90,6 +135,25 @@ function InputOTPDisabled() {
             <InputOTPSlot index={3} />
             <InputOTPSlot index={4} />
             <InputOTPSlot index={5} />
+          </InputOTPGroup>
+        </InputOTP>
+      </Field>
+    </Example>
+  )
+}
+
+function InputOTPFourDigits() {
+  return (
+    <Example title="4 Digits">
+      <Field>
+        <FieldLabel htmlFor="four-digits">4 Digits</FieldLabel>
+        <FieldDescription>Common pattern for PIN codes.</FieldDescription>
+        <InputOTP id="four-digits" maxLength={4} pattern={REGEXP_ONLY_DIGITS}>
+          <InputOTPGroup>
+            <InputOTPSlot index={0} />
+            <InputOTPSlot index={1} />
+            <InputOTPSlot index={2} />
+            <InputOTPSlot index={3} />
           </InputOTPGroup>
         </InputOTP>
       </Field>
@@ -193,4 +257,13 @@ function InputOTPForm() {
   )
 }
 
-export { InputOTPForm, InputOTPSimple, InputOTPWithSeparator, InputOTPDisabled, InputOTPInvalid }
+export {
+  InputOTPForm,
+  InputOTPSimple,
+  InputOTPPattern,
+  InputOTPWithSeparator,
+  InputOTPAlphanumeric,
+  InputOTPDisabled,
+  InputOTPFourDigits,
+  InputOTPInvalid,
+}

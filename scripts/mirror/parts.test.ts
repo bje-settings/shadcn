@@ -188,6 +188,31 @@ const [stray] = [<ChipPanel />]`
     expect(result.get('ChipPanel')?.ancestors).toEqual([])
   })
 
+  it("renders a part another part renders internally inside that part's context", () => {
+    const module = transformComponent(
+      `import { cn } from "cn"
+function Chips({ className, children }) { return <Root><div data-slot="chips" className={cn("a", className)}>{children}</div><Inner /></Root> }
+function Inner() { return <Chip value="x" /> }
+function Picker(props) { return <Base components={{ Day: () => <ChipDay /> }} {...props} /> }
+function Chip({ className }) { return <span data-slot="chip" className={cn("b", className)} /> }
+function ChipDay({ className }) { return <b data-slot="chip-day" className={cn("c", className)} /> }
+export { Chips, Chip, Picker, ChipDay }`,
+      'chips',
+      'bje',
+    )
+    const withPicker = new Map([
+      ['Chips', part],
+      ['Chip', part],
+      ['Picker', { ...part, text: false }],
+      ['ChipDay', part],
+    ])
+    const example = 'export default function E() { return <><Chips /><Picker /></> }'
+    const result = scaffolds('chips', example, withPicker, module)
+    // Chips takes children, so Chip renders inside it; Picker does not.
+    expect(result.get('Chip')?.ancestors.map((p) => p.component)).toEqual(['Chips'])
+    expect(result.get('ChipDay')?.ancestors).toEqual([])
+  })
+
   it('renders a part the example never uses on its own, or inside the item root', () => {
     const withGhost = new Map([...types, ['Ghost', part]])
     const alone = scaffolds('other', undefined, withGhost, chip)

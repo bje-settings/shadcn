@@ -52,12 +52,17 @@
             "useKeyWithClickEvents": "off",
             "useSemanticElements": "off"
           },
+          "correctness": {
+            "noUnusedImports": "off",
+            "useExhaustiveDependencies": "off"
+          },
+          "security": {
+            "noDangerouslySetInnerHtml": "off"
+          },
           "suspicious": {
             "noArrayIndexKey": "off",
+            "noDocumentCookie": "off",
             "noDoubleEquals": "off"
-          },
-          "correctness": {
-            "noUnusedImports": "off"
           }
         }
       }

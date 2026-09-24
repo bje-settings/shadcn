@@ -9,7 +9,7 @@
     // Cross-component imports, which the shadcn CLI rewrites to the
     // consumer's ui alias on install. `bje` must match mirror.config.json's
     // namespace.
-    "paths": { "@/registry/bje/ui/*": ["./ui/*"] }
+    "paths": { "@/registry/bje/ui/*": ["./ui/*"], "@/registry/bje/hooks/*": ["./hooks/*"] }
   },
   "include": [".", "../types"]
 }

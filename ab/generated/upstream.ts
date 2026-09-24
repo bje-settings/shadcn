@@ -58,6 +58,10 @@ import * as toast from './upstream/toast'
 import * as resizable from './upstream/resizable'
 import * as questionnaire from './upstream/questionnaire'
 import * as messageScroller from './upstream/message-scroller'
+import * as sidebar from './upstream/sidebar'
+import * as calendar from './upstream/calendar'
+import * as carousel from './upstream/carousel'
+import * as chart from './upstream/chart'
 
 export const upstream = {
   button: button,
@@ -118,4 +122,8 @@ export const upstream = {
   resizable: resizable,
   questionnaire: questionnaire,
   'message-scroller': messageScroller,
+  sidebar: sidebar,
+  calendar: calendar,
+  carousel: carousel,
+  chart: chart,
 }

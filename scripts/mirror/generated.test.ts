@@ -14,7 +14,7 @@ import { formatWithBiome } from './format.ts'
 import { config, root } from './test-support.ts'
 
 const snapshots = join(config.snapshotDir, config.upstream.style)
-const outputDirs = [config.outputDir, config.globalsDir, config.harnessDir]
+const outputDirs = [config.outputDir, config.hooksDir, config.globalsDir, config.harnessDir]
 let built: string
 
 async function files(base: string, dir: string): Promise<string[]> {

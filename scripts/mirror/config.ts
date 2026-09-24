@@ -44,6 +44,8 @@ export type MirrorConfig = {
   }
   snapshotDir: string
   outputDir: string
+  // Where mirrored hooks go (use-mobile)
+  hooksDir: string
   // Generated global stylesheets (the @<namespace>/globals item)
   globalsDir: string
   // Generated inputs for the A/B harness
@@ -68,6 +70,11 @@ export type MirrorConfig = {
   // Props given to a part wherever generated tests and A/B fixtures render
   // it, by item and part: ones it needs that no example passes as a literal.
   testProps: Record<string, Record<string, Record<string, Literal>>>
+  // Props given as TypeScript expressions in generated tests, by item and
+  // part: values JSON cannot hold (CalendarDayButton's day, whose date is a
+  // Date). A part given one is left out of the A/B fixtures; its item's docs
+  // examples render it there.
+  testExpressions: Record<string, Record<string, Record<string, string>>>
   // Exported parts jsdom renders nothing for under their scaffold, by item
   // and part, with the reason: their generated test checks they render
   // nothing.
@@ -175,6 +182,9 @@ export function parseConfig(raw: unknown): MirrorConfig {
     'testProps',
     (value, path) => shape.record(value, path) as Record<string, Literal>,
   )
+  const testExpressions = byItem('testExpressions', (value, path) =>
+    shape.stringRecord(value, path),
+  )
   const unrenderedInTests = byItem('unrenderedInTests', (value, path) => shape.string(value, path))
 
   return {
@@ -189,6 +199,7 @@ export function parseConfig(raw: unknown): MirrorConfig {
     typeset: { stylesheet: string(typeset, 'stylesheet', 'typeset.'), fixturesUrl, fixtures },
     snapshotDir: string(raw, 'snapshotDir', ''),
     outputDir: string(raw, 'outputDir', ''),
+    hooksDir: string(raw, 'hooksDir', ''),
     globalsDir: string(raw, 'globalsDir', ''),
     harnessDir: string(raw, 'harnessDir', ''),
     consumerClasses,
@@ -198,6 +209,7 @@ export function parseConfig(raw: unknown): MirrorConfig {
     testSetup,
     unrenderedInTests,
     testProps,
+    testExpressions,
   }
 }
 

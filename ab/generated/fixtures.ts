@@ -7060,4 +7060,922 @@ export const fixtures = [
     label: 'MessageScrollerButton',
     props: {},
   },
+  {
+    item: 'sidebar',
+    component: 'SidebarProvider',
+    slot: 'sidebar-wrapper',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'SidebarProvider',
+    props: {
+      defaultOpen: true,
+    },
+  },
+  {
+    item: 'sidebar',
+    component: 'Sidebar',
+    slot: 'sidebar',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'Sidebar',
+    props: {},
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarTrigger',
+    slot: 'sidebar-trigger',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'SidebarInset',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: true,
+    label: 'SidebarTrigger',
+    props: {},
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarRail',
+    slot: 'sidebar-rail',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: true,
+    label: 'SidebarRail',
+    props: {},
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarInset',
+    slot: 'sidebar-inset',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SidebarInset',
+    props: {},
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarInput',
+    slot: 'sidebar-input',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+      {
+        component: 'SidebarHeader',
+        props: {},
+      },
+      {
+        component: 'SidebarGroup',
+        props: {},
+      },
+      {
+        component: 'SidebarGroupContent',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: true,
+    label: 'SidebarInput',
+    props: {
+      id: 'search',
+      placeholder: 'Search the docs...',
+    },
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarHeader',
+    slot: 'sidebar-header',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SidebarHeader',
+    props: {},
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarFooter',
+    slot: 'sidebar-footer',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+      {
+        component: 'SidebarHeader',
+        props: {},
+      },
+      {
+        component: 'SidebarGroup',
+        props: {},
+      },
+      {
+        component: 'SidebarGroupContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SidebarFooter',
+    props: {},
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarSeparator',
+    slot: 'sidebar-separator',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+      {
+        component: 'SidebarHeader',
+        props: {},
+      },
+      {
+        component: 'SidebarGroup',
+        props: {},
+      },
+      {
+        component: 'SidebarGroupContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SidebarSeparator',
+    props: {},
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarContent',
+    slot: 'sidebar-content',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SidebarContent',
+    props: {},
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarGroup',
+    slot: 'sidebar-group',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+      {
+        component: 'SidebarHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SidebarGroup',
+    props: {},
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarGroupLabel',
+    slot: 'sidebar-group-label',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+      {
+        component: 'SidebarContent',
+        props: {},
+      },
+      {
+        component: 'SidebarGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SidebarGroupLabel',
+    props: {},
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarGroupAction',
+    slot: 'sidebar-group-action',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+      {
+        component: 'SidebarHeader',
+        props: {},
+      },
+      {
+        component: 'SidebarGroup',
+        props: {},
+      },
+      {
+        component: 'SidebarGroupContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SidebarGroupAction',
+    props: {},
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarGroupContent',
+    slot: 'sidebar-group-content',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+      {
+        component: 'SidebarHeader',
+        props: {},
+      },
+      {
+        component: 'SidebarGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SidebarGroupContent',
+    props: {},
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarMenu',
+    slot: 'sidebar-menu',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+      {
+        component: 'SidebarHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SidebarMenu',
+    props: {},
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarMenuItem',
+    slot: 'sidebar-menu-item',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+      {
+        component: 'SidebarHeader',
+        props: {},
+      },
+      {
+        component: 'SidebarMenu',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SidebarMenuItem',
+    props: {},
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarMenuButton',
+    slot: 'sidebar-menu-button',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+      {
+        component: 'SidebarHeader',
+        props: {},
+      },
+      {
+        component: 'SidebarMenu',
+        props: {},
+      },
+      {
+        component: 'SidebarMenuItem',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: true,
+    label: 'SidebarMenuButton variant=default',
+    props: {
+      variant: 'default',
+    },
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarMenuButton',
+    slot: 'sidebar-menu-button',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+      {
+        component: 'SidebarHeader',
+        props: {},
+      },
+      {
+        component: 'SidebarMenu',
+        props: {},
+      },
+      {
+        component: 'SidebarMenuItem',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: true,
+    label: 'SidebarMenuButton variant=outline',
+    props: {
+      variant: 'outline',
+    },
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarMenuButton',
+    slot: 'sidebar-menu-button',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+      {
+        component: 'SidebarHeader',
+        props: {},
+      },
+      {
+        component: 'SidebarMenu',
+        props: {},
+      },
+      {
+        component: 'SidebarMenuItem',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: true,
+    label: 'SidebarMenuButton size=default',
+    props: {
+      size: 'default',
+    },
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarMenuButton',
+    slot: 'sidebar-menu-button',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+      {
+        component: 'SidebarHeader',
+        props: {},
+      },
+      {
+        component: 'SidebarMenu',
+        props: {},
+      },
+      {
+        component: 'SidebarMenuItem',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: true,
+    label: 'SidebarMenuButton size=sm',
+    props: {
+      size: 'sm',
+    },
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarMenuButton',
+    slot: 'sidebar-menu-button',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+      {
+        component: 'SidebarHeader',
+        props: {},
+      },
+      {
+        component: 'SidebarMenu',
+        props: {},
+      },
+      {
+        component: 'SidebarMenuItem',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: true,
+    label: 'SidebarMenuButton size=lg',
+    props: {
+      size: 'lg',
+    },
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarMenuAction',
+    slot: 'sidebar-menu-action',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+      {
+        component: 'SidebarHeader',
+        props: {},
+      },
+      {
+        component: 'SidebarGroup',
+        props: {},
+      },
+      {
+        component: 'SidebarGroupContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SidebarMenuAction',
+    props: {},
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarMenuBadge',
+    slot: 'sidebar-menu-badge',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+      {
+        component: 'SidebarHeader',
+        props: {},
+      },
+      {
+        component: 'SidebarGroup',
+        props: {},
+      },
+      {
+        component: 'SidebarGroupContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SidebarMenuBadge',
+    props: {},
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarMenuSkeleton',
+    slot: 'sidebar-menu-skeleton',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+      {
+        component: 'SidebarHeader',
+        props: {},
+      },
+      {
+        component: 'SidebarGroup',
+        props: {},
+      },
+      {
+        component: 'SidebarGroupContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SidebarMenuSkeleton',
+    props: {},
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarMenuSub',
+    slot: 'sidebar-menu-sub',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+      {
+        component: 'SidebarHeader',
+        props: {},
+      },
+      {
+        component: 'SidebarGroup',
+        props: {},
+      },
+      {
+        component: 'SidebarGroupContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SidebarMenuSub',
+    props: {},
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarMenuSubItem',
+    slot: 'sidebar-menu-sub-item',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+      {
+        component: 'SidebarHeader',
+        props: {},
+      },
+      {
+        component: 'SidebarGroup',
+        props: {},
+      },
+      {
+        component: 'SidebarGroupContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SidebarMenuSubItem',
+    props: {},
+  },
+  {
+    item: 'sidebar',
+    component: 'SidebarMenuSubButton',
+    slot: 'sidebar-menu-sub-button',
+    ancestors: [
+      {
+        component: 'SidebarProvider',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'Sidebar',
+        props: {},
+      },
+      {
+        component: 'SidebarHeader',
+        props: {},
+      },
+      {
+        component: 'SidebarGroup',
+        props: {},
+      },
+      {
+        component: 'SidebarGroupContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SidebarMenuSubButton',
+    props: {},
+  },
+  {
+    item: 'calendar',
+    component: 'Calendar',
+    ancestors: [],
+    children: false,
+    overlay: false,
+    label: 'Calendar',
+    props: {
+      mode: 'single',
+    },
+  },
+  {
+    item: 'carousel',
+    component: 'Carousel',
+    slot: 'carousel',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Carousel',
+    props: {},
+  },
+  {
+    item: 'carousel',
+    component: 'CarouselContent',
+    ancestors: [
+      {
+        component: 'Carousel',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'CarouselContent',
+    props: {},
+  },
+  {
+    item: 'carousel',
+    component: 'CarouselItem',
+    slot: 'carousel-item',
+    ancestors: [
+      {
+        component: 'Carousel',
+        props: {},
+      },
+      {
+        component: 'CarouselContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'CarouselItem',
+    props: {},
+  },
+  {
+    item: 'carousel',
+    component: 'CarouselPrevious',
+    slot: 'carousel-previous',
+    ancestors: [
+      {
+        component: 'Carousel',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'CarouselPrevious',
+    props: {},
+  },
+  {
+    item: 'carousel',
+    component: 'CarouselNext',
+    slot: 'carousel-next',
+    ancestors: [
+      {
+        component: 'Carousel',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'CarouselNext',
+    props: {},
+  },
+  {
+    item: 'chart',
+    component: 'ChartContainer',
+    slot: 'chart',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'ChartContainer',
+    props: {
+      config: {
+        desktop: {
+          label: 'Desktop',
+          color: 'var(--chart-1)',
+        },
+      },
+    },
+  },
+  {
+    item: 'chart',
+    component: 'ChartTooltipContent',
+    ancestors: [
+      {
+        component: 'ChartContainer',
+        props: {
+          config: {
+            desktop: {
+              label: 'Desktop',
+              color: 'var(--chart-1)',
+            },
+          },
+        },
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'ChartTooltipContent',
+    props: {},
+  },
+  {
+    item: 'chart',
+    component: 'ChartLegendContent',
+    ancestors: [
+      {
+        component: 'ChartContainer',
+        props: {
+          config: {
+            desktop: {
+              label: 'Desktop',
+              color: 'var(--chart-1)',
+            },
+          },
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'ChartLegendContent',
+    props: {},
+  },
 ]

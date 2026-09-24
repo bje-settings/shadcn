@@ -24,6 +24,8 @@ export default defineConfig({
           alias: {
             [`@/registry/${mirror.namespace}/ui`]: new URL('./registry/ui', import.meta.url)
               .pathname,
+            [`@/registry/${mirror.namespace}/hooks`]: new URL('./registry/hooks', import.meta.url)
+              .pathname,
           },
           include: ['registry/**/*.test.{ts,tsx}'],
           environment: 'jsdom',
@@ -43,9 +45,9 @@ export default defineConfig({
         '**/*.test.{ts,tsx}',
         // Mirrored components with upstream logic no generated test reaches;
         // mirror.config.json gives each reason.
-        ...Object.keys(mirror.coverageExclusions ?? {}).map((item) => {
+        ...Object.keys(mirror.coverageExclusions ?? {}).flatMap((item) => {
           const file = pascalCase(item)
-          return `${mirror.outputDir}/${file}/${file}.tsx`
+          return [`${mirror.outputDir}/${file}/${file}.tsx`, `${mirror.hooksDir}/${item}.ts`]
         }),
         // The process entry point: wires cli.ts to the real process, fetch
         // and console, and holds no logic of its own.
