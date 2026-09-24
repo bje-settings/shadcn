@@ -18,8 +18,9 @@ still apply.
 
 - No `tailwindcss`, `tailwind-merge`, `tailwindcss-animate`, or other Tailwind packages in an
   item's `dependencies` or `devDependencies`. The repo's own `package.json` carries `tailwindcss`,
-  `@tailwindcss/node` and `tw-animate-css` only as devDependencies of `scripts/mirror`, which
-  compiles upstream classes with them.
+  `@tailwindcss/node`, `@tailwindcss/vite`, `tw-animate-css`, `cn` and `class-variance-authority`
+  only as devDependencies: `scripts/mirror` compiles upstream classes with them, and the A/B
+  harness renders upstream's unchanged source with them.
 - No `tailwind` field (deprecated upstream anyway).
 - No `css` or `cssVars` fields: the CLI writes them into the consumer's Tailwind CSS entry file.
   Ship styles as files in the item's `files` array instead.
