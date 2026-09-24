@@ -186,32 +186,15 @@ describe('ProgressLabel', () => {
   })
 })
 
-function renderProgressValue(
-  props: Partial<Record<keyof ComponentProps<typeof ProgressValue>, unknown>> = {},
-) {
-  cleanup()
-  render(
-    <Progress value={56}>
-      <ProgressValue data-testid="subject" {...(props as ComponentProps<typeof ProgressValue>)} />
-    </Progress>,
-  )
-  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="progress-value"]')
-}
-
-function classesOfProgressValue(
-  props: Partial<Record<keyof ComponentProps<typeof ProgressValue>, unknown>> = {},
-) {
-  return renderProgressValue(props)?.getAttribute('class')?.split(' ') ?? []
-}
-
 describe('ProgressValue', () => {
-  it('renders [data-slot="progress-value"] with its classes', () => {
-    expect(classesOfProgressValue()).toEqual(expect.arrayContaining([styles.progressValue]))
-  })
-
-  it('appends a consumer className last', () => {
-    renderProgressValue({ className: 'consumer' })
-    const element = document.querySelector('.consumer')
-    expect(element?.getAttribute('class')?.split(' ').at(-1)).toBe('consumer')
+  it('renders with a function of each item as its children', () => {
+    cleanup()
+    expect(() =>
+      render(
+        <Progress value={56}>
+          <ProgressValue>{() => <i />}</ProgressValue>
+        </Progress>,
+      ),
+    ).not.toThrow()
   })
 })

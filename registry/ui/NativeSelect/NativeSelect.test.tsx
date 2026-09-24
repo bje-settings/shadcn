@@ -33,6 +33,7 @@ function attributesOfNativeSelect(
   props: Partial<Record<keyof ComponentProps<typeof NativeSelect>, unknown>> = {},
 ) {
   const element = renderNativeSelect(props)
+  expect(element).toBeTruthy()
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
   )

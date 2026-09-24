@@ -7,6 +7,7 @@ const none: SlotOptions = {
   markers: new Map(),
   classProbe: () => [],
   globalClasses: new Set(['dark']),
+  withoutCss: new Set(),
 }
 
 async function convert(classes: string[], options: Partial<SlotOptions> = {}) {
@@ -179,6 +180,7 @@ describe('slotToScss', () => {
       scss: ':where(.root) {\n}',
       unresolved: ['group/button'],
       customProperties: [],
+      empty: true,
       dropped: [],
     })
   })

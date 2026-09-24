@@ -38,6 +38,7 @@ function attributesOfAvatar(
   props: Partial<Record<keyof ComponentProps<typeof Avatar>, unknown>> = {},
 ) {
   const element = renderAvatar(props)
+  expect(element).toBeTruthy()
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
   )

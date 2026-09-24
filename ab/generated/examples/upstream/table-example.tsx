@@ -3,7 +3,23 @@
 'use client'
 
 import { Example } from '@/registry/base-vega/components/example'
+import { Button } from '@/registry/base-vega/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/registry/base-vega/ui/dropdown-menu'
 import { Input } from '@/registry/base-vega/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/registry/base-vega/ui/select'
 import {
   Table,
   TableBody,
@@ -14,6 +30,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/registry/base-vega/ui/table'
+import { IconPlaceholder } from '@/app/(create)/components/icon-placeholder'
 
 const invoices = [
   {
@@ -212,6 +229,173 @@ function TableWithBadges() {
   )
 }
 
+function TableWithActions() {
+  return (
+    <Example title="With Actions">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Product</TableHead>
+            <TableHead>Price</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell className="font-medium">Wireless Mouse</TableCell>
+            <TableCell>$29.99</TableCell>
+            <TableCell className="text-right">
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={<Button variant="ghost" size="icon" className="size-8" />}
+                >
+                  <IconPlaceholder
+                    lucide="MoreHorizontalIcon"
+                    tabler="IconDots"
+                    hugeicons="MoreHorizontalCircle01Icon"
+                    phosphor="DotsThreeOutlineIcon"
+                    remixicon="RiMoreLine"
+                  />
+                  <span className="sr-only">Open menu</span>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <DropdownMenuItem>Duplicate</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className="font-medium">Mechanical Keyboard</TableCell>
+            <TableCell>$129.99</TableCell>
+            <TableCell className="text-right">
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={<Button variant="ghost" size="icon" className="size-8" />}
+                >
+                  <IconPlaceholder
+                    lucide="MoreHorizontalIcon"
+                    tabler="IconDots"
+                    hugeicons="MoreHorizontalCircle01Icon"
+                    phosphor="DotsThreeOutlineIcon"
+                    remixicon="RiMoreLine"
+                  />
+                  <span className="sr-only">Open menu</span>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <DropdownMenuItem>Duplicate</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className="font-medium">USB-C Hub</TableCell>
+            <TableCell>$49.99</TableCell>
+            <TableCell className="text-right">
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={<Button variant="ghost" size="icon" className="size-8" />}
+                >
+                  <IconPlaceholder
+                    lucide="MoreHorizontalIcon"
+                    tabler="IconDots"
+                    hugeicons="MoreHorizontalCircle01Icon"
+                    phosphor="DotsThreeOutlineIcon"
+                    remixicon="RiMoreLine"
+                  />
+                  <span className="sr-only">Open menu</span>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <DropdownMenuItem>Duplicate</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </Example>
+  )
+}
+
+const people = [
+  { value: 'sarah', label: 'Sarah Chen' },
+  { value: 'marcus', label: 'Marc Rodriguez' },
+  { value: 'emily', label: 'Emily Watson' },
+  { value: 'david', label: 'David Kim' },
+]
+
+const tasks = [
+  {
+    task: 'Design homepage',
+    assignee: 'sarah',
+    status: 'In Progress',
+  },
+  {
+    task: 'Implement API',
+    assignee: 'marcus',
+    status: 'Pending',
+  },
+  {
+    task: 'Write tests',
+    assignee: 'emily',
+    status: 'Not Started',
+  },
+]
+
+function TableWithSelect() {
+  return (
+    <Example title="With Select">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Task</TableHead>
+            <TableHead>Assignee</TableHead>
+            <TableHead>Status</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {tasks.map((item) => (
+            <TableRow key={item.task}>
+              <TableCell className="font-medium">{item.task}</TableCell>
+              <TableCell>
+                <Select
+                  items={people}
+                  defaultValue={people.find((person) => person.value === item.assignee)}
+                  itemToStringValue={(item) => {
+                    return item.value
+                  }}
+                >
+                  <SelectTrigger className="w-40" size="sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {people.map((person) => (
+                        <SelectItem key={person.value} value={person}>
+                          {person.label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </TableCell>
+              <TableCell>{item.status}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </Example>
+  )
+}
+
 function TableWithInput() {
   return (
     <Example title="With Input">
@@ -251,4 +435,12 @@ function TableWithInput() {
   )
 }
 
-export { TableBasic, TableWithFooter, TableSimple, TableWithBadges, TableWithInput }
+export {
+  TableBasic,
+  TableWithFooter,
+  TableSimple,
+  TableWithBadges,
+  TableWithActions,
+  TableWithSelect,
+  TableWithInput,
+}

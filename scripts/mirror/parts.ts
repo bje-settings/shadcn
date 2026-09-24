@@ -16,7 +16,13 @@ import type { TransformedComponent } from './tsx.ts'
 
 export type Literal = string | number | boolean | Literal[] | { [key: string]: Literal }
 
-export type Part = { component: string; props: Record<string, Literal> }
+export type Part = {
+  component: string
+  props: Record<string, Literal>
+  // A part that opens renders its trigger from the example before its
+  // children: a submenu stays closed without one.
+  trigger?: Part
+}
 
 export type Usage = {
   // The same item's components it renders inside, outermost first
@@ -47,6 +53,8 @@ export type PartTypes = {
   required: string[]
   // It takes text as children (InputOTP's type rules children out)
   text: boolean
+  // Its children can only be a function of each item (ComboboxCollection)
+  childrenFunction: boolean
 }
 
 // This repo's root: upstream's imports resolve against its node_modules
@@ -99,6 +107,13 @@ export function partTypes(
           text:
             children !== undefined &&
             checker.isTypeAssignableTo(checker.getStringType(), children.compilerType),
+          // Only a function: Dialog's root also takes one, but takes nodes too.
+          childrenFunction:
+            children !== undefined &&
+            !checker.isTypeAssignableTo(checker.getStringType(), children.compilerType) &&
+            (children.isUnion() ? children.getUnionTypes() : [children]).some(
+              (member) => member.getCallSignatures().length > 0,
+            ),
         })
       }
       return [(components[i] as PreparedComponent).upstream.name, parts]
@@ -130,6 +145,20 @@ function literal(node: Node | null | undefined): Literal | undefined {
     return entries.every((entry) => entry?.[1] !== undefined)
       ? Object.fromEntries(entries as [string, Literal][])
       : undefined
+  }
+  return undefined
+}
+
+// The name a top-level statement declares: a function, or a const.
+function declaredName(statement: Node): string | undefined {
+  const declaration =
+    statement.type === 'ExportNamedDeclaration' || statement.type === 'ExportDefaultDeclaration'
+      ? statement.declaration
+      : statement
+  if (declaration?.type === 'FunctionDeclaration') return declaration.id?.name
+  if (declaration?.type === 'VariableDeclaration') {
+    const [declarator] = declaration.declarations
+    if (declarator?.id.type === 'Identifier') return declarator.id.name
   }
   return undefined
 }
@@ -189,41 +218,132 @@ export function scaffolds(
       ...(component?.defaults.map((d) => d.prop) ?? []),
     ])
   }
-  // Every path from the example's root to each place it renders a part.
+  // Every JSX path to a place the example renders a part. A path inside one
+  // of the example's own components (a ListItem wrapping a link) continues
+  // from where the example first renders that component.
   const found = new Map<string, JSXElement[][]>()
   if (example !== undefined) {
-    const visit = (node: Node, ancestors: JSXElement[]) => {
-      const name = node.type === 'JSXElement' ? elementName(node) : undefined
-      if (name && types.has(name)) {
-        found.set(name, [...(found.get(name) ?? []), [...ancestors, node as JSXElement]])
+    const uses: { name: string; path: JSXElement[]; owner?: string }[] = []
+    const local = new Map<string, { path: JSXElement[]; owner?: string }>()
+    for (const statement of parseModule(example).program.body) {
+      const owner = declaredName(statement)
+      const visit = (node: Node, ancestors: JSXElement[]) => {
+        let next = ancestors
+        if (node.type === 'JSXElement') {
+          const name = elementName(node)
+          next = [...ancestors, node]
+          if (name && types.has(name)) uses.push({ name, path: next, ...(owner ? { owner } : {}) })
+          else if (name && !local.has(name))
+            local.set(name, { path: next, ...(owner ? { owner } : {}) })
+        }
+        for (const child of childNodes(node)) visit(child, next)
       }
-      const next = node.type === 'JSXElement' ? [...ancestors, node] : ancestors
-      for (const child of childNodes(node)) visit(child, next)
+      visit(statement, [])
     }
-    visit(parseModule(example).program, [])
+    const extend = (
+      path: JSXElement[],
+      owner: string | undefined,
+      seen: Set<string>,
+    ): JSXElement[] => {
+      const use = owner === undefined ? undefined : local.get(owner)
+      if (!use || seen.has(owner as string)) return path
+      return [...extend(use.path, use.owner, new Set([...seen, owner as string])), ...path]
+    }
+    for (const { name, path, owner } of uses) {
+      found.set(name, [...(found.get(name) ?? []), extend(path, owner, new Set())])
+    }
   }
+  // A part the example never renders but another part renders internally
+  // (MenubarContent's MenubarPortal): it goes inside that part.
+  const internal = new Map<string, string>()
+  for (const statement of parseModule(transformed.code).program.body) {
+    const owner = declaredName(statement)
+    const visit = (node: Node) => {
+      const name = node.type === 'JSXElement' ? elementName(node) : undefined
+      if (owner && name && name !== owner && types.has(name) && !internal.has(name)) {
+        internal.set(name, owner)
+      }
+      for (const child of childNodes(node)) visit(child)
+    }
+    visit(statement)
+  }
+  // An ancestor that opens renders open, and one that can stay mounted while
+  // closed (NavigationMenuContent) does, so the part inside it renders.
   const opened = (part: Part): Part => {
-    if (!types.get(part.component)?.opens) return part
+    const type = types.get(part.component)
     const { open: _, ...props } = part.props
-    return { component: part.component, props: { ...props, defaultOpen: true } }
+    return {
+      ...part,
+      props: {
+        ...(type?.opens ? props : part.props),
+        ...(type?.opens ? { defaultOpen: true } : {}),
+        ...(type?.keepMounted ? { keepMounted: true } : {}),
+      },
+    }
+  }
+  // The part a trigger opens: its first child that is the item's `*Trigger`.
+  const triggerOf = (element: JSXElement): Part | undefined => {
+    const trigger = element.children.find(
+      (child): child is JSXElement =>
+        child.type === 'JSXElement' &&
+        types.has(elementName(child) ?? '') &&
+        (elementName(child) as string).endsWith('Trigger'),
+    )
+    return trigger && { component: elementName(trigger) as string, props: literalProps(trigger) }
+  }
+  // The same item's parts enclosing a use of `name`, outermost first.
+  const enclosing = (path: JSXElement[]): Part[] =>
+    path
+      .slice(0, -1)
+      .filter((ancestor) => types.has(elementName(ancestor) ?? ''))
+      .map((ancestor) => {
+        const component = elementName(ancestor) as string
+        const trigger = types.get(component)?.opens ? triggerOf(ancestor) : undefined
+        return { component, props: literalProps(ancestor), ...(trigger ? { trigger } : {}) }
+      })
+  // Where a part the example never renders, nor another part uses, can
+  // render: the deepest place the example renders any part, which has the
+  // most of the item's context around it (NavigationMenuIndicator needs an
+  // item). Else the item's root.
+  const deepest = [...found.values()]
+    .map((paths) => enclosing(paths[0] as JSXElement[]))
+    .reduce<Part[]>((best, parts) => (parts.length > best.length ? parts : best), [])
+  const chain = (
+    name: string,
+    path: JSXElement[] | undefined,
+    seen = new Set<string>(),
+  ): Part[] => {
+    if (path) return enclosing(path)
+    const parent = internal.get(name)
+    if (parent && !seen.has(parent)) {
+      const around = chain(parent, found.get(parent)?.[0], new Set([...seen, name]))
+      return [...around, { component: parent, props: {} }]
+    }
+    if (deepest.length > 0 && !deepest.some((part) => part.component === name)) return deepest
+    return root && root !== name ? [{ component: root, props: {} }] : []
+  }
+  // A use inside a helper component (a menu item a map renders) lacks the
+  // parts above it: they come from where the example first renders its
+  // outermost part, until the chain reaches the item's root.
+  const complete = (name: string, ancestors: Part[], seen = new Set<string>()): Part[] => {
+    const outer = ancestors[0]?.component ?? name
+    if (outer === root || seen.has(outer)) return ancestors
+    const prefix = chain(outer, found.get(outer)?.[0])
+    return [...complete(outer, prefix, new Set([...seen, outer])), ...ancestors]
   }
   const usage = (name: string, path: JSXElement[] | undefined, skip: Set<string>): Usage => {
     const element = path?.at(-1)
-    const enclosing = path
-      ? path
-          .slice(0, -1)
-          .filter((ancestor) => types.has(elementName(ancestor) ?? ''))
-          .map((ancestor) => ({
-            component: elementName(ancestor) as string,
-            props: literalProps(ancestor),
-          }))
-      : root && root !== name
-        ? [{ component: root, props: {} }]
-        : []
+    const type = types.get(name)
     const props = element ? literalProps(element, skip) : {}
     return {
-      ancestors: enclosing.map(opened),
-      props: types.get(name)?.keepMounted ? { ...props, keepMounted: true } : props,
+      ancestors: complete(name, chain(name, path)).map(opened),
+      // A part that opens itself renders open (CommandDialog), and one that
+      // can stay mounted does.
+      props: {
+        ...props,
+        ...(type?.opens && type.className ? { defaultOpen: true } : {}),
+        ...(type?.keepMounted ? { keepMounted: true } : {}),
+      },
       children:
         types.get(name)?.text !== false &&
         !CHILDLESS.has(rendered.get(name)?.tag ?? '') &&
@@ -237,13 +357,22 @@ export function scaffolds(
       // The others keep the variant and default props the first leaves to
       // the tests that vary them.
       const seen = new Set([JSON.stringify(usage(name, first, OMIT))])
+      // A part whose children are a function of each item (ComboboxCollection)
+      // cannot hold another part's element: those uses are left out, and the
+      // first leaves it out of its chain.
+      const expressible = (u: Usage) =>
+        !u.ancestors.some((part) => types.get(part.component)?.childrenFunction)
       const others = rest
         .map((path) => usage(name, path, OMIT))
+        .filter(expressible)
         .filter((other) => {
           const key = JSON.stringify(other)
           return !seen.has(key) && seen.add(key)
         })
-      return [name, { ...scaffold, others }]
+      const ancestors = scaffold.ancestors.filter(
+        (part) => !types.get(part.component)?.childrenFunction,
+      )
+      return [name, { ...scaffold, ancestors, others }]
     }),
   )
 }

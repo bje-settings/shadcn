@@ -81,6 +81,7 @@ function attributesOfFieldLegend(
   props: Partial<Record<keyof ComponentProps<typeof FieldLegend>, unknown>> = {},
 ) {
   const element = renderFieldLegend(props)
+  expect(element).toBeTruthy()
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
   )
@@ -1765,12 +1766,20 @@ function renderFieldSeparator(
 ) {
   cleanup()
   render(
-    <Field>
-      <FieldSeparator
-        data-testid="subject"
-        {...({ children: 'FieldSeparator', ...props } as ComponentProps<typeof FieldSeparator>)}
-      />
-    </Field>,
+    <FieldGroup>
+      <FieldLabel htmlFor="checkbox-with-title">
+        <Field orientation="horizontal">
+          <FieldContent>
+            <FieldSeparator
+              data-testid="subject"
+              {...({ children: 'FieldSeparator', ...props } as ComponentProps<
+                typeof FieldSeparator
+              >)}
+            />
+          </FieldContent>
+        </Field>
+      </FieldLabel>
+    </FieldGroup>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="field-separator"]')
 }
@@ -1798,12 +1807,18 @@ function renderFieldError(
 ) {
   cleanup()
   render(
-    <Field>
-      <FieldError
-        data-testid="subject"
-        {...({ children: 'FieldError', ...props } as ComponentProps<typeof FieldError>)}
-      />
-    </Field>,
+    <FieldGroup>
+      <FieldLabel htmlFor="checkbox-with-title">
+        <Field orientation="horizontal">
+          <FieldContent>
+            <FieldError
+              data-testid="subject"
+              {...({ children: 'FieldError', ...props } as ComponentProps<typeof FieldError>)}
+            />
+          </FieldContent>
+        </Field>
+      </FieldLabel>
+    </FieldGroup>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="field-error"]')
 }

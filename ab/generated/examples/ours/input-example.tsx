@@ -2,9 +2,17 @@
 
 import { Example } from '@/registry/base-vega/components/example'
 import { Button } from '@/registry/bje/ui/Button/Button'
-import { Field, FieldDescription, FieldLabel } from '@/registry/bje/ui/Field/Field'
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/registry/bje/ui/Field/Field'
 import { Input } from '@/registry/bje/ui/Input/Input'
 import { NativeSelect, NativeSelectOption } from '@/registry/bje/ui/NativeSelect/NativeSelect'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/registry/bje/ui/Select/Select'
 
 function InputBasic() {
   return (
@@ -97,6 +105,28 @@ function InputTypes() {
   )
 }
 
+function InputWithSelect() {
+  return (
+    <Example title="With Select">
+      <div className="flex w-full gap-2">
+        <Input type="text" placeholder="Enter amount" className="flex-1" />
+        <Select defaultValue="usd">
+          <SelectTrigger className="w-32">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="usd">USD</SelectItem>
+              <SelectItem value="eur">EUR</SelectItem>
+              <SelectItem value="gbp">GBP</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+    </Example>
+  )
+}
+
 function InputWithButton() {
   return (
     <Example title="With Button">
@@ -123,6 +153,57 @@ function InputWithNativeSelect() {
   )
 }
 
+function InputForm() {
+  return (
+    <Example title="Form">
+      <form className="w-full">
+        <FieldGroup>
+          <Field>
+            <FieldLabel htmlFor="form-name">Name</FieldLabel>
+            <Input id="form-name" type="text" placeholder="John Doe" />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="form-email">Email</FieldLabel>
+            <Input id="form-email" type="email" placeholder="john@example.com" />
+            <FieldDescription>We&apos;ll never share your email with anyone.</FieldDescription>
+          </Field>
+          <div className="grid grid-cols-2 gap-4">
+            <Field>
+              <FieldLabel htmlFor="form-phone">Phone</FieldLabel>
+              <Input id="form-phone" type="tel" placeholder="+1 (555) 123-4567" />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="form-country">Country</FieldLabel>
+              <Select defaultValue="us">
+                <SelectTrigger id="form-country">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="us">United States</SelectItem>
+                    <SelectItem value="uk">United Kingdom</SelectItem>
+                    <SelectItem value="ca">Canada</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </Field>
+          </div>
+          <Field>
+            <FieldLabel htmlFor="form-address">Address</FieldLabel>
+            <Input id="form-address" type="text" placeholder="123 Main St" />
+          </Field>
+          <Field orientation="horizontal">
+            <Button type="button" variant="outline">
+              Cancel
+            </Button>
+            <Button type="submit">Submit</Button>
+          </Field>
+        </FieldGroup>
+      </form>
+    </Example>
+  )
+}
+
 export {
   InputBasic,
   InputInvalid,
@@ -130,6 +211,8 @@ export {
   InputWithDescription,
   InputDisabled,
   InputTypes,
+  InputWithSelect,
   InputWithButton,
   InputWithNativeSelect,
+  InputForm,
 }

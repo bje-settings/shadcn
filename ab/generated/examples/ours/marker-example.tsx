@@ -10,6 +10,16 @@ import {
   AccordionTrigger,
 } from '@/registry/bje/ui/Accordion/Accordion'
 import { Button } from '@/registry/bje/ui/Button/Button'
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/registry/bje/ui/Drawer/Drawer'
 import { Marker, MarkerContent, MarkerIcon } from '@/registry/bje/ui/Marker/Marker'
 import { Spinner } from '@/registry/bje/ui/Spinner/Spinner'
 import { IconPlaceholder } from '@/app/(create)/components/icon-placeholder'
@@ -138,4 +148,49 @@ function MarkerAccordion() {
   )
 }
 
-export { MarkerBorder, MarkerSeparator, MarkerAccordion }
+function MarkerDrawer() {
+  return (
+    <Example title="Drawer">
+      <Drawer swipeDirection="right">
+        <Marker variant="separator">
+          <DrawerTrigger render={<Button variant="outline" />}>
+            <IconPlaceholder
+              lucide="SearchIcon"
+              tabler="IconSearch"
+              hugeicons="SearchIcon"
+              phosphor="MagnifyingGlassIcon"
+              remixicon="RiSearchLine"
+              data-icon="inline-start"
+            />
+            Explored 4 files
+          </DrawerTrigger>
+        </Marker>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>File Activity</DrawerTitle>
+            <DrawerDescription>Files read while preparing the response.</DrawerDescription>
+          </DrawerHeader>
+          <div className="grid gap-3 px-4 text-sm">
+            <div className="flex items-center justify-between gap-4 rounded-md border px-3 py-2">
+              <span className="truncate">app/chat/page.tsx</span>
+              <span className="text-muted-foreground">read</span>
+            </div>
+            <div className="flex items-center justify-between gap-4 rounded-md border px-3 py-2">
+              <span className="truncate">components/message.tsx</span>
+              <span className="text-muted-foreground">read</span>
+            </div>
+            <div className="flex items-center justify-between gap-4 rounded-md border px-3 py-2">
+              <span className="truncate">lib/ai.ts</span>
+              <span className="text-muted-foreground">read</span>
+            </div>
+          </div>
+          <DrawerFooter>
+            <DrawerClose render={<Button variant="outline" />}>Close</DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    </Example>
+  )
+}
+
+export { MarkerBorder, MarkerSeparator, MarkerAccordion, MarkerDrawer }

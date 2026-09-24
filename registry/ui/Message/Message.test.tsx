@@ -69,6 +69,7 @@ function attributesOfMessage(
   props: Partial<Record<keyof ComponentProps<typeof Message>, unknown>> = {},
 ) {
   const element = renderMessage(props)
+  expect(element).toBeTruthy()
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
   )

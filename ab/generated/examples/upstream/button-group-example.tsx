@@ -5,10 +5,27 @@
 import { Example } from '@/registry/base-vega/components/example'
 import { Button } from '@/registry/base-vega/ui/button'
 import { ButtonGroup, ButtonGroupText } from '@/registry/base-vega/ui/button-group'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/registry/base-vega/ui/dropdown-menu'
 import { Field, FieldGroup } from '@/registry/base-vega/ui/field'
 import { Input } from '@/registry/base-vega/ui/input'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/registry/base-vega/ui/input-group'
 import { Label } from '@/registry/base-vega/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/registry/base-vega/ui/select'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/registry/base-vega/ui/tooltip'
 import { IconPlaceholder } from '@/app/(create)/components/icon-placeholder'
 
 function ButtonGroupBasic() {
@@ -58,6 +75,166 @@ function ButtonGroupWithText() {
           />
         </ButtonGroup>
       </div>
+    </Example>
+  )
+}
+
+function ButtonGroupWithDropdown() {
+  return (
+    <Example title="With Dropdown">
+      <div className="flex flex-col gap-4">
+        <ButtonGroup>
+          <Button variant="outline">Update</Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger render={<Button variant="outline" size="icon" />}>
+              <IconPlaceholder
+                lucide="ChevronDownIcon"
+                tabler="IconChevronDown"
+                hugeicons="ArrowDown01Icon"
+                phosphor="CaretDownIcon"
+                remixicon="RiArrowDownSLine"
+              />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>Disable</DropdownMenuItem>
+              <DropdownMenuItem variant="destructive">Uninstall</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </ButtonGroup>
+        <ButtonGroup>
+          <Button variant="outline">Follow</Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger render={<Button variant="outline" size="icon" />}>
+              <IconPlaceholder
+                lucide="ChevronDownIcon"
+                tabler="IconChevronDown"
+                hugeicons="ArrowDown01Icon"
+                phosphor="CaretDownIcon"
+                remixicon="RiArrowDownSLine"
+              />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-50">
+              <DropdownMenuGroup>
+                <DropdownMenuItem>
+                  <IconPlaceholder
+                    lucide="VolumeX"
+                    tabler="IconVolume"
+                    hugeicons="VolumeOffIcon"
+                    phosphor="SpeakerSlashIcon"
+                    remixicon="RiVolumeMuteLine"
+                  />
+                  Mute Conversation
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <IconPlaceholder
+                    lucide="CheckIcon"
+                    tabler="IconCheck"
+                    hugeicons="Tick02Icon"
+                    phosphor="CheckIcon"
+                    remixicon="RiCheckLine"
+                  />
+                  Mark as Read
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <IconPlaceholder
+                    lucide="AlertTriangleIcon"
+                    tabler="IconAlertTriangle"
+                    hugeicons="AlertCircleIcon"
+                    phosphor="WarningIcon"
+                    remixicon="RiErrorWarningLine"
+                  />
+                  Report Conversation
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <IconPlaceholder
+                    lucide="UserRoundXIcon"
+                    tabler="IconUserX"
+                    hugeicons="UserRemove01Icon"
+                    phosphor="UserMinusIcon"
+                    remixicon="RiUserUnfollowLine"
+                  />
+                  Block User
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <IconPlaceholder
+                    lucide="ShareIcon"
+                    tabler="IconShare"
+                    hugeicons="Share03Icon"
+                    phosphor="ShareIcon"
+                    remixicon="RiShareLine"
+                  />
+                  Share Conversation
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <IconPlaceholder
+                    lucide="CopyIcon"
+                    tabler="IconCopy"
+                    hugeicons="Copy01Icon"
+                    phosphor="CopyIcon"
+                    remixicon="RiFileCopyLine"
+                  />
+                  Copy Conversation
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem variant="destructive">
+                  <IconPlaceholder
+                    lucide="TrashIcon"
+                    tabler="IconTrash"
+                    hugeicons="Delete02Icon"
+                    phosphor="TrashIcon"
+                    remixicon="RiDeleteBinLine"
+                  />
+                  Delete Conversation
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </ButtonGroup>
+      </div>
+    </Example>
+  )
+}
+
+const currencyItems = [
+  { label: '$', value: '$' },
+  { label: '€', value: '€' },
+  { label: '£', value: '£' },
+]
+
+function ButtonGroupWithSelect() {
+  return (
+    <Example title="With Select">
+      <Field>
+        <Label htmlFor="amount">Amount</Label>
+        <ButtonGroup>
+          <Select items={currencyItems} defaultValue={currencyItems[0]}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {currencyItems.map((item) => (
+                  <SelectItem key={item.value} value={item}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Input placeholder="Enter amount to send" />
+          <Button variant="outline">
+            <IconPlaceholder
+              lucide="ArrowRightIcon"
+              tabler="IconArrowRight"
+              hugeicons="ArrowRight01Icon"
+              phosphor="ArrowRightIcon"
+              remixicon="RiArrowRightLine"
+            />
+          </Button>
+        </ButtonGroup>
+      </Field>
     </Example>
   )
 }
@@ -184,6 +361,73 @@ function ButtonGroupWithLike() {
         >
           1.2K
         </Button>
+      </ButtonGroup>
+    </Example>
+  )
+}
+
+const durationItems = [
+  { label: 'Hours', value: 'hours' },
+  { label: 'Days', value: 'days' },
+  { label: 'Weeks', value: 'weeks' },
+]
+
+function ButtonGroupWithSelectAndInput() {
+  return (
+    <Example title="With Select and Input">
+      <ButtonGroup>
+        <Select items={durationItems} defaultValue={durationItems[0]}>
+          <SelectTrigger id="duration">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent align="start">
+            <SelectGroup>
+              {durationItems.map((item) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Input />
+      </ButtonGroup>
+    </Example>
+  )
+}
+
+function ButtonGroupNested() {
+  return (
+    <Example title="Nested">
+      <ButtonGroup>
+        <ButtonGroup>
+          <Button variant="outline" size="icon">
+            <IconPlaceholder
+              lucide="PlusIcon"
+              tabler="IconPlus"
+              hugeicons="PlusSignIcon"
+              phosphor="PlusIcon"
+              remixicon="RiAddLine"
+            />
+          </Button>
+        </ButtonGroup>
+        <ButtonGroup>
+          <InputGroup>
+            <InputGroupInput placeholder="Send a message..." />
+            <Tooltip>
+              <TooltipTrigger render={<InputGroupAddon align="inline-end" />}>
+                <IconPlaceholder
+                  lucide="AudioLinesIcon"
+                  tabler="IconHeadphones"
+                  hugeicons="AudioWave01Icon"
+                  phosphor="MicrophoneIcon"
+                  remixicon="RiMicLine"
+                />
+              </TooltipTrigger>
+              <TooltipContent>Voice Mode</TooltipContent>
+            </Tooltip>
+          </InputGroup>
+        </ButtonGroup>
       </ButtonGroup>
     </Example>
   )
@@ -456,10 +700,14 @@ export {
   ButtonGroupBasic,
   ButtonGroupWithInput,
   ButtonGroupWithText,
+  ButtonGroupWithDropdown,
+  ButtonGroupWithSelect,
   ButtonGroupWithIcons,
   ButtonGroupWithInputGroup,
   ButtonGroupWithFields,
   ButtonGroupWithLike,
+  ButtonGroupWithSelectAndInput,
+  ButtonGroupNested,
   ButtonGroupPagination,
   ButtonGroupPaginationSplit,
   ButtonGroupNavigation,

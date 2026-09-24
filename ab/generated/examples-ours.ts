@@ -38,6 +38,20 @@ import * as markerExample from './examples/ours/marker-example'
 import * as messageExample from './examples/ours/message-example'
 import * as bubbleExample from './examples/ours/bubble-example'
 import * as attachmentExample from './examples/ours/attachment-example'
+import * as dialogExample from './examples/ours/dialog-example'
+import * as alertDialogExample from './examples/ours/alert-dialog-example'
+import * as sheetExample from './examples/ours/sheet-example'
+import * as drawerExample from './examples/ours/drawer-example'
+import * as popoverExample from './examples/ours/popover-example'
+import * as tooltipExample from './examples/ours/tooltip-example'
+import * as hoverCardExample from './examples/ours/hover-card-example'
+import * as dropdownMenuExample from './examples/ours/dropdown-menu-example'
+import * as contextMenuExample from './examples/ours/context-menu-example'
+import * as menubarExample from './examples/ours/menubar-example'
+import * as selectExample from './examples/ours/select-example'
+import * as comboboxExample from './examples/ours/combobox-example'
+import * as navigationMenuExample from './examples/ours/navigation-menu-example'
+import * as commandExample from './examples/ours/command-example'
 
 export const oursExamples = {
   'button-example': buttonExample,
@@ -78,4 +92,18 @@ export const oursExamples = {
   'message-example': messageExample,
   'bubble-example': bubbleExample,
   'attachment-example': attachmentExample,
+  'dialog-example': dialogExample,
+  'alert-dialog-example': alertDialogExample,
+  'sheet-example': sheetExample,
+  'drawer-example': drawerExample,
+  'popover-example': popoverExample,
+  'tooltip-example': tooltipExample,
+  'hover-card-example': hoverCardExample,
+  'dropdown-menu-example': dropdownMenuExample,
+  'context-menu-example': contextMenuExample,
+  'menubar-example': menubarExample,
+  'select-example': selectExample,
+  'combobox-example': comboboxExample,
+  'navigation-menu-example': navigationMenuExample,
+  'command-example': commandExample,
 }

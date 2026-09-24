@@ -12,7 +12,9 @@ function renderCollapsible(
   render(
     <Collapsible
       data-testid="subject"
-      {...({ children: 'Collapsible', ...props } as ComponentProps<typeof Collapsible>)}
+      {...({ defaultOpen: true, children: 'Collapsible', ...props } as ComponentProps<
+        typeof Collapsible
+      >)}
     />,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="collapsible"]')
@@ -32,6 +34,7 @@ function renderCollapsibleTrigger(
   cleanup()
   render(
     <Collapsible defaultOpen>
+      <CollapsibleTrigger>CollapsibleTrigger</CollapsibleTrigger>
       <CollapsibleTrigger
         data-testid="subject"
         {...({ children: 'CollapsibleTrigger', ...props } as ComponentProps<
@@ -59,6 +62,7 @@ function renderCollapsibleContent(
   cleanup()
   render(
     <Collapsible defaultOpen>
+      <CollapsibleTrigger>CollapsibleTrigger</CollapsibleTrigger>
       <CollapsibleContent
         data-testid="subject"
         {...({ keepMounted: true, children: 'CollapsibleContent', ...props } as ComponentProps<

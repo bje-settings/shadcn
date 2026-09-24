@@ -27,6 +27,7 @@ function classesOfTabs(props: Partial<Record<keyof ComponentProps<typeof Tabs>, 
 
 function attributesOfTabs(props: Partial<Record<keyof ComponentProps<typeof Tabs>, unknown>> = {}) {
   const element = renderTabs(props)
+  expect(element).toBeTruthy()
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
   )

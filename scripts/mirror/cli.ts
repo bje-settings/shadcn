@@ -211,6 +211,12 @@ async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
       classProbe: probe,
       types: itemTypes,
       scaffolds: scaffolds(name, exampleSources.get(name), itemTypes, component.transformed),
+      external: new Map(
+        // Every registry import is a mirrored item, which partTypes covers.
+        component.transformed.registryImports.flatMap((item) => [
+          ...(types.get(item) as Map<string, PartTypes>),
+        ]),
+      ),
     }
     const built = await buildComponent(component, config, compile, context)
     // The component's folder is all generated: clear it so a file the

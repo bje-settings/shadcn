@@ -161,8 +161,10 @@ export async function buildComponent(
     classProbe: (fragment: string) => string[]
     types: Map<string, PartTypes>
     scaffolds: Map<string, Scaffold>
+    external: Map<string, PartTypes>
   },
 ): Promise<GeneratedComponent> {
+  const setup = config.testSetup.filter(({ items }) => items.includes(prepared.upstream.name))
   const { upstream, transformed: source } = prepared
   const component = pascalCase(upstream.name)
   const dir = `${config.outputDir}/${component}`
@@ -192,10 +194,14 @@ export async function buildComponent(
     classProbe: context.classProbe,
     consumerClasses: consumerClassReasons(config),
     globalClasses: new Set(config.globalClasses.flatMap(({ classes }) => classes)),
+    withoutCss: new Set(config.classesWithoutCss.flatMap(({ classes }) => classes)),
   }
+  // Slots the module exports no class for.
+  const unstyled = new Set<string>()
   for (const slot of source.slots) {
     const block = slotToScss(await compile(slot.classes), slot, options)
     blocks.push(block.scss)
+    if (block.empty) unstyled.add(slot.name)
     if (block.unresolved.length > 0) unresolved[slot.name] = block.unresolved
     for (const property of block.customProperties) properties.add(property)
     for (const reason of block.dropped) dropped.add(reason)
@@ -210,7 +216,12 @@ export async function buildComponent(
     blocks.join('\n\n'),
     '',
   ].join('\n')
-  const test = generateTest(upstream.name, source, context)
+  const test = generateTest(upstream.name, source, {
+    ...context,
+    setup,
+    unstyled,
+    unrendered: config.unrenderedInTests,
+  })
   const files = [
     {
       path: `${dir}/${component}.tsx`,

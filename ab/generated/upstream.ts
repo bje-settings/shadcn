@@ -39,6 +39,20 @@ import * as marker from './upstream/marker'
 import * as message from './upstream/message'
 import * as bubble from './upstream/bubble'
 import * as attachment from './upstream/attachment'
+import * as dialog from './upstream/dialog'
+import * as alertDialog from './upstream/alert-dialog'
+import * as sheet from './upstream/sheet'
+import * as drawer from './upstream/drawer'
+import * as popover from './upstream/popover'
+import * as tooltip from './upstream/tooltip'
+import * as hoverCard from './upstream/hover-card'
+import * as dropdownMenu from './upstream/dropdown-menu'
+import * as contextMenu from './upstream/context-menu'
+import * as menubar from './upstream/menubar'
+import * as select from './upstream/select'
+import * as combobox from './upstream/combobox'
+import * as navigationMenu from './upstream/navigation-menu'
+import * as command from './upstream/command'
 
 export const upstream = {
   button: button,
@@ -80,4 +94,18 @@ export const upstream = {
   message: message,
   bubble: bubble,
   attachment: attachment,
+  dialog: dialog,
+  'alert-dialog': alertDialog,
+  sheet: sheet,
+  drawer: drawer,
+  popover: popover,
+  tooltip: tooltip,
+  'hover-card': hoverCard,
+  'dropdown-menu': dropdownMenu,
+  'context-menu': contextMenu,
+  menubar: menubar,
+  select: select,
+  combobox: combobox,
+  'navigation-menu': navigationMenu,
+  command: command,
 }

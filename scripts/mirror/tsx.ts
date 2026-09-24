@@ -62,7 +62,14 @@ export type RenderedComponent = {
   variantSet?: string
   // Destructured props with a literal default, as source text
   defaults: { prop: string; value: string }[]
+  // The error it throws outside its root, from a hook of this module it
+  // calls (DrawerContent's useDrawer)
+  throwsOutside?: string
 }
+
+// A hook the module declares, and the error it throws, if it throws one
+// (outside its provider).
+export type Hook = { name: string; throws?: string }
 
 // A group or peer marker class (`group/card`) and where it sits: the module
 // class of its element and the data-slot values that element renders.
@@ -75,6 +82,7 @@ export type Marker = {
 export type TransformedComponent = {
   code: string
   slots: Slot[]
+  hooks: Hook[]
   // Raw data-slot values each module class lands on
   dataSlots: Record<string, string[]>
   markers: Marker[]
@@ -698,9 +706,43 @@ export function transformComponent(
       .map((marker) => ({ marker, slot: slot.name, dataSlots: dataSlots[slot.name] ?? [] })),
   )
 
+  // Hooks, and the components that call one that throws.
+  const hooks: Hook[] = []
+  for (const statement of ast.program.body) {
+    const fn = statement.type === 'ExportNamedDeclaration' ? statement.declaration : statement
+    if (fn?.type !== 'FunctionDeclaration' || !fn.id || !/^use[A-Z]/.test(fn.id.name)) continue
+    let message: string | undefined
+    walk(fn, (node) => {
+      if (
+        message === undefined &&
+        node.type === 'ThrowStatement' &&
+        node.argument.type === 'NewExpression' &&
+        node.argument.arguments[0]?.type === 'StringLiteral'
+      ) {
+        message = node.argument.arguments[0].value
+      }
+      return true
+    })
+    hooks.push({ name: fn.id.name, ...(message !== undefined ? { throws: message } : {}) })
+  }
+  for (const statement of ast.program.body) {
+    const fn = statement.type === 'ExportNamedDeclaration' ? statement.declaration : statement
+    const record =
+      fn?.type === 'FunctionDeclaration' && fn.id ? components.get(fn.id.name) : undefined
+    if (!record || fn?.type !== 'FunctionDeclaration') continue
+    walk(fn, (node) => {
+      const hook = isCallTo(node) ? hooks.find((h) => h.name === node.callee.name) : undefined
+      if (hook?.throws !== undefined && record.throwsOutside === undefined) {
+        record.throwsOutside = hook.throws
+      }
+      return true
+    })
+  }
+
   return {
     code: out.toString(),
     slots,
+    hooks,
     dataSlots,
     markers,
     variantSets: [...cvas.values()].map((cva) => cva.set),

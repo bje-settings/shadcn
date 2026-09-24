@@ -1401,7 +1401,9 @@ export const fixtures = [
     children: true,
     overlay: false,
     label: 'Collapsible',
-    props: {},
+    props: {
+      defaultOpen: true,
+    },
   },
   {
     item: 'collapsible',
@@ -1412,6 +1414,10 @@ export const fixtures = [
         component: 'Collapsible',
         props: {
           defaultOpen: true,
+        },
+        trigger: {
+          component: 'CollapsibleTrigger',
+          props: {},
         },
       },
     ],
@@ -1429,6 +1435,10 @@ export const fixtures = [
         component: 'Collapsible',
         props: {
           defaultOpen: true,
+        },
+        trigger: {
+          component: 'CollapsibleTrigger',
+          props: {},
         },
       },
     ],
@@ -1529,7 +1539,9 @@ export const fixtures = [
     ancestors: [
       {
         component: 'Accordion',
-        props: {},
+        props: {
+          keepMounted: true,
+        },
       },
     ],
     children: true,
@@ -1544,7 +1556,9 @@ export const fixtures = [
     ancestors: [
       {
         component: 'Accordion',
-        props: {},
+        props: {
+          keepMounted: true,
+        },
       },
       {
         component: 'AccordionItem',
@@ -1563,7 +1577,9 @@ export const fixtures = [
     ancestors: [
       {
         component: 'Accordion',
-        props: {},
+        props: {
+          keepMounted: true,
+        },
       },
       {
         component: 'AccordionItem',
@@ -1843,7 +1859,23 @@ export const fixtures = [
     slot: 'field-separator',
     ancestors: [
       {
+        component: 'FieldGroup',
+        props: {},
+      },
+      {
+        component: 'FieldLabel',
+        props: {
+          htmlFor: 'checkbox-with-title',
+        },
+      },
+      {
         component: 'Field',
+        props: {
+          orientation: 'horizontal',
+        },
+      },
+      {
+        component: 'FieldContent',
         props: {},
       },
     ],
@@ -1858,7 +1890,23 @@ export const fixtures = [
     slot: 'field-error',
     ancestors: [
       {
+        component: 'FieldGroup',
+        props: {},
+      },
+      {
+        component: 'FieldLabel',
+        props: {
+          htmlFor: 'checkbox-with-title',
+        },
+      },
+      {
         component: 'Field',
+        props: {
+          orientation: 'horizontal',
+        },
+      },
+      {
+        component: 'FieldContent',
         props: {},
       },
     ],
@@ -3026,6 +3074,3190 @@ export const fixtures = [
     children: true,
     overlay: false,
     label: 'AttachmentGroup',
+    props: {},
+  },
+  {
+    item: 'dialog',
+    component: 'DialogTrigger',
+    slot: 'dialog-trigger',
+    ancestors: [
+      {
+        component: 'Dialog',
+        props: {
+          defaultOpen: true,
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DialogTrigger',
+    props: {},
+  },
+  {
+    item: 'dialog',
+    component: 'DialogPortal',
+    slot: 'dialog-portal',
+    ancestors: [
+      {
+        component: 'Dialog',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'DialogContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DialogPortal',
+    props: {
+      keepMounted: true,
+    },
+  },
+  {
+    item: 'dialog',
+    component: 'DialogClose',
+    slot: 'dialog-close',
+    ancestors: [
+      {
+        component: 'Dialog',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'DialogContent',
+        props: {},
+      },
+      {
+        component: 'DialogFooter',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DialogClose',
+    props: {},
+  },
+  {
+    item: 'dialog',
+    component: 'DialogOverlay',
+    slot: 'dialog-overlay',
+    ancestors: [
+      {
+        component: 'Dialog',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'DialogContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DialogOverlay',
+    props: {},
+  },
+  {
+    item: 'dialog',
+    component: 'DialogContent',
+    slot: 'dialog-content',
+    ancestors: [
+      {
+        component: 'Dialog',
+        props: {
+          defaultOpen: true,
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DialogContent',
+    props: {},
+  },
+  {
+    item: 'dialog',
+    component: 'DialogHeader',
+    slot: 'dialog-header',
+    ancestors: [
+      {
+        component: 'Dialog',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'DialogContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DialogHeader',
+    props: {},
+  },
+  {
+    item: 'dialog',
+    component: 'DialogFooter',
+    slot: 'dialog-footer',
+    ancestors: [
+      {
+        component: 'Dialog',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'DialogContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DialogFooter',
+    props: {},
+  },
+  {
+    item: 'dialog',
+    component: 'DialogTitle',
+    slot: 'dialog-title',
+    ancestors: [
+      {
+        component: 'Dialog',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'DialogContent',
+        props: {},
+      },
+      {
+        component: 'DialogHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DialogTitle',
+    props: {},
+  },
+  {
+    item: 'dialog',
+    component: 'DialogDescription',
+    slot: 'dialog-description',
+    ancestors: [
+      {
+        component: 'Dialog',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'DialogContent',
+        props: {},
+      },
+      {
+        component: 'DialogHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DialogDescription',
+    props: {},
+  },
+  {
+    item: 'alert-dialog',
+    component: 'AlertDialogTrigger',
+    slot: 'alert-dialog-trigger',
+    ancestors: [
+      {
+        component: 'AlertDialog',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'AlertDialogTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: false,
+    overlay: true,
+    label: 'AlertDialogTrigger',
+    props: {},
+  },
+  {
+    item: 'alert-dialog',
+    component: 'AlertDialogPortal',
+    slot: 'alert-dialog-portal',
+    ancestors: [
+      {
+        component: 'AlertDialog',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'AlertDialogTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'AlertDialogContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'AlertDialogPortal',
+    props: {
+      keepMounted: true,
+    },
+  },
+  {
+    item: 'alert-dialog',
+    component: 'AlertDialogOverlay',
+    slot: 'alert-dialog-overlay',
+    ancestors: [
+      {
+        component: 'AlertDialog',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'AlertDialogTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'AlertDialogContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'AlertDialogOverlay',
+    props: {},
+  },
+  {
+    item: 'alert-dialog',
+    component: 'AlertDialogContent',
+    slot: 'alert-dialog-content',
+    ancestors: [
+      {
+        component: 'AlertDialog',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'AlertDialogTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'AlertDialogContent',
+    props: {},
+  },
+  {
+    item: 'alert-dialog',
+    component: 'AlertDialogHeader',
+    slot: 'alert-dialog-header',
+    ancestors: [
+      {
+        component: 'AlertDialog',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'AlertDialogTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'AlertDialogContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'AlertDialogHeader',
+    props: {},
+  },
+  {
+    item: 'alert-dialog',
+    component: 'AlertDialogFooter',
+    slot: 'alert-dialog-footer',
+    ancestors: [
+      {
+        component: 'AlertDialog',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'AlertDialogTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'AlertDialogContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'AlertDialogFooter',
+    props: {},
+  },
+  {
+    item: 'alert-dialog',
+    component: 'AlertDialogMedia',
+    slot: 'alert-dialog-media',
+    ancestors: [
+      {
+        component: 'AlertDialog',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'AlertDialogTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'AlertDialogContent',
+        props: {},
+      },
+      {
+        component: 'AlertDialogHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'AlertDialogMedia',
+    props: {},
+  },
+  {
+    item: 'alert-dialog',
+    component: 'AlertDialogTitle',
+    slot: 'alert-dialog-title',
+    ancestors: [
+      {
+        component: 'AlertDialog',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'AlertDialogTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'AlertDialogContent',
+        props: {},
+      },
+      {
+        component: 'AlertDialogHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'AlertDialogTitle',
+    props: {},
+  },
+  {
+    item: 'alert-dialog',
+    component: 'AlertDialogDescription',
+    slot: 'alert-dialog-description',
+    ancestors: [
+      {
+        component: 'AlertDialog',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'AlertDialogTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'AlertDialogContent',
+        props: {},
+      },
+      {
+        component: 'AlertDialogHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'AlertDialogDescription',
+    props: {},
+  },
+  {
+    item: 'alert-dialog',
+    component: 'AlertDialogAction',
+    slot: 'alert-dialog-action',
+    ancestors: [
+      {
+        component: 'AlertDialog',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'AlertDialogTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'AlertDialogContent',
+        props: {},
+      },
+      {
+        component: 'AlertDialogFooter',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'AlertDialogAction',
+    props: {},
+  },
+  {
+    item: 'alert-dialog',
+    component: 'AlertDialogCancel',
+    slot: 'alert-dialog-cancel',
+    ancestors: [
+      {
+        component: 'AlertDialog',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'AlertDialogTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'AlertDialogContent',
+        props: {},
+      },
+      {
+        component: 'AlertDialogFooter',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'AlertDialogCancel',
+    props: {},
+  },
+  {
+    item: 'sheet',
+    component: 'SheetTrigger',
+    slot: 'sheet-trigger',
+    ancestors: [
+      {
+        component: 'Sheet',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'SheetTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SheetTrigger',
+    props: {},
+  },
+  {
+    item: 'sheet',
+    component: 'SheetClose',
+    slot: 'sheet-close',
+    ancestors: [
+      {
+        component: 'Sheet',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'SheetTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'SheetContent',
+        props: {},
+      },
+      {
+        component: 'SheetFooter',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SheetClose',
+    props: {},
+  },
+  {
+    item: 'sheet',
+    component: 'SheetContent',
+    slot: 'sheet-content',
+    ancestors: [
+      {
+        component: 'Sheet',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'SheetTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SheetContent',
+    props: {},
+  },
+  {
+    item: 'sheet',
+    component: 'SheetHeader',
+    slot: 'sheet-header',
+    ancestors: [
+      {
+        component: 'Sheet',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'SheetTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'SheetContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SheetHeader',
+    props: {},
+  },
+  {
+    item: 'sheet',
+    component: 'SheetFooter',
+    slot: 'sheet-footer',
+    ancestors: [
+      {
+        component: 'Sheet',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'SheetTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'SheetContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SheetFooter',
+    props: {},
+  },
+  {
+    item: 'sheet',
+    component: 'SheetTitle',
+    slot: 'sheet-title',
+    ancestors: [
+      {
+        component: 'Sheet',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'SheetTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'SheetContent',
+        props: {},
+      },
+      {
+        component: 'SheetHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SheetTitle',
+    props: {},
+  },
+  {
+    item: 'sheet',
+    component: 'SheetDescription',
+    slot: 'sheet-description',
+    ancestors: [
+      {
+        component: 'Sheet',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'SheetTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'SheetContent',
+        props: {},
+      },
+      {
+        component: 'SheetHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SheetDescription',
+    props: {},
+  },
+  {
+    item: 'drawer',
+    component: 'DrawerTrigger',
+    slot: 'drawer-trigger',
+    ancestors: [
+      {
+        component: 'Drawer',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DrawerTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DrawerTrigger',
+    props: {},
+  },
+  {
+    item: 'drawer',
+    component: 'DrawerPortal',
+    slot: 'drawer-portal',
+    ancestors: [
+      {
+        component: 'Drawer',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DrawerTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'DrawerContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DrawerPortal',
+    props: {
+      keepMounted: true,
+    },
+  },
+  {
+    item: 'drawer',
+    component: 'DrawerClose',
+    slot: 'drawer-close',
+    ancestors: [
+      {
+        component: 'Drawer',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DrawerTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'DrawerContent',
+        props: {},
+      },
+      {
+        component: 'DrawerFooter',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DrawerClose',
+    props: {},
+  },
+  {
+    item: 'drawer',
+    component: 'DrawerOverlay',
+    slot: 'drawer-overlay',
+    ancestors: [
+      {
+        component: 'Drawer',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DrawerTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'DrawerContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DrawerOverlay',
+    props: {},
+  },
+  {
+    item: 'drawer',
+    component: 'DrawerSwipeHandle',
+    slot: 'drawer-swipe-handle',
+    ancestors: [
+      {
+        component: 'Drawer',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DrawerTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'DrawerContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DrawerSwipeHandle',
+    props: {},
+  },
+  {
+    item: 'drawer',
+    component: 'DrawerContent',
+    slot: 'drawer-popup',
+    ancestors: [
+      {
+        component: 'Drawer',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DrawerTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DrawerContent',
+    props: {},
+  },
+  {
+    item: 'drawer',
+    component: 'DrawerHeader',
+    slot: 'drawer-header',
+    ancestors: [
+      {
+        component: 'Drawer',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DrawerTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'DrawerContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DrawerHeader',
+    props: {},
+  },
+  {
+    item: 'drawer',
+    component: 'DrawerFooter',
+    slot: 'drawer-footer',
+    ancestors: [
+      {
+        component: 'Drawer',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DrawerTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'DrawerContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DrawerFooter',
+    props: {},
+  },
+  {
+    item: 'drawer',
+    component: 'DrawerTitle',
+    slot: 'drawer-title',
+    ancestors: [
+      {
+        component: 'Drawer',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DrawerTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'DrawerContent',
+        props: {},
+      },
+      {
+        component: 'DrawerHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DrawerTitle',
+    props: {},
+  },
+  {
+    item: 'drawer',
+    component: 'DrawerDescription',
+    slot: 'drawer-description',
+    ancestors: [
+      {
+        component: 'Drawer',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DrawerTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'DrawerContent',
+        props: {},
+      },
+      {
+        component: 'DrawerHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DrawerDescription',
+    props: {},
+  },
+  {
+    item: 'popover',
+    component: 'PopoverTrigger',
+    slot: 'popover-trigger',
+    ancestors: [
+      {
+        component: 'Popover',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'PopoverTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'PopoverTrigger',
+    props: {},
+  },
+  {
+    item: 'popover',
+    component: 'PopoverContent',
+    slot: 'popover-content',
+    ancestors: [
+      {
+        component: 'Popover',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'PopoverTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'PopoverContent',
+    props: {},
+  },
+  {
+    item: 'popover',
+    component: 'PopoverHeader',
+    slot: 'popover-header',
+    ancestors: [
+      {
+        component: 'Popover',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'PopoverTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'PopoverContent',
+        props: {
+          align: 'start',
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'PopoverHeader',
+    props: {},
+  },
+  {
+    item: 'popover',
+    component: 'PopoverTitle',
+    slot: 'popover-title',
+    ancestors: [
+      {
+        component: 'Popover',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'PopoverTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'PopoverContent',
+        props: {
+          align: 'start',
+        },
+      },
+      {
+        component: 'PopoverHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'PopoverTitle',
+    props: {},
+  },
+  {
+    item: 'popover',
+    component: 'PopoverDescription',
+    slot: 'popover-description',
+    ancestors: [
+      {
+        component: 'Popover',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'PopoverTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'PopoverContent',
+        props: {
+          align: 'start',
+        },
+      },
+      {
+        component: 'PopoverHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'PopoverDescription',
+    props: {},
+  },
+  {
+    item: 'tooltip',
+    component: 'TooltipTrigger',
+    slot: 'tooltip-trigger',
+    ancestors: [
+      {
+        component: 'Tooltip',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'TooltipTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'TooltipTrigger',
+    props: {},
+  },
+  {
+    item: 'tooltip',
+    component: 'TooltipContent',
+    slot: 'tooltip-content',
+    ancestors: [
+      {
+        component: 'Tooltip',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'TooltipTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'TooltipContent',
+    props: {},
+  },
+  {
+    item: 'hover-card',
+    component: 'HoverCardTrigger',
+    slot: 'hover-card-trigger',
+    ancestors: [
+      {
+        component: 'HoverCard',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'HoverCardTrigger',
+          props: {
+            delay: 100,
+            closeDelay: 100,
+          },
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'HoverCardTrigger',
+    props: {
+      delay: 100,
+      closeDelay: 100,
+    },
+  },
+  {
+    item: 'hover-card',
+    component: 'HoverCardContent',
+    slot: 'hover-card-content',
+    ancestors: [
+      {
+        component: 'HoverCard',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'HoverCardTrigger',
+          props: {
+            delay: 100,
+            closeDelay: 100,
+          },
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'HoverCardContent',
+    props: {},
+  },
+  {
+    item: 'dropdown-menu',
+    component: 'DropdownMenuPortal',
+    slot: 'dropdown-menu-portal',
+    ancestors: [
+      {
+        component: 'DropdownMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DropdownMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'DropdownMenuContent',
+        props: {},
+      },
+      {
+        component: 'DropdownMenuGroup',
+        props: {},
+      },
+      {
+        component: 'DropdownMenuSub',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DropdownMenuSubTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DropdownMenuPortal',
+    props: {
+      keepMounted: true,
+    },
+  },
+  {
+    item: 'dropdown-menu',
+    component: 'DropdownMenuTrigger',
+    slot: 'dropdown-menu-trigger',
+    ancestors: [
+      {
+        component: 'DropdownMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DropdownMenuTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DropdownMenuTrigger',
+    props: {},
+  },
+  {
+    item: 'dropdown-menu',
+    component: 'DropdownMenuContent',
+    slot: 'dropdown-menu-content',
+    ancestors: [
+      {
+        component: 'DropdownMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DropdownMenuTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DropdownMenuContent',
+    props: {},
+  },
+  {
+    item: 'dropdown-menu',
+    component: 'DropdownMenuGroup',
+    slot: 'dropdown-menu-group',
+    ancestors: [
+      {
+        component: 'DropdownMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DropdownMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'DropdownMenuContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DropdownMenuGroup',
+    props: {},
+  },
+  {
+    item: 'dropdown-menu',
+    component: 'DropdownMenuLabel',
+    slot: 'dropdown-menu-label',
+    ancestors: [
+      {
+        component: 'DropdownMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DropdownMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'DropdownMenuContent',
+        props: {},
+      },
+      {
+        component: 'DropdownMenuGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DropdownMenuLabel',
+    props: {},
+  },
+  {
+    item: 'dropdown-menu',
+    component: 'DropdownMenuItem',
+    slot: 'dropdown-menu-item',
+    ancestors: [
+      {
+        component: 'DropdownMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DropdownMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'DropdownMenuContent',
+        props: {},
+      },
+      {
+        component: 'DropdownMenuGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DropdownMenuItem',
+    props: {},
+  },
+  {
+    item: 'dropdown-menu',
+    component: 'DropdownMenuSubTrigger',
+    slot: 'dropdown-menu-sub-trigger',
+    ancestors: [
+      {
+        component: 'DropdownMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DropdownMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'DropdownMenuContent',
+        props: {},
+      },
+      {
+        component: 'DropdownMenuGroup',
+        props: {},
+      },
+      {
+        component: 'DropdownMenuSub',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DropdownMenuSubTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DropdownMenuSubTrigger',
+    props: {},
+  },
+  {
+    item: 'dropdown-menu',
+    component: 'DropdownMenuSubContent',
+    slot: 'dropdown-menu-sub-content',
+    ancestors: [
+      {
+        component: 'DropdownMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DropdownMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'DropdownMenuContent',
+        props: {},
+      },
+      {
+        component: 'DropdownMenuGroup',
+        props: {},
+      },
+      {
+        component: 'DropdownMenuSub',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DropdownMenuSubTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'DropdownMenuPortal',
+        props: {
+          keepMounted: true,
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DropdownMenuSubContent',
+    props: {},
+  },
+  {
+    item: 'dropdown-menu',
+    component: 'DropdownMenuCheckboxItem',
+    slot: 'dropdown-menu-checkbox-item',
+    ancestors: [
+      {
+        component: 'DropdownMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DropdownMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'DropdownMenuContent',
+        props: {},
+      },
+      {
+        component: 'DropdownMenuGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DropdownMenuCheckboxItem',
+    props: {},
+  },
+  {
+    item: 'dropdown-menu',
+    component: 'DropdownMenuRadioGroup',
+    slot: 'dropdown-menu-radio-group',
+    ancestors: [
+      {
+        component: 'DropdownMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DropdownMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'DropdownMenuContent',
+        props: {},
+      },
+      {
+        component: 'DropdownMenuGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DropdownMenuRadioGroup',
+    props: {},
+  },
+  {
+    item: 'dropdown-menu',
+    component: 'DropdownMenuRadioItem',
+    slot: 'dropdown-menu-radio-item',
+    ancestors: [
+      {
+        component: 'DropdownMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DropdownMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'DropdownMenuContent',
+        props: {},
+      },
+      {
+        component: 'DropdownMenuGroup',
+        props: {},
+      },
+      {
+        component: 'DropdownMenuRadioGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DropdownMenuRadioItem',
+    props: {
+      value: 'top',
+    },
+  },
+  {
+    item: 'dropdown-menu',
+    component: 'DropdownMenuSeparator',
+    slot: 'dropdown-menu-separator',
+    ancestors: [
+      {
+        component: 'DropdownMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DropdownMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'DropdownMenuContent',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: true,
+    label: 'DropdownMenuSeparator',
+    props: {},
+  },
+  {
+    item: 'dropdown-menu',
+    component: 'DropdownMenuShortcut',
+    slot: 'dropdown-menu-shortcut',
+    ancestors: [
+      {
+        component: 'DropdownMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'DropdownMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'DropdownMenuContent',
+        props: {},
+      },
+      {
+        component: 'DropdownMenuGroup',
+        props: {},
+      },
+      {
+        component: 'DropdownMenuItem',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'DropdownMenuShortcut',
+    props: {},
+  },
+  {
+    item: 'context-menu',
+    component: 'ContextMenuPortal',
+    slot: 'context-menu-portal',
+    ancestors: [
+      {
+        component: 'ContextMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'ContextMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'ContextMenuContent',
+        props: {},
+      },
+      {
+        component: 'ContextMenuGroup',
+        props: {},
+      },
+      {
+        component: 'ContextMenuItem',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ContextMenuPortal',
+    props: {
+      keepMounted: true,
+    },
+  },
+  {
+    item: 'context-menu',
+    component: 'ContextMenuTrigger',
+    slot: 'context-menu-trigger',
+    ancestors: [
+      {
+        component: 'ContextMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'ContextMenuTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ContextMenuTrigger',
+    props: {},
+  },
+  {
+    item: 'context-menu',
+    component: 'ContextMenuContent',
+    slot: 'context-menu-content',
+    ancestors: [
+      {
+        component: 'ContextMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'ContextMenuTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ContextMenuContent',
+    props: {},
+  },
+  {
+    item: 'context-menu',
+    component: 'ContextMenuGroup',
+    slot: 'context-menu-group',
+    ancestors: [
+      {
+        component: 'ContextMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'ContextMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'ContextMenuContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ContextMenuGroup',
+    props: {},
+  },
+  {
+    item: 'context-menu',
+    component: 'ContextMenuLabel',
+    slot: 'context-menu-label',
+    ancestors: [
+      {
+        component: 'ContextMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'ContextMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'ContextMenuContent',
+        props: {},
+      },
+      {
+        component: 'ContextMenuGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ContextMenuLabel',
+    props: {},
+  },
+  {
+    item: 'context-menu',
+    component: 'ContextMenuItem',
+    slot: 'context-menu-item',
+    ancestors: [
+      {
+        component: 'ContextMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'ContextMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'ContextMenuContent',
+        props: {},
+      },
+      {
+        component: 'ContextMenuGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ContextMenuItem',
+    props: {},
+  },
+  {
+    item: 'context-menu',
+    component: 'ContextMenuSubTrigger',
+    slot: 'context-menu-sub-trigger',
+    ancestors: [
+      {
+        component: 'ContextMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'ContextMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'ContextMenuContent',
+        props: {},
+      },
+      {
+        component: 'ContextMenuSub',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'ContextMenuSubTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ContextMenuSubTrigger',
+    props: {},
+  },
+  {
+    item: 'context-menu',
+    component: 'ContextMenuSubContent',
+    slot: 'context-menu-sub-content',
+    ancestors: [
+      {
+        component: 'ContextMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'ContextMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'ContextMenuContent',
+        props: {},
+      },
+      {
+        component: 'ContextMenuSub',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'ContextMenuSubTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ContextMenuSubContent',
+    props: {},
+  },
+  {
+    item: 'context-menu',
+    component: 'ContextMenuCheckboxItem',
+    slot: 'context-menu-checkbox-item',
+    ancestors: [
+      {
+        component: 'ContextMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'ContextMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'ContextMenuContent',
+        props: {},
+      },
+      {
+        component: 'ContextMenuGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ContextMenuCheckboxItem',
+    props: {
+      defaultChecked: true,
+    },
+  },
+  {
+    item: 'context-menu',
+    component: 'ContextMenuRadioGroup',
+    slot: 'context-menu-radio-group',
+    ancestors: [
+      {
+        component: 'ContextMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'ContextMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'ContextMenuContent',
+        props: {},
+      },
+      {
+        component: 'ContextMenuGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ContextMenuRadioGroup',
+    props: {},
+  },
+  {
+    item: 'context-menu',
+    component: 'ContextMenuRadioItem',
+    slot: 'context-menu-radio-item',
+    ancestors: [
+      {
+        component: 'ContextMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'ContextMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'ContextMenuContent',
+        props: {},
+      },
+      {
+        component: 'ContextMenuGroup',
+        props: {},
+      },
+      {
+        component: 'ContextMenuRadioGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ContextMenuRadioItem',
+    props: {
+      value: 'pedro',
+    },
+  },
+  {
+    item: 'context-menu',
+    component: 'ContextMenuSeparator',
+    slot: 'context-menu-separator',
+    ancestors: [
+      {
+        component: 'ContextMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'ContextMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'ContextMenuContent',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: true,
+    label: 'ContextMenuSeparator',
+    props: {},
+  },
+  {
+    item: 'context-menu',
+    component: 'ContextMenuShortcut',
+    slot: 'context-menu-shortcut',
+    ancestors: [
+      {
+        component: 'ContextMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'ContextMenuTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'ContextMenuContent',
+        props: {},
+      },
+      {
+        component: 'ContextMenuGroup',
+        props: {},
+      },
+      {
+        component: 'ContextMenuItem',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ContextMenuShortcut',
+    props: {},
+  },
+  {
+    item: 'menubar',
+    component: 'Menubar',
+    slot: 'menubar',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Menubar',
+    props: {},
+  },
+  {
+    item: 'menubar',
+    component: 'MenubarGroup',
+    slot: 'menubar-group',
+    ancestors: [
+      {
+        component: 'Menubar',
+        props: {},
+      },
+      {
+        component: 'MenubarMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'MenubarTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'MenubarContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'MenubarGroup',
+    props: {},
+  },
+  {
+    item: 'menubar',
+    component: 'MenubarPortal',
+    slot: 'menubar-portal',
+    ancestors: [
+      {
+        component: 'Menubar',
+        props: {},
+      },
+      {
+        component: 'MenubarMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'MenubarTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'MenubarContent',
+        props: {},
+      },
+      {
+        component: 'MenubarItem',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'MenubarPortal',
+    props: {
+      keepMounted: true,
+    },
+  },
+  {
+    item: 'menubar',
+    component: 'MenubarTrigger',
+    slot: 'menubar-trigger',
+    ancestors: [
+      {
+        component: 'Menubar',
+        props: {},
+      },
+      {
+        component: 'MenubarMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'MenubarTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'MenubarTrigger',
+    props: {},
+  },
+  {
+    item: 'menubar',
+    component: 'MenubarContent',
+    slot: 'menubar-content',
+    ancestors: [
+      {
+        component: 'Menubar',
+        props: {},
+      },
+      {
+        component: 'MenubarMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'MenubarTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'MenubarContent',
+    props: {},
+  },
+  {
+    item: 'menubar',
+    component: 'MenubarItem',
+    slot: 'menubar-item',
+    ancestors: [
+      {
+        component: 'Menubar',
+        props: {},
+      },
+      {
+        component: 'MenubarMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'MenubarTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'MenubarContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'MenubarItem',
+    props: {},
+  },
+  {
+    item: 'menubar',
+    component: 'MenubarCheckboxItem',
+    slot: 'menubar-checkbox-item',
+    ancestors: [
+      {
+        component: 'Menubar',
+        props: {},
+      },
+      {
+        component: 'MenubarMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'MenubarTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'MenubarContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'MenubarCheckboxItem',
+    props: {},
+  },
+  {
+    item: 'menubar',
+    component: 'MenubarRadioGroup',
+    slot: 'menubar-radio-group',
+    ancestors: [
+      {
+        component: 'Menubar',
+        props: {},
+      },
+      {
+        component: 'MenubarMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'MenubarTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'MenubarContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'MenubarRadioGroup',
+    props: {},
+  },
+  {
+    item: 'menubar',
+    component: 'MenubarRadioItem',
+    slot: 'menubar-radio-item',
+    ancestors: [
+      {
+        component: 'Menubar',
+        props: {},
+      },
+      {
+        component: 'MenubarMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'MenubarTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'MenubarContent',
+        props: {},
+      },
+      {
+        component: 'MenubarRadioGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'MenubarRadioItem',
+    props: {
+      value: 'andy',
+    },
+  },
+  {
+    item: 'menubar',
+    component: 'MenubarLabel',
+    slot: 'menubar-label',
+    ancestors: [
+      {
+        component: 'Menubar',
+        props: {},
+      },
+      {
+        component: 'MenubarMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'MenubarTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'MenubarContent',
+        props: {},
+      },
+      {
+        component: 'MenubarGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'MenubarLabel',
+    props: {},
+  },
+  {
+    item: 'menubar',
+    component: 'MenubarSeparator',
+    slot: 'menubar-separator',
+    ancestors: [
+      {
+        component: 'Menubar',
+        props: {},
+      },
+      {
+        component: 'MenubarMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'MenubarTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'MenubarContent',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: true,
+    label: 'MenubarSeparator',
+    props: {},
+  },
+  {
+    item: 'menubar',
+    component: 'MenubarShortcut',
+    slot: 'menubar-shortcut',
+    ancestors: [
+      {
+        component: 'Menubar',
+        props: {},
+      },
+      {
+        component: 'MenubarMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'MenubarTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'MenubarContent',
+        props: {},
+      },
+      {
+        component: 'MenubarItem',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'MenubarShortcut',
+    props: {},
+  },
+  {
+    item: 'menubar',
+    component: 'MenubarSubTrigger',
+    slot: 'menubar-sub-trigger',
+    ancestors: [
+      {
+        component: 'Menubar',
+        props: {},
+      },
+      {
+        component: 'MenubarMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'MenubarTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'MenubarContent',
+        props: {},
+      },
+      {
+        component: 'MenubarSub',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'MenubarSubTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'MenubarSubTrigger',
+    props: {},
+  },
+  {
+    item: 'menubar',
+    component: 'MenubarSubContent',
+    slot: 'menubar-sub-content',
+    ancestors: [
+      {
+        component: 'Menubar',
+        props: {},
+      },
+      {
+        component: 'MenubarMenu',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'MenubarTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'MenubarContent',
+        props: {},
+      },
+      {
+        component: 'MenubarSub',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'MenubarSubTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'MenubarSubContent',
+    props: {},
+  },
+  {
+    item: 'select',
+    component: 'SelectGroup',
+    slot: 'select-group',
+    ancestors: [
+      {
+        component: 'Select',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'SelectTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'SelectContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SelectGroup',
+    props: {},
+  },
+  {
+    item: 'select',
+    component: 'SelectValue',
+    slot: 'select-value',
+    ancestors: [
+      {
+        component: 'Select',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'SelectTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'SelectTrigger',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: true,
+    label: 'SelectValue',
+    props: {},
+  },
+  {
+    item: 'select',
+    component: 'SelectTrigger',
+    slot: 'select-trigger',
+    ancestors: [
+      {
+        component: 'Select',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'SelectTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SelectTrigger',
+    props: {},
+  },
+  {
+    item: 'select',
+    component: 'SelectContent',
+    slot: 'select-content',
+    ancestors: [
+      {
+        component: 'Select',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'SelectTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SelectContent',
+    props: {},
+  },
+  {
+    item: 'select',
+    component: 'SelectLabel',
+    slot: 'select-label',
+    ancestors: [
+      {
+        component: 'Select',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'SelectTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'SelectContent',
+        props: {},
+      },
+      {
+        component: 'SelectGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SelectLabel',
+    props: {},
+  },
+  {
+    item: 'select',
+    component: 'SelectItem',
+    slot: 'select-item',
+    ancestors: [
+      {
+        component: 'Select',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'SelectTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'SelectContent',
+        props: {},
+      },
+      {
+        component: 'SelectGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SelectItem',
+    props: {},
+  },
+  {
+    item: 'select',
+    component: 'SelectSeparator',
+    slot: 'select-separator',
+    ancestors: [
+      {
+        component: 'Select',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'SelectTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'SelectContent',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: true,
+    label: 'SelectSeparator',
+    props: {},
+  },
+  {
+    item: 'select',
+    component: 'SelectScrollUpButton',
+    slot: 'select-scroll-up-button',
+    ancestors: [
+      {
+        component: 'Select',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'SelectTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'SelectContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SelectScrollUpButton',
+    props: {
+      keepMounted: true,
+    },
+  },
+  {
+    item: 'select',
+    component: 'SelectScrollDownButton',
+    slot: 'select-scroll-down-button',
+    ancestors: [
+      {
+        component: 'Select',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'SelectTrigger',
+          props: {},
+        },
+      },
+      {
+        component: 'SelectContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'SelectScrollDownButton',
+    props: {
+      keepMounted: true,
+    },
+  },
+  {
+    item: 'combobox',
+    component: 'ComboboxTrigger',
+    slot: 'combobox-trigger',
+    ancestors: [
+      {
+        component: 'Combobox',
+        props: {
+          defaultOpen: true,
+        },
+        trigger: {
+          component: 'ComboboxTrigger',
+          props: {},
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ComboboxTrigger',
+    props: {},
+  },
+  {
+    item: 'combobox',
+    component: 'ComboboxInput',
+    ancestors: [
+      {
+        component: 'Combobox',
+        props: {
+          defaultOpen: true,
+        },
+      },
+    ],
+    children: false,
+    overlay: true,
+    label: 'ComboboxInput',
+    props: {
+      placeholder: 'Select a framework',
+    },
+  },
+  {
+    item: 'combobox',
+    component: 'ComboboxContent',
+    slot: 'combobox-content',
+    ancestors: [
+      {
+        component: 'Combobox',
+        props: {
+          defaultOpen: true,
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ComboboxContent',
+    props: {},
+  },
+  {
+    item: 'combobox',
+    component: 'ComboboxList',
+    slot: 'combobox-list',
+    ancestors: [
+      {
+        component: 'Combobox',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'ComboboxContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ComboboxList',
+    props: {},
+  },
+  {
+    item: 'combobox',
+    component: 'ComboboxItem',
+    slot: 'combobox-item',
+    ancestors: [
+      {
+        component: 'Combobox',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'ComboboxContent',
+        props: {},
+      },
+      {
+        component: 'ComboboxList',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ComboboxItem',
+    props: {},
+  },
+  {
+    item: 'combobox',
+    component: 'ComboboxGroup',
+    slot: 'combobox-group',
+    ancestors: [
+      {
+        component: 'Combobox',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'ComboboxContent',
+        props: {},
+      },
+      {
+        component: 'ComboboxList',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ComboboxGroup',
+    props: {},
+  },
+  {
+    item: 'combobox',
+    component: 'ComboboxLabel',
+    slot: 'combobox-label',
+    ancestors: [
+      {
+        component: 'Combobox',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'ComboboxContent',
+        props: {},
+      },
+      {
+        component: 'ComboboxList',
+        props: {},
+      },
+      {
+        component: 'ComboboxGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ComboboxLabel',
+    props: {},
+  },
+  {
+    item: 'combobox',
+    component: 'ComboboxEmpty',
+    slot: 'combobox-empty',
+    ancestors: [
+      {
+        component: 'Combobox',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'ComboboxContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ComboboxEmpty',
+    props: {},
+  },
+  {
+    item: 'combobox',
+    component: 'ComboboxSeparator',
+    slot: 'combobox-separator',
+    ancestors: [
+      {
+        component: 'Combobox',
+        props: {
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'ComboboxContent',
+        props: {},
+      },
+      {
+        component: 'ComboboxList',
+        props: {},
+      },
+      {
+        component: 'ComboboxGroup',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: true,
+    label: 'ComboboxSeparator',
+    props: {},
+  },
+  {
+    item: 'combobox',
+    component: 'ComboboxChips',
+    slot: 'combobox-chips',
+    ancestors: [
+      {
+        component: 'Combobox',
+        props: {
+          multiple: true,
+          autoHighlight: true,
+          defaultOpen: true,
+        },
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ComboboxChips',
+    props: {},
+  },
+  {
+    item: 'combobox',
+    component: 'ComboboxChip',
+    slot: 'combobox-chip',
+    ancestors: [
+      {
+        component: 'Combobox',
+        props: {
+          multiple: true,
+          autoHighlight: true,
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'ComboboxChips',
+        props: {},
+      },
+      {
+        component: 'ComboboxValue',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: true,
+    label: 'ComboboxChip',
+    props: {},
+  },
+  {
+    item: 'combobox',
+    component: 'ComboboxChipsInput',
+    slot: 'combobox-chip-input',
+    ancestors: [
+      {
+        component: 'Combobox',
+        props: {
+          multiple: true,
+          autoHighlight: true,
+          defaultOpen: true,
+        },
+      },
+      {
+        component: 'ComboboxChips',
+        props: {},
+      },
+      {
+        component: 'ComboboxValue',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: true,
+    label: 'ComboboxChipsInput',
+    props: {},
+  },
+  {
+    item: 'navigation-menu',
+    component: 'NavigationMenu',
+    slot: 'navigation-menu',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'NavigationMenu',
+    props: {},
+  },
+  {
+    item: 'navigation-menu',
+    component: 'NavigationMenuList',
+    slot: 'navigation-menu-list',
+    ancestors: [
+      {
+        component: 'NavigationMenu',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'NavigationMenuList',
+    props: {},
+  },
+  {
+    item: 'navigation-menu',
+    component: 'NavigationMenuItem',
+    slot: 'navigation-menu-item',
+    ancestors: [
+      {
+        component: 'NavigationMenu',
+        props: {},
+      },
+      {
+        component: 'NavigationMenuList',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'NavigationMenuItem',
+    props: {},
+  },
+  {
+    item: 'navigation-menu',
+    component: 'NavigationMenuTrigger',
+    slot: 'navigation-menu-trigger',
+    ancestors: [
+      {
+        component: 'NavigationMenu',
+        props: {},
+      },
+      {
+        component: 'NavigationMenuList',
+        props: {},
+      },
+      {
+        component: 'NavigationMenuItem',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'NavigationMenuTrigger',
+    props: {},
+  },
+  {
+    item: 'navigation-menu',
+    component: 'NavigationMenuContent',
+    slot: 'navigation-menu-content',
+    ancestors: [
+      {
+        component: 'NavigationMenu',
+        props: {},
+      },
+      {
+        component: 'NavigationMenuList',
+        props: {},
+      },
+      {
+        component: 'NavigationMenuItem',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'NavigationMenuContent',
+    props: {
+      keepMounted: true,
+    },
+  },
+  {
+    item: 'navigation-menu',
+    component: 'NavigationMenuPositioner',
+    ancestors: [
+      {
+        component: 'NavigationMenu',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'NavigationMenuPositioner',
+    props: {},
+  },
+  {
+    item: 'navigation-menu',
+    component: 'NavigationMenuLink',
+    slot: 'navigation-menu-link',
+    ancestors: [
+      {
+        component: 'NavigationMenu',
+        props: {},
+      },
+      {
+        component: 'NavigationMenuList',
+        props: {},
+      },
+      {
+        component: 'NavigationMenuItem',
+        props: {},
+      },
+      {
+        component: 'NavigationMenuContent',
+        props: {
+          keepMounted: true,
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'NavigationMenuLink',
+    props: {},
+  },
+  {
+    item: 'navigation-menu',
+    component: 'NavigationMenuIndicator',
+    slot: 'navigation-menu-indicator',
+    ancestors: [
+      {
+        component: 'NavigationMenu',
+        props: {},
+      },
+      {
+        component: 'NavigationMenuList',
+        props: {},
+      },
+      {
+        component: 'NavigationMenuItem',
+        props: {},
+      },
+      {
+        component: 'NavigationMenuContent',
+        props: {
+          keepMounted: true,
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'NavigationMenuIndicator',
+    props: {},
+  },
+  {
+    item: 'command',
+    component: 'Command',
+    slot: 'command',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Command',
+    props: {},
+  },
+  {
+    item: 'command',
+    component: 'CommandDialog',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'CommandDialog',
+    props: {
+      defaultOpen: true,
+    },
+  },
+  {
+    item: 'command',
+    component: 'CommandInput',
+    slot: 'command-input',
+    ancestors: [
+      {
+        component: 'Command',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'CommandInput',
+    props: {
+      placeholder: 'Type a command or search...',
+    },
+  },
+  {
+    item: 'command',
+    component: 'CommandList',
+    slot: 'command-list',
+    ancestors: [
+      {
+        component: 'Command',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'CommandList',
+    props: {},
+  },
+  {
+    item: 'command',
+    component: 'CommandEmpty',
+    slot: 'command-empty',
+    ancestors: [
+      {
+        component: 'Command',
+        props: {},
+      },
+      {
+        component: 'CommandList',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'CommandEmpty',
+    props: {},
+  },
+  {
+    item: 'command',
+    component: 'CommandGroup',
+    slot: 'command-group',
+    ancestors: [
+      {
+        component: 'Command',
+        props: {},
+      },
+      {
+        component: 'CommandList',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'CommandGroup',
+    props: {
+      heading: 'Suggestions',
+    },
+  },
+  {
+    item: 'command',
+    component: 'CommandSeparator',
+    slot: 'command-separator',
+    ancestors: [
+      {
+        component: 'Command',
+        props: {},
+      },
+      {
+        component: 'CommandList',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'CommandSeparator',
+    props: {},
+  },
+  {
+    item: 'command',
+    component: 'CommandItem',
+    slot: 'command-item',
+    ancestors: [
+      {
+        component: 'Command',
+        props: {},
+      },
+      {
+        component: 'CommandList',
+        props: {},
+      },
+      {
+        component: 'CommandGroup',
+        props: {
+          heading: 'Suggestions',
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'CommandItem',
+    props: {},
+  },
+  {
+    item: 'command',
+    component: 'CommandShortcut',
+    slot: 'command-shortcut',
+    ancestors: [
+      {
+        component: 'Command',
+        props: {},
+      },
+      {
+        component: 'CommandList',
+        props: {},
+      },
+      {
+        component: 'CommandGroup',
+        props: {
+          heading: 'Settings',
+        },
+      },
+      {
+        component: 'CommandItem',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'CommandShortcut',
     props: {},
   },
 ]

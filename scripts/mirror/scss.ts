@@ -28,6 +28,9 @@ export type ScssBlock = {
   // Custom properties the block reads but does not set: the global variables
   // file has to provide them.
   customProperties: string[]
+  // No rule came out: Sass drops the empty block, so the module exports no
+  // class for it (a slot holding only a group marker).
+  empty: boolean
   // Why rules were dropped here: a consumer class or an absent marker.
   dropped: string[]
 }
@@ -43,6 +46,8 @@ export type SlotOptions = {
   // peer markers become the selector `markers` gives them; any other outside
   // class would never be on an element here.
   globalClasses: Set<string>
+  // Upstream classes known to compile to nothing
+  withoutCss: Set<string>
   // Selector each group/peer marker class becomes: the data-slot of the
   // elements carrying it (`[data-slot="card"]` for `group/card`), or their
   // module class when they render none.
@@ -257,7 +262,7 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
   })
 
   const unresolved = slot.classes.filter((c) => !resolved.has(c))
-  const unknown = unresolved.filter((c) => !MARKER.test(c))
+  const unknown = unresolved.filter((c) => !MARKER.test(c) && !options.withoutCss.has(c))
   if (unknown.length > 0) {
     throw new Error(`${slot.name}: Tailwind produced no CSS for ${unknown.join(' ')}`)
   }
@@ -268,6 +273,7 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
       .join('\n'),
     unresolved,
     customProperties: [...reads].filter((name) => !sets.has(name)).sort(),
+    empty: root.items.length === 0 && context.items.length === 0,
     dropped: [...dropped],
   }
 }

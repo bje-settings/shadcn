@@ -35,6 +35,7 @@ function attributesOfToggleGroup(
   props: Partial<Record<keyof ComponentProps<typeof ToggleGroup>, unknown>> = {},
 ) {
   const element = renderToggleGroup(props)
+  expect(element).toBeTruthy()
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
   )
@@ -268,6 +269,7 @@ function attributesOfToggleGroupItem(
   props: Partial<Record<keyof ComponentProps<typeof ToggleGroupItem>, unknown>> = {},
 ) {
   const element = renderToggleGroupItem(props)
+  expect(element).toBeTruthy()
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
   )

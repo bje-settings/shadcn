@@ -43,6 +43,7 @@ function attributesOfAttachment(
   props: Partial<Record<keyof ComponentProps<typeof Attachment>, unknown>> = {},
 ) {
   const element = renderAttachment(props)
+  expect(element).toBeTruthy()
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
   )
@@ -1506,6 +1507,7 @@ function attributesOfAttachmentAction(
   props: Partial<Record<keyof ComponentProps<typeof AttachmentAction>, unknown>> = {},
 ) {
   const element = renderAttachmentAction(props)
+  expect(element).toBeTruthy()
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
   )

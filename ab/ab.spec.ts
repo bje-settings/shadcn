@@ -48,8 +48,10 @@ async function open(browser: Browser, side: Side, theme: Theme): Promise<Page> {
   return page
 }
 
-// Shows one case and waits for it, its fonts and its images: a Base UI
-// avatar swaps its fallback for the image once it loads.
+// Shows one case and waits for it to settle: its fonts and images (a Base UI
+// avatar swaps its fallback for the image once it loads), then its finite
+// animations (a popup's open transition) and two more frames, in which
+// Base UI moves initial focus and measures positioned popups.
 async function show(page: Page, c: Case): Promise<void> {
   await page.evaluate((id) => {
     ;(window as Window & { showCase?: (id: string) => void }).showCase?.(id)
@@ -62,6 +64,24 @@ async function show(page: Page, c: Case): Promise<void> {
     .evaluateAll((images) =>
       Promise.all(images.map((image) => (image as HTMLImageElement).decode().catch(() => {}))),
     )
+  await page.evaluate(async () => {
+    // Time-based and finite: a scroll-driven animation (an attachment
+    // group's edge fade) or an endless spinner never finishes.
+    const finite = document
+      .getAnimations()
+      .filter(
+        (animation) =>
+          animation.timeline instanceof DocumentTimeline &&
+          animation.effect?.getTiming().iterations !== Number.POSITIVE_INFINITY,
+      )
+    await Promise.race([
+      Promise.all(finite.map((animation) => animation.finished.catch(() => {}))),
+      new Promise((resolve) => setTimeout(resolve, 2000)),
+    ])
+    for (let frame = 0; frame < 2; frame++) {
+      await new Promise((resolve) => requestAnimationFrame(resolve))
+    }
+  })
 }
 
 const test = base.extend<object, { pages: Pages }>({
@@ -90,17 +110,25 @@ function target(page: Page, c: Case) {
 }
 
 // Whether a state can change how the case's element renders: anything with a
-// box can be hovered, but only focusable elements take focus and only form
-// controls honour `disabled`. Other combinations would only repeat the rest
-// case.
+// box in the viewport can be hovered, only an element that holds keyboard
+// focus when given it (not one hidden in a closed panel) takes focus, and
+// only form controls honour `disabled`. Other combinations would only repeat
+// the rest case.
 async function applies(page: Page, c: Case): Promise<boolean> {
   if (c.state === 'rest') return true
   return target(page, c).evaluate((element, state) => {
-    if (state === 'hover') {
-      const { width, height } = element.getBoundingClientRect()
-      return width > 0 && height > 0
+    if (state === 'focus') {
+      ;(element as HTMLElement).focus({ focusVisible: true })
+      const focused = element.matches(':focus-visible')
+      ;(element as HTMLElement).blur()
+      return focused
     }
-    return state === 'focus' ? (element as HTMLElement).tabIndex >= 0 : 'disabled' in element
+    if (state === 'hover') {
+      const { width, height, top, left } = element.getBoundingClientRect()
+      const inView = top < window.innerHeight && left < window.innerWidth && top + height > 0
+      return width > 0 && height > 0 && inView
+    }
+    return 'disabled' in element
   }, c.state)
 }
 
@@ -111,11 +139,9 @@ async function capture(page: Page, c: Case): Promise<PNG> {
     // spins (Spinner) or ignores the pointer (Kbd); only :hover matters here.
     if (c.state === 'hover') await element.hover({ force: true })
     if (c.state === 'focus') {
-      // Tab away and back, so the element holds keyboard focus and matches
-      // :focus-visible (programmatic focus after mouse use does not).
-      await element.focus()
-      await page.keyboard.press('Tab')
-      await page.keyboard.press('Shift+Tab')
+      // Focus as the keyboard would, so it matches :focus-visible; tabbing
+      // would leave a popup's focus trap or move focus into an open popup.
+      await element.evaluate((el) => (el as HTMLElement).focus({ focusVisible: true }))
       expect(await element.evaluate((el) => el.matches(':focus-visible'))).toBe(true)
     }
     const options = { animations: 'disabled', caret: 'hide' } as const

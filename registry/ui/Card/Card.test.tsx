@@ -35,6 +35,7 @@ function classesOfCard(props: Partial<Record<keyof ComponentProps<typeof Card>, 
 
 function attributesOfCard(props: Partial<Record<keyof ComponentProps<typeof Card>, unknown>> = {}) {
   const element = renderCard(props)
+  expect(element).toBeTruthy()
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
   )

@@ -31,6 +31,7 @@ function attributesOfSwitch(
   props: Partial<Record<keyof ComponentProps<typeof Switch>, unknown>> = {},
 ) {
   const element = renderSwitch(props)
+  expect(element).toBeTruthy()
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
   )

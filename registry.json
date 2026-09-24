@@ -1133,6 +1133,400 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "dialog",
+      "type": "registry:ui",
+      "title": "Dialog",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Dialog/Dialog.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Dialog/Dialog.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Dialog/Dialog.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "alert-dialog",
+      "type": "registry:ui",
+      "title": "AlertDialog",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/AlertDialog/AlertDialog.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/AlertDialog/AlertDialog.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/AlertDialog/AlertDialog.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sheet",
+      "type": "registry:ui",
+      "title": "Sheet",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Sheet/Sheet.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Sheet/Sheet.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Sheet/Sheet.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "drawer",
+      "type": "registry:ui",
+      "title": "Drawer",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Drawer/Drawer.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Drawer/Drawer.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Drawer/Drawer.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "popover",
+      "type": "registry:ui",
+      "title": "Popover",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Popover/Popover.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Popover/Popover.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Popover/Popover.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tooltip",
+      "type": "registry:ui",
+      "title": "Tooltip",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Tooltip/Tooltip.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Tooltip/Tooltip.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Tooltip/Tooltip.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "hover-card",
+      "type": "registry:ui",
+      "title": "HoverCard",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/HoverCard/HoverCard.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/HoverCard/HoverCard.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/HoverCard/HoverCard.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "dropdown-menu",
+      "type": "registry:ui",
+      "title": "DropdownMenu",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/DropdownMenu/DropdownMenu.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/DropdownMenu/DropdownMenu.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/DropdownMenu/DropdownMenu.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "context-menu",
+      "type": "registry:ui",
+      "title": "ContextMenu",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/ContextMenu/ContextMenu.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/ContextMenu/ContextMenu.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/ContextMenu/ContextMenu.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "menubar",
+      "type": "registry:ui",
+      "title": "Menubar",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/dropdown-menu", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Menubar/Menubar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Menubar/Menubar.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Menubar/Menubar.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "select",
+      "type": "registry:ui",
+      "title": "Select",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@base-ui/react",
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Select/Select.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Select/Select.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Select/Select.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "combobox",
+      "type": "registry:ui",
+      "title": "Combobox",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@base-ui/react",
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/input-group", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Combobox/Combobox.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Combobox/Combobox.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Combobox/Combobox.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "navigation-menu",
+      "type": "registry:ui",
+      "title": "NavigationMenu",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/NavigationMenu/NavigationMenu.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/NavigationMenu/NavigationMenu.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/NavigationMenu/NavigationMenu.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "command",
+      "type": "registry:ui",
+      "title": "Command",
+      "dependencies": ["clsx", "cmdk", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/dialog", "@bje/input-group", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Command/Command.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Command/Command.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Command/Command.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

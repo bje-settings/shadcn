@@ -5,6 +5,7 @@
 // import, so they hold whatever class names the consumer's CSS module setup
 // produces.
 
+import type { Node } from '@babel/types'
 import { parseModule } from './ast.ts'
 import { camelCase, pascalCase } from './names.ts'
 import type { Literal, Part, PartTypes, Scaffold, Usage } from './parts.ts'
@@ -32,20 +33,66 @@ export function exportedNames(code: string): Set<string> {
   return names
 }
 
-// Values a module re-exports from a package, like `export { DirectionProvider }
-// from "@base-ui/react/direction-provider"`.
-function reexports(code: string): { name: string; imported: string; from: string }[] {
-  return parseModule(code).program.body.flatMap((statement) => {
-    if (statement.type !== 'ExportNamedDeclaration' || !statement.source) return []
-    if (statement.exportKind === 'type') return []
-    const from = statement.source.value
-    return statement.specifiers.flatMap((specifier) =>
-      specifier.type === 'ExportSpecifier' &&
-      specifier.exportKind !== 'type' &&
-      specifier.exported.type === 'Identifier'
-        ? [{ name: specifier.exported.name, imported: specifier.local.name, from }]
+// Values a module passes on from a package unchanged, and how a test reaches
+// the original: `export { DirectionProvider } from "@base-ui/react/direction-
+// provider"`, or an exported `const Select = SelectPrimitive.Root`.
+type Forwarded = { name: string; original: string; from: string; importLine: string }
+
+function forwardedValues(code: string, exported: Set<string>): Forwarded[] {
+  const { body } = parseModule(code).program
+  const imports = new Map(
+    body.flatMap((statement) =>
+      statement.type === 'ImportDeclaration'
+        ? statement.specifiers.map(
+            (s) => [s.local.name, { specifier: s, from: statement.source.value }] as const,
+          )
         : [],
-    )
+    ),
+  )
+  return body.flatMap((statement): Forwarded[] => {
+    if (statement.type === 'ExportNamedDeclaration' && statement.source) {
+      if (statement.exportKind === 'type') return []
+      const from = statement.source.value
+      const namespace = camelCase(from.split('/').at(-1) as string)
+      return statement.specifiers.flatMap((specifier) =>
+        specifier.type === 'ExportSpecifier' &&
+        specifier.exportKind !== 'type' &&
+        specifier.exported.type === 'Identifier'
+          ? [
+              {
+                name: specifier.exported.name,
+                original: `${namespace}.${specifier.local.name}`,
+                from,
+                importLine: `import * as ${namespace} from ${q(from)}`,
+              },
+            ]
+          : [],
+      )
+    }
+    if (statement.type !== 'VariableDeclaration') return []
+    return statement.declarations.flatMap((declarator) => {
+      const { id, init } = declarator
+      let root: Node | null | undefined = init
+      while (root?.type === 'MemberExpression') root = root.object
+      const source = root?.type === 'Identifier' ? imports.get(root.name) : undefined
+      if (id.type !== 'Identifier' || !exported.has(id.name) || !source || !init) return []
+      const { specifier, from } = source
+      const local = specifier.local.name
+      const head =
+        specifier.type === 'ImportSpecifier'
+          ? `{ ${specifier.imported.type === 'Identifier' ? specifier.imported.name : q(specifier.imported.value)} as ${local} }`
+          : specifier.type === 'ImportNamespaceSpecifier'
+            ? `* as ${local}`
+            : local
+      return [
+        {
+          name: id.name,
+          original: code.slice(init.start as number, init.end as number),
+          from,
+          importLine: `import ${head} from ${q(from)}`,
+        },
+      ]
+    })
   })
 }
 
@@ -91,11 +138,12 @@ function attributesFor(types: Map<string, PartTypes>): Attributes {
 
 // `inner` rendered inside the scaffold's ancestors.
 function scaffolded(ancestors: Part[], inner: string, attributes: Attributes): string {
-  return ancestors.reduceRight(
-    (children, { component, props }) =>
-      `<${component}${attributes(component, props)}>${children}</${component}>`,
-    inner,
-  )
+  return ancestors.reduceRight((children, { component, props, trigger }) => {
+    const before = trigger
+      ? `<${trigger.component}${attributes(trigger.component, trigger.props)}>${trigger.component}</${trigger.component}>`
+      : ''
+    return `<${component}${attributes(component, props)}>${before}${children}</${component}>`
+  }, inner)
 }
 
 // One test per other way upstream's docs example renders the component,
@@ -115,6 +163,46 @@ function usageTests(
     `    expect(document.querySelector(${q(probe)})).not.toBeNull()`,
     '  })',
   ])
+}
+
+// A part whose children are a function of each item (ComboboxCollection)
+// renders nothing without items, which the example passes as a variable: its
+// test renders it for coverage and checks only that it does not throw.
+function functionChildrenTest(
+  component: RenderedComponent,
+  scaffold: Scaffold,
+  attributes: Attributes,
+): string[] {
+  const element = `<${component.name}${attributes(component.name, scaffold.props)}>{() => <i />}</${component.name}>`
+  return [
+    `describe(${q(component.name)}, () => {`,
+    '  it("renders with a function of each item as its children", () => {',
+    '    cleanup()',
+    `    expect(() => render(${scaffolded(scaffold.ancestors, element, attributes)})).not.toThrow()`,
+    '  })',
+    '})',
+  ]
+}
+
+// A part jsdom renders nothing for under its scaffold (NavigationMenu's
+// indicator mounts only while an item is open): its test renders it for
+// coverage and checks it renders nothing, for the configured reason.
+function unrenderedTest(
+  component: RenderedComponent,
+  scaffold: Scaffold,
+  attributes: Attributes,
+  reason: string,
+): string[] {
+  const element = `<${component.name} data-testid="subject"${attributes(component.name, scaffold.props)} />`
+  return [
+    `describe(${q(component.name)}, () => {`,
+    `  it(${q(`renders nothing in jsdom: ${reason}`)}, () => {`,
+    '    cleanup()',
+    `    render(${scaffolded(scaffold.ancestors, element, attributes)})`,
+    '    expect(document.querySelector(\'[data-testid="subject"]\')).toBeNull()',
+    '  })',
+    '})',
+  ]
 }
 
 // A part that renders no element of its own (Dialog's Root) is tested by what
@@ -143,20 +231,27 @@ function componentTests(
   set: VariantSet | undefined,
   scaffold: Scaffold,
   attributes: Attributes,
+  unstyled: Set<string>,
+  // Its props land on another item's part that renders no element
+  // (CommandDialog spreads them onto Dialog's root): only its className,
+  // passed on to an element, can be checked.
+  detached: boolean,
 ): string[] {
   const render = `render${component.name}`
   const classes = `classesOf${component.name}`
   const attributesOf = `attributesOf${component.name}`
-  const expected = [
-    ...(component.slot ? [`styles.${component.slot}`] : []),
-    ...(set ? defaultClasses(set) : []),
-  ]
-  const groups = set?.groups ?? []
+  const expected = detached
+    ? []
+    : [
+        ...(component.slot && !unstyled.has(component.slot) ? [`styles.${component.slot}`] : []),
+        ...(set ? defaultClasses(set) : []),
+      ]
+  const groups = detached ? [] : (set?.groups ?? [])
   const groupNames = new Set(groups.map((group) => group.name))
   // A default can set attributes rather than classes (Separator's
   // orientation becomes data-orientation), so compare every attribute, less
   // the ids React's useId makes differ between renders.
-  const explicit = component.defaults.filter((d) => !groupNames.has(d.prop))
+  const explicit = detached ? [] : component.defaults.filter((d) => !groupNames.has(d.prop))
 
   // A test passes only the props it is about, leaving a required one
   // (AspectRatio's ratio) unset, and may pass null for a cva() group upstream
@@ -210,6 +305,8 @@ function componentTests(
     lines.push(
       `function ${attributesOf}(${params}) {`,
       `  const element = ${render}(props)`,
+      // Two missing elements would compare equal.
+      '  expect(element).toBeTruthy()',
       '  return Object.fromEntries(',
       '    [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, "")]),',
       '  )',
@@ -265,6 +362,26 @@ function componentTests(
       '  })',
     )
   }
+  // A boolean default switches something on or off (DialogFooter's close
+  // button): the other value renders too.
+  for (const { prop, value } of explicit.filter((d) => d.value === 'true' || d.value === 'false')) {
+    const flipped = value === 'true' ? 'false' : 'true'
+    lines.push(
+      '',
+      `  it(${q(`renders with ${prop}=${flipped}`)}, () => {`,
+      `    expect(${render}({ ${prop}: ${flipped} })).toBeTruthy()`,
+      '  })',
+    )
+  }
+  if (component.throwsOutside) {
+    lines.push(
+      '',
+      `  it(${q(`throws outside its root: ${component.throwsOutside}`)}, () => {`,
+      '    cleanup()',
+      `    expect(() => render(<${component.name} />)).toThrow(${q(component.throwsOutside)})`,
+      '  })',
+    )
+  }
   lines.push(
     '',
     // The consumer's className can land inside the data-slot element
@@ -275,7 +392,7 @@ function componentTests(
     '    expect(element?.getAttribute("class")?.split(" ").at(-1)).toBe("consumer")',
     '  })',
     ...usageTests(
-      scaffold.others,
+      detached ? [] : scaffold.others,
       (usage) => {
         const open = `<${component.name} data-testid="subject"${attributes(component.name, usage.props)}`
         return usage.children ? `${open}>${component.name}</${component.name}>` : `${open} />`
@@ -294,80 +411,122 @@ export function generateTest(
   parts: {
     types: Map<string, PartTypes>
     scaffolds: Map<string, Scaffold>
+    // Lines to run first, each group with its reason
+    setup: { lines: string[]; reason: string }[]
+    // Slots the module exports no class for
+    unstyled: Set<string>
+    // Parts of other mirrored items this module renders, by name
+    external: Map<string, PartTypes>
+    // Parts jsdom renders nothing for, with the reason
+    unrendered: Record<string, string>
   },
 ): string {
   const file = pascalCase(name)
   const exported = exportedNames(transformed.code)
   const components = transformed.components.filter((c) => exported.has(c.name))
-  const forwarded = reexports(transformed.code)
+  const forwarded = forwardedValues(transformed.code, exported)
   const untested = [...exported].filter(
     (n) =>
       /^[A-Z]/.test(n) &&
       !components.some((c) => c.name === n) &&
       !forwarded.some((r) => r.name === n),
   )
-  if ((components.length === 0 && forwarded.length === 0) || untested.length > 0) {
+  const hooks = transformed.hooks.filter((hook) => exported.has(hook.name))
+  if (components.length + forwarded.length + hooks.length === 0 || untested.length > 0) {
     throw new Error(
       `${name}: no test template for ${untested.join(', ') || "this component's shape"} yet`,
     )
   }
 
-  const sets = new Map(transformed.variantSets.map((set) => [set.variable, set]))
+  // A slot the module exports no class for is left out of what the tests
+  // expect, as its option has no class to apply.
+  const sets = new Map(
+    transformed.variantSets.map((set) => [
+      set.variable,
+      {
+        ...set,
+        groups: set.groups.map((group) => ({
+          ...group,
+          options: group.options.map((option) =>
+            option.slot && parts.unstyled.has(option.slot) ? { value: option.value } : option,
+          ),
+        })),
+      },
+    ]),
+  )
   const functions = [...sets.values()].filter((set) => exported.has(set.variable))
   const scaffold = (component: string): Scaffold =>
     parts.scaffolds.get(component) ?? { ancestors: [], props: {}, children: true, others: [] }
   const elementless = (component: RenderedComponent) =>
     parts.types.get(component.name)?.className === false
-  const usesIds = components.some(
-    (component) =>
-      !elementless(component) &&
-      component.defaults.some(
-        (d) => !(sets.get(component.variantSet ?? '')?.groups ?? []).some((g) => g.name === d.prop),
-      ),
-  )
+  // Exported hooks run inside the item's root component, when it has one.
+  const root = [...exported].find((n) => n.toLowerCase() === file.toLowerCase())
   const imports = new Set([
+    ...hooks.map((hook) => hook.name),
+    ...(hooks.length > 0 && root ? [root] : []),
     ...components.flatMap((c) => [c.name, ...scaffold(c.name).ancestors.map((a) => a.component)]),
     ...functions.map((set) => set.variable),
     ...forwarded.map((r) => r.name),
   ])
-  // Each package a value is re-exported from, as a namespace import.
-  const sources = [...new Set(forwarded.map((r) => r.from))]
-  const namespace = (from: string) => camelCase(from.split('/').at(-1) as string)
 
   const attributes = attributesFor(parts.types)
   const body = [
-    ...(usesIds
-      ? [
-          '',
-          "// React's useId output (_r_1_, and :r1: or «r1» before React 19.1), which",
-          '// differs between renders; Base UI puts it in ids and data-id.',
-          'const USE_ID = /_r_[0-9a-z]+_|:r[0-9a-z]+:|«r[0-9a-z]+»/g',
-        ]
-      : []),
+    ...parts.setup.flatMap(({ lines, reason }) => ['', `// ${reason}`, ...lines]),
     ...components.flatMap((component) => [
       '',
-      ...(elementless(component)
-        ? childrenTest(component, scaffold(component.name), attributes)
-        : componentTests(
+      ...(component.name in parts.unrendered
+        ? unrenderedTest(
             component,
-            component.variantSet ? sets.get(component.variantSet) : undefined,
             scaffold(component.name),
             attributes,
-          )),
+            parts.unrendered[component.name] as string,
+          )
+        : parts.types.get(component.name)?.childrenFunction
+          ? functionChildrenTest(component, scaffold(component.name), attributes)
+          : elementless(component)
+            ? childrenTest(component, scaffold(component.name), attributes)
+            : componentTests(
+                component,
+                component.variantSet ? sets.get(component.variantSet) : undefined,
+                scaffold(component.name),
+                attributes,
+                parts.unstyled,
+                parts.external.get(component.tag ?? '')?.className === false,
+              )),
     ]),
     ...(forwarded.length > 0
       ? [
           '',
           'describe("re-exports", () => {',
-          ...forwarded.flatMap(({ name, imported, from }, i) => [
+          ...forwarded.flatMap(({ name, original, from }, i) => [
             ...(i > 0 ? [''] : []),
             `  it(${q(`re-exports ${name} from ${from}`)}, () => {`,
-            `    expect(${name}).toBe(${namespace(from)}.${imported})`,
+            `    expect(${name}).toBe(${original})`,
             '  })',
           ]),
           '})',
         ]
       : []),
+    ...hooks.flatMap((hook) => [
+      '',
+      `describe(${q(hook.name)}, () => {`,
+      `  it(${q(root ? `runs inside ${root}` : 'runs in a component')}, () => {`,
+      '    cleanup()',
+      root
+        ? `    const { result } = renderHook(() => ${hook.name}(), { wrapper: ({ children }) => <${root}${attributes(root, scaffold(root).props)}>{children}</${root}> })`
+        : `    const { result } = renderHook(() => ${hook.name}())`,
+      '    expect(result.current).toBeDefined()',
+      '  })',
+      ...(hook.throws === undefined
+        ? []
+        : [
+            '',
+            `  it(${q(`throws outside its root: ${hook.throws}`)}, () => {`,
+            `    expect(() => renderHook(() => ${hook.name}())).toThrow(${q(hook.throws)})`,
+            '  })',
+          ]),
+      '})',
+    ]),
     ...functions.flatMap((set) => [
       '',
       `describe(${q(set.variable)}, () => {`,
@@ -378,14 +537,27 @@ export function generateTest(
     ]),
     '',
   ].join('\n')
-  // Imports for what the body uses.
+  // Imports and constants for what the body uses.
+  const useId = body.includes('USE_ID')
+    ? [
+        '',
+        "// React's useId output (_r_1_, and :r1: or «r1» before React 19.1), which",
+        '// differs between renders; Base UI puts it in ids and data-id.',
+        'const USE_ID = /_r_[0-9a-z]+_|:r[0-9a-z]+:|«r[0-9a-z]+»/g',
+      ]
+    : []
   return [
-    ...(components.length > 0 ? ['import { cleanup, render } from "@testing-library/react"'] : []),
-    ...sources.map((from) => `import * as ${namespace(from)} from ${q(from)}`),
+    ...(components.length > 0 || hooks.length > 0
+      ? [
+          `import { ${['cleanup', ...(body.includes('render(') ? ['render'] : []), ...(hooks.length > 0 ? ['renderHook'] : [])].join(', ')} } from "@testing-library/react"`,
+        ]
+      : []),
+    ...new Set(forwarded.map((f) => f.importLine)),
     ...(body.includes('ComponentProps<') ? ['import type { ComponentProps } from "react"'] : []),
     'import { describe, expect, it } from "vitest"',
     `import { ${[...imports].sort().join(', ')} } from "./${file}"`,
     ...(body.includes('styles.') ? [`import styles from "./${file}.module.scss"`] : []),
+    ...useId,
     body,
   ].join('\n')
 }

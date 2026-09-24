@@ -40,6 +40,7 @@ async function build(item: UpstreamItem, compiler = compile) {
     classProbe: classProbe([prepared]),
     types: new Map(),
     scaffolds: new Map(),
+    external: new Map(),
   }
   return buildComponent(prepared, config, compiler, context)
 }

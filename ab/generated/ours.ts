@@ -39,6 +39,20 @@ import * as marker from '@/registry/bje/ui/Marker/Marker'
 import * as message from '@/registry/bje/ui/Message/Message'
 import * as bubble from '@/registry/bje/ui/Bubble/Bubble'
 import * as attachment from '@/registry/bje/ui/Attachment/Attachment'
+import * as dialog from '@/registry/bje/ui/Dialog/Dialog'
+import * as alertDialog from '@/registry/bje/ui/AlertDialog/AlertDialog'
+import * as sheet from '@/registry/bje/ui/Sheet/Sheet'
+import * as drawer from '@/registry/bje/ui/Drawer/Drawer'
+import * as popover from '@/registry/bje/ui/Popover/Popover'
+import * as tooltip from '@/registry/bje/ui/Tooltip/Tooltip'
+import * as hoverCard from '@/registry/bje/ui/HoverCard/HoverCard'
+import * as dropdownMenu from '@/registry/bje/ui/DropdownMenu/DropdownMenu'
+import * as contextMenu from '@/registry/bje/ui/ContextMenu/ContextMenu'
+import * as menubar from '@/registry/bje/ui/Menubar/Menubar'
+import * as select from '@/registry/bje/ui/Select/Select'
+import * as combobox from '@/registry/bje/ui/Combobox/Combobox'
+import * as navigationMenu from '@/registry/bje/ui/NavigationMenu/NavigationMenu'
+import * as command from '@/registry/bje/ui/Command/Command'
 
 export const ours = {
   button: button,
@@ -80,4 +94,18 @@ export const ours = {
   message: message,
   bubble: bubble,
   attachment: attachment,
+  dialog: dialog,
+  'alert-dialog': alertDialog,
+  sheet: sheet,
+  drawer: drawer,
+  popover: popover,
+  tooltip: tooltip,
+  'hover-card': hoverCard,
+  'dropdown-menu': dropdownMenu,
+  'context-menu': contextMenu,
+  menubar: menubar,
+  select: select,
+  combobox: combobox,
+  'navigation-menu': navigationMenu,
+  command: command,
 }

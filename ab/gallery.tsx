@@ -47,10 +47,6 @@ export function Gallery({ side }: { side: Side }) {
             <CaseBoundary>{c.render(side)}</CaseBoundary>
           </div>
         ))}
-      {/* Somewhere off screen for Tab to go, so the A/B run's Tab and
-          Shift+Tab return keyboard focus to a case's last focusable element. */}
-      {/* biome-ignore lint/a11y/noNoninteractiveTabindex: a focus target for the A/B run only */}
-      <span tabIndex={0} style={{ position: 'fixed', left: -100, top: -100 }} />
     </main>
   )
 }

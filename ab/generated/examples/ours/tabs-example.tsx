@@ -2,6 +2,13 @@
 
 import { Example } from '@/registry/base-vega/components/example'
 import { Button } from '@/registry/bje/ui/Button/Button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/registry/bje/ui/DropdownMenu/DropdownMenu'
 import { Input } from '@/registry/bje/ui/Input/Input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/bje/ui/Tabs/Tabs'
 import { IconPlaceholder } from '@/app/(create)/components/icon-placeholder'
@@ -219,6 +226,50 @@ function TabsLineDisabled() {
   )
 }
 
+function TabsWithDropdown() {
+  return (
+    <Example title="With Dropdown">
+      <Tabs defaultValue="overview">
+        <div className="flex items-center justify-between">
+          <TabsList>
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="reports">Reports</TabsTrigger>
+          </TabsList>
+          <DropdownMenu>
+            <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="size-8" />}>
+              <IconPlaceholder
+                lucide="MoreHorizontalIcon"
+                tabler="IconDots"
+                hugeicons="MoreHorizontalCircle01Icon"
+                phosphor="DotsThreeOutlineIcon"
+                remixicon="RiMoreLine"
+              />
+              <span className="sr-only">More options</span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem>Export</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Archive</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        <div className="border style-vega:rounded-lg style-vega:p-6 style-nova:rounded-lg style-nova:p-4 style-lyra:rounded-none style-lyra:p-4 style-maia:rounded-xl style-maia:p-6 style-mira:rounded-md style-mira:p-4 style-luma:rounded-xl style-luma:p-6 style-rhea:rounded-xl style-rhea:p-6">
+          <TabsContent value="overview">
+            View your dashboard metrics and key performance indicators.
+          </TabsContent>
+          <TabsContent value="analytics">
+            Detailed analytics and insights about your data.
+          </TabsContent>
+          <TabsContent value="reports">Generate and view custom reports.</TabsContent>
+        </div>
+      </Tabs>
+    </Example>
+  )
+}
+
 function TabsVertical() {
   return (
     <Example title="Vertical">
@@ -285,6 +336,7 @@ export {
   TabsWithContent,
   TabsLineWithContent,
   TabsLineDisabled,
+  TabsWithDropdown,
   TabsVertical,
   TabsWithInputAndButton,
 }

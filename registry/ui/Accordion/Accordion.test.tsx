@@ -64,7 +64,7 @@ function renderAccordionItem(
 ) {
   cleanup()
   render(
-    <Accordion>
+    <Accordion keepMounted>
       <AccordionItem
         data-testid="subject"
         {...({ children: 'AccordionItem', ...props } as ComponentProps<typeof AccordionItem>)}
@@ -94,7 +94,7 @@ describe('AccordionItem', () => {
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
     render(
-      <Accordion multiple>
+      <Accordion multiple keepMounted>
         <AccordionItem data-testid="subject">AccordionItem</AccordionItem>
       </Accordion>,
     )
@@ -104,7 +104,7 @@ describe('AccordionItem', () => {
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
-      <Accordion multiple defaultValue={['plans']}>
+      <Accordion multiple defaultValue={['plans']} keepMounted>
         <AccordionItem data-testid="subject">AccordionItem</AccordionItem>
       </Accordion>,
     )
@@ -117,7 +117,7 @@ function renderAccordionTrigger(
 ) {
   cleanup()
   render(
-    <Accordion>
+    <Accordion keepMounted>
       <AccordionItem>
         <AccordionTrigger
           data-testid="subject"
@@ -153,7 +153,7 @@ describe('AccordionTrigger', () => {
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
     render(
-      <Accordion multiple>
+      <Accordion multiple keepMounted>
         <AccordionItem>
           <AccordionTrigger data-testid="subject">AccordionTrigger</AccordionTrigger>
         </AccordionItem>
@@ -165,7 +165,7 @@ describe('AccordionTrigger', () => {
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
-      <Accordion multiple defaultValue={['plans']}>
+      <Accordion multiple defaultValue={['plans']} keepMounted>
         <AccordionItem>
           <AccordionTrigger data-testid="subject">AccordionTrigger</AccordionTrigger>
         </AccordionItem>
@@ -180,7 +180,7 @@ function renderAccordionContent(
 ) {
   cleanup()
   render(
-    <Accordion>
+    <Accordion keepMounted>
       <AccordionItem>
         <AccordionContent
           data-testid="subject"
@@ -216,7 +216,7 @@ describe('AccordionContent', () => {
   it("renders as upstream's example uses it (2)", () => {
     cleanup()
     render(
-      <Accordion multiple>
+      <Accordion multiple keepMounted>
         <AccordionItem>
           <AccordionContent data-testid="subject" keepMounted>
             AccordionContent
@@ -230,7 +230,7 @@ describe('AccordionContent', () => {
   it("renders as upstream's example uses it (3)", () => {
     cleanup()
     render(
-      <Accordion multiple defaultValue={['plans']}>
+      <Accordion multiple defaultValue={['plans']} keepMounted>
         <AccordionItem>
           <AccordionContent data-testid="subject" keepMounted>
             AccordionContent

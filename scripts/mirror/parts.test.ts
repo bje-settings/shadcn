@@ -57,18 +57,49 @@ export { Button }`,
     const types = partTypes('base-vega', prepared)
     expect(types.get('dialog')).toEqual(
       new Map([
-        ['Dialog', { className: false, opens: true, keepMounted: false, required: [], text: true }],
+        [
+          'Dialog',
+          {
+            className: false,
+            opens: true,
+            keepMounted: false,
+            required: [],
+            text: true,
+            childrenFunction: false,
+          },
+        ],
         [
           'DialogTitle',
-          { className: true, opens: false, keepMounted: false, required: [], text: true },
+          {
+            className: true,
+            opens: false,
+            keepMounted: false,
+            required: [],
+            text: true,
+            childrenFunction: false,
+          },
         ],
         [
           'DialogClose',
-          { className: true, opens: false, keepMounted: false, required: [], text: true },
+          {
+            className: true,
+            opens: false,
+            keepMounted: false,
+            required: [],
+            text: true,
+            childrenFunction: false,
+          },
         ],
         [
           'DialogMeter',
-          { className: true, opens: false, keepMounted: false, required: ['value'], text: false },
+          {
+            className: true,
+            opens: false,
+            keepMounted: false,
+            required: ['value'],
+            text: false,
+            childrenFunction: false,
+          },
         ],
       ]),
     )
@@ -89,13 +120,33 @@ export { Chips, Chip, ChipInput, ChipMenu, ChipPanel }`,
     'chip',
     'bje',
   )
-  const part = { className: true, opens: false, keepMounted: false, required: [], text: true }
+  const part = {
+    className: true,
+    opens: false,
+    keepMounted: false,
+    required: [],
+    text: true,
+    childrenFunction: false,
+  }
   const types = new Map([
-    ['Chips', { ...part, text: false }],
+    ['Chips', { ...part, text: false, childrenFunction: false }],
     ['Chip', part],
     ['ChipInput', part],
-    ['ChipMenu', { className: false, opens: true, keepMounted: false, required: [], text: true }],
-    ['ChipPanel', { ...part, keepMounted: true, required: [], text: true }],
+    [
+      'ChipMenu',
+      {
+        className: false,
+        opens: true,
+        keepMounted: false,
+        required: [],
+        text: true,
+        childrenFunction: false,
+      },
+    ],
+    [
+      'ChipPanel',
+      { ...part, keepMounted: true, required: [], text: true, childrenFunction: false },
+    ],
   ])
 
   it("nests each part as the example first renders it, with the example's literal props", () => {
@@ -145,6 +196,20 @@ export { Chips, Chip, ChipInput, ChipMenu, ChipPanel }`,
     })
     // The example passes Chips children, but its type takes no text.
     expect(result.get('Chips')?.children).toBe(false)
+  })
+
+  it("follows the example's own components back to where it renders them", () => {
+    const example = `function Wrap({ children }) { return <Chips>{children}</Chips> }
+function Item() { return <Wrap><Chip value="w" /></Wrap> }
+export default function Example() { return <ChipMenu><Item /></ChipMenu> }
+export default () => <section><ChipInput /></section>
+const [stray] = [<ChipPanel />]`
+    const result = scaffolds('other', example, types, chip)
+    // ChipMenu comes from where Example renders Item; Chips inside Wrap's own
+    // body is not on the JSX path to Chip.
+    expect(result.get('Chip')?.ancestors.map((part) => part.component)).toEqual(['ChipMenu'])
+    expect(result.get('ChipInput')?.ancestors).toEqual([])
+    expect(result.get('ChipPanel')?.ancestors).toEqual([])
   })
 
   it('renders a part the example never uses on its own, or inside the item root', () => {

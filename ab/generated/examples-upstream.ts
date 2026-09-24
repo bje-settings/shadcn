@@ -38,6 +38,20 @@ import * as markerExample from './examples/upstream/marker-example'
 import * as messageExample from './examples/upstream/message-example'
 import * as bubbleExample from './examples/upstream/bubble-example'
 import * as attachmentExample from './examples/upstream/attachment-example'
+import * as dialogExample from './examples/upstream/dialog-example'
+import * as alertDialogExample from './examples/upstream/alert-dialog-example'
+import * as sheetExample from './examples/upstream/sheet-example'
+import * as drawerExample from './examples/upstream/drawer-example'
+import * as popoverExample from './examples/upstream/popover-example'
+import * as tooltipExample from './examples/upstream/tooltip-example'
+import * as hoverCardExample from './examples/upstream/hover-card-example'
+import * as dropdownMenuExample from './examples/upstream/dropdown-menu-example'
+import * as contextMenuExample from './examples/upstream/context-menu-example'
+import * as menubarExample from './examples/upstream/menubar-example'
+import * as selectExample from './examples/upstream/select-example'
+import * as comboboxExample from './examples/upstream/combobox-example'
+import * as navigationMenuExample from './examples/upstream/navigation-menu-example'
+import * as commandExample from './examples/upstream/command-example'
 
 export const upstreamExamples = {
   'button-example': buttonExample,
@@ -78,4 +92,18 @@ export const upstreamExamples = {
   'message-example': messageExample,
   'bubble-example': bubbleExample,
   'attachment-example': attachmentExample,
+  'dialog-example': dialogExample,
+  'alert-dialog-example': alertDialogExample,
+  'sheet-example': sheetExample,
+  'drawer-example': drawerExample,
+  'popover-example': popoverExample,
+  'tooltip-example': tooltipExample,
+  'hover-card-example': hoverCardExample,
+  'dropdown-menu-example': dropdownMenuExample,
+  'context-menu-example': contextMenuExample,
+  'menubar-example': menubarExample,
+  'select-example': selectExample,
+  'combobox-example': comboboxExample,
+  'navigation-menu-example': navigationMenuExample,
+  'command-example': commandExample,
 }

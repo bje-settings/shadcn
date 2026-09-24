@@ -22,6 +22,9 @@ const valid = {
   consumerClasses: [{ classes: ['border-b'], reason: 'consumer' }],
   coverageExclusions: { button: 'why' },
   globalClasses: [{ classes: ['dark'], reason: 'dark mode' }],
+  classesWithoutCss: [{ classes: ['xs:flex'], reason: 'no xs breakpoint' }],
+  testSetup: [{ items: ['button'], lines: ['stub()'], reason: 'jsdom' }],
+  unrenderedInTests: { Button: 'why' },
 }
 
 function withChange(change: Record<string, unknown>) {
@@ -38,9 +41,16 @@ describe('parseConfig', () => {
 
   it('defaults consumerClasses and coverageExclusions to none', () => {
     const config = parseConfig(
-      withChange({ consumerClasses: undefined, coverageExclusions: undefined }),
+      withChange({
+        consumerClasses: undefined,
+        coverageExclusions: undefined,
+        testSetup: undefined,
+        unrenderedInTests: undefined,
+      }),
     )
     expect(config.coverageExclusions).toEqual({})
+    expect(config.testSetup).toEqual([])
+    expect(config.unrenderedInTests).toEqual({})
     expect(config.consumerClasses).toEqual([])
     expect(consumerClassReasons(parseConfig(valid))).toEqual(new Map([['border-b', 'consumer']]))
   })
@@ -94,6 +104,12 @@ describe('parseConfig', () => {
       'consumer classes without a reason',
       withChange({ consumerClasses: [{ classes: ['a'] }] }),
       'consumerClasses[0].reason',
+    ],
+    ['a non-array testSetup', withChange({ testSetup: {} }), 'testSetup must be an array'],
+    [
+      'a testSetup item not configured',
+      withChange({ testSetup: [{ items: ['card'], lines: [], reason: 'x' }] }),
+      'testSetup[0].items: card is not a configured component',
     ],
     [
       'a coverage exclusion for an item not configured',

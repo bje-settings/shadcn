@@ -25,6 +25,9 @@ export type Case = {
   render: (side: Side) => ReactNode
 }
 
+// A fixture's scaffold part, as scripts/mirror/parts.ts writes it.
+type Part = { component: string; props: Record<string, unknown>; trigger?: Part }
+
 const THEMES = ['light', 'dark'] as const
 const STATES = ['rest', 'hover', 'focus', 'disabled'] as const
 
@@ -45,9 +48,15 @@ export const cases: Case[] = [
             </Component>
           )
           // Inside its scaffold's ancestors, innermost first.
-          for (const part of [...fixture.ancestors].reverse()) {
+          for (const part of [...(fixture.ancestors as Part[])].reverse()) {
             const Ancestor = pick(ui, fixture.item, part.component)
-            element = <Ancestor {...part.props}>{element}</Ancestor>
+            const Trigger = part.trigger && pick(ui, fixture.item, part.trigger.component)
+            element = (
+              <Ancestor {...part.props}>
+                {Trigger && <Trigger {...part.trigger?.props}>{part.trigger?.component}</Trigger>}
+                {element}
+              </Ancestor>
+            )
           }
           return element
         },

@@ -68,6 +68,7 @@ function attributesOfScrollBar(
   props: Partial<Record<keyof ComponentProps<typeof ScrollBar>, unknown>> = {},
 ) {
   const element = renderScrollBar(props)
+  expect(element).toBeTruthy()
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
   )

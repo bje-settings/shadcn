@@ -4,6 +4,13 @@
 
 import { isRecord, KEBAB, Shape } from './parse.ts'
 
+export type TestSetup = {
+  // Mirrored items whose generated test starts with these lines
+  items: string[]
+  lines: string[]
+  reason: string
+}
+
 export type ClassList = {
   classes: string[]
   reason: string
@@ -49,10 +56,20 @@ export type MirrorConfig = {
   // markup carries as they are (`dark` on <html>, a visually hidden
   // `sr-only`): kept as :global() in the generated modules.
   globalClasses: ClassList[]
+  // Upstream classes Tailwind compiles to nothing, upstream too (invalid
+  // variant syntax, a breakpoint the theme lacks): dropped like group and peer
+  // markers. Any other class without CSS fails the build.
+  classesWithoutCss: ClassList[]
   // Mirrored items whose component file is left out of coverage, with the
   // reason: upstream logic no render the docs example makes reaches (a
   // controlled value it never passes as a literal). vitest.config.ts reads it.
   coverageExclusions: Record<string, string>
+  // Exported parts jsdom renders nothing for under their scaffold, by name,
+  // with the reason: their generated test checks they render nothing.
+  unrenderedInTests: Record<string, string>
+  // Setup some generated tests need to run under jsdom, like a stub for a
+  // browser API it lacks (cmdk observes resizes).
+  testSetup: TestSetup[]
 }
 
 // Annotated so TypeScript treats shape.fail() as ending control flow.
@@ -101,6 +118,7 @@ export function parseConfig(raw: unknown): MirrorConfig {
 
   const consumerClasses = classLists(raw, 'consumerClasses')
   const globalClasses = classLists(raw, 'globalClasses')
+  const classesWithoutCss = classLists(raw, 'classesWithoutCss')
 
   const coverageExclusions =
     raw.coverageExclusions === undefined
@@ -111,6 +129,28 @@ export function parseConfig(raw: unknown): MirrorConfig {
       shape.fail(`coverageExclusions.${item} is not a configured component`)
     }
   }
+
+  const setups = raw.testSetup ?? []
+  if (!Array.isArray(setups)) shape.fail('testSetup must be an array')
+  const testSetup = setups.map((value, i) => {
+    const path = `testSetup[${i}]`
+    const record = shape.record(value, path)
+    const items = shape.strings(record.items, `${path}.items`)
+    for (const item of items) {
+      if (!components.includes(item))
+        shape.fail(`${path}.items: ${item} is not a configured component`)
+    }
+    return {
+      items,
+      lines: shape.strings(record.lines, `${path}.lines`),
+      reason: string(record, 'reason', `${path}.`),
+    }
+  })
+
+  const unrenderedInTests =
+    raw.unrenderedInTests === undefined
+      ? {}
+      : shape.stringRecord(raw.unrenderedInTests, 'unrenderedInTests')
 
   return {
     namespace: name(raw, 'namespace', ''),
@@ -128,7 +168,10 @@ export function parseConfig(raw: unknown): MirrorConfig {
     harnessDir: string(raw, 'harnessDir', ''),
     consumerClasses,
     globalClasses,
+    classesWithoutCss,
     coverageExclusions,
+    testSetup,
+    unrenderedInTests,
   }
 }
 

@@ -136,6 +136,7 @@ function attributesOfPaginationLink(
   props: Partial<Record<keyof ComponentProps<typeof PaginationLink>, unknown>> = {},
 ) {
   const element = renderPaginationLink(props)
+  expect(element).toBeTruthy()
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
   )
@@ -198,6 +199,7 @@ function attributesOfPaginationPrevious(
   props: Partial<Record<keyof ComponentProps<typeof PaginationPrevious>, unknown>> = {},
 ) {
   const element = renderPaginationPrevious(props)
+  expect(element).toBeTruthy()
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
   )
@@ -252,6 +254,7 @@ function attributesOfPaginationNext(
   props: Partial<Record<keyof ComponentProps<typeof PaginationNext>, unknown>> = {},
 ) {
   const element = renderPaginationNext(props)
+  expect(element).toBeTruthy()
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
   )

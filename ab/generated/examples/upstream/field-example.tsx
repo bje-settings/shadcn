@@ -24,6 +24,14 @@ import {
   NativeSelectOption,
 } from '@/registry/base-vega/ui/native-select'
 import { RadioGroup, RadioGroupItem } from '@/registry/base-vega/ui/radio-group'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/registry/base-vega/ui/select'
 import { Slider } from '@/registry/base-vega/ui/slider'
 import { Switch } from '@/registry/base-vega/ui/switch'
 import { Textarea } from '@/registry/base-vega/ui/textarea'
@@ -119,6 +127,135 @@ function TextareaFields() {
         <Field data-disabled>
           <FieldLabel htmlFor="textarea-disabled-field">Disabled Field</FieldLabel>
           <Textarea id="textarea-disabled-field" placeholder="Cannot edit" disabled />
+          <FieldDescription>This field is currently disabled.</FieldDescription>
+        </Field>
+      </FieldGroup>
+    </Example>
+  )
+}
+
+function SelectFields() {
+  const basicItems = [
+    { label: 'Choose an option', value: null },
+    { label: 'Option 1', value: 'option1' },
+    { label: 'Option 2', value: 'option2' },
+    { label: 'Option 3', value: 'option3' },
+  ]
+  const countryItems = [
+    { label: 'Select your country', value: null },
+    { label: 'United States', value: 'us' },
+    { label: 'United Kingdom', value: 'uk' },
+    { label: 'Canada', value: 'ca' },
+  ]
+  const timezoneItems = [
+    { label: 'Select timezone', value: null },
+    { label: 'UTC', value: 'utc' },
+    { label: 'Eastern Time', value: 'est' },
+    { label: 'Pacific Time', value: 'pst' },
+  ]
+  const invalidItems = [
+    { label: 'This field has an error', value: null },
+    { label: 'Option 1', value: 'option1' },
+    { label: 'Option 2', value: 'option2' },
+    { label: 'Option 3', value: 'option3' },
+  ]
+  const disabledItems = [
+    { label: 'Cannot select', value: null },
+    { label: 'Option 1', value: 'option1' },
+    { label: 'Option 2', value: 'option2' },
+    { label: 'Option 3', value: 'option3' },
+  ]
+
+  return (
+    <Example title="Select Fields">
+      <FieldGroup>
+        <Field>
+          <FieldLabel htmlFor="select-basic">Basic Select</FieldLabel>
+          <Select items={basicItems}>
+            <SelectTrigger id="select-basic">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {basicItems.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="select-country">Country</FieldLabel>
+          <Select items={countryItems}>
+            <SelectTrigger id="select-country">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {countryItems.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <FieldDescription>Select the country where you currently reside.</FieldDescription>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="select-timezone">Timezone</FieldLabel>
+          <FieldDescription>Choose your local timezone for accurate scheduling.</FieldDescription>
+          <Select items={timezoneItems}>
+            <SelectTrigger id="select-timezone">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {timezoneItems.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </Field>
+        <Field data-invalid>
+          <FieldLabel htmlFor="select-invalid">Invalid Select</FieldLabel>
+          <Select items={invalidItems}>
+            <SelectTrigger id="select-invalid" aria-invalid>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {invalidItems.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <FieldDescription>This field contains validation errors.</FieldDescription>
+        </Field>
+        <Field data-disabled>
+          <FieldLabel htmlFor="select-disabled-field">Disabled Field</FieldLabel>
+          <Select items={disabledItems} disabled>
+            <SelectTrigger id="select-disabled-field">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {disabledItems.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
           <FieldDescription>This field is currently disabled.</FieldDescription>
         </Field>
       </FieldGroup>
@@ -498,12 +635,90 @@ function SliderFields() {
   )
 }
 
+function HorizontalFields() {
+  const basicItems = [
+    { label: 'Select a fruit', value: null },
+    { label: 'Apple', value: 'apple' },
+    { label: 'Banana', value: 'banana' },
+    { label: 'Orange', value: 'orange' },
+  ]
+
+  return (
+    <Example title="Horizontal Fields">
+      <FieldGroup className="**:data-[slot=field-content]:min-w-48">
+        <Field orientation="horizontal">
+          <FieldContent>
+            <FieldLabel htmlFor="horizontal-input">Username</FieldLabel>
+            <FieldDescription>Enter your preferred username.</FieldDescription>
+          </FieldContent>
+          <Input id="horizontal-input" placeholder="johndoe" />
+        </Field>
+        <Field orientation="horizontal">
+          <FieldContent>
+            <FieldLabel htmlFor="horizontal-textarea">Bio</FieldLabel>
+            <FieldDescription>Write a short description about yourself.</FieldDescription>
+          </FieldContent>
+          <Textarea id="horizontal-textarea" placeholder="Tell us about yourself..." />
+        </Field>
+        <Field orientation="horizontal">
+          <FieldContent>
+            <FieldLabel htmlFor="horizontal-switch">Email Notifications</FieldLabel>
+            <FieldDescription>Receive email updates about your account.</FieldDescription>
+          </FieldContent>
+          <Switch id="horizontal-switch" />
+        </Field>
+        <Field orientation="horizontal">
+          <FieldContent>
+            <FieldLabel htmlFor="horizontal-select">Favorite Fruit</FieldLabel>
+            <FieldDescription>Choose your favorite fruit.</FieldDescription>
+          </FieldContent>
+          <Select items={basicItems}>
+            <SelectTrigger id="horizontal-select">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {basicItems.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </Field>
+        <Field orientation="horizontal">
+          <FieldContent>
+            <FieldLabel htmlFor="horizontal-native-select">Country</FieldLabel>
+            <FieldDescription>Select your country.</FieldDescription>
+          </FieldContent>
+          <NativeSelect id="horizontal-native-select">
+            <NativeSelectOption value="">Select a country</NativeSelectOption>
+            <NativeSelectOption value="us">United States</NativeSelectOption>
+            <NativeSelectOption value="uk">United Kingdom</NativeSelectOption>
+            <NativeSelectOption value="ca">Canada</NativeSelectOption>
+          </NativeSelect>
+        </Field>
+        <Field orientation="horizontal">
+          <FieldContent>
+            <FieldLabel htmlFor="horizontal-slider">Volume</FieldLabel>
+            <FieldDescription>Adjust the volume level.</FieldDescription>
+          </FieldContent>
+          <Slider id="horizontal-slider" defaultValue={[50]} max={100} />
+        </Field>
+      </FieldGroup>
+    </Example>
+  )
+}
+
 export {
   InputFields,
   TextareaFields,
+  SelectFields,
   CheckboxFields,
   RadioFields,
   SwitchFields,
   SliderFields,
   NativeSelectFields,
+  HorizontalFields,
 }

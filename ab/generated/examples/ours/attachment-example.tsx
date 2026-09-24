@@ -2,6 +2,8 @@
 
 'use client'
 
+import * as React from 'react'
+
 import { Example } from '@/registry/base-vega/components/example'
 import {
   Attachment,
@@ -14,6 +16,15 @@ import {
   AttachmentTitle,
   AttachmentTrigger,
 } from '@/registry/bje/ui/Attachment/Attachment'
+import { Button } from '@/registry/bje/ui/Button/Button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/registry/bje/ui/Dialog/Dialog'
 import { Spinner } from '@/registry/bje/ui/Spinner/Spinner'
 import { IconPlaceholder } from '@/app/(create)/components/icon-placeholder'
 
@@ -1472,6 +1483,107 @@ function AttachmentScrollableGroup() {
   )
 }
 
+function AttachmentTriggers() {
+  const [isVisible, setIsVisible] = React.useState(true)
+
+  return (
+    <Example title="Triggers" className="gap-3">
+      {isVisible ? (
+        <Attachment className="w-full">
+          <AttachmentMedia>
+            <IconPlaceholder
+              lucide="FileTextIcon"
+              tabler="IconFileText"
+              hugeicons="FileIcon"
+              phosphor="FileTextIcon"
+              remixicon="RiFileTextLine"
+            />
+          </AttachmentMedia>
+          <AttachmentContent>
+            <AttachmentTitle>contract-review.pdf</AttachmentTitle>
+            <AttachmentDescription>PDF · 820 KB</AttachmentDescription>
+          </AttachmentContent>
+          <AttachmentActions>
+            <AttachmentAction aria-label="Download attachment">
+              <IconPlaceholder
+                lucide="DownloadIcon"
+                tabler="IconDownload"
+                hugeicons="Download01Icon"
+                phosphor="DownloadIcon"
+                remixicon="RiDownloadLine"
+              />
+            </AttachmentAction>
+            <AttachmentAction aria-label="Remove attachment" onClick={() => setIsVisible(false)}>
+              <IconPlaceholder
+                lucide="XIcon"
+                tabler="IconX"
+                hugeicons="Cancel01Icon"
+                phosphor="XIcon"
+                remixicon="RiCloseLine"
+              />
+            </AttachmentAction>
+          </AttachmentActions>
+          <AttachmentTrigger
+            render={
+              <a href="#" target="_blank" rel="noreferrer" aria-label="Open contract-review.pdf" />
+            }
+          />
+        </Attachment>
+      ) : (
+        <Button variant="outline" onClick={() => setIsVisible(true)}>
+          Restore attachment
+        </Button>
+      )}
+      <Dialog>
+        <Attachment className="w-full">
+          <AttachmentMedia>
+            <IconPlaceholder
+              lucide="FileSearchIcon"
+              tabler="IconFileSearch"
+              hugeicons="FileSearchIcon"
+              phosphor="FileSearchIcon"
+              remixicon="RiFileSearchLine"
+            />
+          </AttachmentMedia>
+          <AttachmentContent>
+            <AttachmentTitle>research-summary.pdf</AttachmentTitle>
+            <AttachmentDescription>Open preview dialog</AttachmentDescription>
+          </AttachmentContent>
+          <AttachmentActions>
+            <AttachmentAction aria-label="Copy link">
+              <IconPlaceholder
+                lucide="CopyIcon"
+                tabler="IconCopy"
+                hugeicons="Copy01Icon"
+                phosphor="CopyIcon"
+                remixicon="RiFileCopyLine"
+              />
+            </AttachmentAction>
+            <AttachmentAction aria-label="Remove research-summary.pdf">
+              <IconPlaceholder
+                lucide="XIcon"
+                tabler="IconX"
+                hugeicons="Cancel01Icon"
+                phosphor="XIcon"
+                remixicon="RiCloseLine"
+              />
+            </AttachmentAction>
+          </AttachmentActions>
+          <DialogTrigger render={<AttachmentTrigger aria-label="Preview research-summary.pdf" />} />
+        </Attachment>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>research-summary.pdf</DialogTitle>
+            <DialogDescription>
+              Attachment triggers can open dialogs while actions remain independently reachable.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+    </Example>
+  )
+}
+
 export {
   AttachmentFiles,
   AttachmentContentOnly,
@@ -1480,4 +1592,5 @@ export {
   AttachmentImageStates,
   AttachmentSizes,
   AttachmentScrollableGroup,
+  AttachmentTriggers,
 }

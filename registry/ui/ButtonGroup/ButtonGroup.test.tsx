@@ -201,6 +201,7 @@ function attributesOfButtonGroupSeparator(
   props: Partial<Record<keyof ComponentProps<typeof ButtonGroupSeparator>, unknown>> = {},
 ) {
   const element = renderButtonGroupSeparator(props)
+  expect(element).toBeTruthy()
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
   )

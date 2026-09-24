@@ -39,6 +39,14 @@ export const examples = [
   },
   {
     example: 'button-group-example',
+    name: 'ButtonGroupWithDropdown',
+  },
+  {
+    example: 'button-group-example',
+    name: 'ButtonGroupWithSelect',
+  },
+  {
+    example: 'button-group-example',
     name: 'ButtonGroupWithIcons',
   },
   {
@@ -52,6 +60,14 @@ export const examples = [
   {
     example: 'button-group-example',
     name: 'ButtonGroupWithLike',
+  },
+  {
+    example: 'button-group-example',
+    name: 'ButtonGroupWithSelectAndInput',
+  },
+  {
+    example: 'button-group-example',
+    name: 'ButtonGroupNested',
   },
   {
     example: 'button-group-example',
@@ -207,11 +223,19 @@ export const examples = [
   },
   {
     example: 'input-example',
+    name: 'InputWithSelect',
+  },
+  {
+    example: 'input-example',
     name: 'InputWithButton',
   },
   {
     example: 'input-example',
     name: 'InputWithNativeSelect',
+  },
+  {
+    example: 'input-example',
+    name: 'InputForm',
   },
   {
     example: 'textarea-example',
@@ -303,6 +327,10 @@ export const examples = [
   },
   {
     example: 'kbd-example',
+    name: 'KbdInTooltip',
+  },
+  {
+    example: 'kbd-example',
     name: 'KbdWithSamp',
   },
   {
@@ -323,11 +351,23 @@ export const examples = [
   },
   {
     example: 'table-example',
+    name: 'TableWithActions',
+  },
+  {
+    example: 'table-example',
+    name: 'TableWithSelect',
+  },
+  {
+    example: 'table-example',
     name: 'TableWithInput',
   },
   {
     example: 'breadcrumb-example',
     name: 'BreadcrumbBasic',
+  },
+  {
+    example: 'breadcrumb-example',
+    name: 'BreadcrumbWithDropdown',
   },
   {
     example: 'empty-example',
@@ -483,6 +523,10 @@ export const examples = [
   },
   {
     example: 'tabs-example',
+    name: 'TabsWithDropdown',
+  },
+  {
+    example: 'tabs-example',
     name: 'TabsVertical',
   },
   {
@@ -556,6 +600,10 @@ export const examples = [
   {
     example: 'toggle-group-example',
     name: 'ToggleGroupSort',
+  },
+  {
+    example: 'toggle-group-example',
+    name: 'ToggleGroupWithInputAndSelect',
   },
   {
     example: 'toggle-group-example',
@@ -715,6 +763,10 @@ export const examples = [
   },
   {
     example: 'field-example',
+    name: 'SelectFields',
+  },
+  {
+    example: 'field-example',
     name: 'CheckboxFields',
   },
   {
@@ -732,6 +784,10 @@ export const examples = [
   {
     example: 'field-example',
     name: 'NativeSelectFields',
+  },
+  {
+    example: 'field-example',
+    name: 'HorizontalFields',
   },
   {
     example: 'input-group-example',
@@ -834,6 +890,10 @@ export const examples = [
     name: 'PaginationSimple',
   },
   {
+    example: 'pagination-example',
+    name: 'PaginationIconsOnly',
+  },
+  {
     example: 'marker-example',
     name: 'MarkerBorder',
   },
@@ -844,6 +904,10 @@ export const examples = [
   {
     example: 'marker-example',
     name: 'MarkerAccordion',
+  },
+  {
+    example: 'marker-example',
+    name: 'MarkerDrawer',
   },
   {
     example: 'message-example',
@@ -928,5 +992,457 @@ export const examples = [
   {
     example: 'attachment-example',
     name: 'AttachmentScrollableGroup',
+  },
+  {
+    example: 'attachment-example',
+    name: 'AttachmentTriggers',
+  },
+  {
+    example: 'dialog-example',
+    name: 'DialogWithForm',
+  },
+  {
+    example: 'dialog-example',
+    name: 'DialogScrollableContent',
+  },
+  {
+    example: 'dialog-example',
+    name: 'DialogWithStickyFooter',
+  },
+  {
+    example: 'dialog-example',
+    name: 'DialogNoCloseButton',
+  },
+  {
+    example: 'dialog-example',
+    name: 'DialogChatSettings',
+  },
+  {
+    example: 'alert-dialog-example',
+    name: 'AlertDialogBasic',
+  },
+  {
+    example: 'alert-dialog-example',
+    name: 'AlertDialogSmall',
+  },
+  {
+    example: 'alert-dialog-example',
+    name: 'AlertDialogWithMedia',
+  },
+  {
+    example: 'alert-dialog-example',
+    name: 'AlertDialogSmallWithMedia',
+  },
+  {
+    example: 'alert-dialog-example',
+    name: 'AlertDialogDestructive',
+  },
+  {
+    example: 'alert-dialog-example',
+    name: 'AlertDialogInDialog',
+  },
+  {
+    example: 'sheet-example',
+    name: 'SheetWithForm',
+  },
+  {
+    example: 'sheet-example',
+    name: 'SheetNoCloseButton',
+  },
+  {
+    example: 'sheet-example',
+    name: 'SheetWithSides',
+  },
+  {
+    example: 'drawer-example',
+    name: 'DrawerDemo',
+  },
+  {
+    example: 'drawer-example',
+    name: 'DrawerSwipeHandleExample',
+  },
+  {
+    example: 'drawer-example',
+    name: 'DrawerPosition',
+  },
+  {
+    example: 'drawer-example',
+    name: 'DrawerCustomWidthAndHeight',
+  },
+  {
+    example: 'drawer-example',
+    name: 'DrawerScrollable',
+  },
+  {
+    example: 'drawer-example',
+    name: 'DrawerSnapPoints',
+  },
+  {
+    example: 'drawer-example',
+    name: 'DrawerNested',
+  },
+  {
+    example: 'drawer-example',
+    name: 'DrawerNonModal',
+  },
+  {
+    example: 'popover-example',
+    name: 'PopoverBasic',
+  },
+  {
+    example: 'popover-example',
+    name: 'PopoverSides',
+  },
+  {
+    example: 'popover-example',
+    name: 'PopoverWithForm',
+  },
+  {
+    example: 'popover-example',
+    name: 'PopoverAlignments',
+  },
+  {
+    example: 'popover-example',
+    name: 'PopoverInDialog',
+  },
+  {
+    example: 'tooltip-example',
+    name: 'TooltipBasic',
+  },
+  {
+    example: 'tooltip-example',
+    name: 'TooltipSides',
+  },
+  {
+    example: 'tooltip-example',
+    name: 'TooltipWithIcon',
+  },
+  {
+    example: 'tooltip-example',
+    name: 'TooltipLongContent',
+  },
+  {
+    example: 'tooltip-example',
+    name: 'TooltipDisabled',
+  },
+  {
+    example: 'tooltip-example',
+    name: 'TooltipWithKeyboard',
+  },
+  {
+    example: 'tooltip-example',
+    name: 'TooltipOnLink',
+  },
+  {
+    example: 'tooltip-example',
+    name: 'TooltipFormatted',
+  },
+  {
+    example: 'hover-card-example',
+    name: 'HoverCardSides',
+  },
+  {
+    example: 'hover-card-example',
+    name: 'HoverCardInDialog',
+  },
+  {
+    example: 'dropdown-menu-example',
+    name: 'DropdownMenuBasic',
+  },
+  {
+    example: 'dropdown-menu-example',
+    name: 'DropdownMenuComplex',
+  },
+  {
+    example: 'dropdown-menu-example',
+    name: 'DropdownMenuSides',
+  },
+  {
+    example: 'dropdown-menu-example',
+    name: 'DropdownMenuWithIcons',
+  },
+  {
+    example: 'dropdown-menu-example',
+    name: 'DropdownMenuWithShortcuts',
+  },
+  {
+    example: 'dropdown-menu-example',
+    name: 'DropdownMenuWithSubmenu',
+  },
+  {
+    example: 'dropdown-menu-example',
+    name: 'DropdownMenuWithCheckboxes',
+  },
+  {
+    example: 'dropdown-menu-example',
+    name: 'DropdownMenuWithCheckboxesIcons',
+  },
+  {
+    example: 'dropdown-menu-example',
+    name: 'DropdownMenuWithRadio',
+  },
+  {
+    example: 'dropdown-menu-example',
+    name: 'DropdownMenuWithRadioIcons',
+  },
+  {
+    example: 'dropdown-menu-example',
+    name: 'DropdownMenuWithDestructive',
+  },
+  {
+    example: 'dropdown-menu-example',
+    name: 'DropdownMenuWithAvatar',
+  },
+  {
+    example: 'dropdown-menu-example',
+    name: 'DropdownMenuInDialog',
+  },
+  {
+    example: 'dropdown-menu-example',
+    name: 'DropdownMenuWithInset',
+  },
+  {
+    example: 'context-menu-example',
+    name: 'ContextMenuBasic',
+  },
+  {
+    example: 'context-menu-example',
+    name: 'ContextMenuWithIcons',
+  },
+  {
+    example: 'context-menu-example',
+    name: 'ContextMenuWithSides',
+  },
+  {
+    example: 'context-menu-example',
+    name: 'ContextMenuWithShortcuts',
+  },
+  {
+    example: 'context-menu-example',
+    name: 'ContextMenuWithSubmenu',
+  },
+  {
+    example: 'context-menu-example',
+    name: 'ContextMenuWithGroups',
+  },
+  {
+    example: 'context-menu-example',
+    name: 'ContextMenuWithCheckboxes',
+  },
+  {
+    example: 'context-menu-example',
+    name: 'ContextMenuWithRadio',
+  },
+  {
+    example: 'context-menu-example',
+    name: 'ContextMenuWithDestructive',
+  },
+  {
+    example: 'context-menu-example',
+    name: 'ContextMenuInDialog',
+  },
+  {
+    example: 'context-menu-example',
+    name: 'ContextMenuWithInset',
+  },
+  {
+    example: 'menubar-example',
+    name: 'MenubarBasic',
+  },
+  {
+    example: 'menubar-example',
+    name: 'MenubarWithSubmenu',
+  },
+  {
+    example: 'menubar-example',
+    name: 'MenubarSides',
+  },
+  {
+    example: 'menubar-example',
+    name: 'MenubarWithCheckboxes',
+  },
+  {
+    example: 'menubar-example',
+    name: 'MenubarWithRadio',
+  },
+  {
+    example: 'menubar-example',
+    name: 'MenubarWithIcons',
+  },
+  {
+    example: 'menubar-example',
+    name: 'MenubarWithShortcuts',
+  },
+  {
+    example: 'menubar-example',
+    name: 'MenubarFormat',
+  },
+  {
+    example: 'menubar-example',
+    name: 'MenubarInsert',
+  },
+  {
+    example: 'menubar-example',
+    name: 'MenubarDestructive',
+  },
+  {
+    example: 'menubar-example',
+    name: 'MenubarInDialog',
+  },
+  {
+    example: 'menubar-example',
+    name: 'MenubarWithInset',
+  },
+  {
+    example: 'select-example',
+    name: 'SelectBasic',
+  },
+  {
+    example: 'select-example',
+    name: 'SelectSides',
+  },
+  {
+    example: 'select-example',
+    name: 'SelectWithIcons',
+  },
+  {
+    example: 'select-example',
+    name: 'SelectWithGroups',
+  },
+  {
+    example: 'select-example',
+    name: 'SelectLargeList',
+  },
+  {
+    example: 'select-example',
+    name: 'SelectMultiple',
+  },
+  {
+    example: 'select-example',
+    name: 'SelectSizes',
+  },
+  {
+    example: 'select-example',
+    name: 'SelectPlan',
+  },
+  {
+    example: 'select-example',
+    name: 'SelectWithButton',
+  },
+  {
+    example: 'select-example',
+    name: 'SelectItemAligned',
+  },
+  {
+    example: 'select-example',
+    name: 'SelectWithField',
+  },
+  {
+    example: 'select-example',
+    name: 'SelectInvalid',
+  },
+  {
+    example: 'select-example',
+    name: 'SelectInline',
+  },
+  {
+    example: 'select-example',
+    name: 'SelectDisabled',
+  },
+  {
+    example: 'select-example',
+    name: 'SelectInDialog',
+  },
+  {
+    example: 'combobox-example',
+    name: 'ComboboxBasic',
+  },
+  {
+    example: 'combobox-example',
+    name: 'ComboboxDisabled',
+  },
+  {
+    example: 'combobox-example',
+    name: 'ComboboxSides',
+  },
+  {
+    example: 'combobox-example',
+    name: 'ComboboxInvalid',
+  },
+  {
+    example: 'combobox-example',
+    name: 'ComboboxWithClear',
+  },
+  {
+    example: 'combobox-example',
+    name: 'ComboboxAutoHighlight',
+  },
+  {
+    example: 'combobox-example',
+    name: 'ComboboxWithGroups',
+  },
+  {
+    example: 'combobox-example',
+    name: 'ComboboxWithGroupsAndSeparator',
+  },
+  {
+    example: 'combobox-example',
+    name: 'ComboboxLargeList',
+  },
+  {
+    example: 'combobox-example',
+    name: 'ComboxboxInputAddon',
+  },
+  {
+    example: 'combobox-example',
+    name: 'ComboboxInPopup',
+  },
+  {
+    example: 'combobox-example',
+    name: 'ComboboxMultiple',
+  },
+  {
+    example: 'combobox-example',
+    name: 'ComboboxMultipleDisabled',
+  },
+  {
+    example: 'combobox-example',
+    name: 'ComboboxMultipleInvalid',
+  },
+  {
+    example: 'combobox-example',
+    name: 'ComboboxMultipleNoRemove',
+  },
+  {
+    example: 'combobox-example',
+    name: 'ComboboxWithCustomItems',
+  },
+  {
+    example: 'combobox-example',
+    name: 'ComboboxWithOtherInputs',
+  },
+  {
+    example: 'combobox-example',
+    name: 'ComboboxDisabledItems',
+  },
+  {
+    example: 'command-example',
+    name: 'CommandInline',
+  },
+  {
+    example: 'command-example',
+    name: 'CommandBasic',
+  },
+  {
+    example: 'command-example',
+    name: 'CommandWithShortcuts',
+  },
+  {
+    example: 'command-example',
+    name: 'CommandWithGroups',
+  },
+  {
+    example: 'command-example',
+    name: 'CommandManyItems',
   },
 ]

@@ -31,6 +31,7 @@ function attributesOfSlider(
   props: Partial<Record<keyof ComponentProps<typeof Slider>, unknown>> = {},
 ) {
   const element = renderSlider(props)
+  expect(element).toBeTruthy()
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
   )
