@@ -2,7 +2,7 @@
 
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import {
   Drawer,
   DrawerClose,
@@ -17,6 +17,8 @@ import {
   DrawerTrigger,
 } from './Drawer'
 import styles from './Drawer.module.scss'
+
+afterEach(cleanup)
 
 describe('Drawer', () => {
   it('renders its children', () => {

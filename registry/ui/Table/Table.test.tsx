@@ -2,7 +2,7 @@
 
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import {
   Table,
   TableBody,
@@ -14,6 +14,8 @@ import {
   TableRow,
 } from './Table'
 import styles from './Table.module.scss'
+
+afterEach(cleanup)
 
 function renderTable(props: Partial<Record<keyof ComponentProps<typeof Table>, unknown>> = {}) {
   cleanup()

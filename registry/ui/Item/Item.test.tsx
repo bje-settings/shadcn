@@ -2,7 +2,7 @@
 
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import {
   Item,
   ItemActions,
@@ -16,6 +16,8 @@ import {
   ItemTitle,
 } from './Item'
 import styles from './Item.module.scss'
+
+afterEach(cleanup)
 
 function renderItemGroup(
   props: Partial<Record<keyof ComponentProps<typeof ItemGroup>, unknown>> = {},

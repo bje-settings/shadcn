@@ -2,9 +2,11 @@
 
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { Toggle, toggleVariants } from './Toggle'
 import styles from './Toggle.module.scss'
+
+afterEach(cleanup)
 
 function renderToggle(props: Partial<Record<keyof ComponentProps<typeof Toggle>, unknown>> = {}) {
   cleanup()

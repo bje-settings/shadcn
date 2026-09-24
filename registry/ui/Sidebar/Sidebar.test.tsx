@@ -2,7 +2,7 @@
 
 import { cleanup, render, renderHook } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import {
   Sidebar,
   SidebarContent,
@@ -34,6 +34,8 @@ import styles from './Sidebar.module.scss'
 // React's useId output (_r_1_, and :r1: or «r1» before React 19.1), which
 // differs between renders; Base UI puts it in ids and data-id.
 const USE_ID = /_r_[0-9a-z]+_|:r[0-9a-z]+:|«r[0-9a-z]+»/g
+
+afterEach(cleanup)
 
 // jsdom has no matchMedia, which useIsMobile reads the viewport width with.
 window.matchMedia ??= (query) =>

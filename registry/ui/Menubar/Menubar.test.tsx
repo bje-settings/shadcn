@@ -2,7 +2,7 @@
 
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import {
   Menubar,
   MenubarCheckboxItem,
@@ -26,6 +26,8 @@ import styles from './Menubar.module.scss'
 // React's useId output (_r_1_, and :r1: or «r1» before React 19.1), which
 // differs between renders; Base UI puts it in ids and data-id.
 const USE_ID = /_r_[0-9a-z]+_|:r[0-9a-z]+:|«r[0-9a-z]+»/g
+
+afterEach(cleanup)
 
 function renderMenubar(props: Partial<Record<keyof ComponentProps<typeof Menubar>, unknown>> = {}) {
   cleanup()

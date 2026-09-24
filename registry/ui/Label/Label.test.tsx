@@ -2,9 +2,11 @@
 
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { Label } from './Label'
 import styles from './Label.module.scss'
+
+afterEach(cleanup)
 
 function renderLabel(props: Partial<Record<keyof ComponentProps<typeof Label>, unknown>> = {}) {
   cleanup()

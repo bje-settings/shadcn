@@ -42,6 +42,8 @@ function Chip({ className, tone = "soft", size, pressed = false, ...props }) {
 }
 export { Chip, chipVariants }`)
     expect(test).toContain('import { Chip, chipVariants } from "./Chip"')
+    expect(test).toContain('import { afterEach, describe, expect, it } from "vitest"')
+    expect(test).toContain('\nafterEach(cleanup)\n')
     expect(test).toContain('it("renders [data-slot=\\"chip\\"] with its classes", () => {')
     expect(test).toContain(
       'expect(classesOfChip()).toEqual(expect.arrayContaining([styles.chip, styles.toneSoft]))',

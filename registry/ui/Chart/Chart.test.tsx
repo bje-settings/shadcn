@@ -3,7 +3,7 @@
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
 import * as RechartsPrimitive from 'recharts'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import {
   ChartContainer,
   ChartLegend,
@@ -13,6 +13,8 @@ import {
   ChartTooltipContent,
 } from './Chart'
 import styles from './Chart.module.scss'
+
+afterEach(cleanup)
 
 // jsdom has no ResizeObserver, which Recharts sizes its responsive container with.
 globalThis.ResizeObserver ??= class {

@@ -2,9 +2,11 @@
 
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from './Empty'
 import styles from './Empty.module.scss'
+
+afterEach(cleanup)
 
 function renderEmpty(props: Partial<Record<keyof ComponentProps<typeof Empty>, unknown>> = {}) {
   cleanup()

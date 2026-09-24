@@ -642,18 +642,22 @@ export function generateTest(
         'const USE_ID = /_r_[0-9a-z]+_|:r[0-9a-z]+:|«r[0-9a-z]+»/g',
       ]
     : []
+  const rendering = components.length > 0 || hooks.length > 0
   return [
-    ...(components.length > 0 || hooks.length > 0
+    ...(rendering
       ? [
           `import { ${['cleanup', ...(body.includes('render(') ? ['render'] : []), ...(hooks.length > 0 ? ['renderHook'] : [])].join(', ')} } from "@testing-library/react"`,
         ]
       : []),
     ...new Set(forwarded.map((f) => f.importLine)),
     ...(body.includes('ComponentProps<') ? ['import type { ComponentProps } from "react"'] : []),
-    'import { describe, expect, it } from "vitest"',
+    `import { ${rendering ? 'afterEach, ' : ''}describe, expect, it } from "vitest"`,
     `import { ${[...imports].sort().join(', ')} } from "./${module}"`,
     ...(body.includes('styles.') ? [`import styles from "./${module}.module.scss"`] : []),
     ...useId,
+    // Unmount after each test, so no render's scheduled work outlives the
+    // file's jsdom environment (InputOTP's timers on a slow runner).
+    ...(rendering ? ['', 'afterEach(cleanup)'] : []),
     body,
   ].join('\n')
 }

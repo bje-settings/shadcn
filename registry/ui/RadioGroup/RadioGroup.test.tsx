@@ -2,9 +2,11 @@
 
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { RadioGroup, RadioGroupItem } from './RadioGroup'
 import styles from './RadioGroup.module.scss'
+
+afterEach(cleanup)
 
 function renderRadioGroup(
   props: Partial<Record<keyof ComponentProps<typeof RadioGroup>, unknown>> = {},

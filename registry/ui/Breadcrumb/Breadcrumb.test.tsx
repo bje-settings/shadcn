@@ -2,7 +2,7 @@
 
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -13,6 +13,8 @@ import {
   BreadcrumbSeparator,
 } from './Breadcrumb'
 import styles from './Breadcrumb.module.scss'
+
+afterEach(cleanup)
 
 function renderBreadcrumb(
   props: Partial<Record<keyof ComponentProps<typeof Breadcrumb>, unknown>> = {},

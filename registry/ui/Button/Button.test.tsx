@@ -2,9 +2,11 @@
 
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { Button, buttonVariants } from './Button'
 import styles from './Button.module.scss'
+
+afterEach(cleanup)
 
 function renderButton(props: Partial<Record<keyof ComponentProps<typeof Button>, unknown>> = {}) {
   cleanup()

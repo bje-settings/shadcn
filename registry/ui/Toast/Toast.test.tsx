@@ -3,7 +3,7 @@
 import { Toast as ToastPrimitive } from '@base-ui/react/toast'
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import {
   createToastManager,
   Toast,
@@ -19,6 +19,8 @@ import {
   useToastManager,
 } from './Toast'
 import styles from './Toast.module.scss'
+
+afterEach(cleanup)
 
 describe('ToastProvider', () => {
   it('renders its children', () => {

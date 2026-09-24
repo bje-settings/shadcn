@@ -2,7 +2,7 @@
 
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import {
   Progress,
   ProgressIndicator,
@@ -11,6 +11,8 @@ import {
   ProgressValue,
 } from './Progress'
 import styles from './Progress.module.scss'
+
+afterEach(cleanup)
 
 function renderProgress(
   props: Partial<Record<keyof ComponentProps<typeof Progress>, unknown>> = {},

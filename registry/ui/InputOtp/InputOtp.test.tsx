@@ -2,9 +2,11 @@
 
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from './InputOtp'
 import styles from './InputOtp.module.scss'
+
+afterEach(cleanup)
 
 function renderInputOTP(
   props: Partial<Record<keyof ComponentProps<typeof InputOTP>, unknown>> = {},

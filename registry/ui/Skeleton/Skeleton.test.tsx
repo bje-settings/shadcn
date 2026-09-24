@@ -2,9 +2,11 @@
 
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { Skeleton } from './Skeleton'
 import styles from './Skeleton.module.scss'
+
+afterEach(cleanup)
 
 function renderSkeleton(
   props: Partial<Record<keyof ComponentProps<typeof Skeleton>, unknown>> = {},

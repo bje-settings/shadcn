@@ -2,9 +2,11 @@
 
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { Textarea } from './Textarea'
 import styles from './Textarea.module.scss'
+
+afterEach(cleanup)
 
 function renderTextarea(
   props: Partial<Record<keyof ComponentProps<typeof Textarea>, unknown>> = {},

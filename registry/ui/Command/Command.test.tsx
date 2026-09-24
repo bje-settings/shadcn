@@ -2,7 +2,7 @@
 
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import {
   Command,
   CommandDialog,
@@ -15,6 +15,8 @@ import {
   CommandShortcut,
 } from './Command'
 import styles from './Command.module.scss'
+
+afterEach(cleanup)
 
 // jsdom has no ResizeObserver or scrollIntoView, which cmdk uses to track and reveal the selected item.
 globalThis.ResizeObserver ??= class {

@@ -2,9 +2,11 @@
 
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './Accordion'
 import styles from './Accordion.module.scss'
+
+afterEach(cleanup)
 
 function renderAccordion(
   props: Partial<Record<keyof ComponentProps<typeof Accordion>, unknown>> = {},

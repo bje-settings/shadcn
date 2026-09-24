@@ -2,9 +2,11 @@
 
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { Kbd, KbdGroup } from './Kbd'
 import styles from './Kbd.module.scss'
+
+afterEach(cleanup)
 
 function renderKbd(props: Partial<Record<keyof ComponentProps<typeof Kbd>, unknown>> = {}) {
   cleanup()

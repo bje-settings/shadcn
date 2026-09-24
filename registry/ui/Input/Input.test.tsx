@@ -2,9 +2,11 @@
 
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { Input } from './Input'
 import styles from './Input.module.scss'
+
+afterEach(cleanup)
 
 function renderInput(props: Partial<Record<keyof ComponentProps<typeof Input>, unknown>> = {}) {
   cleanup()

@@ -2,9 +2,11 @@
 
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './Resizable'
 import styles from './Resizable.module.scss'
+
+afterEach(cleanup)
 
 // jsdom has no ResizeObserver, which react-resizable-panels measures panels with.
 globalThis.ResizeObserver ??= class {

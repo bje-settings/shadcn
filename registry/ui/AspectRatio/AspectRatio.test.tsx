@@ -2,9 +2,11 @@
 
 import { cleanup, render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { AspectRatio } from './AspectRatio'
 import styles from './AspectRatio.module.scss'
+
+afterEach(cleanup)
 
 function renderAspectRatio(
   props: Partial<Record<keyof ComponentProps<typeof AspectRatio>, unknown>> = {},
