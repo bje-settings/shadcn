@@ -49,7 +49,11 @@ beforeEach(async () => {
   await writeFile(
     join(root, 'mirror.config.json'),
     JSON.stringify({
-      upstream: { url: 'https://example.com/{style}/{name}.json', style: 'base-vega' },
+      namespace: 'bje',
+      upstream: {
+        url: 'https://example.com/{style}/{name}.json',
+        style: 'base-vega',
+      },
       components: ['badge'],
       snapshotDir: 'upstream',
       outputDir: 'registry/ui',

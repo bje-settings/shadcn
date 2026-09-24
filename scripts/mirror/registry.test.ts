@@ -8,12 +8,16 @@ const item = (name: string, title: string): RegistryItem => ({
   title,
   dependencies: [],
   devDependencies: [],
+  registryDependencies: [],
   files: [],
 })
 
 describe('upsertItems', () => {
   it('replaces items in place and appends new ones', () => {
-    const registry = { name: 'bje', items: [{ name: 'cn' }, item('button', 'Old')] }
+    const registry = {
+      name: 'bje',
+      items: [{ name: 'cn' }, item('button', 'Old')],
+    }
     const next = upsertItems(registry, [item('button', 'New'), item('card', 'Card')])
     expect(next.name).toBe('bje')
     expect(next.items).toEqual([{ name: 'cn' }, item('button', 'New'), item('card', 'Card')])

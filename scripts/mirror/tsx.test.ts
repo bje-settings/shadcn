@@ -22,7 +22,7 @@ export { Button, buttonVariants }`
 
 describe('transformComponent', () => {
   it('replaces cva with a lookup object and a cva-compatible function', () => {
-    const { code, slots } = transformComponent(button, 'button')
+    const { code, slots } = transformComponent(button, 'button', 'bje')
     expect(slots).toEqual([
       { name: 'button', classes: ['inline-flex', 'h-9'] },
       { name: 'variantDefault', classes: ['bg-primary'] },
@@ -48,7 +48,7 @@ import { cva } from "class-variance-authority"
 const button = cva("flex")
 const toggleVariants = cva("grid", { variants: { size: { sm: "h-8" } } })
 export { button, toggleVariants }`
-    const { code, slots } = transformComponent(source, 'button')
+    const { code, slots } = transformComponent(source, 'button', 'bje')
     expect(slots.map((slot) => slot.name)).toEqual(['button', 'toggle', 'toggleSizeSm'])
     expect(code).toContain('import * as React from "react"\nimport { type ClassValue, clsx }')
     expect(code).toContain('function toggleVariants({\n  size,\n  className,')
@@ -68,7 +68,7 @@ function Card({ className, extra }) {
     </div>
   )
 }`
-    const { code, slots } = transformComponent(source, 'card')
+    const { code, slots } = transformComponent(source, 'card', 'bje')
     expect(slots).toEqual([
       { name: 'card', classes: ['flex', 'gap-2', 'p-4'] },
       { name: 'cardTitle', classes: ['font-medium'] },
@@ -81,7 +81,7 @@ function Card({ className, extra }) {
 
   it('removes a cva import on the first line', () => {
     const source = 'import { cva } from "class-variance-authority"\nconst a = 1'
-    expect(transformComponent(source, 'x').code).toBe(
+    expect(transformComponent(source, 'x', 'bje').code).toBe(
       '\nimport styles from "./X.module.scss"\nconst a = 1',
     )
   })
@@ -118,6 +118,90 @@ function Card({ className, extra }) {
       'const c = <><div data-slot="a" className="x" /><div data-slot="a" className="y" /></>',
     ],
   ])('rejects %s', (_, source) => {
-    expect(() => transformComponent(source, 'a')).toThrow(/^Unsupported at \d+:\d+: /)
+    expect(() => transformComponent(source, 'a', 'bje')).toThrow(/^Unsupported at \d+:\d+: /)
+  })
+})
+
+describe('cross-component imports', () => {
+  it('points registry imports at this registry and reports them', () => {
+    const source = `import { Separator } from "@/registry/base-vega/ui/separator"
+import { Other } from "@/lib/other"`
+    const { code, registryImports } = transformComponent(source, 'x', 'bje')
+    expect(code).toContain('import { Separator } from "@/registry/bje/ui/Separator/Separator"')
+    expect(code).toContain('import { Other } from "@/lib/other"')
+    expect(registryImports).toEqual(['separator'])
+  })
+})
+
+describe('useRender slots', () => {
+  const render = (options: string) => `import { cn } from "cn"
+function Text({ className }) {
+  return useRender({ ${options} props: { className: cn("flex", className) } })
+}`
+
+  it('reads the slot from useRender state', () => {
+    const { slots, components } = transformComponent(
+      render('state: { slot: "text-slot" },'),
+      'x',
+      'bje',
+    )
+    expect(slots).toEqual([{ name: 'textSlot', classes: ['flex'] }])
+    expect(components).toEqual([
+      { name: 'Text', dataSlot: 'text-slot', slot: 'textSlot', defaults: [] },
+    ])
+  })
+
+  it.each([
+    ['no state', ''],
+    ['a state without a slot', 'state: { open: true },'],
+  ])('rejects class strings with %s', (_, options) => {
+    expect(() => transformComponent(render(options), 'x', 'bje')).toThrow(
+      'outside an element with data-slot',
+    )
+  })
+
+  it('rejects useRender options that are not an object literal', () => {
+    const source = 'import { cn } from "cn"\nconst a = useRender(cn("flex"))'
+    expect(() => transformComponent(source, 'x', 'bje')).toThrow('expected an object literal')
+  })
+
+  it('rejects a non-string slot', () => {
+    expect(() => transformComponent(render('state: { slot: name },'), 'x', 'bje')).toThrow(
+      'expected a string literal',
+    )
+  })
+})
+
+describe('component tracking', () => {
+  it('records each top-level function, its first data-slot and literal defaults', () => {
+    const source = `import { cn } from "cn"
+import { cva } from "class-variance-authority"
+const xVariants = cva("grid")
+function Card({ className, size = "sm", count = 2, open = false, label = name, "aria-x": ax = 1, ...props }) {
+  return (
+    <div data-slot="card" className={cn(xVariants(), className, helper())}>
+      <div data-slot="card-title" className="font-medium" />
+    </div>
+  )
+}
+function Plain(props) { return <i data-slot="plain" className="p-1" /> }
+function Empty() { return <i data-slot="empty" className="p-2" /> }
+const Arrow = () => <i data-slot="arrow" className="p-3" />
+export default function () { return <i data-slot="anon" className="p-4" /> }`
+    const { components } = transformComponent(source, 'x', 'bje')
+    expect(components).toEqual([
+      {
+        name: 'Card',
+        dataSlot: 'card',
+        variantSet: 'xVariants',
+        defaults: [
+          { prop: 'size', value: '"sm"' },
+          { prop: 'count', value: '2' },
+          { prop: 'open', value: 'false' },
+        ],
+      },
+      { name: 'Plain', dataSlot: 'plain', slot: 'plain', defaults: [] },
+      { name: 'Empty', dataSlot: 'empty', slot: 'empty', defaults: [] },
+    ])
   })
 })

@@ -3,12 +3,16 @@
 // run with the field name rather than surfacing later as `undefined`.
 
 export type SelectorRewrite = {
-  find: string
+  // Regular expression source, applied globally to each generated selector.
+  pattern: RegExp
   replace: string
   reason: string
 }
 
 export type MirrorConfig = {
+  // This registry's name: cross-component imports and registryDependencies
+  // point at @<namespace>/<item>.
+  namespace: string
   upstream: {
     url: string
     style: string
@@ -57,14 +61,22 @@ export function parseConfig(raw: unknown): MirrorConfig {
     if (!isRecord(rewrite)) fail(`selectorRewrites[${i}] must be an object`)
     const replace = rewrite.replace
     if (typeof replace !== 'string') fail(`selectorRewrites[${i}].replace must be a string`)
+    const source = string(rewrite, 'pattern', `selectorRewrites[${i}].`)
+    let pattern: RegExp
+    try {
+      pattern = new RegExp(source, 'g')
+    } catch {
+      fail(`selectorRewrites[${i}].pattern is not a valid regular expression`)
+    }
     return {
-      find: string(rewrite, 'find', `selectorRewrites[${i}].`),
+      pattern,
       replace,
       reason: string(rewrite, 'reason', `selectorRewrites[${i}].`),
     }
   })
 
   return {
+    namespace: string(raw, 'namespace', ''),
     upstream: { url, style: string(upstream, 'style', 'upstream.') },
     components,
     snapshotDir: string(raw, 'snapshotDir', ''),

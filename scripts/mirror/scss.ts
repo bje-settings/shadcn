@@ -101,7 +101,7 @@ export function slotToScss(css: string, slot: Slot, rewrites: SelectorRewrite[])
       ...new Set(
         rule.selectors.map((selector) =>
           rewrites.reduce(
-            (result, { find, replace }) => result.split(find).join(replace),
+            (result, { pattern, replace }) => result.replace(pattern, replace),
             nestSelector(selector, candidates, resolved),
           ),
         ),
@@ -114,6 +114,13 @@ export function slotToScss(css: string, slot: Slot, rewrites: SelectorRewrite[])
       decls.push(`${decl.prop}: ${decl.value}${decl.important ? ' !important' : ''}`)
     })
     const selector = selectors.join(', ')
+    // Upstream selectors that inspect class names look for Tailwind classes no
+    // consumer element will carry: each needs a deliberate selectorRewrites entry.
+    if (/\[class[~|^$*]?=/.test(selector)) {
+      throw new Error(
+        `${slot.name}: selector ${selector} matches class names; add a selectorRewrites entry`,
+      )
+    }
     const wrappers = wrappersOf(rule, layer)
     insert(root, selector === '&' ? wrappers : [selector, ...wrappers], decls)
   })

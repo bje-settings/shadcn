@@ -3,7 +3,11 @@ import { buildComponent, dependenciesOf, type UpstreamItem } from './component.t
 import { parseConfig } from './config.ts'
 
 const config = parseConfig({
-  upstream: { url: 'https://example.com/{style}/{name}.json', style: 'base-vega' },
+  namespace: 'bje',
+  upstream: {
+    url: 'https://example.com/{style}/{name}.json',
+    style: 'base-vega',
+  },
   components: ['badge'],
   snapshotDir: 'upstream',
   outputDir: 'registry/ui',
@@ -32,6 +36,7 @@ describe('buildComponent', () => {
       title: 'Badge',
       dependencies: ['clsx'],
       devDependencies: ['@testing-library/dom', '@testing-library/react', 'jsdom', 'vitest'],
+      registryDependencies: [],
       files: [
         { path: 'registry/ui/Badge/Badge.tsx', type: 'registry:ui' },
         { path: 'registry/ui/Badge/Badge.module.scss', type: 'registry:ui' },
@@ -63,6 +68,16 @@ describe('buildComponent', () => {
     expect(result.unresolved).toEqual({ badge: ['group/badge'] })
   })
 
+  it('points registry dependencies and imports at mirrored items', async () => {
+    const content = source('flex').replace(
+      'import { cn } from "cn"',
+      'import { cn } from "cn"\nimport { Badge as Base } from "@/registry/base-vega/ui/badge"',
+    )
+    const item = { ...badge(content), registryDependencies: ['badge'] }
+    const { item: result } = await buildComponent(item, config)
+    expect(result.registryDependencies).toEqual(['@bje/badge'])
+  })
+
   it('wraps long property lists and omits empty sections', async () => {
     const properties = Array.from({ length: 12 }, (_, i) => `--a-long-custom-property-${i}`)
     const compile = async () =>
@@ -77,9 +92,9 @@ describe('buildComponent', () => {
   it.each([
     ['a non-ui item', { ...badge('x'), type: 'registry:block' }, 'type registry:block'],
     [
-      'registry dependencies',
+      'a registry dependency that is not mirrored',
       { ...badge('x'), registryDependencies: ['button'] },
-      'registryDependencies',
+      'depends on button, which mirror.config.json does not list',
     ],
     [
       'a file without content',

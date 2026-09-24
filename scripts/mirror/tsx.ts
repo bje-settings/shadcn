@@ -13,6 +13,7 @@
 import { parse } from '@babel/parser'
 import type {
   CallExpression,
+  FunctionDeclaration,
   Node,
   ObjectExpression,
   SourceLocation,
@@ -23,9 +24,12 @@ import MagicString from 'magic-string'
 import { camelCase, pascalCase } from './names.ts'
 import type { Slot } from './scss.ts'
 
-// ClassValue matches cva's className type, which also accepts (and clsx
-// ignores) Base UI's function form of className.
-const CLSX_IMPORT = 'import { type ClassValue, clsx } from "clsx"'
+// ClassValue types the className of generated cva() replacements, matching
+// cva's own type, which also accepts (and clsx ignores) Base UI's function
+// form of className.
+function clsxImport(withClassValue: boolean): string {
+  return `import { ${withClassValue ? 'type ClassValue, ' : ''}clsx } from "clsx"`
+}
 
 // What the test generator needs to know about one cva() call.
 export type VariantSet = {
@@ -38,14 +42,28 @@ export type VariantSet = {
     default?: string
     options: { value: string; slot: string }[]
   }[]
-  // The component function and data-slot whose className the set styles.
-  renderedBy?: { component: string; dataSlot: string }
+}
+
+// A top-level component function and the element whose classes it sets.
+export type RenderedComponent = {
+  name: string
+  // Raw data-slot of that element (a JSX attribute or useRender's state.slot)
+  dataSlot: string
+  // Module class for the component's own class strings
+  slot?: string
+  // cva() variable whose classes it applies
+  variantSet?: string
+  // Destructured props with a literal default, as source text
+  defaults: { prop: string; value: string }[]
 }
 
 export type TransformedComponent = {
   code: string
   slots: Slot[]
   variantSets: VariantSet[]
+  components: RenderedComponent[]
+  // Other upstream items this one imports, by item name
+  registryImports: string[]
 }
 
 // Babel sets loc on every node it parses.
@@ -188,20 +206,56 @@ function convertCva(
   return { typeName, slots, code, set }
 }
 
-// The raw data-slot of the nearest enclosing JSX element, if it is a string.
+// The raw data-slot the classes land on: the nearest enclosing JSX element's
+// data-slot attribute, or else the `state.slot` of an enclosing Base UI
+// useRender() call, which renders it as data-slot.
 function dataSlot(ancestors: Node[]): string | undefined {
   const opening = ancestors.findLast((node) => node.type === 'JSXOpeningElement')
-  if (opening?.type !== 'JSXOpeningElement') return undefined
-  for (const attribute of opening.attributes) {
-    if (
-      attribute.type === 'JSXAttribute' &&
-      attribute.name.name === 'data-slot' &&
-      attribute.value?.type === 'StringLiteral'
-    ) {
-      return attribute.value.value
+  if (opening?.type === 'JSXOpeningElement') {
+    for (const attribute of opening.attributes) {
+      if (
+        attribute.type === 'JSXAttribute' &&
+        attribute.name.name === 'data-slot' &&
+        attribute.value?.type === 'StringLiteral'
+      ) {
+        return attribute.value.value
+      }
     }
+    return undefined
   }
-  return undefined
+  const render = ancestors.findLast(
+    (node) =>
+      node.type === 'CallExpression' &&
+      node.callee.type === 'Identifier' &&
+      node.callee.name === 'useRender',
+  )
+  // A class string inside useRender() is inside its options argument.
+  if (render?.type !== 'CallExpression') return undefined
+  const options = render.arguments[0] as Node
+  const state = objectEntries(options).find(([name]) => name === 'state')?.[1]
+  const slot = state ? objectEntries(state).find(([name]) => name === 'slot')?.[1] : undefined
+  return slot ? stringValue(slot).value : undefined
+}
+
+function literalDefaults(fn: FunctionDeclaration, source: string): RenderedComponent['defaults'] {
+  const [param] = fn.params
+  if (param?.type !== 'ObjectPattern') return []
+  return param.properties.flatMap((property) => {
+    if (
+      property.type === 'ObjectProperty' &&
+      property.key.type === 'Identifier' &&
+      property.value.type === 'AssignmentPattern' &&
+      ['StringLiteral', 'NumericLiteral', 'BooleanLiteral'].includes(property.value.right.type)
+    ) {
+      return [
+        {
+          prop: property.key.name,
+          value: source.slice(...span(property.value.right)),
+        },
+      ]
+    }
+    return []
+  })
 }
 
 function slotName(ancestors: Node[]): string | undefined {
@@ -209,23 +263,49 @@ function slotName(ancestors: Node[]): string | undefined {
   return slot === undefined ? undefined : camelCase(slot)
 }
 
-export function transformComponent(source: string, component: string): TransformedComponent {
-  const ast = parse(source, { sourceType: 'module', plugins: ['typescript', 'jsx'] })
+const REGISTRY_IMPORT = /^@\/registry\/[^/]+\/ui\/([a-z0-9-]+)$/
+
+export function transformComponent(
+  source: string,
+  component: string,
+  namespace: string,
+): TransformedComponent {
+  const ast = parse(source, {
+    sourceType: 'module',
+    plugins: ['typescript', 'jsx'],
+  })
   const out = new MagicString(source)
   const cvas = new Map<string, Cva>()
   const slots: Slot[] = []
+  const components = new Map<string, RenderedComponent>()
+  const registryImports: string[] = []
   let usesClsx = false
-  let importsClsx = false
+  let cnImport: [number, number] | undefined
   let lastImportEnd = 0
 
-  // Records which component and data-slot render a cva() variable's classes.
-  const recordUse = (call: Node, ancestors: Node[]) => {
-    if (call.type !== 'CallExpression' || call.callee.type !== 'Identifier') return
-    const cva = cvas.get(call.callee.name)
+  // Records, per top-level component function, the element its classes land
+  // on. Only the first data-slot a function styles counts as its own.
+  const track = (ancestors: Node[], update: Pick<RenderedComponent, 'slot' | 'variantSet'>) => {
+    const fn = ancestors.find((node) => node.type === 'FunctionDeclaration')
     const slot = dataSlot(ancestors)
-    const fn = ancestors.findLast((node) => node.type === 'FunctionDeclaration')
-    if (cva && slot && fn?.type === 'FunctionDeclaration' && fn.id) {
-      cva.set.renderedBy = { component: fn.id.name, dataSlot: slot }
+    if (fn?.type !== 'FunctionDeclaration' || !fn.id || slot === undefined) return
+    const name = fn.id.name
+    const record = components.get(name) ?? {
+      name,
+      dataSlot: slot,
+      defaults: literalDefaults(fn, source),
+    }
+    components.set(name, record)
+    if (record.dataSlot === slot) Object.assign(record, update)
+  }
+
+  const trackCva = (call: Node, ancestors: Node[]) => {
+    if (
+      call.type === 'CallExpression' &&
+      call.callee.type === 'Identifier' &&
+      cvas.has(call.callee.name)
+    ) {
+      track(ancestors, { variantSet: call.callee.name })
     }
   }
 
@@ -249,10 +329,20 @@ export function transformComponent(source: string, component: string): Transform
         out.remove(source[start - 1] === '\n' ? start - 1 : start, statement.end as number)
         continue
       }
+      const item = REGISTRY_IMPORT.exec(statement.source.value)?.[1]
+      if (item) {
+        registryImports.push(item)
+        const file = pascalCase(item)
+        out.overwrite(
+          ...span(statement.source),
+          JSON.stringify(`@/registry/${namespace}/ui/${file}/${file}`),
+        )
+        continue
+      }
       if (names.includes('cn')) {
         if (names.length > 1) unsupported(statement, 'cn imported alongside other names')
-        out.overwrite(...span(statement), CLSX_IMPORT)
-        importsClsx = true
+        // Replaced at the end, once it is known whether any cva() needs ClassValue.
+        cnImport = span(statement)
         continue
       }
     }
@@ -304,7 +394,7 @@ export function transformComponent(source: string, component: string): Transform
         cvas.has(only.callee.name)
       ) {
         out.overwrite(...span(node), source.slice(...span(only)))
-        recordUse(only, ancestors)
+        trackCva(only, ancestors)
         return false
       }
       for (const arg of node.arguments) {
@@ -313,6 +403,7 @@ export function transformComponent(source: string, component: string): Transform
         ) {
           unsupported(arg, `cn() argument ${arg.type}`)
         }
+        trackCva(arg, ancestors)
       }
       const literals = node.arguments.filter((arg) => arg.type === 'StringLiteral')
       const [first, ...others] = literals
@@ -320,6 +411,7 @@ export function transformComponent(source: string, component: string): Transform
         const slot = slotName(ancestors)
         if (!slot) unsupported(node, 'cn() with class strings outside an element with data-slot')
         addSlot(node, { name: slot, classes: literals.flatMap(classList) })
+        track(ancestors, { slot })
         out.overwrite(...span(first), `styles.${slot}`)
         for (const literal of others) {
           const previous = node.arguments[node.arguments.indexOf(literal) - 1] as Node
@@ -337,6 +429,7 @@ export function transformComponent(source: string, component: string): Transform
         const slot = slotName(ancestors)
         if (!slot) unsupported(node, 'className string on an element without data-slot')
         addSlot(node, { name: slot, classes: classList(value) })
+        track([...ancestors, node], { slot })
         out.overwrite(...span(value), `{styles.${slot}}`)
         return false
       }
@@ -347,13 +440,15 @@ export function transformComponent(source: string, component: string): Transform
       ) {
         unsupported(expression, `className expression ${expression.type}`)
       }
-      if (expression) recordUse(expression, [...ancestors, node])
+      if (expression) trackCva(expression, [...ancestors, node])
     }
     return true
   })
 
+  const clsx = clsxImport(cvas.size > 0)
+  if (cnImport) out.overwrite(...cnImport, clsx)
   const added = [
-    ...(usesClsx && !importsClsx ? [CLSX_IMPORT] : []),
+    ...(usesClsx && !cnImport ? [clsx] : []),
     `import styles from "./${pascalCase(component)}.module.scss"`,
   ].join('\n')
   if (lastImportEnd === 0) out.prepend(`${added}\n`)
@@ -363,5 +458,7 @@ export function transformComponent(source: string, component: string): Transform
     code: out.toString(),
     slots,
     variantSets: [...cvas.values()].map((cva) => cva.set),
+    components: [...components.values()],
+    registryImports,
   }
 }

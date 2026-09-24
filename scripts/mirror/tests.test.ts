@@ -2,52 +2,74 @@ import { describe, expect, it } from 'vitest'
 import { generateTest } from './tests.ts'
 import { transformComponent } from './tsx.ts'
 
-const generate = (source: string) => generateTest('chip', transformComponent(source, 'chip'))
+const generate = (source: string) => generateTest('chip', transformComponent(source, 'chip', 'bje'))
 
-const chip = (exports: string, config = '') => `import { cva } from "class-variance-authority"
-import { cn } from "cn"
-const chipVariants = cva("flex"${config})
-${exports.startsWith('export function') ? exports : 'function Chip({ className }) {'}
-  return <span data-slot="chip" className={chipVariants({ className })} />
-}
-${exports.startsWith('export function') ? '' : exports}`
+const header = `import { cva } from "class-variance-authority"
+import { cn } from "cn"`
 
 describe('generateTest', () => {
-  it('covers each group option, null groups, className and the no-argument call', () => {
-    const test = generate(
-      chip(
-        'export { Chip, chipVariants }',
-        ', { variants: { tone: { soft: "bg-muted", "extra-loud": "bg-primary" }, size: { sm: "h-8" } }, defaultVariants: { tone: "soft" } }',
-      ),
-    )
+  it('covers groups, null groups, non-group defaults, className and the variants function', () => {
+    const test = generate(`${header}
+const chipVariants = cva("flex", {
+  variants: { tone: { soft: "bg-muted", "extra-loud": "bg-primary" }, size: { sm: "h-8" } },
+  defaultVariants: { tone: "soft" },
+})
+function Chip({ className, tone = "soft", size, pressed = false, ...props }) {
+  return <span data-slot="chip" className={cn(chipVariants({ tone, size }), className)} {...props} />
+}
+export { Chip, chipVariants }`)
     expect(test).toContain('import { Chip, chipVariants } from "./Chip"')
-    expect(test).toContain('it("renders [data-slot=\\"chip\\"] with the base and default classes"')
-    expect(test).toContain('expect(renderChip()).toEqual([styles.chip, styles.toneSoft])')
+    expect(test).toContain('it("renders [data-slot=\\"chip\\"] with its classes", () => {')
+    expect(test).toContain(
+      'expect(renderChip()).toEqual(expect.arrayContaining([styles.chip, styles.toneSoft]))',
+    )
     expect(test).toContain('    ["extra-loud", styles.toneExtraLoud],')
-    expect(test).toContain('expect(renderChip({ tone: null, size: null })).toEqual([styles.chip])')
+    expect(test).toContain('const classes = renderChip({ tone: null, size: null })')
+    expect(test).toContain(
+      'for (const className of [styles.toneSoft, styles.toneExtraLoud, styles.sizeSm]) {',
+    )
+    expect(test).toContain('expect(renderChip({ pressed: false })).toEqual(renderChip())')
+    expect(test).not.toContain('renderChip({ tone: "soft" })).toEqual')
     expect(test).toContain('expect(chipVariants()).toBe([styles.chip, styles.toneSoft].join(" "))')
   })
 
-  it('skips group and variants-function tests when there are none to cover', () => {
-    const test = generate(chip('export function Chip({ className }) {'))
-    expect(test).toContain('import { Chip } from "./Chip"')
+  it('tests every exported component, each on its own data-slot', () => {
+    const test = generate(`${header}
+const chipVariants = cva("flex")
+function Chip({ className }) {
+  return <span data-slot="chip" className={chipVariants({ className })} />
+}
+function ChipLabel({ className, side = "start" }) {
+  return <span data-slot="chip-label" className={cn("text-sm", className)} />
+}
+export { Chip, ChipLabel }`)
+    expect(test).toContain('import { Chip, ChipLabel } from "./Chip"')
+    expect(test).toContain('querySelector("[data-slot=\\"chip-label\\"]")')
+    expect(test).toContain('expect.arrayContaining([styles.chipLabel])')
+    expect(test).toContain('expect(renderChipLabel({ side: "start" })).toEqual(renderChipLabel())')
     expect(test).not.toContain('null group')
     expect(test).not.toContain('describe("chipVariants"')
   })
 
-  it.each([
-    ['no cva() rendered by the component', 'export function Chip() { return <span /> }'],
-    ['an unexported component', chip('export { chipVariants }')],
-    ['a component exported under a string name', chip('export { Chip as "chip" }')],
-    [
-      'a cva() used outside a named function',
-      'import { cva } from "class-variance-authority"\nconst chipVariants = cva("x")\nexport default () => <i data-slot="chip" className={chipVariants()} />',
-    ],
-    [
-      'a cva() on an element without a string data-slot',
-      'import { cva } from "class-variance-authority"\nconst chipVariants = cva("x")\nexport function Chip() { return <i className={chipVariants()} /> }',
-    ],
-  ])('rejects %s', (_, source) => {
-    expect(() => generate(source)).toThrow('chip: no test template')
+  it('names the exported components it has no template for', () => {
+    expect(() =>
+      generate(`${header}
+export function Chip({ className }) { return <span data-slot="chip" className={cn("x", className)} /> }
+export function ChipIcon() { return <svg /> }`),
+    ).toThrow('chip: no test template for ChipIcon yet')
+  })
+
+  it('rejects a file with no component it can test', () => {
+    expect(() => generate('export const chip = 1')).toThrow(
+      "chip: no test template for this component's shape yet",
+    )
+  })
+
+  it('ignores string-named exports', () => {
+    expect(() =>
+      generate(`${header}
+function Chip() { return <span data-slot="chip" className="x" /> }
+export { Chip as "chip" }`),
+    ).toThrow("chip: no test template for this component's shape yet")
   })
 })

@@ -5,7 +5,10 @@
   "compilerOptions": {
     "module": "preserve",
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": false
+    "allowImportingTsExtensions": false,
+    // Cross-component imports, which the shadcn CLI rewrites to the
+    // consumer's ui alias on install.
+    "paths": { "@/registry/bje/ui/*": ["./ui/*"] }
   },
   "include": [".", "../types"]
 }

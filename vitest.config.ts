@@ -16,6 +16,8 @@ export default defineConfig({
         extends: true,
         test: {
           name: 'registry',
+          // Cross-component imports, as mapped in registry/tsconfig.json.
+          alias: { '@/registry/bje/ui': new URL('./registry/ui', import.meta.url).pathname },
           include: ['registry/**/*.test.{ts,tsx}'],
           environment: 'jsdom',
           // Compile CSS modules with Sass and keep class names as written, the

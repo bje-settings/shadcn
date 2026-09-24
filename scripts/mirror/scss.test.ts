@@ -1,11 +1,9 @@
 import { describe, expect, it } from 'vitest'
+import type { SelectorRewrite } from './config.ts'
 import { slotToScss } from './scss.ts'
 import { compileCandidates } from './tailwind.ts'
 
-async function convert(
-  classes: string[],
-  rewrites = [] as { find: string; replace: string; reason: string }[],
-) {
+async function convert(classes: string[], rewrites: SelectorRewrite[] = []) {
   return slotToScss(await compileCandidates(classes), { name: 'root', classes }, rewrites)
 }
 
@@ -44,9 +42,21 @@ describe('slotToScss', () => {
   it('applies selector rewrites', async () => {
     const { scss } = await convert(
       ["[&_svg:not([class*='size-'])]:size-4"],
-      [{ find: ':not([class*="size-"])', replace: '', reason: 'test' }],
+      [
+        {
+          pattern: /:not\(\[class\*="[\w-]+"\]\)/g,
+          replace: '',
+          reason: 'test',
+        },
+      ],
     )
     expect(scss).toContain('  & svg {\n')
+  })
+
+  it('refuses a selector that still matches class names', async () => {
+    await expect(convert(["[&_svg:not([class*='size-'])]:size-4"])).rejects.toThrow(
+      'root: selector & svg:not([class*="size-"]) matches class names; add a selectorRewrites entry',
+    )
   })
 
   it('reports classes with no CSS and an empty block when nothing compiles', async () => {
