@@ -141,8 +141,7 @@ Every case is generated:
 - **Fixtures:** each exported component that renders an element, per `cva()` option
   (`ab/generated/fixtures.ts`), in light and dark, at rest, hovered, keyboard-focused and disabled.
   Each renders in the same scaffold as its generated test. A fixture inside an opened part (a
-  popup) renders alone on its page and compares the region of the viewport it paints, with 32px
-  around it for shadows and rings; a modal with a tinted backdrop compares the whole viewport.
+  popup) renders alone on its page and compares the whole viewport.
 - **Typeset:** each of Typeset's content fixtures (docs, chat, changelog, ...) inside `.typeset`,
   in light and dark.
 - **Examples:** each sub-example of upstream's docs example for a mirrored component

@@ -4,7 +4,7 @@
 // page never holds more than the case under test. A case is one test: its
 // render is compared at rest, then hovered and focused, then rendered
 // disabled, each state as a step. An overlay case, whose popup portals out of
-// its wrapper, is compared as the region of the viewport it paints. The report attaches
+// its wrapper, is compared as the whole viewport. The report attaches
 // upstream, ours and diff images for every comparison (in CI, every failed
 // one), and each case records how long its steps took (`pnpm ab:timings`).
 
@@ -218,128 +218,27 @@ async function applies(page: Page, c: Case, state: State): Promise<boolean> {
 
 // A screenshot as Playwright encoded it, for the report, and decoded, to diff.
 type Shot = { file: Buffer; png: PNG }
-type Box = { x: number; y: number; width: number; height: number }
 
-// Room around an overlay's boxes for what paints outside them: shadows,
-// rings and outlines.
-const BLEED = 32
-
-// Where an overlay case paints: its wrapper and every element portalled out
-// of the gallery that paints something itself (text, an image or SVG, a
-// background, border, shadow, outline or pseudo-element), with BLEED around
-// them, within the viewport. A tinted backdrop spans the viewport, so a modal
-// is compared whole; a menu's invisible click-blocking backdrop paints
-// nothing and does not count.
-async function extent(page: Page, c: Case): Promise<Box> {
-  return page.evaluate(
-    ({ id, bleed }) => {
-      const wrapper = document.querySelector(`[data-case="${CSS.escape(id)}"]`)
-      const portalled = [...document.body.children].filter((el) => el.id !== 'root')
-      const REPLACED = new Set([
-        'IMG',
-        'SVG',
-        'svg',
-        'CANVAS',
-        'VIDEO',
-        'INPUT',
-        'TEXTAREA',
-        'IFRAME',
-      ])
-      const paints = (el: Element) => {
-        if (REPLACED.has(el.tagName)) return true
-        if ([...el.childNodes].some((node) => node.nodeType === 3 && node.textContent?.trim())) {
-          return true
-        }
-        const style = getComputedStyle(el)
-        const border = ['Top', 'Right', 'Bottom', 'Left'].some(
-          (side) =>
-            style.getPropertyValue(`border-${side.toLowerCase()}-width`) !== '0px' &&
-            style.getPropertyValue(`border-${side.toLowerCase()}-style`) !== 'none',
-        )
-        return (
-          border ||
-          !['transparent', 'rgba(0, 0, 0, 0)'].includes(style.backgroundColor) ||
-          style.backgroundImage !== 'none' ||
-          style.boxShadow !== 'none' ||
-          (style.outlineStyle !== 'none' && style.outlineWidth !== '0px') ||
-          getComputedStyle(el, '::before').content !== 'none' ||
-          getComputedStyle(el, '::after').content !== 'none'
-        )
-      }
-      const elements = [
-        ...(wrapper ? [wrapper] : []),
-        ...portalled.flatMap((el) => [el, ...el.querySelectorAll('*')]).filter(paints),
-      ]
-      let [left, top, right, bottom] = [Infinity, Infinity, -Infinity, -Infinity]
-      for (const el of elements) {
-        const rect = el.getBoundingClientRect()
-        if (rect.width === 0 && rect.height === 0) continue
-        left = Math.min(left, rect.left)
-        top = Math.min(top, rect.top)
-        right = Math.max(right, rect.right)
-        bottom = Math.max(bottom, rect.bottom)
-      }
-      const x = Math.max(0, Math.floor(left - bleed))
-      const y = Math.max(0, Math.floor(top - bleed))
-      return {
-        x,
-        y,
-        width: Math.min(window.innerWidth, Math.ceil(right + bleed)) - x,
-        height: Math.min(window.innerHeight, Math.ceil(bottom + bleed)) - y,
-      }
-    },
-    { id: c.id, bleed: BLEED },
-  )
-}
-
-function union(a: Box, b: Box): Box {
-  const x = Math.min(a.x, b.x)
-  const y = Math.min(a.y, b.y)
-  return {
-    x,
-    y,
-    width: Math.max(a.x + a.width, b.x + b.width) - x,
-    height: Math.max(a.y + a.height, b.y + b.height) - y,
-  }
-}
-
-// Puts both sides in the state and screenshots them: a case's wrapper, or
-// for an overlay the same region of both viewports, covering where either
-// side paints.
-async function capture(sides: [Page, Page], c: Case, state: State): Promise<[Shot, Shot]> {
+async function capture(page: Page, c: Case, state: State): Promise<Shot> {
+  const element = target(page, c)
   try {
-    await Promise.all(
-      sides.map(async (page) => {
-        const element = target(page, c)
-        // force: skip actionability checks, which never pass for an element
-        // that spins (Spinner) or ignores the pointer (Kbd); only :hover
-        // matters here.
-        if (state === 'hover') await element.hover({ force: true })
-        if (state === 'focus') {
-          // Focus as the keyboard would, so it matches :focus-visible;
-          // tabbing would leave a popup's focus trap or move focus into an
-          // open popup.
-          await element.evaluate((el) => (el as HTMLElement).focus({ focusVisible: true }))
-          expect(await element.evaluate((el) => el.matches(':focus-visible'))).toBe(true)
-        }
-      }),
-    )
-    const clip = c.overlay
-      ? union(...((await Promise.all(sides.map((page) => extent(page, c)))) as [Box, Box]))
-      : undefined
+    // force: skip actionability checks, which never pass for an element that
+    // spins (Spinner) or ignores the pointer (Kbd); only :hover matters here.
+    if (state === 'hover') await element.hover({ force: true })
+    if (state === 'focus') {
+      // Focus as the keyboard would, so it matches :focus-visible; tabbing
+      // would leave a popup's focus trap or move focus into an open popup.
+      await element.evaluate((el) => (el as HTMLElement).focus({ focusVisible: true }))
+      expect(await element.evaluate((el) => el.matches(':focus-visible'))).toBe(true)
+    }
     const options = { animations: 'disabled', caret: 'hide' } as const
-    const shoot = async (page: Page): Promise<Shot> => {
-      const file = clip
-        ? await page.screenshot({ ...options, clip })
-        : await page.locator(`[data-case="${c.id}"]`).screenshot(options)
-      return { file, png: PNG.sync.read(file) }
-    }
-    return await Promise.all([shoot(sides[0]), shoot(sides[1])])
+    const shot = c.overlay
+      ? await page.screenshot(options)
+      : await page.locator(`[data-case="${c.id}"]`).screenshot(options)
+    return { file: shot, png: PNG.sync.read(shot) }
   } finally {
-    for (const page of sides) {
-      await page.mouse.move(0, 0)
-      await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur())
-    }
+    await page.mouse.move(0, 0)
+    await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur())
   }
 }
 
@@ -406,7 +305,7 @@ for (const c of cases) {
           for (const page of sides) await expect(target(page, render)).toBeAttached()
         }
         const [upstreamShot, oursShot] = await timed(timings.test, 'capture', () =>
-          capture(sides, render, state),
+          Promise.all(sides.map((page) => capture(page, render, state))),
         )
         const [upstream, ours] = [upstreamShot.png, oursShot.png]
         const width = Math.max(upstream.width, ours.width)
