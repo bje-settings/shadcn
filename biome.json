@@ -12,7 +12,8 @@
       "**/*.ts",
       "**/*.tsx",
       "!.claude/worktrees",
-      "!.claude/skills"
+      "!.claude/skills",
+      "!upstream"
     ]
   },
   "linter": {
@@ -38,5 +39,26 @@
     "parser": {
       "allowComments": true
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["registry/ui/**"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "useSemanticElements": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["ab/generated/**"],
+      "linter": {
+        "enabled": false
+      },
+      "assist": {
+        "enabled": false
+      }
+    }
+  ]
 }

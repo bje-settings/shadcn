@@ -1,0 +1,19 @@
+{
+  // The harness is bundled by Vite, so it resolves like a bundler, with both
+  // sides' registry aliases. The paths must match mirror.config.json
+  // (namespace, upstream.style); ab/vite.config.ts reads them from it.
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": false,
+    "types": ["node", "vite/client"],
+    "paths": {
+      "@/registry/bje/ui/*": ["../registry/ui/*"],
+      "@/registry/base-vega/ui/*": ["./generated/upstream/*"],
+      "@/registry/base-vega/components/example": ["./stubs/example.tsx"],
+      "@/app/(create)/components/icon-placeholder": ["./stubs/icon-placeholder.tsx"]
+    }
+  },
+  "include": ["."]
+}

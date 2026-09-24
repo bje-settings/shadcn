@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 # Job names are a contract: the repo ruleset Require CI (23915809) requires
-# build, vitest, types and biome by exact name. A renamed job never reports,
+# build, vitest, types, biome and ab by exact name. A renamed job never reports,
 # and every pull request waits on it forever. Update the ruleset with any rename.
 jobs:
   # `shadcn build` validates registry.json and every item against the schema.
@@ -56,8 +56,13 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/node-pnpm
+      # Three projects: scripts resolve like node; registry items and the A/B
+      # harness like a bundler.
       - name: Type-check the TypeScript
-        run: pnpm exec tsc -p tsconfig.json
+        run: |
+          pnpm exec tsc -p tsconfig.json
+          pnpm exec tsc -p registry/tsconfig.json
+          pnpm exec tsc -p ab/tsconfig.json
 
   biome:
     name: biome
@@ -67,3 +72,23 @@ jobs:
       - uses: ./.github/actions/node-pnpm
       - name: Lint and format-check with Biome
         run: pnpm exec biome ci . --error-on-warnings
+
+  # Visual A/B: every generated component against upstream shadcn with
+  # Tailwind, pixel for pixel. Uses the Chrome
+  # preinstalled on GitHub's Ubuntu image, so no browser download: both sides
+  # render in the same browser in the same run, so its version does not matter.
+  ab:
+    name: ab
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-pnpm
+      - name: Compare generated components with upstream
+        run: pnpm ab
+      - name: Upload the A/B report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: ab-report
+          path: ab/report
+          retention-days: 14

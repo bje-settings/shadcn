@@ -1,7 +1,8 @@
 # No Tailwind
 
-This registry does not use Tailwind. The vendored skill at `.claude/skills/shadcn/` assumes it
-does; where they disagree, this file wins.
+This registry ships no Tailwind. Components are shadcn's, converted to SCSS modules by
+`scripts/mirror`. The vendored skill at `.claude/skills/shadcn/` assumes Tailwind; where they
+disagree, this file wins.
 
 ## Disregard in the vendored skill
 
@@ -15,12 +16,15 @@ still apply.
 
 ## Registry items
 
-- No `tailwindcss`, `tailwind-merge`, `tailwindcss-animate`, or other Tailwind packages in
-  `dependencies`, `devDependencies`, or `package.json`.
+- No `tailwindcss`, `tailwind-merge`, `tailwindcss-animate`, or other Tailwind packages in an
+  item's `dependencies` or `devDependencies`. The repo's own `package.json` carries `tailwindcss`,
+  `@tailwindcss/node`, `@tailwindcss/vite`, `tw-animate-css`, `cn` and `class-variance-authority`
+  only as devDependencies: `scripts/mirror` compiles upstream classes with them, and the A/B
+  harness renders upstream's unchanged source with them.
 - No `tailwind` field (deprecated upstream anyway).
 - No `css` or `cssVars` fields: the CLI writes them into the consumer's Tailwind CSS entry file.
   Ship styles as files in the item's `files` array instead.
-- Compose class names with the registry's own `cn` item (`clsx` only). Do not add
-  `tailwind-merge` to it.
-
-The styling approach for components is not decided yet. Ask before introducing one.
+- Styling is one SCSS module per component (`Button.module.scss`), generated from upstream's
+  Tailwind classes. Tokens stay CSS custom properties.
+- Generated components compose classes with `clsx` directly. Do not add `tailwind-merge` to
+  anything.

@@ -1,0 +1,164 @@
+// Turns Tailwind's flattened output for one slot's classes into a nested SCSS
+// block under a single module class.
+//
+// Every utility rule is `[@media|@supports wrappers] <selector containing the
+// utility class> { declarations }`. The utility class becomes `&`, the rule
+// nests under the slot's class, and adjacent rules that share a selector and
+// wrappers merge. Order is preserved exactly: Tailwind emits utilities in
+// cascade order, and only adjacent blocks merge, so no declaration moves past
+// another that could override it.
+//
+// The slot class is wrapped in :where() so a consumer's className always
+// outranks the component's defaults, the job tailwind-merge does upstream.
+
+import postcss, { type AtRule, type Rule } from 'postcss'
+import selectorParser from 'postcss-selector-parser'
+import type { SelectorRewrite } from './config.ts'
+
+export type Slot = {
+  // camelCase module class name
+  name: string
+  classes: string[]
+}
+
+export type ScssBlock = {
+  scss: string
+  // group/peer marker classes, which have no CSS of their own. Any other class
+  // Tailwind produces no CSS for fails the conversion.
+  unresolved: string[]
+  // Custom properties the block reads but does not set: the global variables
+  // file has to provide them.
+  customProperties: string[]
+}
+
+type Item = { decl: string } | Block
+type Block = { key: string; items: Item[] }
+
+function isBlock(item: Item | undefined): item is Block {
+  return item !== undefined && 'items' in item
+}
+
+function wrappersOf(rule: Rule, layer: AtRule): string[] {
+  const wrappers: string[] = []
+  // optimize() leaves only at-rules between a utility rule and the layer.
+  for (let node = rule.parent as AtRule; node !== layer; node = node.parent as AtRule) {
+    if (node.type !== 'atrule') throw new Error(`unexpected nested rule in ${rule.selector}`)
+    wrappers.unshift(`@${node.name} ${node.params}`)
+  }
+  return wrappers
+}
+
+// Classes Tailwind variants may name outside the element: `.dark` from the
+// dark variant, marked :global() so CSS modules leave it alone. Any other
+// outside class, like `.group/card` from a group-* variant, names a marker
+// class the mirror drops from the element, so the selector could never match.
+const GLOBAL_CLASSES = new Set(['dark'])
+
+// Tailwind's group and peer marker classes: they have no CSS of their own.
+const MARKER = /^(group|peer)(\/[\w-]+)?$/
+
+// The utility's own class becomes `&`; an allowed outside class is marked
+// :global() or CSS modules would rename it and the selector would never match.
+function nestSelector(selector: string, candidates: Set<string>, resolved: Set<string>): string {
+  return selectorParser((root) => {
+    root.walkClasses((node) => {
+      if (candidates.has(node.value)) {
+        resolved.add(node.value)
+        node.replaceWith(selectorParser.nesting({ value: '&' }))
+        return
+      }
+      if (!GLOBAL_CLASSES.has(node.value)) {
+        throw new Error(
+          `selector ${selector} references class .${node.value} outside the module; group-* and peer-* variants are not supported yet`,
+        )
+      }
+      node.replaceWith(
+        selectorParser.pseudo({
+          value: ':global',
+          nodes: [selectorParser.selector({ nodes: [node.clone()], value: '' })],
+        }),
+      )
+    })
+  }).processSync(selector)
+}
+
+function insert(root: Block, path: string[], decls: string[]): void {
+  let block = root
+  for (const key of path) {
+    const last = block.items.at(-1)
+    if (isBlock(last) && last.key === key) {
+      block = last
+    } else {
+      const child: Block = { key, items: [] }
+      block.items.push(child)
+      block = child
+    }
+  }
+  block.items.push(...decls.map((decl) => ({ decl })))
+}
+
+function print(block: Block, depth: number): string[] {
+  const indent = '  '.repeat(depth)
+  const lines = [`${indent}${block.key} {`]
+  for (const item of block.items) {
+    if (isBlock(item)) lines.push(...print(item, depth + 1))
+    else lines.push(`${indent}  ${item.decl};`)
+  }
+  lines.push(`${indent}}`)
+  return lines
+}
+
+export function slotToScss(css: string, slot: Slot, rewrites: SelectorRewrite[]): ScssBlock {
+  const candidates = new Set(slot.classes)
+  const resolved = new Set<string>()
+  const root: Block = { key: `:where(.${slot.name})`, items: [] }
+  const reads = new Set<string>()
+  const sets = new Set<string>()
+
+  const layer = postcss
+    .parse(css)
+    .nodes.find(
+      (node): node is AtRule =>
+        node.type === 'atrule' && node.name === 'layer' && node.params === 'utilities',
+    )
+
+  layer?.walkRules((rule) => {
+    const selectors = [
+      ...new Set(
+        rule.selectors.map((selector) =>
+          rewrites.reduce(
+            (result, { pattern, replace }) => result.replace(pattern, replace),
+            nestSelector(selector, candidates, resolved),
+          ),
+        ),
+      ),
+    ]
+    const decls: string[] = []
+    rule.walkDecls((decl) => {
+      if (decl.prop.startsWith('--')) sets.add(decl.prop)
+      for (const [, name] of decl.value.matchAll(/var\((--[\w-]+)/g)) reads.add(name as string)
+      decls.push(`${decl.prop}: ${decl.value}${decl.important ? ' !important' : ''}`)
+    })
+    const selector = selectors.join(', ')
+    // Upstream selectors that inspect class names look for Tailwind classes no
+    // consumer element will carry: each needs a deliberate selectorRewrites entry.
+    if (/\[class[~|^$*]?=/.test(selector)) {
+      throw new Error(
+        `${slot.name}: selector ${selector} matches class names; add a selectorRewrites entry`,
+      )
+    }
+    const wrappers = wrappersOf(rule, layer)
+    insert(root, selector === '&' ? wrappers : [selector, ...wrappers], decls)
+  })
+
+  const unresolved = slot.classes.filter((c) => !resolved.has(c))
+  const unknown = unresolved.filter((c) => !MARKER.test(c))
+  if (unknown.length > 0) {
+    throw new Error(`${slot.name}: Tailwind produced no CSS for ${unknown.join(' ')}`)
+  }
+  return {
+    scss: print(root, 0).join('\n'),
+    unresolved,
+    customProperties: [...reads].filter((name) => !sets.has(name)).sort(),
+  }
+}

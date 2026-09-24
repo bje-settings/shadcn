@@ -1,0 +1,29 @@
+{
+  "namespace": "bje",
+  "upstream": {
+    "url": "https://ui.shadcn.com/r/styles/{style}/{name}.json",
+    "colorsUrl": "https://ui.shadcn.com/r/colors/{name}.json",
+    "style": "base-vega"
+  },
+  "theme": {
+    "baseColor": "neutral",
+    "font": "inter"
+  },
+  "components": ["button", "button-group", "separator"],
+  "typeset": {
+    "stylesheet": "https://ui.shadcn.com/typeset.css",
+    "fixturesUrl": "https://raw.githubusercontent.com/shadcn-ui/ui/main/apps/v4/app/(app)/(typeset)/lib/fixtures/{name}.ts",
+    "fixtures": ["docs", "chat", "changelog", "notes", "recipe", "elements"]
+  },
+  "snapshotDir": "upstream",
+  "outputDir": "registry/ui",
+  "globalsDir": "registry/styles",
+  "harnessDir": "ab/generated",
+  "selectorRewrites": [
+    {
+      "pattern": ":not\\(\\[class\\*=\"[\\w-]+\"\\]\\)",
+      "replace": "",
+      "reason": "Upstream skips elements that already carry a Tailwind class such as size-* or w-*. No consumer class matches, so the default applies to every matching element; the low-specificity wrapper lets a consumer class override it."
+    }
+  ]
+}
