@@ -3,9 +3,35 @@
 import * as button from './upstream/button'
 import * as buttonGroup from './upstream/button-group'
 import * as separator from './upstream/separator'
+import * as badge from './upstream/badge'
+import * as card from './upstream/card'
+import * as alert from './upstream/alert'
+import * as label from './upstream/label'
+import * as input from './upstream/input'
+import * as textarea from './upstream/textarea'
+import * as skeleton from './upstream/skeleton'
+import * as spinner from './upstream/spinner'
+import * as kbd from './upstream/kbd'
+import * as aspectRatio from './upstream/aspect-ratio'
+import * as table from './upstream/table'
+import * as breadcrumb from './upstream/breadcrumb'
+import * as empty from './upstream/empty'
 
 export const upstream = {
   button: button,
   'button-group': buttonGroup,
   separator: separator,
+  badge: badge,
+  card: card,
+  alert: alert,
+  label: label,
+  input: input,
+  textarea: textarea,
+  skeleton: skeleton,
+  spinner: spinner,
+  kbd: kbd,
+  'aspect-ratio': aspectRatio,
+  table: table,
+  breadcrumb: breadcrumb,
+  empty: empty,
 }

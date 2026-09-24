@@ -1,7 +1,8 @@
 // Turns an upstream `<item>-example` (the demo behind shadcn's docs page) into
 // A/B cases: each sub-example the default export renders becomes a case when
 // everything it reaches is available, which is mirrored components, the
-// harness's stand-ins for docs-only imports, and react.
+// harness's stand-ins for docs-only imports, and react, and it passes no
+// consumer class whose upstream styling the mirror drops.
 //
 // The output is two trimmed copies of the example holding only the kept
 // sub-examples, the top-level code they reach and the imports they use, with
@@ -21,7 +22,8 @@ export type PreparedExample = {
   upstream: string
   ours: string
   kept: string[]
-  skipped: { name: string; missing: string[] }[]
+  // Why each other sub-example is skipped
+  skipped: { name: string; reasons: string[] }[]
 }
 
 // Names a statement declares at the top level. A top-level function
@@ -61,6 +63,18 @@ function references(node: Node): Set<string> {
   return names
 }
 
+// Whitespace-separated tokens of every string in a node: the classes it may pass.
+function classTokens(node: Node): string[] {
+  const tokens: string[] = []
+  const visit = (current: Node) => {
+    if (current.type === 'StringLiteral') tokens.push(...current.value.split(/\s+/))
+    if (current.type === 'TemplateElement') tokens.push(...current.value.raw.split(/\s+/))
+    for (const child of childNodes(current)) visit(child)
+  }
+  visit(node)
+  return tokens
+}
+
 // The kept part of an import, up to its `from`, or undefined when nothing is kept.
 function importHead(declaration: ImportDeclaration, keep: Set<string>): string | undefined {
   const kept = declaration.specifiers.filter((s) => keep.has(s.local.name))
@@ -85,6 +99,8 @@ export function prepareExample(
   style: string,
   namespace: string,
   mirrored: Set<string>,
+  // Consumer classes whose upstream styling the mirror drops
+  dropped: Set<string>,
 ): PreparedExample {
   const ast = parseModule(source)
   const registry = `@/registry/${style}/`
@@ -156,8 +172,16 @@ export function prepareExample(
           }),
       ),
     ].sort()
-    if (missing.length > 0) {
-      skipped.push({ name, missing })
+    const passed = [...reached]
+      .filter((ref) => declarations.has(ref))
+      .flatMap((ref) => classTokens(declarations.get(ref) as Node))
+      .filter((token) => dropped.has(token))
+    const reasons = [
+      ...(missing.length > 0 ? [`needs ${missing.join(', ')}`] : []),
+      ...[...new Set(passed)].sort().map((c) => `passes ${c}, whose styling the mirror drops`),
+    ]
+    if (reasons.length > 0) {
+      skipped.push({ name, reasons })
       continue
     }
     kept.push(name)

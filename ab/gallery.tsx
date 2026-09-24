@@ -1,9 +1,26 @@
 // Renders every case for one theme, each in its own wrapper keyed by
 // data-case. `?theme=dark` puts `.dark` on <html>, as shadcn apps do, so
 // variables that resolve at the root (Tailwind's --color-*) switch too.
-// `?case=<id>` narrows the page to one case; index.html passes both through.
+// `?case=<id>` narrows the page to one case, the only way an overlay case
+// renders; index.html passes both through.
+// A case that throws renders its error in place, marked data-case-error, so
+// it fails alone rather than blanking the page.
 
+import { Component, type ReactNode } from 'react'
 import { cases, type Side } from './cases'
+
+class CaseBoundary extends Component<{ children: ReactNode }, { error?: Error }> {
+  override state: { error?: Error } = {}
+
+  static getDerivedStateFromError(error: Error) {
+    return { error }
+  }
+
+  override render() {
+    const { error } = this.state
+    return error ? <pre data-case-error={error.message}>{error.message}</pre> : this.props.children
+  }
+}
 
 export function Gallery({ side }: { side: Side }) {
   const params = new URLSearchParams(window.location.search)
@@ -15,14 +32,15 @@ export function Gallery({ side }: { side: Side }) {
       style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 8, padding: 16 }}
     >
       {cases
-        .filter((c) => c.theme === theme && (only === null || c.id === only))
+        // An overlay case renders only on its own page.
+        .filter((c) => c.theme === theme && (only === null ? !c.overlay : c.id === only))
         .map((c) => (
           <div
             key={c.id}
             data-case={c.id}
             style={{ padding: 12, background: 'var(--background)', color: 'var(--foreground)' }}
           >
-            {c.render(side)}
+            <CaseBoundary>{c.render(side)}</CaseBoundary>
           </div>
         ))}
     </main>

@@ -3,9 +3,35 @@
 import * as buttonExample from './examples/upstream/button-example'
 import * as buttonGroupExample from './examples/upstream/button-group-example'
 import * as separatorExample from './examples/upstream/separator-example'
+import * as badgeExample from './examples/upstream/badge-example'
+import * as cardExample from './examples/upstream/card-example'
+import * as alertExample from './examples/upstream/alert-example'
+import * as labelExample from './examples/upstream/label-example'
+import * as inputExample from './examples/upstream/input-example'
+import * as textareaExample from './examples/upstream/textarea-example'
+import * as skeletonExample from './examples/upstream/skeleton-example'
+import * as spinnerExample from './examples/upstream/spinner-example'
+import * as kbdExample from './examples/upstream/kbd-example'
+import * as aspectRatioExample from './examples/upstream/aspect-ratio-example'
+import * as tableExample from './examples/upstream/table-example'
+import * as breadcrumbExample from './examples/upstream/breadcrumb-example'
+import * as emptyExample from './examples/upstream/empty-example'
 
 export const upstreamExamples = {
   'button-example': buttonExample,
   'button-group-example': buttonGroupExample,
   'separator-example': separatorExample,
+  'badge-example': badgeExample,
+  'card-example': cardExample,
+  'alert-example': alertExample,
+  'label-example': labelExample,
+  'input-example': inputExample,
+  'textarea-example': textareaExample,
+  'skeleton-example': skeletonExample,
+  'spinner-example': spinnerExample,
+  'kbd-example': kbdExample,
+  'aspect-ratio-example': aspectRatioExample,
+  'table-example': tableExample,
+  'breadcrumb-example': breadcrumbExample,
+  'empty-example': emptyExample,
 }

@@ -24,7 +24,7 @@ import type {
 import MagicString from 'magic-string'
 import { childNodes, parseModule, span } from './ast.ts'
 import { camelCase, pascalCase, registryModule } from './names.ts'
-import type { Slot } from './scss.ts'
+import { MARKER, type Slot } from './scss.ts'
 
 // ClassValue types the className of generated cva() replacements, matching
 // cva's own type, which also accepts (and clsx ignores) Base UI's function
@@ -51,6 +51,9 @@ export type RenderedComponent = {
   name: string
   // Raw data-slot of that element (a JSX attribute or useRender's state.slot)
   dataSlot: string
+  // Its JSX tag (`input`, `ButtonPrimitive`, `Primitive.Root`'s `Root`), if
+  // it is a JSX element
+  tag?: string
   // Module class for the component's own class strings
   slot?: string
   // cva() variable whose classes it applies
@@ -59,9 +62,20 @@ export type RenderedComponent = {
   defaults: { prop: string; value: string }[]
 }
 
+// A group or peer marker class (`group/card`) and where it sits: the module
+// class of its element and the data-slot values that element renders.
+export type Marker = {
+  marker: string
+  slot: string
+  dataSlots: string[]
+}
+
 export type TransformedComponent = {
   code: string
   slots: Slot[]
+  // Raw data-slot values each module class lands on
+  dataSlots: Record<string, string[]>
+  markers: Marker[]
   variantSets: VariantSet[]
   components: RenderedComponent[]
   // Other upstream items this one imports, by item name
@@ -97,8 +111,12 @@ function isCallTo(node: Node | null | undefined, name?: string): node is NamedCa
   )
 }
 
+// shadcn's `cn-*` classes are style hooks the CLI resolves or strips on
+// install; any left after its transforms carry no CSS in a consumer project.
+const STYLE_HOOK = /^cn-[a-z-]+$/
+
 function classList(literal: StringLiteral): string[] {
-  return literal.value.split(/\s+/).filter(Boolean)
+  return literal.value.split(/\s+/).filter((c) => c !== '' && !STYLE_HOOK.test(c))
 }
 
 function objectEntries(object: Node): [string, Node][] {
@@ -267,9 +285,86 @@ function literalDefaults(fn: FunctionDeclaration, source: string): RenderedCompo
   })
 }
 
+// The top-level function or variable a node sits in.
+function ownerName(ancestors: Node[]): string | undefined {
+  const [, top] = ancestors
+  const statement = top?.type === 'ExportNamedDeclaration' ? top.declaration : top
+  if (statement?.type === 'FunctionDeclaration') return statement.id?.name
+  if (statement?.type === 'VariableDeclaration') {
+    const [declarator] = statement.declarations
+    if (declarator?.id.type === 'Identifier') return declarator.id.name
+  }
+  return undefined
+}
+
+function tagName(ancestors: Node[]): string | undefined {
+  const opening = ancestors.findLast((node) => node.type === 'JSXOpeningElement')
+  if (opening?.type !== 'JSXOpeningElement') return undefined
+  const { name } = opening
+  if (name.type === 'JSXIdentifier') return name.name
+  if (name.type === 'JSXMemberExpression') return name.property.name
+  return undefined
+}
+
+// The module class for a class string: its element's data-slot, or, on an
+// element without one, the enclosing top-level declaration and the element's
+// tag (`accordionTriggerHeader` for `<AccordionPrimitive.Header>` in
+// AccordionTrigger). A class string in a `fooClassName` prop adds `Foo`.
 function slotName(ancestors: Node[]): string | undefined {
+  const attribute = ancestors.findLast((node) => node.type === 'JSXAttribute')
+  const prop =
+    attribute?.type === 'JSXAttribute' && attribute.name.type === 'JSXIdentifier'
+      ? attribute.name.name
+      : 'className'
+  const suffix = prop.endsWith('ClassName') ? pascalCase(prop.replace(/ClassName$/, '')) : ''
   const slot = dataSlot(ancestors)
-  return slot === undefined ? undefined : camelCase(slot)
+  if (slot !== undefined) return camelCase(slot) + suffix
+  const owner = ownerName(ancestors)
+  const tag = tagName(ancestors)
+  if (owner === undefined || tag === undefined) return undefined
+  return camelCase(owner) + pascalCase(tag) + suffix
+}
+
+// A name for each branch of a conditional class: `cond ? "a" : "b"` on slot
+// `x` gives `xCond` and `xNotCond`, `mode === "y" ? ...` gives `xY` and
+// `xNotY`, and `cond && "a"` gives `xCond`.
+function conditionName(test: Node): string {
+  if (test.type === 'Identifier') return pascalCase(test.name)
+  if (
+    test.type === 'BinaryExpression' &&
+    test.operator === '===' &&
+    test.right.type === 'StringLiteral'
+  ) {
+    return pascalCase(test.right.value)
+  }
+  if (test.type === 'MemberExpression' && test.property.type === 'Identifier') {
+    return pascalCase(test.property.name)
+  }
+  return unsupported(test, `class condition ${test.type}`)
+}
+
+// Whether a class expression forwards the component's className prop:
+// `className`, `cn(..., className)` or `xVariants({ className })`.
+function passesClassName(node: Node): boolean {
+  if (node.type === 'Identifier') return node.name === 'className'
+  if (node.type === 'CallExpression') return node.arguments.some(passesClassName)
+  if (node.type === 'ObjectExpression') {
+    return node.properties.some(
+      (p) =>
+        p.type === 'ObjectProperty' && p.key.type === 'Identifier' && p.key.name === 'className',
+    )
+  }
+  return false
+}
+
+// Removes one argument of a call with the separator next to it.
+function removeArgument(out: MagicString, call: CallExpression, arg: Node): void {
+  const index = call.arguments.indexOf(arg as CallExpression['arguments'][number])
+  const previous = call.arguments[index - 1]
+  const next = call.arguments[index + 1]
+  if (previous) out.remove(previous.end as number, arg.end as number)
+  else if (next) out.remove(arg.start as number, next.start as number)
+  else out.remove(...span(arg))
 }
 
 const REGISTRY_IMPORT = /^@\/registry\/[^/]+\/ui\/([a-z0-9-]+)$/
@@ -293,18 +388,29 @@ export function transformComponent(
   const constants = new Set<string>()
 
   // Records, per top-level component function, the element its classes land
-  // on. Only the first data-slot a function styles counts as its own.
-  const track = (ancestors: Node[], update: Pick<RenderedComponent, 'slot' | 'variantSet'>) => {
+  // on: the element given the consumer's className, or else the first
+  // data-slot the function styles (Table's container comes before the table).
+  const bound = new Set<string>()
+  const track = (
+    ancestors: Node[],
+    update: Pick<RenderedComponent, 'slot' | 'variantSet'>,
+    consumer: boolean,
+  ) => {
     const fn = ancestors.find((node) => node.type === 'FunctionDeclaration')
     const slot = dataSlot(ancestors)
     if (fn?.type !== 'FunctionDeclaration' || !fn.id || slot === undefined) return
     const name = fn.id.name
-    const record = components.get(name) ?? {
+    const tag = tagName(ancestors)
+    const fresh = (): RenderedComponent => ({
       name,
       dataSlot: slot,
+      ...(tag ? { tag } : {}),
       defaults: literalDefaults(fn, source),
-    }
+    })
+    let record = components.get(name) ?? fresh()
+    if (consumer && !bound.has(name) && record.dataSlot !== slot) record = fresh()
     components.set(name, record)
+    if (consumer) bound.add(name)
     if (record.dataSlot === slot) Object.assign(record, update)
   }
 
@@ -312,14 +418,32 @@ export function transformComponent(
     isCallTo(node) && cvas.has(node.callee.name)
 
   const trackCva = (node: Node, ancestors: Node[]) => {
-    if (isCvaCall(node)) track(ancestors, { variantSet: node.callee.name })
+    if (isCvaCall(node)) {
+      track(ancestors, { variantSet: node.callee.name }, passesClassName(node))
+    }
   }
 
-  const addSlot = (node: Node, slot: Slot) => {
-    const existing = slots.find((s) => s.name === slot.name)
-    if (!existing) slots.push(slot)
-    else if (existing.classes.join(' ') !== slot.classes.join(' ')) {
-      unsupported(node, `slot ${slot.name} has different classes in two places`)
+  // Raw data-slot values each module class lands on, for group/peer markers.
+  const slotDataSlots = new Map<string, Set<string>>()
+  const addDataSlot = (slot: string, value: string) => {
+    const values = slotDataSlots.get(slot) ?? new Set()
+    slotDataSlots.set(slot, values.add(value))
+  }
+
+  // Adds a slot and returns the module class it got. Two elements asking for
+  // the same name with different classes (FieldTitle reusing FieldLabel's
+  // data-slot) keep them apart: the second takes its owner's name, or a number.
+  const addSlot = (slot: Slot, ancestors: Node[] = []): string => {
+    const owner = ownerName(ancestors)
+    const names = [slot.name, ...(owner ? [camelCase(owner)] : [])]
+    for (let i = 0; ; i++) {
+      const name = names[i] ?? `${slot.name}${i - names.length + 2}`
+      const existing = slots.find((s) => s.name === name)
+      if (existing && existing.classes.join(' ') !== slot.classes.join(' ')) continue
+      if (!existing) slots.push({ ...slot, name })
+      const raw = dataSlot(ancestors)
+      if (raw !== undefined) addDataSlot(name, raw)
+      return name
     }
   }
 
@@ -380,7 +504,7 @@ export function transformComponent(
         const cva = convertCva(statement, init, declarator.id.name, component)
         cvas.set(declarator.id.name, cva)
         converted.add(init)
-        for (const slot of cva.slots) addSlot(init, slot)
+        for (const slot of cva.slots) addSlot(slot)
         out.overwrite(...span(statement), cva.code)
         usesClsx = true
       }
@@ -393,18 +517,27 @@ export function transformComponent(
       unsupported(node, 'cva() outside a top-level `const xVariants = cva(...)`')
     }
 
+    // Every data-slot element records its component, styled or not (a Base UI
+    // Root renders only its data-slot).
+    if (node.type === 'JSXOpeningElement') track([...ancestors, node], {}, false)
+
     if (
       node.type === 'TSTypeReference' &&
       node.typeName.type === 'Identifier' &&
       node.typeName.name === 'VariantProps'
     ) {
       const query = node.typeParameters?.params[0]
-      const target =
-        query?.type === 'TSTypeQuery' && query.exprName.type === 'Identifier'
-          ? cvas.get(query.exprName.name)
-          : undefined
-      if (!target) unsupported(node, 'VariantProps of something other than a cva() variable')
-      out.overwrite(...span(node), target.typeName)
+      if (query?.type !== 'TSTypeQuery' || query.exprName.type !== 'Identifier') {
+        return unsupported(node, 'VariantProps of something other than a cva() variable')
+      }
+      const variable = query.exprName.name
+      // Another mirrored module's cva() replacement: its props type is local
+      // to that module, so derive it from the function's parameter.
+      out.overwrite(
+        ...span(node),
+        cvas.get(variable)?.typeName ??
+          `Omit<NonNullable<Parameters<typeof ${variable}>[0]>, "className">`,
+      )
       return false
     }
 
@@ -415,7 +548,16 @@ export function transformComponent(
         trackCva(only, ancestors)
         return false
       }
-      for (const arg of node.arguments) {
+      // A data-slot element styled only by the consumer's className is still
+      // a component to test.
+      const consumer = passesClassName(node)
+      track(ancestors, {}, consumer)
+      const base = () =>
+        slotName(ancestors) ??
+        unsupported(node, 'cn() with class strings outside an element with data-slot')
+      // Each string branch of a conditional argument gets its own class.
+      const branches: { literal: StringLiteral; suffix: string }[] = []
+      const checkArg = (arg: Node) => {
         if (
           !['StringLiteral', 'Identifier', 'MemberExpression', 'CallExpression'].includes(arg.type)
         ) {
@@ -424,18 +566,41 @@ export function transformComponent(
         refuseRawClasses(arg)
         trackCva(arg, ancestors)
       }
-      const literals = node.arguments.filter((arg) => arg.type === 'StringLiteral')
-      const [first, ...others] = literals
-      if (first) {
-        const slot = slotName(ancestors)
-        if (!slot) unsupported(node, 'cn() with class strings outside an element with data-slot')
-        addSlot(node, { name: slot, classes: literals.flatMap(classList) })
-        track(ancestors, { slot })
-        out.overwrite(...span(first), `styles.${slot}`)
-        for (const literal of others) {
-          const previous = node.arguments[node.arguments.indexOf(literal) - 1] as Node
-          out.remove(previous.end as number, literal.end as number)
+      for (const arg of node.arguments) {
+        if (arg.type === 'ConditionalExpression') {
+          const name = conditionName(arg.test)
+          for (const [branch, suffix] of [
+            [arg.consequent, name],
+            [arg.alternate, `Not${name}`],
+          ] as const) {
+            if (branch.type === 'StringLiteral') branches.push({ literal: branch, suffix })
+            else checkArg(branch)
+          }
+          continue
         }
+        if (arg.type === 'LogicalExpression' && arg.operator === '&&') {
+          if (arg.right.type !== 'StringLiteral') unsupported(arg, 'cn() && without a string')
+          branches.push({ literal: arg.right, suffix: conditionName(arg.left) })
+          continue
+        }
+        checkArg(arg)
+      }
+      for (const { literal, suffix } of branches) {
+        const classes = classList(literal)
+        const slot =
+          classes.length > 0 ? addSlot({ name: base() + suffix, classes }, ancestors) : ''
+        out.overwrite(...span(literal), slot ? `styles.${slot}` : 'null')
+      }
+      const literals = node.arguments.filter((arg) => arg.type === 'StringLiteral')
+      const classes = literals.flatMap(classList)
+      if (classes.length > 0) {
+        const slot = addSlot({ name: base(), classes }, ancestors)
+        track(ancestors, { slot }, consumer)
+        out.overwrite(...span(literals[0] as StringLiteral), `styles.${slot}`)
+      }
+      // Literals merged into the first, or with no classes left at all.
+      for (const literal of classes.length > 0 ? literals.slice(1) : literals) {
+        removeArgument(out, node, literal)
       }
       out.overwrite(...span(node.callee), 'clsx')
       usesClsx = true
@@ -445,10 +610,15 @@ export function transformComponent(
     if (node.type === 'JSXAttribute' && node.name.name === 'className') {
       const value = node.value
       if (value?.type === 'StringLiteral') {
-        const slot = slotName(ancestors)
-        if (!slot) unsupported(node, 'className string on an element without data-slot')
-        addSlot(node, { name: slot, classes: classList(value) })
-        track([...ancestors, node], { slot })
+        const classes = classList(value)
+        if (classes.length === 0) {
+          out.remove(source.lastIndexOf(' ', node.start as number), node.end as number)
+          return false
+        }
+        const name = slotName([...ancestors, node])
+        if (!name) unsupported(node, 'className string on an element without data-slot')
+        const slot = addSlot({ name, classes }, [...ancestors, node])
+        track([...ancestors, node], { slot }, false)
         out.overwrite(...span(value), `{styles.${slot}}`)
         return false
       }
@@ -461,6 +631,7 @@ export function transformComponent(
       }
       if (expression) {
         refuseRawClasses(expression)
+        track([...ancestors, node], {}, passesClassName(expression))
         trackCva(expression, [...ancestors, node])
       }
     }
@@ -478,9 +649,25 @@ export function transformComponent(
   if (anchor === 0) out.prepend(`${added}\n`)
   else out.appendLeft(anchor, `\n${added}`)
 
+  // A cva()'s classes land on every element a component applies it to.
+  for (const component of components.values()) {
+    const cva = component.variantSet ? cvas.get(component.variantSet) : undefined
+    for (const slot of cva?.slots ?? []) addDataSlot(slot.name, component.dataSlot)
+  }
+  const dataSlots = Object.fromEntries(
+    [...slotDataSlots].map(([slot, values]) => [slot, [...values].sort()]),
+  )
+  const markers = slots.flatMap((slot) =>
+    slot.classes
+      .filter((c) => MARKER.test(c))
+      .map((marker) => ({ marker, slot: slot.name, dataSlots: dataSlots[slot.name] ?? [] })),
+  )
+
   return {
     code: out.toString(),
     slots,
+    dataSlots,
+    markers,
     variantSets: [...cvas.values()].map((cva) => cva.set),
     components: [...components.values()],
     registryImports,

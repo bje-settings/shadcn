@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { parseConfig } from './config.ts'
 import { fixturesFor, harnessFiles } from './harness.ts'
-import { transformComponent } from './tsx.ts'
+import type { PartTypes, Scaffold } from './parts.ts'
+import { type TransformedComponent, transformComponent } from './tsx.ts'
 
 const config = parseConfig({
   namespace: 'bje',
@@ -10,7 +11,7 @@ const config = parseConfig({
     colorsUrl: 'https://example.com/colors/{name}.json',
     style: 'base-vega',
   },
-  theme: { baseColor: 'neutral', font: 'inter' },
+  theme: { baseColor: 'neutral', font: 'inter', iconLibrary: 'lucide' },
   components: ['chip-set'],
   typeset: {
     stylesheet: 'https://example.com/typeset.css',
@@ -36,19 +37,74 @@ function ChipMark({ className }) {
 function ChipLabel({ className }) {
   return <span data-slot="chip-label" className={cn("text-sm", className)} />
 }
+function ChipInput({ className }) {
+  return <input data-slot="chip-input" className={cn("h-8", className)} />
+}
 function Internal() {
   return <b data-slot="internal" className="x" />
 }
-export { Chip, ChipMark, ChipLabel }`
+export { Chip, ChipMark, ChipLabel, ChipInput }`
+
+const parts = (transformed: TransformedComponent) => ({
+  types: new Map<string, PartTypes>([['ChipLabel', { className: true, opens: false }]]),
+  scaffolds: new Map<string, Scaffold>(
+    transformed.components.map((c) => [c.name, { ancestors: [], props: {}, children: true }]),
+  ),
+})
 
 describe('fixturesFor', () => {
   it('adds one fixture per cva option, or one per component without options', () => {
-    expect(fixturesFor('chip', transformComponent(chip, 'chip', 'bje'))).toEqual([
-      { item: 'chip', component: 'Chip', label: 'Chip tone=soft', props: { tone: 'soft' } },
-      { item: 'chip', component: 'Chip', label: 'Chip tone=loud', props: { tone: 'loud' } },
-      { item: 'chip', component: 'ChipMark', label: 'ChipMark', props: {} },
-      { item: 'chip', component: 'ChipLabel', label: 'ChipLabel', props: {} },
+    const transformed = transformComponent(chip, 'chip', 'bje')
+    const base = { item: 'chip', ancestors: [], children: true, overlay: false }
+    expect(
+      fixturesFor({ name: 'chip', upstreamSource: chip, transformed, ...parts(transformed) }),
+    ).toEqual([
+      {
+        ...base,
+        component: 'Chip',
+        slot: 'chip',
+        label: 'Chip tone=soft',
+        props: { tone: 'soft' },
+      },
+      {
+        ...base,
+        component: 'Chip',
+        slot: 'chip',
+        label: 'Chip tone=loud',
+        props: { tone: 'loud' },
+      },
+      { ...base, component: 'ChipMark', slot: 'chip-mark', label: 'ChipMark', props: {} },
+      { ...base, component: 'ChipLabel', slot: 'chip-label', label: 'ChipLabel', props: {} },
+      { ...base, component: 'ChipInput', slot: 'chip-input', label: 'ChipInput', props: {} },
     ])
+  })
+
+  it('renders parts in their scaffold, skips elementless ones, and flags overlays', () => {
+    const transformed = transformComponent(chip, 'chip', 'bje')
+    const scaffold: Scaffold = {
+      ancestors: [{ component: 'Chip', props: { defaultOpen: true } }],
+      props: { value: 'a', tone: 'soft' },
+      children: false,
+    }
+    const fixtures = fixturesFor({
+      name: 'chip',
+      upstreamSource: chip,
+      transformed,
+      types: new Map([['ChipMark', { className: false, opens: true }]]),
+      scaffolds: new Map([
+        ...parts(transformed).scaffolds,
+        ['Chip', scaffold],
+        ['ChipLabel', scaffold],
+      ]),
+    })
+    expect(fixtures.map((f) => f.label)).toEqual([
+      'Chip tone=soft',
+      'Chip tone=loud',
+      'ChipLabel',
+      'ChipInput',
+    ])
+    expect(fixtures[1]).toMatchObject({ props: { value: 'a', tone: 'loud' }, overlay: true })
+    expect(fixtures[2]).toMatchObject({ children: false, overlay: true })
   })
 })
 
@@ -58,7 +114,9 @@ describe('harnessFiles', () => {
     const files = harnessFiles(
       config,
       {
-        components: [{ name: 'chip-set', upstreamSource: chip, transformed }],
+        components: [
+          { name: 'chip-set', upstreamSource: chip, transformed, ...parts(transformed) },
+        ],
         examples: [
           {
             name: 'chip-set-example',

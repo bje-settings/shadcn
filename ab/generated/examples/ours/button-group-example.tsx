@@ -4,7 +4,9 @@
 
 import { Example } from '@/registry/base-vega/components/example'
 import { Button } from '@/registry/bje/ui/Button/Button'
-import { ButtonGroup } from '@/registry/bje/ui/ButtonGroup/ButtonGroup'
+import { ButtonGroup, ButtonGroupText } from '@/registry/bje/ui/ButtonGroup/ButtonGroup'
+import { Input } from '@/registry/bje/ui/Input/Input'
+import { Label } from '@/registry/bje/ui/Label/Label'
 import { IconPlaceholder } from '@/app/(create)/components/icon-placeholder'
 
 function ButtonGroupBasic() {
@@ -14,6 +16,44 @@ function ButtonGroupBasic() {
         <ButtonGroup>
           <Button variant="outline">Button</Button>
           <Button variant="outline">Another Button</Button>
+        </ButtonGroup>
+      </div>
+    </Example>
+  )
+}
+
+function ButtonGroupWithInput() {
+  return (
+    <Example title="With Input">
+      <div className="flex flex-col gap-4">
+        <ButtonGroup>
+          <Button variant="outline">Button</Button>
+          <Input placeholder="Type something here..." />
+        </ButtonGroup>
+        <ButtonGroup>
+          <Input placeholder="Type something here..." />
+          <Button variant="outline">Button</Button>
+        </ButtonGroup>
+      </div>
+    </Example>
+  )
+}
+
+function ButtonGroupWithText() {
+  return (
+    <Example title="With Text">
+      <div className="flex flex-col gap-4">
+        <ButtonGroup>
+          <ButtonGroupText>Text</ButtonGroupText>
+          <Button variant="outline">Another Button</Button>
+        </ButtonGroup>
+        <ButtonGroup>
+          <ButtonGroupText render={<Label htmlFor="input-text" />}>GPU Size</ButtonGroupText>
+          <Input
+            id="input-text"
+            placeholder="Type something here..."
+            className="style-luma:border-border"
+          />
         </ButtonGroup>
       </div>
     </Example>
@@ -328,6 +368,8 @@ function ButtonGroupVerticalNested() {
 
 export {
   ButtonGroupBasic,
+  ButtonGroupWithInput,
+  ButtonGroupWithText,
   ButtonGroupWithIcons,
   ButtonGroupWithLike,
   ButtonGroupPagination,

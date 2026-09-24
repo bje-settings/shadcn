@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { colorsUrl, parseConfig, upstreamUrl } from './config.ts'
+import { colorsUrl, consumerClassReasons, parseConfig, upstreamUrl } from './config.ts'
 
 const valid = {
   namespace: 'bje',
@@ -8,7 +8,7 @@ const valid = {
     colorsUrl: 'https://example.com/colors/{name}.json',
     style: 'base-vega',
   },
-  theme: { baseColor: 'neutral', font: 'inter' },
+  theme: { baseColor: 'neutral', font: 'inter', iconLibrary: 'lucide' },
   components: ['button', 'icon-button'],
   typeset: {
     stylesheet: 'https://example.com/typeset.css',
@@ -19,7 +19,7 @@ const valid = {
   outputDir: 'registry/ui',
   globalsDir: 'registry/styles',
   harnessDir: 'ab/generated',
-  selectorRewrites: [{ pattern: 'a+', replace: '', reason: 'why' }],
+  consumerClasses: [{ classes: ['border-b'], reason: 'consumer' }],
 }
 
 function withChange(change: Record<string, unknown>) {
@@ -29,16 +29,15 @@ function withChange(change: Record<string, unknown>) {
 describe('parseConfig', () => {
   it('accepts a valid config and builds item URLs', () => {
     const config = parseConfig(valid)
-    expect(config).toEqual({
-      ...valid,
-      selectorRewrites: [{ pattern: /a+/g, replace: '', reason: 'why' }],
-    })
+    expect(config).toEqual(valid)
     expect(upstreamUrl(config, 'button')).toBe('https://example.com/base-vega/button.json')
     expect(colorsUrl(config)).toBe('https://example.com/colors/neutral.json')
   })
 
-  it('defaults selectorRewrites to none', () => {
-    expect(parseConfig(withChange({ selectorRewrites: undefined })).selectorRewrites).toEqual([])
+  it('defaults consumerClasses to none', () => {
+    const config = parseConfig(withChange({ consumerClasses: undefined }))
+    expect(config.consumerClasses).toEqual([])
+    expect(consumerClassReasons(parseConfig(valid))).toEqual(new Map([['border-b', 'consumer']]))
   })
 
   it.each([
@@ -81,32 +80,15 @@ describe('parseConfig', () => {
       'upstream.style must be kebab-case',
     ],
     [
-      'non-array rewrites',
-      withChange({ selectorRewrites: {} }),
-      'selectorRewrites must be an array',
+      'a theme without an icon library',
+      withChange({ theme: { baseColor: 'neutral', font: 'inter' } }),
+      'theme.iconLibrary must be',
     ],
-    ['a non-object rewrite', withChange({ selectorRewrites: ['x'] }), 'selectorRewrites[0] must'],
+    ['non-array consumer classes', withChange({ consumerClasses: {} }), 'consumerClasses must be'],
     [
-      'a rewrite without replace',
-      withChange({ selectorRewrites: [{ pattern: 'a', reason: 'b' }] }),
-      'selectorRewrites[0].replace must be a string',
-    ],
-    [
-      'a rewrite without a pattern',
-      withChange({ selectorRewrites: [{ replace: '', reason: 'b' }] }),
-      'selectorRewrites[0].pattern must be',
-    ],
-    [
-      'an invalid rewrite pattern',
-      withChange({
-        selectorRewrites: [{ pattern: '(', replace: '', reason: 'b' }],
-      }),
-      /selectorRewrites\[0\]\.pattern is not a valid regular expression: .+/,
-    ],
-    [
-      'a rewrite without a reason',
-      withChange({ selectorRewrites: [{ pattern: 'a', replace: '' }] }),
-      'selectorRewrites[0].reason',
+      'consumer classes without a reason',
+      withChange({ consumerClasses: [{ classes: ['a'] }] }),
+      'consumerClasses[0].reason',
     ],
     ['a missing namespace', withChange({ namespace: '' }), 'namespace must be'],
     ['a missing typeset', withChange({ typeset: [] }), 'typeset must be an object'],

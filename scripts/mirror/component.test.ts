@@ -1,7 +1,15 @@
+import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { buildComponent, dependenciesOf, type UpstreamItem } from './component.ts'
+import {
+  buildComponent,
+  classProbe,
+  dependenciesOf,
+  markerSelectors,
+  prepareComponent,
+  type UpstreamItem,
+} from './component.ts'
 import { parseConfig } from './config.ts'
-import { compile } from './test-support.ts'
+import { compile, root } from './test-support.ts'
 
 const config = parseConfig({
   namespace: 'bje',
@@ -10,7 +18,7 @@ const config = parseConfig({
     colorsUrl: 'https://example.com/colors/{name}.json',
     style: 'base-vega',
   },
-  theme: { baseColor: 'neutral', font: 'inter' },
+  theme: { baseColor: 'neutral', font: 'inter', iconLibrary: 'lucide' },
   components: ['badge'],
   typeset: {
     stylesheet: 'https://example.com/typeset.css',
@@ -22,6 +30,19 @@ const config = parseConfig({
   globalsDir: 'registry/styles',
   harnessDir: 'ab/generated',
 })
+
+const cssPath = join(root, 'upstream/base-vega/index.css')
+
+async function build(item: UpstreamItem, compiler = compile) {
+  const prepared = await prepareComponent(item, config, cssPath)
+  const context = {
+    markers: markerSelectors([prepared], prepared),
+    classProbe: classProbe([prepared]),
+    types: new Map(),
+    scaffolds: new Map(),
+  }
+  return buildComponent(prepared, config, compiler, context)
+}
 
 const source = (classes: string) => `import { cva } from "class-variance-authority"
 import { cn } from "cn"
@@ -39,11 +60,7 @@ const badge = (content: string): UpstreamItem => ({
 
 describe('buildComponent', () => {
   it('writes the component and its module into a PascalCase folder', async () => {
-    const result = await buildComponent(
-      badge(source('group/badge inline-flex bg-primary')),
-      config,
-      compile,
-    )
+    const result = await build(badge(source('group/badge inline-flex bg-primary')))
     expect(result.item).toEqual({
       name: 'badge',
       type: 'registry:ui',
@@ -94,7 +111,7 @@ describe('buildComponent', () => {
       'import { cn } from "cn"\nimport { Badge as Base } from "@/registry/base-vega/ui/badge"',
     )
     const item = { ...badge(content), registryDependencies: ['badge'] }
-    const { item: result } = await buildComponent(item, config, compile)
+    const { item: result } = await build(item)
     expect(result.registryDependencies).toEqual(['@bje/badge', '@bje/globals'])
   })
 
@@ -102,11 +119,39 @@ describe('buildComponent', () => {
     const properties = Array.from({ length: 12 }, (_, i) => `--a-long-custom-property-${i}`)
     const compile = async () =>
       `@layer utilities { .x { color: ${properties.map((p) => `var(${p})`).join(' ')}; } }`
-    const [, scss] = (await buildComponent(badge(source('x')), config, compile)).files
+    const [, scss] = (await build(badge(source('x')), compile)).files
     const comments = (scss?.content.split('\n') ?? []).filter((line) => line.startsWith('//'))
     expect(comments.filter((line) => line.startsWith('//   ')).length).toBeGreaterThan(1)
     expect(comments.every((line) => line.length <= 100)).toBe(true)
     expect(scss?.content).not.toContain('no CSS output')
+  })
+
+  it('converts what the shadcn CLI installs: icons and the heading font', async () => {
+    const content = `import { cn } from "cn"
+import { IconPlaceholder } from "@/app/(create)/components/icon-placeholder"
+function Badge({ className }) {
+  return (
+    <span data-slot="badge" className={cn("cn-font-heading flex", className)}>
+      <IconPlaceholder lucide="CheckIcon" tabler="IconCheck" className="cn-rtl-flip" />
+    </span>
+  )
+}
+export { Badge }`
+    const result = await build(badge(content))
+    const [tsx, scss] = result.files
+    expect(tsx?.content).toContain('import { CheckIcon } from "lucide-react"')
+    expect(tsx?.content).toContain('<CheckIcon />')
+    // font-heading, which Tailwind inlines to the theme's --font-sans.
+    expect(scss?.content).toContain('font-family: var(--font-sans);')
+    expect(result.item.dependencies).toEqual(['clsx', 'lucide-react'])
+  })
+
+  it('lists the reason for each dropped rule in the header', async () => {
+    const item = badge(source('flex group-hover/missing:flex'))
+    const [, scss] = (await build(item)).files
+    expect(scss?.content).toContain(
+      '// Dropped rules: needs a group/missing marker, which no mirrored component carries.',
+    )
   })
 
   it.each([
@@ -128,7 +173,7 @@ describe('buildComponent', () => {
       'one file',
     ],
   ])('rejects %s', async (_, item, message) => {
-    await expect(buildComponent(item as UpstreamItem, config, compile)).rejects.toThrow(message)
+    await expect(build(item as UpstreamItem)).rejects.toThrow(message)
   })
 })
 
@@ -143,5 +188,64 @@ import styles from "./X.module.scss"
 import { util } from "@/lib/util"
 export const x = 1`
     expect(dependenciesOf(code)).toEqual(['@base-ui/react', 'clsx', 'lodash'])
+  })
+})
+
+describe('markerSelectors', () => {
+  const item = (name: string, body: string): UpstreamItem => ({
+    name,
+    type: 'registry:ui',
+    files: [{ path: `registry/base-vega/ui/${name}.tsx`, type: 'registry:ui', content: body }],
+  })
+  const prepare = (upstream: UpstreamItem) => prepareComponent(upstream, config, cssPath)
+
+  it('maps markers to the data-slot of every element carrying them', async () => {
+    const field = await prepare(
+      item(
+        'field',
+        `function Field() { return <div data-slot="field" className="group/field group flex" /> }
+function Other() { return <div data-slot="other" className="group" /> }
+function Plain() { return <p className="peer/plain block" /> }
+export { Field, Other, Plain }`,
+      ),
+    )
+    const label = await prepare(
+      item(
+        'label',
+        `function Label() { return <label className="peer" /> }
+export { Label }`,
+      ),
+    )
+    expect(markerSelectors([field, label], field)).toEqual(
+      new Map([
+        ['group/field', '[data-slot="field"]'],
+        ['group', ':is([data-slot="field"], [data-slot="other"])'],
+        ['peer/plain', '.plainP'],
+      ]),
+    )
+    // Another module's elements without a data-slot are out of reach.
+    expect(markerSelectors([field, label], label).get('peer/plain')).toBeUndefined()
+    expect(markerSelectors([field, label], label).get('peer')).toBe('.labelLabel')
+  })
+})
+
+describe('classProbe', () => {
+  it('finds the data-slot of every mirrored element whose classes contain a fragment', async () => {
+    const upstream: UpstreamItem = {
+      name: 'spinner',
+      type: 'registry:ui',
+      files: [
+        {
+          path: 'registry/base-vega/ui/spinner.tsx',
+          type: 'registry:ui',
+          content: `function Spinner() { return <svg data-slot="spinner" className="size-4 animate-spin" /> }
+function Plain() { return <i className="size-2" /> }
+export { Spinner, Plain }`,
+        },
+      ],
+    }
+    const probe = classProbe([await prepareComponent(upstream, config, cssPath)])
+    expect(probe('size-')).toEqual(['[data-slot="spinner"]'])
+    expect(probe('w-')).toEqual([])
   })
 })

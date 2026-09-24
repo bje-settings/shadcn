@@ -4,11 +4,8 @@
 
 import { isRecord, KEBAB, Shape } from './parse.ts'
 
-export type SelectorRewrite = {
-  // Compiled from the config's pattern source with the g flag; applied to
-  // each generated selector.
-  pattern: RegExp
-  replace: string
+export type ConsumerClasses = {
+  classes: string[]
   reason: string
 }
 
@@ -26,6 +23,8 @@ export type MirrorConfig = {
   theme: {
     baseColor: string
     font: string
+    // Library the shadcn CLI swaps upstream's IconPlaceholder for, e.g. lucide
+    iconLibrary: string
   }
   components: string[]
   // shadcn/typeset: the stylesheet (shipped as @<namespace>/typeset) and the
@@ -41,7 +40,11 @@ export type MirrorConfig = {
   globalsDir: string
   // Generated inputs for the A/B harness
   harnessDir: string
-  selectorRewrites: SelectorRewrite[]
+  // Tailwind classes upstream styles gate on when a consumer passes them
+  // (CardHeader pads once given `border-b`). No element carries them here, so
+  // those rules are dropped and listed in the module's header, and A/B skips
+  // the docs examples that pass them.
+  consumerClasses: ConsumerClasses[]
 }
 
 // Annotated so TypeScript treats shape.fail() as ending control flow.
@@ -88,25 +91,14 @@ export function parseConfig(raw: unknown): MirrorConfig {
     shape.fail('typeset.fixtures must be an array of kebab-case names')
   }
 
-  const rewrites = raw.selectorRewrites ?? []
-  if (!Array.isArray(rewrites)) shape.fail('selectorRewrites must be an array')
-  const selectorRewrites = rewrites.map((value, i) => {
-    const rewrite = shape.record(value, `selectorRewrites[${i}]`)
-    const replace = rewrite.replace
-    if (typeof replace !== 'string') shape.fail(`selectorRewrites[${i}].replace must be a string`)
-    const source = string(rewrite, 'pattern', `selectorRewrites[${i}].`)
-    let pattern: RegExp
-    try {
-      pattern = new RegExp(source, 'g')
-    } catch (error) {
-      shape.fail(
-        `selectorRewrites[${i}].pattern is not a valid regular expression: ${(error as Error).message}`,
-      )
-    }
+  const consumer = raw.consumerClasses ?? []
+  if (!Array.isArray(consumer)) shape.fail('consumerClasses must be an array')
+  const consumerClasses = consumer.map((value, i) => {
+    const path = `consumerClasses[${i}]`
+    const record = shape.record(value, path)
     return {
-      pattern,
-      replace,
-      reason: string(rewrite, 'reason', `selectorRewrites[${i}].`),
+      classes: shape.strings(record.classes, `${path}.classes`),
+      reason: string(record, 'reason', `${path}.`),
     }
   })
 
@@ -116,6 +108,7 @@ export function parseConfig(raw: unknown): MirrorConfig {
     theme: {
       baseColor: name(theme, 'baseColor', 'theme.'),
       font: name(theme, 'font', 'theme.'),
+      iconLibrary: name(theme, 'iconLibrary', 'theme.'),
     },
     components,
     typeset: { stylesheet: string(typeset, 'stylesheet', 'typeset.'), fixturesUrl, fixtures },
@@ -123,12 +116,19 @@ export function parseConfig(raw: unknown): MirrorConfig {
     outputDir: string(raw, 'outputDir', ''),
     globalsDir: string(raw, 'globalsDir', ''),
     harnessDir: string(raw, 'harnessDir', ''),
-    selectorRewrites,
+    consumerClasses,
   }
 }
 
 export function upstreamUrl(config: MirrorConfig, name: string): string {
   return config.upstream.url.replace('{style}', config.upstream.style).replace('{name}', name)
+}
+
+// The reason each consumer class's rules are dropped, by class.
+export function consumerClassReasons(config: MirrorConfig): Map<string, string> {
+  return new Map(
+    config.consumerClasses.flatMap(({ classes, reason }) => classes.map((c) => [c, reason])),
+  )
 }
 
 export function colorsUrl(config: MirrorConfig): string {

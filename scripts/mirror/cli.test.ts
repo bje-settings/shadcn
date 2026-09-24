@@ -96,7 +96,7 @@ beforeEach(async () => {
         colorsUrl: 'https://example.com/colors/{name}.json',
         style: 'base-vega',
       },
-      theme: { baseColor: 'neutral', font: 'inter' },
+      theme: { baseColor: 'neutral', font: 'inter', iconLibrary: 'lucide' },
       components: ['badge'],
       typeset: {
         stylesheet: 'https://example.com/typeset.css',

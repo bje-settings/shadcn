@@ -3,9 +3,35 @@
 import * as button from '@/registry/bje/ui/Button/Button'
 import * as buttonGroup from '@/registry/bje/ui/ButtonGroup/ButtonGroup'
 import * as separator from '@/registry/bje/ui/Separator/Separator'
+import * as badge from '@/registry/bje/ui/Badge/Badge'
+import * as card from '@/registry/bje/ui/Card/Card'
+import * as alert from '@/registry/bje/ui/Alert/Alert'
+import * as label from '@/registry/bje/ui/Label/Label'
+import * as input from '@/registry/bje/ui/Input/Input'
+import * as textarea from '@/registry/bje/ui/Textarea/Textarea'
+import * as skeleton from '@/registry/bje/ui/Skeleton/Skeleton'
+import * as spinner from '@/registry/bje/ui/Spinner/Spinner'
+import * as kbd from '@/registry/bje/ui/Kbd/Kbd'
+import * as aspectRatio from '@/registry/bje/ui/AspectRatio/AspectRatio'
+import * as table from '@/registry/bje/ui/Table/Table'
+import * as breadcrumb from '@/registry/bje/ui/Breadcrumb/Breadcrumb'
+import * as empty from '@/registry/bje/ui/Empty/Empty'
 
 export const ours = {
   button: button,
   'button-group': buttonGroup,
   separator: separator,
+  badge: badge,
+  card: card,
+  alert: alert,
+  label: label,
+  input: input,
+  textarea: textarea,
+  skeleton: skeleton,
+  spinner: spinner,
+  kbd: kbd,
+  'aspect-ratio': aspectRatio,
+  table: table,
+  breadcrumb: breadcrumb,
+  empty: empty,
 }

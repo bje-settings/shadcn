@@ -7,11 +7,24 @@
 
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
-import { buildComponent, type RegistryItem } from './component.ts'
-import { colorsUrl, type MirrorConfig, parseConfig, upstreamUrl } from './config.ts'
+import {
+  buildComponent,
+  classProbe,
+  markerSelectors,
+  prepareComponent,
+  type RegistryItem,
+} from './component.ts'
+import {
+  colorsUrl,
+  consumerClassReasons,
+  type MirrorConfig,
+  parseConfig,
+  upstreamUrl,
+} from './config.ts'
 import { prepareExample } from './examples.ts'
 import { globalStylesheets } from './globals.ts'
 import { type HarnessExample, type HarnessInput, harnessFiles } from './harness.ts'
+import { type PartTypes, partTypes, scaffolds } from './parts.ts'
 import { layoutCss, projectCss } from './project-css.ts'
 import { parseRegistry, upsertItems } from './registry.ts'
 import { parseBaseColor, parseFontItem, parseStyleIndex, parseUpstreamItem } from './snapshots.ts'
@@ -152,6 +165,15 @@ async function readSnapshot<T>(
   return snapshot ?? missingSnapshot(`${config.upstream.style}/${name}`)
 }
 
+// An item's docs example source, or undefined when upstream has none (fetch
+// removes the snapshot of a component upstream has no example for).
+async function readExample(io: Io, config: MirrorConfig, name: string) {
+  const example = `${name}-example`
+  const item = await readOptionalSnapshot(io, config, example, parseUpstreamItem)
+  if (item === undefined) return undefined
+  return item.files[0]?.content ?? missingSnapshot(`${config.upstream.style}/${example} content`)
+}
+
 async function readTypeset(io: Io, config: MirrorConfig, path: string): Promise<string> {
   const text = await readOptional(join(io.root, config.snapshotDir, 'typeset', path))
   return text ?? missingSnapshot(`typeset/${path}`)
@@ -163,25 +185,45 @@ async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
   const index = await readSnapshot(io, config, 'index', parseStyleIndex)
   const colors = await readSnapshot(io, config, `colors-${config.theme.baseColor}`, parseBaseColor)
   const css = projectCss(index, colors, font)
-  await writeText(join(io.root, config.snapshotDir, style, 'index.css'), css)
+  const cssPath = join(io.root, config.snapshotDir, style, 'index.css')
+  await writeText(cssPath, css)
   const compile = (candidates: string[]) => compileCandidates(css, candidates)
+
+  const prepared = []
+  const exampleSources = new Map<string, string | undefined>()
+  for (const name of config.components) {
+    const upstream = await readSnapshot(io, config, name, parseUpstreamItem)
+    prepared.push(await prepareComponent(upstream, config, cssPath))
+    exampleSources.set(name, await readExample(io, config, name))
+  }
+  const types = partTypes(style, prepared)
 
   const items: RegistryItem[] = []
   const harness: HarnessInput[] = []
   const classes = new Set<string>()
-  for (const name of config.components) {
-    const upstream = await readSnapshot(io, config, name, parseUpstreamItem)
-    const component = await buildComponent(upstream, config, compile)
-    for (const file of component.files) await writeFormatted(io, file.path, file.content)
-    for (const c of component.classes) classes.add(c)
-    items.push(component.item)
+  const probe = classProbe(prepared)
+  for (const component of prepared) {
+    const { name } = component.upstream
+    const itemTypes = types.get(name) as Map<string, PartTypes>
+    const context = {
+      markers: markerSelectors(prepared, component),
+      classProbe: probe,
+      types: itemTypes,
+      scaffolds: scaffolds(exampleSources.get(name), itemTypes, component.transformed),
+    }
+    const built = await buildComponent(component, config, compile, context)
+    for (const file of built.files) await writeFormatted(io, file.path, file.content)
+    for (const c of built.classes) classes.add(c)
+    items.push(built.item)
     harness.push({
       name,
-      upstreamSource: component.upstreamSource,
-      transformed: component.transformed,
+      upstreamSource: built.upstreamSource,
+      transformed: built.transformed,
+      types: itemTypes,
+      scaffolds: context.scaffolds,
     })
-    io.log(`built ${name}: ${component.files.map((file) => file.path).join(', ')}`)
-    for (const [slot, unresolved] of Object.entries(component.unresolved)) {
+    io.log(`built ${name}: ${built.files.map((file) => file.path).join(', ')}`)
+    for (const [slot, unresolved] of Object.entries(built.unresolved)) {
       io.log(`  ${slot}: no CSS for ${unresolved.join(' ')}`)
     }
   }
@@ -235,20 +277,18 @@ async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
   io.log(`built typeset: ${typesetFile.path}`)
 
   const mirrored = new Set(config.components)
+  const dropped = new Set(consumerClassReasons(config).keys())
   const examples: HarnessExample[] = []
-  for (const name of config.components) {
+  for (const [name, source] of exampleSources) {
+    if (source === undefined) continue
     const example = `${name}-example`
-    const item = await readOptionalSnapshot(io, config, example, parseUpstreamItem)
-    // fetch removes the snapshot of a component upstream has no example for.
-    if (item === undefined) continue
-    const source = item.files[0]?.content ?? missingSnapshot(`${style}/${example} content`)
-    const prepared = prepareExample(source, style, config.namespace, mirrored)
+    const prepared = prepareExample(source, style, config.namespace, mirrored, dropped)
     examples.push({ name: example, prepared })
     io.log(
       `example ${example}: ${prepared.kept.length} of ${prepared.kept.length + prepared.skipped.length} sub-examples`,
     )
-    for (const { name: sub, missing } of prepared.skipped) {
-      io.log(`  skipped ${sub}: needs ${missing.join(', ')}`)
+    for (const { name: sub, reasons } of prepared.skipped) {
+      io.log(`  skipped ${sub}: ${reasons.join('; ')}`)
     }
   }
 

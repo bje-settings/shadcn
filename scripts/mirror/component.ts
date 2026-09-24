@@ -1,8 +1,10 @@
 // One upstream registry item in, the mirror's files and registry entry out.
 
 import { parseModule } from './ast.ts'
-import type { MirrorConfig } from './config.ts'
+import { consumerClassReasons, type MirrorConfig } from './config.ts'
+import { installTransforms } from './install.ts'
 import { pascalCase } from './names.ts'
+import type { PartTypes, Scaffold } from './parts.ts'
 import { slotToScss } from './scss.ts'
 import { generateTest } from './tests.ts'
 import { type TransformedComponent, transformComponent } from './tsx.ts'
@@ -76,23 +78,94 @@ function wrap(label: string, values: string[]): string[] {
   return lines
 }
 
-export async function buildComponent(
+// An upstream component as `shadcn add` would write it, and its transform.
+// Every component is prepared before any is built, since a group or peer
+// marker one component carries can style another.
+export type PreparedComponent = {
+  upstream: UpstreamItem
+  // Upstream's source after the CLI's install transforms
+  installed: string
+  transformed: TransformedComponent
+}
+
+function where(config: MirrorConfig, upstream: UpstreamItem): string {
+  return `${config.upstream.style}/${upstream.name}`
+}
+
+export async function prepareComponent(
   upstream: UpstreamItem,
   config: MirrorConfig,
-  compile: (candidates: string[]) => Promise<string>,
-): Promise<GeneratedComponent> {
-  const where = `${config.upstream.style}/${upstream.name}`
+  cssPath: string,
+): Promise<PreparedComponent> {
   if (upstream.type !== 'registry:ui') {
-    throw new Error(`${where}: type ${upstream.type} is not supported yet`)
+    throw new Error(`${where(config, upstream)}: type ${upstream.type} is not supported yet`)
   }
   const [file, ...extra] = upstream.files
   if (!file?.content || extra.length > 0) {
-    throw new Error(`${where}: expected exactly one file with content`)
+    throw new Error(`${where(config, upstream)}: expected exactly one file with content`)
   }
+  const installed = await installTransforms(file.content, config, cssPath)
+  return {
+    upstream,
+    installed,
+    transformed: transformComponent(installed, upstream.name, config.namespace),
+  }
+}
 
+// The selector each group/peer marker becomes in one component's module:
+// `[data-slot="x"]` for every element, in any mirrored component, that
+// carries the marker and renders a data-slot; the module class of this
+// component's own elements that render none.
+export function markerSelectors(
+  components: PreparedComponent[],
+  component: PreparedComponent,
+): Map<string, string> {
+  const selectors = new Map<string, Set<string>>()
+  const add = (marker: string, selector: string) => {
+    selectors.set(marker, (selectors.get(marker) ?? new Set()).add(selector))
+  }
+  for (const { transformed } of components) {
+    for (const { marker, slot, dataSlots } of transformed.markers) {
+      for (const value of dataSlots) add(marker, `[data-slot="${value}"]`)
+      if (dataSlots.length === 0 && transformed === component.transformed) add(marker, `.${slot}`)
+    }
+  }
+  return new Map(
+    [...selectors].map(([marker, set]) => {
+      const list = [...set].sort()
+      return [marker, list.length === 1 ? (list[0] as string) : `:is(${list.join(', ')})`]
+    }),
+  )
+}
+
+// What upstream's `[class*="<fragment>"]` finds among mirrored elements: the
+// data-slot of every element whose upstream classes contain the fragment
+// (Spinner's `size-4` for `svg:not([class*="size-"])`).
+export function classProbe(components: PreparedComponent[]): (fragment: string) => string[] {
+  return (fragment) =>
+    components.flatMap(({ transformed }) =>
+      transformed.slots
+        .filter((slot) => slot.classes.join(' ').includes(fragment))
+        .flatMap((slot) =>
+          (transformed.dataSlots[slot.name] ?? []).map((v) => `[data-slot="${v}"]`),
+        ),
+    )
+}
+
+export async function buildComponent(
+  prepared: PreparedComponent,
+  config: MirrorConfig,
+  compile: (candidates: string[]) => Promise<string>,
+  context: {
+    markers: Map<string, string>
+    classProbe: (fragment: string) => string[]
+    types: Map<string, PartTypes>
+    scaffolds: Map<string, Scaffold>
+  },
+): Promise<GeneratedComponent> {
+  const { upstream, transformed: source } = prepared
   const component = pascalCase(upstream.name)
   const dir = `${config.outputDir}/${component}`
-  const source = transformComponent(file.content, upstream.name, config.namespace)
 
   // Upstream's bare names mean official shadcn items; each must be mirrored
   // too, and becomes a dependency on this registry's copy.
@@ -100,33 +173,43 @@ export async function buildComponent(
     ...new Set([...(upstream.registryDependencies ?? []), ...source.registryImports]),
   ].map((dependency) => {
     if (!config.components.includes(dependency)) {
-      throw new Error(`${where}: depends on ${dependency}, which mirror.config.json does not list`)
+      throw new Error(
+        `${where(config, upstream)}: depends on ${dependency}, which mirror.config.json does not list`,
+      )
     }
     return `@${config.namespace}/${dependency}`
   })
   // Every component reads the global variables and relies on the base layer.
   registryDependencies.push(`@${config.namespace}/globals`)
-  const generated = `// Generated by scripts/mirror from shadcn ${where}. Do not edit.`
+  const generated = `// Generated by scripts/mirror from shadcn ${where(config, upstream)}. Do not edit.`
 
   const blocks = []
   const unresolved: Record<string, string[]> = {}
   const properties = new Set<string>()
+  const dropped = new Set<string>()
+  const options = {
+    markers: context.markers,
+    classProbe: context.classProbe,
+    consumerClasses: consumerClassReasons(config),
+  }
   for (const slot of source.slots) {
-    const block = slotToScss(await compile(slot.classes), slot, config.selectorRewrites)
+    const block = slotToScss(await compile(slot.classes), slot, options)
     blocks.push(block.scss)
     if (block.unresolved.length > 0) unresolved[slot.name] = block.unresolved
     for (const property of block.customProperties) properties.add(property)
+    for (const reason of block.dropped) dropped.add(reason)
   }
 
   const scss = [
     generated,
     ...wrap('Custom properties read here and provided globally:', [...properties].sort()),
     ...wrap('Upstream classes with no CSS output, dropped:', Object.values(unresolved).flat()),
+    ...[...dropped].flatMap((reason) => ['//', `// Dropped rules: ${reason}`]),
     '',
     blocks.join('\n\n'),
     '',
   ].join('\n')
-  const test = generateTest(upstream.name, source)
+  const test = generateTest(upstream.name, source, context)
   const files = [
     {
       path: `${dir}/${component}.tsx`,
@@ -152,7 +235,7 @@ export async function buildComponent(
     files,
     unresolved,
     classes: [...new Set(source.slots.flatMap((slot) => slot.classes))],
-    upstreamSource: file.content,
+    upstreamSource: prepared.installed,
     transformed: source,
   }
 }

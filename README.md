@@ -27,8 +27,8 @@ pnpm test      # vitest with 100% coverage thresholds, generated components incl
 
 Components under `registry/ui/` are shadcn's own, with Tailwind utilities converted to SCSS modules.
 `mirror.config.json` sets this registry's namespace, the upstream style (currently `base-vega`) and
-theme (base color and font), the components to convert, Typeset's source, the output directories,
-and the selector rewrites applied to generated SCSS.
+theme (base color, font and icon library), the components to convert, Typeset's source, the output
+directories, and the consumer classes whose upstream styling is dropped.
 
 Consumers need `sass` to compile the components and global stylesheets; every item lists it in
 `devDependencies`.
@@ -44,22 +44,35 @@ conversion below and styles the A/B harness's upstream page.
 
 For each component, the build:
 
-1. Rewrites the TSX: `cva()` becomes a lookup object plus a same-named function, `cn()` becomes
+1. Applies the shadcn CLI's own install transforms (`shadcn/utils`), so it converts what
+   `shadcn add` writes into a project: `IconPlaceholder` becomes the configured icon library's
+   icon, `cn-font-heading` becomes `font-heading`, and the menu hooks resolve. Any other `cn-*`
+   style hook is dropped, as the CLI does.
+2. Rewrites the TSX: `cva()` becomes a lookup object plus a same-named function, `cn()` becomes
    `clsx()`, and class strings become `styles.<slot>` references named from `data-slot` (or Base
-   UI `useRender`'s `state.slot`). Imports of other upstream components point at this registry's
-   copies, and each upstream `registryDependencies` entry becomes `@bje/<item>`; a dependency not
-   listed in `mirror.config.json` fails the build.
-2. Compiles each slot's classes with Tailwind itself against `upstream/<style>/index.css`, then
-   nests the output under `:where(.<slot>)` so a consumer's `className` always wins. A selector
-   that still inspects class names after the configured rewrites, or names a class outside the
-   module other than `.dark`, fails the build.
-3. Lists in the module's header the custom properties it expects globally and the `group`/`peer`
-   marker classes dropped because they have no CSS. Any other class Tailwind produces no CSS for
-   fails the build.
-4. Generates `<Name>.test.tsx` covering every exported component: its `data-slot` and classes,
+   UI `useRender`'s `state.slot`). An element without a `data-slot` is named from its component
+   and tag (`accordionTriggerHeader`); each branch of a conditional class gets its own slot.
+   Imports of other upstream components point at this registry's copies, and each upstream
+   `registryDependencies` entry becomes `@bje/<item>`; a dependency not listed in
+   `mirror.config.json` fails the build.
+3. Compiles each slot's classes with Tailwind itself against `upstream/<style>/index.css`, then
+   nests the output under `:where(.<slot>)` so a consumer's `className` always wins. Selectors on
+   Tailwind's `group`/`peer` marker classes target the `data-slot` of the mirrored elements that
+   carry the marker, in any component (`group-data-[size=sm]/card:` becomes
+   `[data-slot="card"][data-size="sm"] &`). Upstream's `svg:not([class*="size-"])` defaults skip
+   the mirrored elements whose classes contain `size-` (Spinner), matched by `data-slot`. Rules that
+   need a configured consumer class (Card's `[.border-b]:` padding) or a marker no mirrored
+   element carries are dropped and listed in the module's header; any other outside class fails
+   the build.
+4. Lists in the module's header the custom properties it expects globally. Any class Tailwind
+   produces no CSS for, other than `group`/`peer` markers, fails the build.
+5. Generates `<Name>.test.tsx` covering every exported component: its `data-slot` and classes,
    every option of every `cva()` group, null groups, literal prop defaults, and consumer
-   `className`. It asserts through the `styles` import, so it passes under any CSS module naming.
-   Running it needs Vitest with `environment: 'jsdom'`; the item lists the test's devDependencies.
+   `className`. Parts render inside the same item's parts that enclose them in upstream's docs
+   example, with its literal props, and opened where upstream's types take `defaultOpen`; a part
+   that renders no element (Dialog's root) is tested by its children. It asserts through the
+   `styles` import, so it passes under any CSS module naming. Running it needs Vitest with
+   `environment: 'jsdom'`; the item lists the test's devDependencies.
 
 It also generates the global stylesheets, the `@bje/globals` item every component depends on:
 `variables.scss` (theme tokens, light and dark colors, Tailwind's `@property` registrations) and
@@ -78,9 +91,10 @@ the A/B harness renders.
 Unsupported source shapes fail the build with their line and column rather than producing partial
 output.
 
-Generated components keep upstream's markup, so `biome.json` turns off `a11y/useSemanticElements`
-for `registry/ui/**` (upstream's Button Group uses `role="group"` on a `div`). Every other rule still
-applies there. `ab/generated/**` holds upstream's code verbatim for comparison and generated harness
+Generated files get Biome's formatting and safe fixes (import order, `import type`). They keep
+upstream's markup, so `biome.json` turns off the a11y rules upstream's markup trips for
+`registry/ui/**` (`useSemanticElements`, `useFocusableInteractive`, `noLabelWithoutControl`).
+Every other rule still applies there. `ab/generated/**` holds upstream's code verbatim for comparison and generated harness
 inputs, so Biome only formats it.
 
 ## Visual A/B
@@ -96,20 +110,23 @@ pnpm ab:serve   # browse http://localhost:4400 (side by side), /upstream.html, /
 
 Every case is generated:
 
-- **Fixtures:** each exported component and `cva()` option (`ab/generated/fixtures.ts`), in light
-  and dark, at rest, hovered, keyboard-focused and disabled.
+- **Fixtures:** each exported component that renders an element, per `cva()` option
+  (`ab/generated/fixtures.ts`), in light and dark, at rest, hovered, keyboard-focused and disabled.
+  Each renders in the same scaffold as its generated test. A fixture inside an opened part (a
+  popup) renders alone on its page and compares the whole viewport.
 - **Typeset:** each of Typeset's content fixtures (docs, chat, changelog, ...) inside `.typeset`,
   in light and dark.
 - **Examples:** each sub-example of upstream's docs example for a mirrored component
   (`<item>-example`), in light and dark. A sub-example is used once every component it reaches is
-  mirrored; `pnpm mirror:build` lists the skipped ones and what they need. Both pages render the
+  mirrored and it passes no consumer class whose styling the mirror drops; `pnpm mirror:build`
+  lists the skipped ones and why. Both pages render the
   same trimmed example source (`ab/generated/examples/`), differing only in which components it
   imports. The ours page styles the examples' own layout classes with unlayered Tailwind utilities
   (`ab/generated/examples.css`), so a class an example passes to our component outranks its
   `:where()` defaults as tailwind-merge makes it win upstream. `ab/stubs/` stands in for the
   docs-only `Example` wrapper and `IconPlaceholder`.
 
-Each theme renders on its own page with `.dark` on `<html>`, as shadcn apps toggle it, so variables
+A case that throws renders its error in place and fails alone. Each theme renders on its own page with `.dark` on `<html>`, as shadcn apps toggle it, so variables
 that resolve at the root switch too. `?theme=dark` and `?case=<id>` select the theme and narrow a
 page to one case. Playwright uses the installed Chrome
 (`channel: 'chrome'`); CI runs the `ab` job on the runner's Chrome and uploads the report as an

@@ -139,6 +139,370 @@
           "target": "@components/styles/typeset.css"
         }
       ]
+    },
+    {
+      "name": "badge",
+      "type": "registry:ui",
+      "title": "Badge",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Badge/Badge.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Badge/Badge.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Badge/Badge.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "card",
+      "type": "registry:ui",
+      "title": "Card",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Card/Card.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Card/Card.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Card/Card.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "alert",
+      "type": "registry:ui",
+      "title": "Alert",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Alert/Alert.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Alert/Alert.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Alert/Alert.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "label",
+      "type": "registry:ui",
+      "title": "Label",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Label/Label.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Label/Label.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Label/Label.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "title": "Input",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Input/Input.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Input/Input.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Input/Input.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "textarea",
+      "type": "registry:ui",
+      "title": "Textarea",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Textarea/Textarea.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Textarea/Textarea.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Textarea/Textarea.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "skeleton",
+      "type": "registry:ui",
+      "title": "Skeleton",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Skeleton/Skeleton.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Skeleton/Skeleton.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Skeleton/Skeleton.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "spinner",
+      "type": "registry:ui",
+      "title": "Spinner",
+      "dependencies": ["clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Spinner/Spinner.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Spinner/Spinner.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Spinner/Spinner.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "kbd",
+      "type": "registry:ui",
+      "title": "Kbd",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Kbd/Kbd.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Kbd/Kbd.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Kbd/Kbd.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aspect-ratio",
+      "type": "registry:ui",
+      "title": "AspectRatio",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/AspectRatio/AspectRatio.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/AspectRatio/AspectRatio.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/AspectRatio/AspectRatio.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "table",
+      "type": "registry:ui",
+      "title": "Table",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Table/Table.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Table/Table.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Table/Table.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "breadcrumb",
+      "type": "registry:ui",
+      "title": "Breadcrumb",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Breadcrumb/Breadcrumb.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Breadcrumb/Breadcrumb.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Breadcrumb/Breadcrumb.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "type": "registry:ui",
+      "title": "Empty",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Empty/Empty.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Empty/Empty.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Empty/Empty.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

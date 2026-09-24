@@ -4,6 +4,10 @@ export const fixtures = [
   {
     item: 'button',
     component: 'Button',
+    slot: 'button',
+    ancestors: [],
+    children: true,
+    overlay: false,
     label: 'Button variant=default',
     props: {
       variant: 'default',
@@ -12,6 +16,10 @@ export const fixtures = [
   {
     item: 'button',
     component: 'Button',
+    slot: 'button',
+    ancestors: [],
+    children: true,
+    overlay: false,
     label: 'Button variant=outline',
     props: {
       variant: 'outline',
@@ -20,6 +28,10 @@ export const fixtures = [
   {
     item: 'button',
     component: 'Button',
+    slot: 'button',
+    ancestors: [],
+    children: true,
+    overlay: false,
     label: 'Button variant=secondary',
     props: {
       variant: 'secondary',
@@ -28,6 +40,10 @@ export const fixtures = [
   {
     item: 'button',
     component: 'Button',
+    slot: 'button',
+    ancestors: [],
+    children: true,
+    overlay: false,
     label: 'Button variant=ghost',
     props: {
       variant: 'ghost',
@@ -36,6 +52,10 @@ export const fixtures = [
   {
     item: 'button',
     component: 'Button',
+    slot: 'button',
+    ancestors: [],
+    children: true,
+    overlay: false,
     label: 'Button variant=destructive',
     props: {
       variant: 'destructive',
@@ -44,6 +64,10 @@ export const fixtures = [
   {
     item: 'button',
     component: 'Button',
+    slot: 'button',
+    ancestors: [],
+    children: true,
+    overlay: false,
     label: 'Button variant=link',
     props: {
       variant: 'link',
@@ -52,6 +76,10 @@ export const fixtures = [
   {
     item: 'button',
     component: 'Button',
+    slot: 'button',
+    ancestors: [],
+    children: true,
+    overlay: false,
     label: 'Button size=default',
     props: {
       size: 'default',
@@ -60,6 +88,10 @@ export const fixtures = [
   {
     item: 'button',
     component: 'Button',
+    slot: 'button',
+    ancestors: [],
+    children: true,
+    overlay: false,
     label: 'Button size=xs',
     props: {
       size: 'xs',
@@ -68,6 +100,10 @@ export const fixtures = [
   {
     item: 'button',
     component: 'Button',
+    slot: 'button',
+    ancestors: [],
+    children: true,
+    overlay: false,
     label: 'Button size=sm',
     props: {
       size: 'sm',
@@ -76,6 +112,10 @@ export const fixtures = [
   {
     item: 'button',
     component: 'Button',
+    slot: 'button',
+    ancestors: [],
+    children: true,
+    overlay: false,
     label: 'Button size=lg',
     props: {
       size: 'lg',
@@ -84,6 +124,10 @@ export const fixtures = [
   {
     item: 'button',
     component: 'Button',
+    slot: 'button',
+    ancestors: [],
+    children: true,
+    overlay: false,
     label: 'Button size=icon',
     props: {
       size: 'icon',
@@ -92,6 +136,10 @@ export const fixtures = [
   {
     item: 'button',
     component: 'Button',
+    slot: 'button',
+    ancestors: [],
+    children: true,
+    overlay: false,
     label: 'Button size=icon-xs',
     props: {
       size: 'icon-xs',
@@ -100,6 +148,10 @@ export const fixtures = [
   {
     item: 'button',
     component: 'Button',
+    slot: 'button',
+    ancestors: [],
+    children: true,
+    overlay: false,
     label: 'Button size=icon-sm',
     props: {
       size: 'icon-sm',
@@ -108,6 +160,10 @@ export const fixtures = [
   {
     item: 'button',
     component: 'Button',
+    slot: 'button',
+    ancestors: [],
+    children: true,
+    overlay: false,
     label: 'Button size=icon-lg',
     props: {
       size: 'icon-lg',
@@ -116,6 +172,10 @@ export const fixtures = [
   {
     item: 'button-group',
     component: 'ButtonGroup',
+    slot: 'button-group',
+    ancestors: [],
+    children: true,
+    overlay: false,
     label: 'ButtonGroup orientation=horizontal',
     props: {
       orientation: 'horizontal',
@@ -124,6 +184,10 @@ export const fixtures = [
   {
     item: 'button-group',
     component: 'ButtonGroup',
+    slot: 'button-group',
+    ancestors: [],
+    children: true,
+    overlay: false,
     label: 'ButtonGroup orientation=vertical',
     props: {
       orientation: 'vertical',
@@ -132,19 +196,765 @@ export const fixtures = [
   {
     item: 'button-group',
     component: 'ButtonGroupText',
+    slot: 'button-group-text',
+    ancestors: [
+      {
+        component: 'ButtonGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
     label: 'ButtonGroupText',
     props: {},
   },
   {
     item: 'button-group',
     component: 'ButtonGroupSeparator',
+    slot: 'button-group-separator',
+    ancestors: [],
+    children: true,
+    overlay: false,
     label: 'ButtonGroupSeparator',
     props: {},
   },
   {
     item: 'separator',
     component: 'Separator',
+    slot: 'separator',
+    ancestors: [],
+    children: false,
+    overlay: false,
     label: 'Separator',
+    props: {},
+  },
+  {
+    item: 'badge',
+    component: 'Badge',
+    slot: 'badge',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Badge variant=default',
+    props: {
+      variant: 'default',
+    },
+  },
+  {
+    item: 'badge',
+    component: 'Badge',
+    slot: 'badge',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Badge variant=secondary',
+    props: {
+      variant: 'secondary',
+    },
+  },
+  {
+    item: 'badge',
+    component: 'Badge',
+    slot: 'badge',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Badge variant=destructive',
+    props: {
+      variant: 'destructive',
+    },
+  },
+  {
+    item: 'badge',
+    component: 'Badge',
+    slot: 'badge',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Badge variant=outline',
+    props: {
+      variant: 'outline',
+    },
+  },
+  {
+    item: 'badge',
+    component: 'Badge',
+    slot: 'badge',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Badge variant=ghost',
+    props: {
+      variant: 'ghost',
+    },
+  },
+  {
+    item: 'badge',
+    component: 'Badge',
+    slot: 'badge',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Badge variant=link',
+    props: {
+      variant: 'link',
+    },
+  },
+  {
+    item: 'card',
+    component: 'Card',
+    slot: 'card',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Card',
+    props: {},
+  },
+  {
+    item: 'card',
+    component: 'CardHeader',
+    slot: 'card-header',
+    ancestors: [
+      {
+        component: 'Card',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'CardHeader',
+    props: {},
+  },
+  {
+    item: 'card',
+    component: 'CardTitle',
+    slot: 'card-title',
+    ancestors: [
+      {
+        component: 'Card',
+        props: {},
+      },
+      {
+        component: 'CardHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'CardTitle',
+    props: {},
+  },
+  {
+    item: 'card',
+    component: 'CardDescription',
+    slot: 'card-description',
+    ancestors: [
+      {
+        component: 'Card',
+        props: {},
+      },
+      {
+        component: 'CardHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'CardDescription',
+    props: {},
+  },
+  {
+    item: 'card',
+    component: 'CardAction',
+    slot: 'card-action',
+    ancestors: [
+      {
+        component: 'Card',
+        props: {},
+      },
+      {
+        component: 'CardHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'CardAction',
+    props: {},
+  },
+  {
+    item: 'card',
+    component: 'CardContent',
+    slot: 'card-content',
+    ancestors: [
+      {
+        component: 'Card',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'CardContent',
+    props: {},
+  },
+  {
+    item: 'card',
+    component: 'CardFooter',
+    slot: 'card-footer',
+    ancestors: [
+      {
+        component: 'Card',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'CardFooter',
+    props: {},
+  },
+  {
+    item: 'alert',
+    component: 'Alert',
+    slot: 'alert',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Alert variant=default',
+    props: {
+      variant: 'default',
+    },
+  },
+  {
+    item: 'alert',
+    component: 'Alert',
+    slot: 'alert',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Alert variant=destructive',
+    props: {
+      variant: 'destructive',
+    },
+  },
+  {
+    item: 'alert',
+    component: 'AlertTitle',
+    slot: 'alert-title',
+    ancestors: [
+      {
+        component: 'Alert',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'AlertTitle',
+    props: {},
+  },
+  {
+    item: 'alert',
+    component: 'AlertDescription',
+    slot: 'alert-description',
+    ancestors: [
+      {
+        component: 'Alert',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'AlertDescription',
+    props: {},
+  },
+  {
+    item: 'alert',
+    component: 'AlertAction',
+    slot: 'alert-action',
+    ancestors: [
+      {
+        component: 'Alert',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'AlertAction',
+    props: {},
+  },
+  {
+    item: 'label',
+    component: 'Label',
+    slot: 'label',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Label',
+    props: {
+      htmlFor: 'label-demo-terms',
+    },
+  },
+  {
+    item: 'input',
+    component: 'Input',
+    slot: 'input',
+    ancestors: [],
+    children: false,
+    overlay: false,
+    label: 'Input',
+    props: {
+      type: 'email',
+      placeholder: 'Email',
+    },
+  },
+  {
+    item: 'textarea',
+    component: 'Textarea',
+    slot: 'textarea',
+    ancestors: [],
+    children: false,
+    overlay: false,
+    label: 'Textarea',
+    props: {
+      placeholder: 'Type your message here.',
+    },
+  },
+  {
+    item: 'skeleton',
+    component: 'Skeleton',
+    slot: 'skeleton',
+    ancestors: [],
+    children: false,
+    overlay: false,
+    label: 'Skeleton',
+    props: {},
+  },
+  {
+    item: 'spinner',
+    component: 'Spinner',
+    slot: 'spinner',
+    ancestors: [],
+    children: false,
+    overlay: false,
+    label: 'Spinner',
+    props: {},
+  },
+  {
+    item: 'kbd',
+    component: 'Kbd',
+    slot: 'kbd',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Kbd',
+    props: {},
+  },
+  {
+    item: 'kbd',
+    component: 'KbdGroup',
+    slot: 'kbd-group',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'KbdGroup',
+    props: {},
+  },
+  {
+    item: 'aspect-ratio',
+    component: 'AspectRatio',
+    slot: 'aspect-ratio',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'AspectRatio',
+    props: {},
+  },
+  {
+    item: 'table',
+    component: 'Table',
+    slot: 'table',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Table',
+    props: {},
+  },
+  {
+    item: 'table',
+    component: 'TableHeader',
+    slot: 'table-header',
+    ancestors: [
+      {
+        component: 'Table',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'TableHeader',
+    props: {},
+  },
+  {
+    item: 'table',
+    component: 'TableBody',
+    slot: 'table-body',
+    ancestors: [
+      {
+        component: 'Table',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'TableBody',
+    props: {},
+  },
+  {
+    item: 'table',
+    component: 'TableFooter',
+    slot: 'table-footer',
+    ancestors: [
+      {
+        component: 'Table',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'TableFooter',
+    props: {},
+  },
+  {
+    item: 'table',
+    component: 'TableRow',
+    slot: 'table-row',
+    ancestors: [
+      {
+        component: 'Table',
+        props: {},
+      },
+      {
+        component: 'TableHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'TableRow',
+    props: {},
+  },
+  {
+    item: 'table',
+    component: 'TableHead',
+    slot: 'table-head',
+    ancestors: [
+      {
+        component: 'Table',
+        props: {},
+      },
+      {
+        component: 'TableHeader',
+        props: {},
+      },
+      {
+        component: 'TableRow',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'TableHead',
+    props: {},
+  },
+  {
+    item: 'table',
+    component: 'TableCell',
+    slot: 'table-cell',
+    ancestors: [
+      {
+        component: 'Table',
+        props: {},
+      },
+      {
+        component: 'TableBody',
+        props: {},
+      },
+      {
+        component: 'TableRow',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'TableCell',
+    props: {},
+  },
+  {
+    item: 'table',
+    component: 'TableCaption',
+    slot: 'table-caption',
+    ancestors: [
+      {
+        component: 'Table',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'TableCaption',
+    props: {},
+  },
+  {
+    item: 'breadcrumb',
+    component: 'Breadcrumb',
+    slot: 'breadcrumb',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Breadcrumb',
+    props: {},
+  },
+  {
+    item: 'breadcrumb',
+    component: 'BreadcrumbList',
+    slot: 'breadcrumb-list',
+    ancestors: [
+      {
+        component: 'Breadcrumb',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'BreadcrumbList',
+    props: {},
+  },
+  {
+    item: 'breadcrumb',
+    component: 'BreadcrumbItem',
+    slot: 'breadcrumb-item',
+    ancestors: [
+      {
+        component: 'Breadcrumb',
+        props: {},
+      },
+      {
+        component: 'BreadcrumbList',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'BreadcrumbItem',
+    props: {},
+  },
+  {
+    item: 'breadcrumb',
+    component: 'BreadcrumbLink',
+    slot: 'breadcrumb-link',
+    ancestors: [
+      {
+        component: 'Breadcrumb',
+        props: {},
+      },
+      {
+        component: 'BreadcrumbList',
+        props: {},
+      },
+      {
+        component: 'BreadcrumbItem',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'BreadcrumbLink',
+    props: {
+      href: '#',
+    },
+  },
+  {
+    item: 'breadcrumb',
+    component: 'BreadcrumbPage',
+    slot: 'breadcrumb-page',
+    ancestors: [
+      {
+        component: 'Breadcrumb',
+        props: {},
+      },
+      {
+        component: 'BreadcrumbList',
+        props: {},
+      },
+      {
+        component: 'BreadcrumbItem',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'BreadcrumbPage',
+    props: {},
+  },
+  {
+    item: 'breadcrumb',
+    component: 'BreadcrumbSeparator',
+    slot: 'breadcrumb-separator',
+    ancestors: [
+      {
+        component: 'Breadcrumb',
+        props: {},
+      },
+      {
+        component: 'BreadcrumbList',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'BreadcrumbSeparator',
+    props: {},
+  },
+  {
+    item: 'breadcrumb',
+    component: 'BreadcrumbEllipsis',
+    slot: 'breadcrumb-ellipsis',
+    ancestors: [
+      {
+        component: 'Breadcrumb',
+        props: {},
+      },
+      {
+        component: 'BreadcrumbList',
+        props: {},
+      },
+      {
+        component: 'BreadcrumbItem',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'BreadcrumbEllipsis',
+    props: {},
+  },
+  {
+    item: 'empty',
+    component: 'Empty',
+    slot: 'empty',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Empty',
+    props: {},
+  },
+  {
+    item: 'empty',
+    component: 'EmptyHeader',
+    slot: 'empty-header',
+    ancestors: [
+      {
+        component: 'Empty',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'EmptyHeader',
+    props: {},
+  },
+  {
+    item: 'empty',
+    component: 'EmptyMedia',
+    slot: 'empty-icon',
+    ancestors: [
+      {
+        component: 'Empty',
+        props: {},
+      },
+      {
+        component: 'EmptyHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'EmptyMedia variant=default',
+    props: {
+      variant: 'default',
+    },
+  },
+  {
+    item: 'empty',
+    component: 'EmptyMedia',
+    slot: 'empty-icon',
+    ancestors: [
+      {
+        component: 'Empty',
+        props: {},
+      },
+      {
+        component: 'EmptyHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'EmptyMedia variant=icon',
+    props: {
+      variant: 'icon',
+    },
+  },
+  {
+    item: 'empty',
+    component: 'EmptyTitle',
+    slot: 'empty-title',
+    ancestors: [
+      {
+        component: 'Empty',
+        props: {},
+      },
+      {
+        component: 'EmptyHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'EmptyTitle',
+    props: {},
+  },
+  {
+    item: 'empty',
+    component: 'EmptyDescription',
+    slot: 'empty-description',
+    ancestors: [
+      {
+        component: 'Empty',
+        props: {},
+      },
+      {
+        component: 'EmptyHeader',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'EmptyDescription',
+    props: {},
+  },
+  {
+    item: 'empty',
+    component: 'EmptyContent',
+    slot: 'empty-content',
+    ancestors: [
+      {
+        component: 'Empty',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'EmptyContent',
     props: {},
   },
 ]

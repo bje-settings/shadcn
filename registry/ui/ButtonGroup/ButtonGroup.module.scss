@@ -20,7 +20,7 @@
     border-top-right-radius: calc(var(--radius) * .8);
     border-bottom-right-radius: calc(var(--radius) * .8);
   }
-  & > [data-slot="select-trigger"] {
+  & > [data-slot="select-trigger"]:not([data-slot="alert"], [data-slot="badge"], [data-slot="button"], [data-slot="button-group"], [data-slot="button-group-separator"], [data-slot="button-group-text"], [data-slot="card"], [data-slot="card-action"], [data-slot="empty"], [data-slot="empty-content"], [data-slot="empty-header"], [data-slot="input"], [data-slot="kbd"], [data-slot="separator"], [data-slot="table"], [data-slot="table-container"], [data-slot="textarea"]) {
     width: fit-content;
   }
   & > input {
@@ -80,6 +80,8 @@
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   & svg {
     pointer-events: none;
+  }
+  & svg:not([data-slot="alert"], [data-slot="badge"], [data-slot="breadcrumb-ellipsis"], [data-slot="breadcrumb-separator"], [data-slot="button"], [data-slot="button-group-text"], [data-slot="empty-icon"], [data-slot="kbd"], [data-slot="spinner"]) {
     width: calc(var(--spacing) * 4);
     height: calc(var(--spacing) * 4);
   }

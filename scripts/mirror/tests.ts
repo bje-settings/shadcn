@@ -7,6 +7,7 @@
 
 import { parseModule } from './ast.ts'
 import { pascalCase } from './names.ts'
+import type { Literal, Part, PartTypes, Scaffold } from './parts.ts'
 import type { RenderedComponent, TransformedComponent, VariantSet } from './tsx.ts'
 
 export function exportedNames(code: string): Set<string> {
@@ -38,7 +39,43 @@ function defaultClasses(set: VariantSet): string[] {
   ]
 }
 
-function componentTests(component: RenderedComponent, set: VariantSet | undefined): string[] {
+function jsxProps(props: Record<string, Literal>): string {
+  return Object.entries(props)
+    .map(([name, value]) => {
+      if (value === true) return ` ${name}`
+      return ` ${name}=${typeof value === 'string' ? q(value) : `{${JSON.stringify(value)}}`}`
+    })
+    .join('')
+}
+
+// `inner` rendered inside the scaffold's ancestors.
+function scaffolded(ancestors: Part[], inner: string): string {
+  return ancestors.reduceRight(
+    (children, { component, props }) =>
+      `<${component}${jsxProps(props)}>${children}</${component}>`,
+    inner,
+  )
+}
+
+// A part that renders no element of its own (Dialog's Root) is tested by what
+// it renders: its children.
+function childrenTest(component: RenderedComponent, scaffold: Scaffold): string[] {
+  const inner = `<${component.name}${jsxProps(scaffold.props)}><i data-testid="child" /></${component.name}>`
+  return [
+    `describe(${q(component.name)}, () => {`,
+    '  it("renders its children", () => {',
+    `    render(${scaffolded(scaffold.ancestors, inner)})`,
+    '    expect(document.querySelector(\'[data-testid="child"]\')).not.toBeNull()',
+    '  })',
+    '})',
+  ]
+}
+
+function componentTests(
+  component: RenderedComponent,
+  set: VariantSet | undefined,
+  scaffold: Scaffold,
+): string[] {
   const render = `render${component.name}`
   const attributes = `attributesOf${component.name}`
   const element = q(`[data-slot="${component.dataSlot}"]`)
@@ -53,18 +90,29 @@ function componentTests(component: RenderedComponent, set: VariantSet | undefine
   // id, which React's useId makes differ between renders.
   const explicit = component.defaults.filter((d) => !groupNames.has(d.prop))
 
+  // Partial: a test passes only the props it is about, and leaves a required
+  // one (AspectRatio's ratio) unset.
+  const props = `ComponentProps<typeof ${component.name}>`
+  // Rendered inside its scaffold, whose popups portal out of the container,
+  // so each render starts from an empty document and queries all of it.
+  const rendered = scaffolded(
+    scaffold.ancestors,
+    `<${component.name}${jsxProps(scaffold.props)} {...(props as ${props})} />`,
+  )
   const lines = [
-    `function ${render}(props: ComponentProps<typeof ${component.name}> = {}) {`,
-    `  const { container } = render(<${component.name} {...props} />)`,
-    `  return container.querySelector(${element})?.className.split(" ") ?? []`,
+    `function ${render}(props: Partial<${props}> = {}) {`,
+    '  cleanup()',
+    `  render(${rendered})`,
+    `  return document.querySelector(${element})?.getAttribute("class")?.split(" ") ?? []`,
     '}',
     '',
   ]
   if (explicit.length > 0) {
     lines.push(
-      `function ${attributes}(props: ComponentProps<typeof ${component.name}> = {}) {`,
-      `  const { container } = render(<${component.name} {...props} />)`,
-      `  const element = container.querySelector(${element})`,
+      `function ${attributes}(props: Partial<${props}> = {}) {`,
+      '  cleanup()',
+      `  render(${rendered})`,
+      `  const element = document.querySelector(${element})`,
       '  return Object.fromEntries(',
       '    [...(element?.attributes ?? [])].filter((a) => a.name !== "id").map((a) => [a.name, a.value]),',
       '  )',
@@ -72,12 +120,16 @@ function componentTests(component: RenderedComponent, set: VariantSet | undefine
       '',
     )
   }
-  lines.push(
-    `describe(${q(component.name)}, () => {`,
-    `  it(${q(`renders [data-slot="${component.dataSlot}"] with its classes`)}, () => {`,
-    `    expect(${render}()).toEqual(expect.arrayContaining([${expected.join(', ')}]))`,
-    '  })',
-  )
+  lines.push(`describe(${q(component.name)}, () => {`)
+  // An element only the consumer's className styles has no classes of its
+  // own; the className test below still finds it by its data-slot.
+  if (expected.length > 0) {
+    lines.push(
+      `  it(${q(`renders [data-slot="${component.dataSlot}"] with its classes`)}, () => {`,
+      `    expect(${render}()).toEqual(expect.arrayContaining([${expected.join(', ')}]))`,
+      '  })',
+    )
+  }
 
   for (const group of groups) {
     lines.push(
@@ -121,7 +173,11 @@ function componentTests(component: RenderedComponent, set: VariantSet | undefine
   return lines
 }
 
-export function generateTest(name: string, transformed: TransformedComponent): string {
+export function generateTest(
+  name: string,
+  transformed: TransformedComponent,
+  parts: { types: Map<string, PartTypes>; scaffolds: Map<string, Scaffold> },
+): string {
   const file = pascalCase(name)
   const exported = exportedNames(transformed.code)
   const components = transformed.components.filter((c) => exported.has(c.name))
@@ -136,21 +192,31 @@ export function generateTest(name: string, transformed: TransformedComponent): s
 
   const sets = new Map(transformed.variantSets.map((set) => [set.variable, set]))
   const functions = [...sets.values()].filter((set) => exported.has(set.variable))
-  // Sorted the way Biome's organizeImports expects.
-  const imports = [...components.map((c) => c.name), ...functions.map((set) => set.variable)].sort()
+  const scaffold = (component: string): Scaffold =>
+    parts.scaffolds.get(component) ?? { ancestors: [], props: {}, children: true }
+  const elementless = (component: RenderedComponent) =>
+    parts.types.get(component.name)?.className === false
+  const styled = components.some((component) => !elementless(component))
+  const imports = new Set([
+    ...components.flatMap((c) => [c.name, ...scaffold(c.name).ancestors.map((a) => a.component)]),
+    ...functions.map((set) => set.variable),
+  ])
 
   return [
-    'import { render } from "@testing-library/react"',
-    'import type { ComponentProps } from "react"',
+    `import { ${styled ? 'cleanup, ' : ''}render } from "@testing-library/react"`,
+    ...(styled ? ['import type { ComponentProps } from "react"'] : []),
     'import { describe, expect, it } from "vitest"',
-    `import { ${imports.join(', ')} } from "./${file}"`,
-    `import styles from "./${file}.module.scss"`,
+    `import { ${[...imports].sort().join(', ')} } from "./${file}"`,
+    ...(styled || functions.length > 0 ? [`import styles from "./${file}.module.scss"`] : []),
     ...components.flatMap((component) => [
       '',
-      ...componentTests(
-        component,
-        component.variantSet ? sets.get(component.variantSet) : undefined,
-      ),
+      ...(elementless(component)
+        ? childrenTest(component, scaffold(component.name))
+        : componentTests(
+            component,
+            component.variantSet ? sets.get(component.variantSet) : undefined,
+            scaffold(component.name),
+          )),
     ]),
     ...functions.flatMap((set) => [
       '',

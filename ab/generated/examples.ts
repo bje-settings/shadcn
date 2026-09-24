@@ -31,6 +31,14 @@ export const examples = [
   },
   {
     example: 'button-group-example',
+    name: 'ButtonGroupWithInput',
+  },
+  {
+    example: 'button-group-example',
+    name: 'ButtonGroupWithText',
+  },
+  {
+    example: 'button-group-example',
     name: 'ButtonGroupWithIcons',
   },
   {
@@ -72,5 +80,189 @@ export const examples = [
   {
     example: 'separator-example',
     name: 'SeparatorInList',
+  },
+  {
+    example: 'badge-example',
+    name: 'BadgeVariants',
+  },
+  {
+    example: 'badge-example',
+    name: 'BadgeWithIconLeft',
+  },
+  {
+    example: 'badge-example',
+    name: 'BadgeWithIconRight',
+  },
+  {
+    example: 'badge-example',
+    name: 'BadgeWithSpinner',
+  },
+  {
+    example: 'badge-example',
+    name: 'BadgeAsLink',
+  },
+  {
+    example: 'badge-example',
+    name: 'BadgeLongText',
+  },
+  {
+    example: 'badge-example',
+    name: 'BadgeCustomColors',
+  },
+  {
+    example: 'card-example',
+    name: 'CardDefault',
+  },
+  {
+    example: 'card-example',
+    name: 'CardSmall',
+  },
+  {
+    example: 'card-example',
+    name: 'CardWithImage',
+  },
+  {
+    example: 'card-example',
+    name: 'CardWithImageSmall',
+  },
+  {
+    example: 'alert-example',
+    name: 'AlertExample1',
+  },
+  {
+    example: 'alert-example',
+    name: 'AlertExample2',
+  },
+  {
+    example: 'alert-example',
+    name: 'AlertExample3',
+  },
+  {
+    example: 'alert-example',
+    name: 'AlertExample4',
+  },
+  {
+    example: 'input-example',
+    name: 'InputBasic',
+  },
+  {
+    example: 'input-example',
+    name: 'InputInvalid',
+  },
+  {
+    example: 'input-example',
+    name: 'InputWithButton',
+  },
+  {
+    example: 'textarea-example',
+    name: 'TextareaBasic',
+  },
+  {
+    example: 'textarea-example',
+    name: 'TextareaInvalid',
+  },
+  {
+    example: 'skeleton-example',
+    name: 'SkeletonAvatar',
+  },
+  {
+    example: 'skeleton-example',
+    name: 'SkeletonCard',
+  },
+  {
+    example: 'skeleton-example',
+    name: 'SkeletonText',
+  },
+  {
+    example: 'skeleton-example',
+    name: 'SkeletonForm',
+  },
+  {
+    example: 'skeleton-example',
+    name: 'SkeletonTable',
+  },
+  {
+    example: 'spinner-example',
+    name: 'SpinnerBasic',
+  },
+  {
+    example: 'spinner-example',
+    name: 'SpinnerInButtons',
+  },
+  {
+    example: 'spinner-example',
+    name: 'SpinnerInBadges',
+  },
+  {
+    example: 'spinner-example',
+    name: 'SpinnerInEmpty',
+  },
+  {
+    example: 'kbd-example',
+    name: 'KbdBasic',
+  },
+  {
+    example: 'kbd-example',
+    name: 'KbdModifierKeys',
+  },
+  {
+    example: 'kbd-example',
+    name: 'KbdGroupExample',
+  },
+  {
+    example: 'kbd-example',
+    name: 'KbdArrowKeys',
+  },
+  {
+    example: 'kbd-example',
+    name: 'KbdWithIcons',
+  },
+  {
+    example: 'kbd-example',
+    name: 'KbdWithIconsAndText',
+  },
+  {
+    example: 'kbd-example',
+    name: 'KbdWithSamp',
+  },
+  {
+    example: 'table-example',
+    name: 'TableBasic',
+  },
+  {
+    example: 'table-example',
+    name: 'TableWithFooter',
+  },
+  {
+    example: 'table-example',
+    name: 'TableSimple',
+  },
+  {
+    example: 'table-example',
+    name: 'TableWithBadges',
+  },
+  {
+    example: 'table-example',
+    name: 'TableWithInput',
+  },
+  {
+    example: 'breadcrumb-example',
+    name: 'BreadcrumbBasic',
+  },
+  {
+    example: 'empty-example',
+    name: 'EmptyBasic',
+  },
+  {
+    example: 'empty-example',
+    name: 'EmptyWithMutedBackground',
+  },
+  {
+    example: 'empty-example',
+    name: 'EmptyWithIcon',
+  },
+  {
+    example: 'empty-example',
+    name: 'EmptyInCard',
   },
 ]

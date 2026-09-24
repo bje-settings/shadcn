@@ -23,6 +23,8 @@ export default function ChipExample() {
       <ChipIcons />
       <ChipHook />
       <ChipOdd />
+      <ChipBorder />
+      <ChipBoth />
     </ExampleWrapper>
   )
 }
@@ -68,19 +70,33 @@ function ChipHook() {
 function ChipOdd() {
   return <Odd />
 }
+
+function ChipBorder() {
+  return <Chip className="px-2 border-b" />
+}
+
+function ChipBoth() {
+  return <Menu.Item className={\`border-t\`} />
+}
 `
 
 const mirrored = new Set(['button', 'chip', 'odd'])
 
 describe('prepareExample', () => {
-  const prepared = prepareExample(example, 'base-vega', 'bje', mirrored)
+  const dropped = new Set(['border-b', 'border-t'])
+  const prepared = prepareExample(example, 'base-vega', 'bje', mirrored, dropped)
 
   it('keeps sub-examples whose reach is available, in the order the page renders them', () => {
     expect(prepared.kept).toEqual(['ChipBasic', 'ChipOdd'])
     expect(prepared.skipped).toEqual([
-      { name: 'ChipMenu', missing: ['menu'] },
-      { name: 'ChipIcons', missing: ['lucide-react'] },
-      { name: 'ChipHook', missing: ['@/registry/base-vega/hooks/use-thing'] },
+      { name: 'ChipMenu', reasons: ['needs menu'] },
+      { name: 'ChipIcons', reasons: ['needs lucide-react'] },
+      { name: 'ChipHook', reasons: ['needs @/registry/base-vega/hooks/use-thing'] },
+      { name: 'ChipBorder', reasons: ['passes border-b, whose styling the mirror drops'] },
+      {
+        name: 'ChipBoth',
+        reasons: ['needs menu', 'passes border-t, whose styling the mirror drops'],
+      },
     ])
   })
 
@@ -154,7 +170,7 @@ export { ChipBasic, ChipOdd }
       'unsupported top-level ExpressionStatement at line 3',
     ],
   ])('rejects %s', (_, source, message) => {
-    expect(() => prepareExample(source, 'base-vega', 'bje', mirrored)).toThrow(
+    expect(() => prepareExample(source, 'base-vega', 'bje', mirrored, new Set())).toThrow(
       `example: ${message}`,
     )
   })

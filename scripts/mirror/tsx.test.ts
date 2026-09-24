@@ -131,22 +131,23 @@ function Card({ className, extra }) {
       'const aVariants = cva("x", { defaultVariants: { size: size } })',
     ],
     ['cn imported with other names', 'import { cn, other } from "cn"'],
-    ['VariantProps of an unknown value', 'type P = VariantProps<typeof other>'],
     ['VariantProps without a typeof', 'type P = VariantProps<Other>'],
     ['VariantProps of a member', 'type P = VariantProps<typeof a.b>'],
-    ['a conditional cn() argument', 'const c = cn(a ? "x" : "y")'],
+    ['a conditional cn() argument outside JSX', 'const c = cn(a ? "x" : "y")'],
+    ['a className string on a namespaced tag', 'const c = <svg:rect className="x" />'],
+    ['a className string in a destructuring declaration', 'const [c] = [<i className="x" />]'],
+    [
+      'a template branch in a conditional cn() argument',
+      'const c = <i data-slot="a" className={cn(a ? `x` : "y")} />',
+    ],
+    [
+      'a class condition it cannot name',
+      'const c = <i data-slot="a" className={cn(f() ? "x" : "y")} />',
+    ],
+    ['cn() && without a string', 'const c = <i data-slot="a" className={cn(a && b)} />'],
+    ['cn() strings in an unnamed default export', 'export default () => <i className={cn("x")} />'],
     ['cn() strings outside JSX', 'const c = cn("x")'],
-    ['cn() strings without data-slot', 'const c = <div className={cn("x")} />'],
-    [
-      'cn() strings when data-slot is an expression',
-      'const c = <div data-slot={slot} className={cn("x")} />',
-    ],
-    ['a className string without data-slot', 'const c = <div className="x" />'],
     ['a template className', 'const c = <div className={`x`} />'],
-    [
-      'one slot with different classes',
-      'const c = <><div data-slot="a" className="x" /><div data-slot="a" className="y" /></>',
-    ],
   ])('rejects %s', (_, source) => {
     expect(() => transformComponent(source, 'a', 'bje')).toThrow(/^Unsupported at \d+:\d+: /)
   })
@@ -241,6 +242,7 @@ export default function () { return <i data-slot="anon" className="p-4" /> }`
       {
         name: 'Card',
         dataSlot: 'card',
+        tag: 'div',
         variantSet: 'xVariants',
         defaults: [
           { prop: 'size', value: '"sm"' },
@@ -248,8 +250,96 @@ export default function () { return <i data-slot="anon" className="p-4" /> }`
           { prop: 'open', value: 'false' },
         ],
       },
-      { name: 'Plain', dataSlot: 'plain', slot: 'plain', defaults: [] },
-      { name: 'Empty', dataSlot: 'empty', slot: 'empty', defaults: [] },
+      { name: 'Plain', dataSlot: 'plain', tag: 'i', slot: 'plain', defaults: [] },
+      { name: 'Empty', dataSlot: 'empty', tag: 'i', slot: 'empty', defaults: [] },
     ])
+  })
+})
+
+describe('slot names', () => {
+  const transform = (body: string) =>
+    transformComponent(`import { cn } from "cn"\n${body}`, 'a', 'bje')
+
+  it('names elements without a data-slot from their owner and tag', () => {
+    const { code, slots } = transform(`function AccordionTrigger() {
+  return <Primitive.Header className="flex"><span className={cn("sr-only")} /></Primitive.Header>
+}
+export const Arrow = () => <svg className="size-4" />`)
+    expect(slots.map((slot) => slot.name)).toEqual([
+      'accordionTriggerHeader',
+      'accordionTriggerSpan',
+      'arrowSvg',
+    ])
+    expect(code).toContain('<Primitive.Header className={styles.accordionTriggerHeader}>')
+  })
+
+  it('gives each branch of a conditional class its own slot', () => {
+    const { code, slots } = transform(`function C({ orientation, open, inset }) {
+  return <div data-slot="c" className={cn("flex", orientation === "horizontal" ? "-ml-4" : "flex-col", open ? props.x : "", inset && "pl-8", props.y ? "a" : "b")} />
+}`)
+    expect(slots).toEqual([
+      { name: 'cHorizontal', classes: ['-ml-4'] },
+      { name: 'cNotHorizontal', classes: ['flex-col'] },
+      { name: 'cInset', classes: ['pl-8'] },
+      { name: 'cY', classes: ['a'] },
+      { name: 'cNotY', classes: ['b'] },
+      { name: 'c', classes: ['flex'] },
+    ])
+    expect(code).toContain(
+      'clsx(styles.c, orientation === "horizontal" ? styles.cHorizontal : styles.cNotHorizontal, open ? props.x : null, inset && styles.cInset, props.y ? styles.cY : styles.cNotY)',
+    )
+  })
+
+  it('suffixes classes passed in a fooClassName prop', () => {
+    const { slots } = transform(
+      'const O = () => <Otp data-slot="otp" containerClassName={cn("flex")} className={cn("block")} />',
+    )
+    expect(slots.map((slot) => slot.name)).toEqual(['otpContainer', 'otp'])
+  })
+
+  it('keeps apart one data-slot with different classes: owner name, then a number', () => {
+    const { slots } =
+      transform(`function FieldLabel() { return <i data-slot="field-label" className="a" /> }
+function FieldTitle() { return <i data-slot="field-label" className="b" /> }
+function Again() { return <><i data-slot="field-label" className="a" /><i data-slot="field-label" className="c" /><i data-slot="field-label" className="d" /></> }`)
+    expect(slots.map((slot) => slot.name)).toEqual([
+      'fieldLabel',
+      'fieldTitle',
+      'again',
+      'fieldLabel2',
+    ])
+  })
+
+  it("drops shadcn's cn-* style hooks, and a className left empty", () => {
+    const { code, slots } = transform(`function C({ className }) {
+  return <i data-slot="c" className={cn("cn-rtl-flip", className)}><b className="cn-rtl-flip" /><u className={cn("x", "cn-a", className)} /><s className={cn("cn-b")} /></i>
+}`)
+    expect(slots).toEqual([{ name: 'cU', classes: ['x'] }])
+    expect(code).toContain(
+      '<i data-slot="c" className={clsx(className)}><b /><u className={clsx(styles.cU, className)} /><s className={clsx()} /></i>',
+    )
+  })
+
+  it('reports group and peer markers with the data-slots they render', () => {
+    const { markers } = transformComponent(
+      `import { cn } from "cn"
+import { cva } from "class-variance-authority"
+const xVariants = cva("group/x flex")
+function X({ className }) { return <b data-slot="x" className={cn(xVariants({ className }))} /> }
+function Y() { return <i className="peer" /> }`,
+      'a',
+      'bje',
+    )
+    expect(markers).toEqual([
+      { marker: 'group/x', slot: 'x', dataSlots: ['x'] },
+      { marker: 'peer', slot: 'yI', dataSlots: [] },
+    ])
+  })
+
+  it("types another module's cva() props from its function", () => {
+    const { code } = transform('type P = VariantProps<typeof toggleVariants>')
+    expect(code).toContain(
+      'type P = Omit<NonNullable<Parameters<typeof toggleVariants>[0]>, "className">',
+    )
   })
 })

@@ -11,6 +11,7 @@ import { relative } from 'node:path'
 import type { MirrorConfig } from './config.ts'
 import type { PreparedExample } from './examples.ts'
 import { camelCase, registryModule } from './names.ts'
+import type { Literal, Part, PartTypes, Scaffold } from './parts.ts'
 import { exportedNames } from './tests.ts'
 import type { TransformedComponent, VariantSet } from './tsx.ts'
 import type { TypesetFixture } from './typeset.ts'
@@ -19,32 +20,59 @@ export type Fixture = {
   item: string
   component: string
   label: string
-  props: Record<string, string>
+  // The element to hover, focus and disable: its data-slot
+  slot: string
+  // Its scaffold's ancestors, and its props: the scaffold's and a cva option
+  ancestors: Part[]
+  props: Record<string, Literal>
+  // Whether it renders its name as children
+  children: boolean
+  // Whether an ancestor opens: its popup portals out of the case, so the
+  // case renders alone on its page and the screenshot is the viewport.
+  overlay: boolean
 }
 
 export type HarnessInput = {
   name: string
   upstreamSource: string
   transformed: TransformedComponent
+  types: Map<string, PartTypes>
+  scaffolds: Map<string, Scaffold>
 }
 
-export function fixturesFor(name: string, transformed: TransformedComponent): Fixture[] {
+// One fixture per cva() option of each exported component that renders an
+// element, or one for a component without options.
+export function fixturesFor(input: HarnessInput): Fixture[] {
+  const { name, transformed } = input
   const exported = exportedNames(transformed.code)
   const sets = new Map(transformed.variantSets.map((set) => [set.variable, set]))
   return transformed.components
-    .filter((component) => exported.has(component.name))
+    .filter(
+      (component) =>
+        exported.has(component.name) && input.types.get(component.name)?.className !== false,
+    )
     .flatMap((component) => {
       // A component's variantSet always names a cva() the transform recorded.
       const groups = component.variantSet
         ? (sets.get(component.variantSet) as VariantSet).groups
         : []
-      const base = { item: name, component: component.name }
-      if (groups.length === 0) return [{ ...base, label: component.name, props: {} }]
+      const scaffold = input.scaffolds.get(component.name) as Scaffold
+      const base = {
+        item: name,
+        component: component.name,
+        slot: component.dataSlot,
+        ancestors: scaffold.ancestors,
+        children: scaffold.children,
+        overlay: scaffold.ancestors.some((part) => part.props.defaultOpen === true),
+      }
+      if (groups.length === 0) {
+        return [{ ...base, label: component.name, props: scaffold.props }]
+      }
       return groups.flatMap((group) =>
         group.options.map((option) => ({
           ...base,
           label: `${component.name} ${group.name}=${option.value}`,
-          props: { [group.name]: option.value },
+          props: { ...scaffold.props, [group.name]: option.value },
         })),
       )
     })
@@ -83,9 +111,7 @@ export function harnessFiles(
   const typesetCss = `${config.snapshotDir}/typeset/typeset.css`
   const components = harness.components.map(({ name }) => name)
   const examples = harness.examples.map(({ name }) => name)
-  const fixtures = harness.components.flatMap(({ name, transformed }) =>
-    fixturesFor(name, transformed),
-  )
+  const fixtures = harness.components.flatMap(fixturesFor)
   const cases = harness.examples.flatMap(({ name, prepared }) =>
     prepared.kept.map((sub) => ({ example: name, name: sub })),
   )
