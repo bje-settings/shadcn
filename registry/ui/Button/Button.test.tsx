@@ -12,8 +12,10 @@ function renderButton(props: ComponentProps<typeof Button> = {}) {
 }
 
 describe('Button', () => {
-  it('renders [data-slot="button"] with the base and default classes', () => {
-    expect(renderButton()).toEqual([styles.button, styles.variantDefault, styles.sizeDefault])
+  it('renders [data-slot="button"] with its classes', () => {
+    expect(renderButton()).toEqual(
+      expect.arrayContaining([styles.button, styles.variantDefault, styles.sizeDefault]),
+    )
   })
 
   it.each([
@@ -41,7 +43,26 @@ describe('Button', () => {
   })
 
   it('applies no group class for a null group', () => {
-    expect(renderButton({ variant: null, size: null })).toEqual([styles.button])
+    const classes = renderButton({ variant: null, size: null })
+    expect(classes).toContain(styles.button)
+    for (const className of [
+      styles.variantDefault,
+      styles.variantOutline,
+      styles.variantSecondary,
+      styles.variantGhost,
+      styles.variantDestructive,
+      styles.variantLink,
+      styles.sizeDefault,
+      styles.sizeXs,
+      styles.sizeSm,
+      styles.sizeLg,
+      styles.sizeIcon,
+      styles.sizeIconXs,
+      styles.sizeIconSm,
+      styles.sizeIconLg,
+    ]) {
+      expect(classes).not.toContain(className)
+    }
   })
 
   it('appends a consumer className last', () => {

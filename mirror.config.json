@@ -1,16 +1,17 @@
 {
+  "namespace": "bje",
   "upstream": {
     "url": "https://ui.shadcn.com/r/styles/{style}/{name}.json",
     "style": "base-vega"
   },
-  "components": ["button"],
+  "components": ["button", "button-group", "separator"],
   "snapshotDir": "upstream",
   "outputDir": "registry/ui",
   "selectorRewrites": [
     {
-      "find": ":not([class*=\"size-\"])",
+      "pattern": ":not\\(\\[class\\*=\"[\\w-]+\"\\]\\)",
       "replace": "",
-      "reason": "Upstream skips icons that carry a Tailwind size-* class. No consumer class matches that, so the default size applies to every svg; the low-specificity wrapper lets a consumer class override it."
+      "reason": "Upstream skips elements that already carry a Tailwind class such as size-* or w-*. No consumer class matches, so the default applies to every matching element; the low-specificity wrapper lets a consumer class override it."
     }
   ]
 }

@@ -22,6 +22,7 @@
       "title": "Button",
       "dependencies": ["@base-ui/react", "clsx"],
       "devDependencies": ["@testing-library/dom", "@testing-library/react", "jsdom", "vitest"],
+      "registryDependencies": [],
       "files": [
         {
           "path": "registry/ui/Button/Button.tsx",
@@ -33,6 +34,50 @@
         },
         {
           "path": "registry/ui/Button/Button.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "button-group",
+      "type": "registry:ui",
+      "title": "ButtonGroup",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": ["@testing-library/dom", "@testing-library/react", "jsdom", "vitest"],
+      "registryDependencies": ["@bje/separator"],
+      "files": [
+        {
+          "path": "registry/ui/ButtonGroup/ButtonGroup.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/ButtonGroup/ButtonGroup.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/ButtonGroup/ButtonGroup.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "separator",
+      "type": "registry:ui",
+      "title": "Separator",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": ["@testing-library/dom", "@testing-library/react", "jsdom", "vitest"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/ui/Separator/Separator.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Separator/Separator.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Separator/Separator.test.tsx",
           "type": "registry:ui"
         }
       ]
