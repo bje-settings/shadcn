@@ -3,7 +3,8 @@
 // shows its share of cases one at a time with the gallery's showCase(), so a
 // page never holds more than the case under test. An overlay case, whose popup
 // portals out of its wrapper, is compared as the whole viewport. The report
-// attaches upstream, ours and diff images for every case.
+// attaches upstream, ours and diff images for every case, and each case
+// records how long its steps took (`pnpm ab:timings`).
 
 import { type Browser, test as base, expect, type Page } from '@playwright/test'
 import pixelmatch from 'pixelmatch'
@@ -114,9 +115,11 @@ async function show(page: Page, c: Case): Promise<{ settled: boolean; timings: T
     }
     lap('frames')
     // Script-driven animation (Recharts grows its bars by rewriting SVG
-    // attributes) settles when the DOM stays quiet for 250ms.
+    // attributes) settles when the DOM stays quiet for 250ms. A DOM that
+    // changes in none of the first 100ms is taken as settled: every change
+    // measured in this window started within 35ms.
     const quiet = await new Promise<boolean>((resolve) => {
-      let timer = setTimeout(() => done(true), 250)
+      let timer = setTimeout(() => done(true), 100)
       const cap = setTimeout(() => done(false), 3000)
       const observer = new MutationObserver(() => {
         clearTimeout(timer)
@@ -184,7 +187,10 @@ async function applies(page: Page, c: Case): Promise<boolean> {
   }, c.state)
 }
 
-async function capture(page: Page, c: Case): Promise<PNG> {
+// A screenshot as Playwright encoded it, for the report, and decoded, to diff.
+type Shot = { file: Buffer; png: PNG }
+
+async function capture(page: Page, c: Case): Promise<Shot> {
   const element = target(page, c)
   try {
     // force: skip actionability checks, which never pass for an element that
@@ -200,7 +206,7 @@ async function capture(page: Page, c: Case): Promise<PNG> {
     const shot = c.overlay
       ? await page.screenshot(options)
       : await page.locator(`[data-case="${c.id}"]`).screenshot(options)
-    return PNG.sync.read(shot)
+    return { file: shot, png: PNG.sync.read(shot) }
   } finally {
     await page.mouse.move(0, 0)
     await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur())
@@ -257,9 +263,10 @@ for (const c of cases) {
       if (c.overlay && c.slot !== undefined) {
         for (const page of sides) await expect(target(page, c)).toBeAttached()
       }
-      const [upstream, ours] = await timed(timings.test, 'capture', () =>
+      const [upstreamShot, oursShot] = await timed(timings.test, 'capture', () =>
         Promise.all([capture(upstreamPage, c), capture(oursPage, c)]),
       )
+      const [upstream, ours] = [upstreamShot.png, oursShot.png]
       const width = Math.max(upstream.width, ours.width)
       const height = Math.max(upstream.height, ours.height)
       const diff = new PNG({ width, height })
@@ -274,8 +281,14 @@ for (const c of cases) {
         ),
       )
       await timed(timings.test, 'attach', async () => {
-        for (const [name, png] of Object.entries({ upstream, ours, diff })) {
-          await testInfo.attach(name, { body: PNG.sync.write(png), contentType: 'image/png' })
+        // The screenshots as taken: only the diff needs encoding.
+        const files = {
+          upstream: upstreamShot.file,
+          ours: oursShot.file,
+          diff: PNG.sync.write(diff),
+        }
+        for (const [name, body] of Object.entries(files)) {
+          await testInfo.attach(name, { body, contentType: 'image/png' })
         }
       })
       expect({ size: `${ours.width}x${ours.height}`, pixels }).toEqual({
