@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# local, untracked claude notes
+CLAUDE.local.md
+
+# coverage and report artifacts
+/coverage/
+
+# node toolchain
+node_modules/
+
+# shadcn build output
+/public/r/

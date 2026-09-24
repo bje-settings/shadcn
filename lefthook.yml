@@ -1,0 +1,25 @@
+# Local git hooks, staged-only and fast. Installed by `pnpm install` via
+# lefthook's postinstall. CI is the enforcement boundary.
+
+pre-commit:
+  commands:
+    # `check`, never `check --write`: a hook that edits the tree commits
+    # something nobody reviewed.
+    biome:
+      glob: '*.{json,mjs,ts,tsx}'
+      run: pnpm exec biome check --staged --error-on-warnings --no-errors-on-unmatched
+
+    # Project-wide: a type error caused by a staged file is usually in a file
+    # that was not staged.
+    types:
+      glob: '{*.ts,*.tsx,tsconfig.json}'
+      run: pnpm exec tsc -p tsconfig.json
+
+    vitest-related:
+      glob: '*.{ts,tsx}'
+      run: pnpm exec vitest related --run --coverage.enabled=false --passWithNoTests {staged_files}
+
+    # Validates registry.json and every item against the shadcn schema.
+    build:
+      glob: '{registry.json,registry/**}'
+      run: pnpm build
