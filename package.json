@@ -12,8 +12,7 @@
     "test": "vitest run --coverage"
   },
   "dependencies": {
-    "clsx": "2.1.1",
-    "tailwind-merge": "3.7.0"
+    "clsx": "2.1.1"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.13",

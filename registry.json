@@ -4,14 +4,14 @@
   "homepage": "https://github.com/bje-settings/shadcn",
   "items": [
     {
-      "name": "utils",
+      "name": "cn",
       "type": "registry:lib",
-      "title": "Utils",
-      "description": "The cn helper for merging Tailwind class names.",
-      "dependencies": ["clsx", "tailwind-merge"],
+      "title": "cn",
+      "description": "Joins conditional class names with clsx.",
+      "dependencies": ["clsx"],
       "files": [
         {
-          "path": "registry/lib/utils.ts",
+          "path": "registry/lib/cn.ts",
           "type": "registry:lib"
         }
       ]
