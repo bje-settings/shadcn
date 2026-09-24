@@ -5,7 +5,9 @@
 import { Example } from '@/registry/base-vega/components/example'
 import { Button } from '@/registry/base-vega/ui/button'
 import { ButtonGroup, ButtonGroupText } from '@/registry/base-vega/ui/button-group'
+import { Field, FieldGroup } from '@/registry/base-vega/ui/field'
 import { Input } from '@/registry/base-vega/ui/input'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/registry/base-vega/ui/input-group'
 import { Label } from '@/registry/base-vega/ui/label'
 import { IconPlaceholder } from '@/app/(create)/components/icon-placeholder'
 
@@ -94,6 +96,66 @@ function ButtonGroupWithIcons() {
           </Button>
         </ButtonGroup>
       </div>
+    </Example>
+  )
+}
+
+function ButtonGroupWithInputGroup() {
+  return (
+    <Example title="With Input Group">
+      <div className="flex flex-col gap-4">
+        <InputGroup>
+          <InputGroupInput placeholder="Type to search..." />
+          <InputGroupAddon align="inline-start" className="text-muted-foreground">
+            <IconPlaceholder
+              lucide="SearchIcon"
+              tabler="IconSearch"
+              hugeicons="Search01Icon"
+              phosphor="MagnifyingGlassIcon"
+              remixicon="RiSearchLine"
+            />
+          </InputGroupAddon>
+        </InputGroup>
+      </div>
+    </Example>
+  )
+}
+
+function ButtonGroupWithFields() {
+  return (
+    <Example title="With Fields">
+      <FieldGroup className="grid grid-cols-3 gap-4">
+        <Field className="col-span-2">
+          <Label htmlFor="width">Width</Label>
+          <ButtonGroup>
+            <InputGroup>
+              <InputGroupInput id="width" />
+              <InputGroupAddon className="text-muted-foreground">W</InputGroupAddon>
+              <InputGroupAddon align="inline-end" className="text-muted-foreground">
+                px
+              </InputGroupAddon>
+            </InputGroup>
+            <Button variant="outline" size="icon">
+              <IconPlaceholder
+                lucide="MinusIcon"
+                tabler="IconMinus"
+                hugeicons="MinusSignIcon"
+                phosphor="MinusIcon"
+                remixicon="RiSubtractLine"
+              />
+            </Button>
+            <Button variant="outline" size="icon">
+              <IconPlaceholder
+                lucide="PlusIcon"
+                tabler="IconPlus"
+                hugeicons="PlusSignIcon"
+                phosphor="PlusIcon"
+                remixicon="RiAddLine"
+              />
+            </Button>
+          </ButtonGroup>
+        </Field>
+      </FieldGroup>
     </Example>
   )
 }
@@ -259,6 +321,30 @@ function ButtonGroupNavigation() {
   )
 }
 
+function ButtonGroupTextAlignment() {
+  return (
+    <Example title="Text Alignment">
+      <Field>
+        <Label id="alignment-label">Text Alignment</Label>
+        <ButtonGroup aria-labelledby="alignment-label">
+          <Button variant="outline" size="sm">
+            Left
+          </Button>
+          <Button variant="outline" size="sm">
+            Center
+          </Button>
+          <Button variant="outline" size="sm">
+            Right
+          </Button>
+          <Button variant="outline" size="sm">
+            Justify
+          </Button>
+        </ButtonGroup>
+      </Field>
+    </Example>
+  )
+}
+
 function ButtonGroupVertical() {
   return (
     <Example title="Vertical">
@@ -371,10 +457,13 @@ export {
   ButtonGroupWithInput,
   ButtonGroupWithText,
   ButtonGroupWithIcons,
+  ButtonGroupWithInputGroup,
+  ButtonGroupWithFields,
   ButtonGroupWithLike,
   ButtonGroupPagination,
   ButtonGroupPaginationSplit,
   ButtonGroupNavigation,
+  ButtonGroupTextAlignment,
   ButtonGroupVertical,
   ButtonGroupVerticalNested,
 }

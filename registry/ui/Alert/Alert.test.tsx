@@ -6,13 +6,18 @@ import { describe, expect, it } from 'vitest'
 import { Alert, AlertAction, AlertDescription, AlertTitle } from './Alert'
 import styles from './Alert.module.scss'
 
-function renderAlert(props: Partial<ComponentProps<typeof Alert>> = {}) {
+function renderAlert(props: Partial<Record<keyof ComponentProps<typeof Alert>, unknown>> = {}) {
   cleanup()
-  render(<Alert data-testid="subject" {...(props as ComponentProps<typeof Alert>)} />)
+  render(
+    <Alert
+      data-testid="subject"
+      {...({ children: 'Alert', ...props } as ComponentProps<typeof Alert>)}
+    />,
+  )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="alert"]')
 }
 
-function classesOfAlert(props: Partial<ComponentProps<typeof Alert>> = {}) {
+function classesOfAlert(props: Partial<Record<keyof ComponentProps<typeof Alert>, unknown>> = {}) {
   return renderAlert(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -53,17 +58,24 @@ describe('Alert', () => {
   })
 })
 
-function renderAlertTitle(props: Partial<ComponentProps<typeof AlertTitle>> = {}) {
+function renderAlertTitle(
+  props: Partial<Record<keyof ComponentProps<typeof AlertTitle>, unknown>> = {},
+) {
   cleanup()
   render(
     <Alert>
-      <AlertTitle data-testid="subject" {...(props as ComponentProps<typeof AlertTitle>)} />
+      <AlertTitle
+        data-testid="subject"
+        {...({ children: 'AlertTitle', ...props } as ComponentProps<typeof AlertTitle>)}
+      />
     </Alert>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="alert-title"]')
 }
 
-function classesOfAlertTitle(props: Partial<ComponentProps<typeof AlertTitle>> = {}) {
+function classesOfAlertTitle(
+  props: Partial<Record<keyof ComponentProps<typeof AlertTitle>, unknown>> = {},
+) {
   return renderAlertTitle(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -89,13 +101,15 @@ describe('AlertTitle', () => {
   })
 })
 
-function renderAlertDescription(props: Partial<ComponentProps<typeof AlertDescription>> = {}) {
+function renderAlertDescription(
+  props: Partial<Record<keyof ComponentProps<typeof AlertDescription>, unknown>> = {},
+) {
   cleanup()
   render(
     <Alert>
       <AlertDescription
         data-testid="subject"
-        {...(props as ComponentProps<typeof AlertDescription>)}
+        {...({ children: 'AlertDescription', ...props } as ComponentProps<typeof AlertDescription>)}
       />
     </Alert>,
   )
@@ -104,7 +118,9 @@ function renderAlertDescription(props: Partial<ComponentProps<typeof AlertDescri
     ?.closest('[data-slot="alert-description"]')
 }
 
-function classesOfAlertDescription(props: Partial<ComponentProps<typeof AlertDescription>> = {}) {
+function classesOfAlertDescription(
+  props: Partial<Record<keyof ComponentProps<typeof AlertDescription>, unknown>> = {},
+) {
   return renderAlertDescription(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -130,17 +146,24 @@ describe('AlertDescription', () => {
   })
 })
 
-function renderAlertAction(props: Partial<ComponentProps<typeof AlertAction>> = {}) {
+function renderAlertAction(
+  props: Partial<Record<keyof ComponentProps<typeof AlertAction>, unknown>> = {},
+) {
   cleanup()
   render(
     <Alert>
-      <AlertAction data-testid="subject" {...(props as ComponentProps<typeof AlertAction>)} />
+      <AlertAction
+        data-testid="subject"
+        {...({ children: 'AlertAction', ...props } as ComponentProps<typeof AlertAction>)}
+      />
     </Alert>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="alert-action"]')
 }
 
-function classesOfAlertAction(props: Partial<ComponentProps<typeof AlertAction>> = {}) {
+function classesOfAlertAction(
+  props: Partial<Record<keyof ComponentProps<typeof AlertAction>, unknown>> = {},
+) {
   return renderAlertAction(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

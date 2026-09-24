@@ -12,7 +12,9 @@ import {
 } from './Progress'
 import styles from './Progress.module.scss'
 
-function renderProgress(props: Partial<ComponentProps<typeof Progress>> = {}) {
+function renderProgress(
+  props: Partial<Record<keyof ComponentProps<typeof Progress>, unknown>> = {},
+) {
   cleanup()
   render(
     <Progress
@@ -23,7 +25,9 @@ function renderProgress(props: Partial<ComponentProps<typeof Progress>> = {}) {
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="progress"]')
 }
 
-function classesOfProgress(props: Partial<ComponentProps<typeof Progress>> = {}) {
+function classesOfProgress(
+  props: Partial<Record<keyof ComponentProps<typeof Progress>, unknown>> = {},
+) {
   return renderProgress(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -79,17 +83,24 @@ describe('Progress', () => {
   })
 })
 
-function renderProgressTrack(props: Partial<ComponentProps<typeof ProgressTrack>> = {}) {
+function renderProgressTrack(
+  props: Partial<Record<keyof ComponentProps<typeof ProgressTrack>, unknown>> = {},
+) {
   cleanup()
   render(
     <Progress {...({} as ComponentProps<typeof Progress>)}>
-      <ProgressTrack data-testid="subject" {...(props as ComponentProps<typeof ProgressTrack>)} />
+      <ProgressTrack
+        data-testid="subject"
+        {...({ children: 'ProgressTrack', ...props } as ComponentProps<typeof ProgressTrack>)}
+      />
     </Progress>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="progress-track"]')
 }
 
-function classesOfProgressTrack(props: Partial<ComponentProps<typeof ProgressTrack>> = {}) {
+function classesOfProgressTrack(
+  props: Partial<Record<keyof ComponentProps<typeof ProgressTrack>, unknown>> = {},
+) {
   return renderProgressTrack(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -105,13 +116,17 @@ describe('ProgressTrack', () => {
   })
 })
 
-function renderProgressIndicator(props: Partial<ComponentProps<typeof ProgressIndicator>> = {}) {
+function renderProgressIndicator(
+  props: Partial<Record<keyof ComponentProps<typeof ProgressIndicator>, unknown>> = {},
+) {
   cleanup()
   render(
     <Progress {...({} as ComponentProps<typeof Progress>)}>
       <ProgressIndicator
         data-testid="subject"
-        {...(props as ComponentProps<typeof ProgressIndicator>)}
+        {...({ children: 'ProgressIndicator', ...props } as ComponentProps<
+          typeof ProgressIndicator
+        >)}
       />
     </Progress>,
   )
@@ -120,7 +135,9 @@ function renderProgressIndicator(props: Partial<ComponentProps<typeof ProgressIn
     ?.closest('[data-slot="progress-indicator"]')
 }
 
-function classesOfProgressIndicator(props: Partial<ComponentProps<typeof ProgressIndicator>> = {}) {
+function classesOfProgressIndicator(
+  props: Partial<Record<keyof ComponentProps<typeof ProgressIndicator>, unknown>> = {},
+) {
   return renderProgressIndicator(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -136,17 +153,24 @@ describe('ProgressIndicator', () => {
   })
 })
 
-function renderProgressLabel(props: Partial<ComponentProps<typeof ProgressLabel>> = {}) {
+function renderProgressLabel(
+  props: Partial<Record<keyof ComponentProps<typeof ProgressLabel>, unknown>> = {},
+) {
   cleanup()
   render(
     <Progress value={56}>
-      <ProgressLabel data-testid="subject" {...(props as ComponentProps<typeof ProgressLabel>)} />
+      <ProgressLabel
+        data-testid="subject"
+        {...({ children: 'ProgressLabel', ...props } as ComponentProps<typeof ProgressLabel>)}
+      />
     </Progress>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="progress-label"]')
 }
 
-function classesOfProgressLabel(props: Partial<ComponentProps<typeof ProgressLabel>> = {}) {
+function classesOfProgressLabel(
+  props: Partial<Record<keyof ComponentProps<typeof ProgressLabel>, unknown>> = {},
+) {
   return renderProgressLabel(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -162,7 +186,9 @@ describe('ProgressLabel', () => {
   })
 })
 
-function renderProgressValue(props: Partial<ComponentProps<typeof ProgressValue>> = {}) {
+function renderProgressValue(
+  props: Partial<Record<keyof ComponentProps<typeof ProgressValue>, unknown>> = {},
+) {
   cleanup()
   render(
     <Progress value={56}>
@@ -172,7 +198,9 @@ function renderProgressValue(props: Partial<ComponentProps<typeof ProgressValue>
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="progress-value"]')
 }
 
-function classesOfProgressValue(props: Partial<ComponentProps<typeof ProgressValue>> = {}) {
+function classesOfProgressValue(
+  props: Partial<Record<keyof ComponentProps<typeof ProgressValue>, unknown>> = {},
+) {
   return renderProgressValue(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

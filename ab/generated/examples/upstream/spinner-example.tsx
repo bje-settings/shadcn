@@ -11,6 +11,8 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from '@/registry/base-vega/ui/empty'
+import { Field, FieldLabel } from '@/registry/base-vega/ui/field'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/registry/base-vega/ui/input-group'
 import { Spinner } from '@/registry/base-vega/ui/spinner'
 import { IconPlaceholder } from '@/app/(create)/components/icon-placeholder'
 
@@ -72,6 +74,22 @@ function SpinnerInBadges() {
   )
 }
 
+function SpinnerInInputGroup() {
+  return (
+    <Example title="In Input Group">
+      <Field>
+        <FieldLabel htmlFor="input-group-spinner">Input Group</FieldLabel>
+        <InputGroup>
+          <InputGroupInput id="input-group-spinner" />
+          <InputGroupAddon>
+            <Spinner />
+          </InputGroupAddon>
+        </InputGroup>
+      </Field>
+    </Example>
+  )
+}
+
 function SpinnerInEmpty() {
   return (
     <Example title="In Empty State" containerClassName="lg:col-span-full">
@@ -113,4 +131,4 @@ function SpinnerInEmpty() {
   )
 }
 
-export { SpinnerBasic, SpinnerInButtons, SpinnerInBadges, SpinnerInEmpty }
+export { SpinnerBasic, SpinnerInButtons, SpinnerInBadges, SpinnerInInputGroup, SpinnerInEmpty }

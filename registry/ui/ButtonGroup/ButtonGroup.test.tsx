@@ -15,13 +15,22 @@ import styles from './ButtonGroup.module.scss'
 // differs between renders; Base UI puts it in ids and data-id.
 const USE_ID = /_r_[0-9a-z]+_|:r[0-9a-z]+:|«r[0-9a-z]+»/g
 
-function renderButtonGroup(props: Partial<ComponentProps<typeof ButtonGroup>> = {}) {
+function renderButtonGroup(
+  props: Partial<Record<keyof ComponentProps<typeof ButtonGroup>, unknown>> = {},
+) {
   cleanup()
-  render(<ButtonGroup data-testid="subject" {...(props as ComponentProps<typeof ButtonGroup>)} />)
+  render(
+    <ButtonGroup
+      data-testid="subject"
+      {...({ children: 'ButtonGroup', ...props } as ComponentProps<typeof ButtonGroup>)}
+    />,
+  )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="button-group"]')
 }
 
-function classesOfButtonGroup(props: Partial<ComponentProps<typeof ButtonGroup>> = {}) {
+function classesOfButtonGroup(
+  props: Partial<Record<keyof ComponentProps<typeof ButtonGroup>, unknown>> = {},
+) {
   return renderButtonGroup(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -128,13 +137,15 @@ describe('ButtonGroup', () => {
   })
 })
 
-function renderButtonGroupText(props: Partial<ComponentProps<typeof ButtonGroupText>> = {}) {
+function renderButtonGroupText(
+  props: Partial<Record<keyof ComponentProps<typeof ButtonGroupText>, unknown>> = {},
+) {
   cleanup()
   render(
     <ButtonGroup>
       <ButtonGroupText
         data-testid="subject"
-        {...(props as ComponentProps<typeof ButtonGroupText>)}
+        {...({ children: 'ButtonGroupText', ...props } as ComponentProps<typeof ButtonGroupText>)}
       />
     </ButtonGroup>,
   )
@@ -143,7 +154,9 @@ function renderButtonGroupText(props: Partial<ComponentProps<typeof ButtonGroupT
     ?.closest('[data-slot="button-group-text"]')
 }
 
-function classesOfButtonGroupText(props: Partial<ComponentProps<typeof ButtonGroupText>> = {}) {
+function classesOfButtonGroupText(
+  props: Partial<Record<keyof ComponentProps<typeof ButtonGroupText>, unknown>> = {},
+) {
   return renderButtonGroupText(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -160,14 +173,16 @@ describe('ButtonGroupText', () => {
 })
 
 function renderButtonGroupSeparator(
-  props: Partial<ComponentProps<typeof ButtonGroupSeparator>> = {},
+  props: Partial<Record<keyof ComponentProps<typeof ButtonGroupSeparator>, unknown>> = {},
 ) {
   cleanup()
   render(
     <ButtonGroup>
       <ButtonGroupSeparator
         data-testid="subject"
-        {...(props as ComponentProps<typeof ButtonGroupSeparator>)}
+        {...({ children: 'ButtonGroupSeparator', ...props } as ComponentProps<
+          typeof ButtonGroupSeparator
+        >)}
       />
     </ButtonGroup>,
   )
@@ -177,13 +192,13 @@ function renderButtonGroupSeparator(
 }
 
 function classesOfButtonGroupSeparator(
-  props: Partial<ComponentProps<typeof ButtonGroupSeparator>> = {},
+  props: Partial<Record<keyof ComponentProps<typeof ButtonGroupSeparator>, unknown>> = {},
 ) {
   return renderButtonGroupSeparator(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
 function attributesOfButtonGroupSeparator(
-  props: Partial<ComponentProps<typeof ButtonGroupSeparator>> = {},
+  props: Partial<Record<keyof ComponentProps<typeof ButtonGroupSeparator>, unknown>> = {},
 ) {
   const element = renderButtonGroupSeparator(props)
   return Object.fromEntries(

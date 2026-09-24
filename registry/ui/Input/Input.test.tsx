@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest'
 import { Input } from './Input'
 import styles from './Input.module.scss'
 
-function renderInput(props: Partial<ComponentProps<typeof Input>> = {}) {
+function renderInput(props: Partial<Record<keyof ComponentProps<typeof Input>, unknown>> = {}) {
   cleanup()
   render(
     <Input
@@ -17,7 +17,7 @@ function renderInput(props: Partial<ComponentProps<typeof Input>> = {}) {
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="input"]')
 }
 
-function classesOfInput(props: Partial<ComponentProps<typeof Input>> = {}) {
+function classesOfInput(props: Partial<Record<keyof ComponentProps<typeof Input>, unknown>> = {}) {
   return renderInput(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

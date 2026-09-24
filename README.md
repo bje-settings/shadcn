@@ -93,7 +93,8 @@ output.
 
 Generated files get Biome's formatting and safe fixes (import order, `import type`). They keep
 upstream's code, so `biome.json` turns off the rules upstream's code trips for `registry/ui/**`
-(`useSemanticElements`, `useFocusableInteractive`, `noLabelWithoutControl`, `noArrayIndexKey`,
+(a11y `noLabelWithoutControl`, `noRedundantRoles`, `useFocusableInteractive`,
+`useKeyWithClickEvents` and `useSemanticElements`; `noArrayIndexKey`, `noDoubleEquals` and
 `noUnusedImports`).
 Every other rule still applies there. `ab/generated/**` holds upstream's code verbatim for comparison and generated harness
 inputs, so Biome only formats it.

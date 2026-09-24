@@ -31,6 +31,14 @@ import * as direction from '@/registry/bje/ui/Direction/Direction'
 import * as nativeSelect from '@/registry/bje/ui/NativeSelect/NativeSelect'
 import * as accordion from '@/registry/bje/ui/Accordion/Accordion'
 import * as inputOtp from '@/registry/bje/ui/InputOtp/InputOtp'
+import * as field from '@/registry/bje/ui/Field/Field'
+import * as inputGroup from '@/registry/bje/ui/InputGroup/InputGroup'
+import * as item from '@/registry/bje/ui/Item/Item'
+import * as pagination from '@/registry/bje/ui/Pagination/Pagination'
+import * as marker from '@/registry/bje/ui/Marker/Marker'
+import * as message from '@/registry/bje/ui/Message/Message'
+import * as bubble from '@/registry/bje/ui/Bubble/Bubble'
+import * as attachment from '@/registry/bje/ui/Attachment/Attachment'
 
 export const ours = {
   button: button,
@@ -64,4 +72,12 @@ export const ours = {
   'native-select': nativeSelect,
   accordion: accordion,
   'input-otp': inputOtp,
+  field: field,
+  'input-group': inputGroup,
+  item: item,
+  pagination: pagination,
+  marker: marker,
+  message: message,
+  bubble: bubble,
+  attachment: attachment,
 }

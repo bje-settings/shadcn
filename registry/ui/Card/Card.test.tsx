@@ -18,17 +18,22 @@ import styles from './Card.module.scss'
 // differs between renders; Base UI puts it in ids and data-id.
 const USE_ID = /_r_[0-9a-z]+_|:r[0-9a-z]+:|«r[0-9a-z]+»/g
 
-function renderCard(props: Partial<ComponentProps<typeof Card>> = {}) {
+function renderCard(props: Partial<Record<keyof ComponentProps<typeof Card>, unknown>> = {}) {
   cleanup()
-  render(<Card data-testid="subject" {...(props as ComponentProps<typeof Card>)} />)
+  render(
+    <Card
+      data-testid="subject"
+      {...({ children: 'Card', ...props } as ComponentProps<typeof Card>)}
+    />,
+  )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="card"]')
 }
 
-function classesOfCard(props: Partial<ComponentProps<typeof Card>> = {}) {
+function classesOfCard(props: Partial<Record<keyof ComponentProps<typeof Card>, unknown>> = {}) {
   return renderCard(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
-function attributesOfCard(props: Partial<ComponentProps<typeof Card>> = {}) {
+function attributesOfCard(props: Partial<Record<keyof ComponentProps<typeof Card>, unknown>> = {}) {
   const element = renderCard(props)
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
@@ -71,17 +76,24 @@ describe('Card', () => {
   })
 })
 
-function renderCardHeader(props: Partial<ComponentProps<typeof CardHeader>> = {}) {
+function renderCardHeader(
+  props: Partial<Record<keyof ComponentProps<typeof CardHeader>, unknown>> = {},
+) {
   cleanup()
   render(
     <Card>
-      <CardHeader data-testid="subject" {...(props as ComponentProps<typeof CardHeader>)} />
+      <CardHeader
+        data-testid="subject"
+        {...({ children: 'CardHeader', ...props } as ComponentProps<typeof CardHeader>)}
+      />
     </Card>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="card-header"]')
 }
 
-function classesOfCardHeader(props: Partial<ComponentProps<typeof CardHeader>> = {}) {
+function classesOfCardHeader(
+  props: Partial<Record<keyof ComponentProps<typeof CardHeader>, unknown>> = {},
+) {
   return renderCardHeader(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -117,19 +129,26 @@ describe('CardHeader', () => {
   })
 })
 
-function renderCardTitle(props: Partial<ComponentProps<typeof CardTitle>> = {}) {
+function renderCardTitle(
+  props: Partial<Record<keyof ComponentProps<typeof CardTitle>, unknown>> = {},
+) {
   cleanup()
   render(
     <Card>
       <CardHeader>
-        <CardTitle data-testid="subject" {...(props as ComponentProps<typeof CardTitle>)} />
+        <CardTitle
+          data-testid="subject"
+          {...({ children: 'CardTitle', ...props } as ComponentProps<typeof CardTitle>)}
+        />
       </CardHeader>
     </Card>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="card-title"]')
 }
 
-function classesOfCardTitle(props: Partial<ComponentProps<typeof CardTitle>> = {}) {
+function classesOfCardTitle(
+  props: Partial<Record<keyof ComponentProps<typeof CardTitle>, unknown>> = {},
+) {
   return renderCardTitle(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -169,14 +188,16 @@ describe('CardTitle', () => {
   })
 })
 
-function renderCardDescription(props: Partial<ComponentProps<typeof CardDescription>> = {}) {
+function renderCardDescription(
+  props: Partial<Record<keyof ComponentProps<typeof CardDescription>, unknown>> = {},
+) {
   cleanup()
   render(
     <Card>
       <CardHeader>
         <CardDescription
           data-testid="subject"
-          {...(props as ComponentProps<typeof CardDescription>)}
+          {...({ children: 'CardDescription', ...props } as ComponentProps<typeof CardDescription>)}
         />
       </CardHeader>
     </Card>,
@@ -186,7 +207,9 @@ function renderCardDescription(props: Partial<ComponentProps<typeof CardDescript
     ?.closest('[data-slot="card-description"]')
 }
 
-function classesOfCardDescription(props: Partial<ComponentProps<typeof CardDescription>> = {}) {
+function classesOfCardDescription(
+  props: Partial<Record<keyof ComponentProps<typeof CardDescription>, unknown>> = {},
+) {
   return renderCardDescription(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -226,19 +249,26 @@ describe('CardDescription', () => {
   })
 })
 
-function renderCardAction(props: Partial<ComponentProps<typeof CardAction>> = {}) {
+function renderCardAction(
+  props: Partial<Record<keyof ComponentProps<typeof CardAction>, unknown>> = {},
+) {
   cleanup()
   render(
     <Card>
       <CardHeader>
-        <CardAction data-testid="subject" {...(props as ComponentProps<typeof CardAction>)} />
+        <CardAction
+          data-testid="subject"
+          {...({ children: 'CardAction', ...props } as ComponentProps<typeof CardAction>)}
+        />
       </CardHeader>
     </Card>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="card-action"]')
 }
 
-function classesOfCardAction(props: Partial<ComponentProps<typeof CardAction>> = {}) {
+function classesOfCardAction(
+  props: Partial<Record<keyof ComponentProps<typeof CardAction>, unknown>> = {},
+) {
   return renderCardAction(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -254,17 +284,24 @@ describe('CardAction', () => {
   })
 })
 
-function renderCardContent(props: Partial<ComponentProps<typeof CardContent>> = {}) {
+function renderCardContent(
+  props: Partial<Record<keyof ComponentProps<typeof CardContent>, unknown>> = {},
+) {
   cleanup()
   render(
     <Card>
-      <CardContent data-testid="subject" {...(props as ComponentProps<typeof CardContent>)} />
+      <CardContent
+        data-testid="subject"
+        {...({ children: 'CardContent', ...props } as ComponentProps<typeof CardContent>)}
+      />
     </Card>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="card-content"]')
 }
 
-function classesOfCardContent(props: Partial<ComponentProps<typeof CardContent>> = {}) {
+function classesOfCardContent(
+  props: Partial<Record<keyof ComponentProps<typeof CardContent>, unknown>> = {},
+) {
   return renderCardContent(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -300,17 +337,24 @@ describe('CardContent', () => {
   })
 })
 
-function renderCardFooter(props: Partial<ComponentProps<typeof CardFooter>> = {}) {
+function renderCardFooter(
+  props: Partial<Record<keyof ComponentProps<typeof CardFooter>, unknown>> = {},
+) {
   cleanup()
   render(
     <Card>
-      <CardFooter data-testid="subject" {...(props as ComponentProps<typeof CardFooter>)} />
+      <CardFooter
+        data-testid="subject"
+        {...({ children: 'CardFooter', ...props } as ComponentProps<typeof CardFooter>)}
+      />
     </Card>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="card-footer"]')
 }
 
-function classesOfCardFooter(props: Partial<ComponentProps<typeof CardFooter>> = {}) {
+function classesOfCardFooter(
+  props: Partial<Record<keyof ComponentProps<typeof CardFooter>, unknown>> = {},
+) {
   return renderCardFooter(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

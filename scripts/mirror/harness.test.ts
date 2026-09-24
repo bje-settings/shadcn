@@ -47,7 +47,7 @@ export { Chip, ChipMark, ChipLabel, ChipInput }`
 
 const parts = (transformed: TransformedComponent) => ({
   types: new Map<string, PartTypes>([
-    ['ChipLabel', { className: true, opens: false, keepMounted: false, required: [] }],
+    ['ChipLabel', { className: true, opens: false, keepMounted: false, required: [], text: true }],
   ]),
   scaffolds: new Map<string, Scaffold>(
     transformed.components.map((c) => [
@@ -97,7 +97,10 @@ describe('fixturesFor', () => {
       upstreamSource: chip,
       transformed,
       types: new Map([
-        ['ChipMark', { className: false, opens: true, keepMounted: false, required: [] }],
+        [
+          'ChipMark',
+          { className: false, opens: true, keepMounted: false, required: [], text: true },
+        ],
       ]),
       scaffolds: new Map([
         ...parts(transformed).scaffolds,

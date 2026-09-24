@@ -42,15 +42,17 @@ export type VariantSet = {
   groups: {
     name: string
     default?: string
-    options: { value: string; slot: string }[]
+    // An option with no classes (Marker's default) has no slot
+    options: { value: string; slot?: string }[]
   }[]
 }
 
 // A top-level component function and the element whose classes it sets.
 export type RenderedComponent = {
   name: string
-  // Raw data-slot of that element (a JSX attribute or useRender's state.slot)
-  dataSlot: string
+  // Raw data-slot of that element (a JSX attribute or useRender's state.slot),
+  // if it renders one (InputGroupText's span does not)
+  dataSlot?: string
   // Its JSX tag (`input`, `ButtonPrimitive`, `Primitive.Root`'s `Root`), if
   // it is a JSX element
   tag?: string
@@ -186,11 +188,15 @@ function convertCva(
     // Group names become prop and parameter names.
     if (!IDENTIFIER.test(group)) unsupported(options, `cva variant group ${JSON.stringify(group)}`)
     const choices = objectEntries(options).map(([option, value]) => {
+      const classes = classList(stringValue(value))
+      if (classes.length === 0) return { value: option }
       const name = `${short ? group : `${prefix}${pascalCase(group)}`}${pascalCase(option)}`
-      slots.push({ name, classes: classList(stringValue(value)) })
+      slots.push({ name, classes })
       return { value: option, slot: name }
     })
-    const lines = choices.map(({ value, slot }) => `    ${key(value)}: styles.${slot},`)
+    const lines = choices.map(({ value, slot }) =>
+      slot ? `    ${key(value)}: styles.${slot},` : `    ${key(value)}: undefined,`,
+    )
     return { group, choices, lines: [`  ${group}: {`, ...lines, '  },'] }
   })
   for (const [group, value] of defaults) {
@@ -343,6 +349,23 @@ function conditionName(test: Node): string {
   return unsupported(test, `class condition ${test.type}`)
 }
 
+// Whether an element takes the function's remaining props: `{...props}` of
+// its rest parameter, or of its only parameter.
+function spreadsProps(element: Node, fn: FunctionDeclaration): boolean {
+  const [param] = fn.params
+  const rest =
+    param?.type === 'ObjectPattern'
+      ? param.properties.find((p) => p.type === 'RestElement')?.argument
+      : param
+  if (rest?.type !== 'Identifier' || element.type !== 'JSXOpeningElement') return false
+  return element.attributes.some(
+    (a) =>
+      a.type === 'JSXSpreadAttribute' &&
+      a.argument.type === 'Identifier' &&
+      a.argument.name === rest.name,
+  )
+}
+
 // Whether a class expression forwards the component's className prop:
 // `className`, `cn(..., className)` or `xVariants({ className })`.
 function passesClassName(node: Node): boolean {
@@ -387,31 +410,41 @@ export function transformComponent(
   const converted = new Set<Node>()
   const constants = new Set<string>()
 
-  // Records, per top-level component function, the element its classes land
-  // on: the element given the consumer's className, or else the first
-  // data-slot the function styles (Table's container comes before the table).
-  const bound = new Set<string>()
+  // Records, per top-level component function, its own element: the one it
+  // spreads its remaining props onto, or else the one given the consumer's
+  // className, or else the first it renders (Table's container comes before
+  // the table). Elements are told apart by node, since not all render a
+  // data-slot.
+  const elements = new Map<string, { element: Node; rank: number }>()
   const track = (
     ancestors: Node[],
     update: Pick<RenderedComponent, 'slot' | 'variantSet'>,
     consumer: boolean,
   ) => {
     const fn = ancestors.find((node) => node.type === 'FunctionDeclaration')
-    const slot = dataSlot(ancestors)
-    if (fn?.type !== 'FunctionDeclaration' || !fn.id || slot === undefined) return
+    // A JSX element, or a Base UI useRender() call rendering one.
+    const element = ancestors.findLast(
+      (node) => node.type === 'JSXOpeningElement' || isCallTo(node, 'useRender'),
+    )
+    if (fn?.type !== 'FunctionDeclaration' || !fn.id || !element) return
     const name = fn.id.name
-    const tag = tagName(ancestors)
-    const fresh = (): RenderedComponent => ({
-      name,
-      dataSlot: slot,
-      ...(tag ? { tag } : {}),
-      defaults: literalDefaults(fn, source),
-    })
-    let record = components.get(name) ?? fresh()
-    if (consumer && !bound.has(name) && record.dataSlot !== slot) record = fresh()
-    components.set(name, record)
-    if (consumer) bound.add(name)
-    if (record.dataSlot === slot) Object.assign(record, update)
+    const rank = spreadsProps(element, fn) ? 2 : consumer ? 1 : 0
+    const bound = elements.get(name)
+    if (bound?.element === element) {
+      bound.rank = Math.max(bound.rank, rank)
+      Object.assign(components.get(name) as RenderedComponent, update)
+    } else if (!bound || rank > bound.rank) {
+      const slot = dataSlot(ancestors)
+      const tag = tagName(ancestors)
+      components.set(name, {
+        name,
+        ...(slot !== undefined ? { dataSlot: slot } : {}),
+        ...(tag ? { tag } : {}),
+        defaults: literalDefaults(fn, source),
+        ...update,
+      })
+      elements.set(name, { element, rank })
+    }
   }
 
   const isCvaCall = (node: Node | undefined): node is NamedCall =>
@@ -653,6 +686,7 @@ export function transformComponent(
   // A cva()'s classes land on every element a component applies it to.
   for (const component of components.values()) {
     const cva = component.variantSet ? cvas.get(component.variantSet) : undefined
+    if (component.dataSlot === undefined) continue
     for (const slot of cva?.slots ?? []) addDataSlot(slot.name, component.dataSlot)
   }
   const dataSlots = Object.fromEntries(

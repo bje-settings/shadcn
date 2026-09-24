@@ -4,7 +4,7 @@
 
 import { isRecord, KEBAB, Shape } from './parse.ts'
 
-export type ConsumerClasses = {
+export type ClassList = {
   classes: string[]
   reason: string
 }
@@ -44,7 +44,11 @@ export type MirrorConfig = {
   // (CardHeader pads once given `border-b`). No element carries them here, so
   // those rules are dropped and listed in the module's header, and A/B skips
   // the docs examples that pass them.
-  consumerClasses: ConsumerClasses[]
+  consumerClasses: ClassList[]
+  // Classes upstream's selectors name outside an element that a consumer's
+  // markup carries as they are (`dark` on <html>, a visually hidden
+  // `sr-only`): kept as :global() in the generated modules.
+  globalClasses: ClassList[]
   // Mirrored items whose component file is left out of coverage, with the
   // reason: upstream logic no render the docs example makes reaches (a
   // controlled value it never passes as a literal). vitest.config.ts reads it.
@@ -95,16 +99,8 @@ export function parseConfig(raw: unknown): MirrorConfig {
     shape.fail('typeset.fixtures must be an array of kebab-case names')
   }
 
-  const consumer = raw.consumerClasses ?? []
-  if (!Array.isArray(consumer)) shape.fail('consumerClasses must be an array')
-  const consumerClasses = consumer.map((value, i) => {
-    const path = `consumerClasses[${i}]`
-    const record = shape.record(value, path)
-    return {
-      classes: shape.strings(record.classes, `${path}.classes`),
-      reason: string(record, 'reason', `${path}.`),
-    }
-  })
+  const consumerClasses = classLists(raw, 'consumerClasses')
+  const globalClasses = classLists(raw, 'globalClasses')
 
   const coverageExclusions =
     raw.coverageExclusions === undefined
@@ -131,8 +127,23 @@ export function parseConfig(raw: unknown): MirrorConfig {
     globalsDir: string(raw, 'globalsDir', ''),
     harnessDir: string(raw, 'harnessDir', ''),
     consumerClasses,
+    globalClasses,
     coverageExclusions,
   }
+}
+
+// An optional array of { classes, reason } entries.
+function classLists(raw: Record<string, unknown>, key: string): ClassList[] {
+  const lists = raw[key] ?? []
+  if (!Array.isArray(lists)) shape.fail(`${key} must be an array`)
+  return lists.map((value, i) => {
+    const path = `${key}[${i}]`
+    const record = shape.record(value, path)
+    return {
+      classes: shape.strings(record.classes, `${path}.classes`),
+      reason: string(record, 'reason', `${path}.`),
+    }
+  })
 }
 
 export function upstreamUrl(config: MirrorConfig, name: string): string {

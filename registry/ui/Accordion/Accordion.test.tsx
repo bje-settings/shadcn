@@ -6,18 +6,24 @@ import { describe, expect, it } from 'vitest'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './Accordion'
 import styles from './Accordion.module.scss'
 
-function renderAccordion(props: Partial<ComponentProps<typeof Accordion>> = {}) {
+function renderAccordion(
+  props: Partial<Record<keyof ComponentProps<typeof Accordion>, unknown>> = {},
+) {
   cleanup()
   render(
     <Accordion
       data-testid="subject"
-      {...({ keepMounted: true, ...props } as ComponentProps<typeof Accordion>)}
+      {...({ keepMounted: true, children: 'Accordion', ...props } as ComponentProps<
+        typeof Accordion
+      >)}
     />,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="accordion"]')
 }
 
-function classesOfAccordion(props: Partial<ComponentProps<typeof Accordion>> = {}) {
+function classesOfAccordion(
+  props: Partial<Record<keyof ComponentProps<typeof Accordion>, unknown>> = {},
+) {
   return renderAccordion(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -53,17 +59,24 @@ describe('Accordion', () => {
   })
 })
 
-function renderAccordionItem(props: Partial<ComponentProps<typeof AccordionItem>> = {}) {
+function renderAccordionItem(
+  props: Partial<Record<keyof ComponentProps<typeof AccordionItem>, unknown>> = {},
+) {
   cleanup()
   render(
     <Accordion>
-      <AccordionItem data-testid="subject" {...(props as ComponentProps<typeof AccordionItem>)} />
+      <AccordionItem
+        data-testid="subject"
+        {...({ children: 'AccordionItem', ...props } as ComponentProps<typeof AccordionItem>)}
+      />
     </Accordion>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="accordion-item"]')
 }
 
-function classesOfAccordionItem(props: Partial<ComponentProps<typeof AccordionItem>> = {}) {
+function classesOfAccordionItem(
+  props: Partial<Record<keyof ComponentProps<typeof AccordionItem>, unknown>> = {},
+) {
   return renderAccordionItem(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -99,14 +112,18 @@ describe('AccordionItem', () => {
   })
 })
 
-function renderAccordionTrigger(props: Partial<ComponentProps<typeof AccordionTrigger>> = {}) {
+function renderAccordionTrigger(
+  props: Partial<Record<keyof ComponentProps<typeof AccordionTrigger>, unknown>> = {},
+) {
   cleanup()
   render(
     <Accordion>
       <AccordionItem>
         <AccordionTrigger
           data-testid="subject"
-          {...(props as ComponentProps<typeof AccordionTrigger>)}
+          {...({ children: 'AccordionTrigger', ...props } as ComponentProps<
+            typeof AccordionTrigger
+          >)}
         />
       </AccordionItem>
     </Accordion>,
@@ -116,7 +133,9 @@ function renderAccordionTrigger(props: Partial<ComponentProps<typeof AccordionTr
     ?.closest('[data-slot="accordion-trigger"]')
 }
 
-function classesOfAccordionTrigger(props: Partial<ComponentProps<typeof AccordionTrigger>> = {}) {
+function classesOfAccordionTrigger(
+  props: Partial<Record<keyof ComponentProps<typeof AccordionTrigger>, unknown>> = {},
+) {
   return renderAccordionTrigger(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -156,14 +175,18 @@ describe('AccordionTrigger', () => {
   })
 })
 
-function renderAccordionContent(props: Partial<ComponentProps<typeof AccordionContent>> = {}) {
+function renderAccordionContent(
+  props: Partial<Record<keyof ComponentProps<typeof AccordionContent>, unknown>> = {},
+) {
   cleanup()
   render(
     <Accordion>
       <AccordionItem>
         <AccordionContent
           data-testid="subject"
-          {...({ keepMounted: true, ...props } as ComponentProps<typeof AccordionContent>)}
+          {...({ keepMounted: true, children: 'AccordionContent', ...props } as ComponentProps<
+            typeof AccordionContent
+          >)}
         />
       </AccordionItem>
     </Accordion>,
@@ -173,7 +196,9 @@ function renderAccordionContent(props: Partial<ComponentProps<typeof AccordionCo
     ?.closest('[data-slot="accordion-content"]')
 }
 
-function classesOfAccordionContent(props: Partial<ComponentProps<typeof AccordionContent>> = {}) {
+function classesOfAccordionContent(
+  props: Partial<Record<keyof ComponentProps<typeof AccordionContent>, unknown>> = {},
+) {
   return renderAccordionContent(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

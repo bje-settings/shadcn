@@ -5,8 +5,17 @@
 import * as React from 'react'
 
 import { Example } from '@/registry/base-vega/components/example'
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle,
+} from '@/registry/bje/ui/Item/Item'
 import { Progress, ProgressLabel, ProgressValue } from '@/registry/bje/ui/Progress/Progress'
 import { Slider } from '@/registry/bje/ui/Slider/Slider'
+import { IconPlaceholder } from '@/app/(create)/components/icon-placeholder'
 
 function ProgressValues() {
   return (
@@ -52,4 +61,66 @@ function ProgressControlled() {
   )
 }
 
-export { ProgressValues, ProgressWithLabel, ProgressControlled }
+function FileUploadList() {
+  const files = React.useMemo(
+    () => [
+      {
+        id: '1',
+        name: 'document.pdf',
+        progress: 45,
+        timeRemaining: '2m 30s',
+      },
+      {
+        id: '2',
+        name: 'presentation.pptx',
+        progress: 78,
+        timeRemaining: '45s',
+      },
+      {
+        id: '3',
+        name: 'spreadsheet.xlsx',
+        progress: 12,
+        timeRemaining: '5m 12s',
+      },
+      {
+        id: '4',
+        name: 'image.jpg',
+        progress: 100,
+        timeRemaining: 'Complete',
+      },
+    ],
+    [],
+  )
+
+  return (
+    <Example title="File Upload List">
+      <ItemGroup>
+        {files.map((file) => (
+          <Item key={file.id} size="xs" className="px-0">
+            <ItemMedia variant="icon">
+              <IconPlaceholder
+                lucide="FileIcon"
+                tabler="IconFile"
+                hugeicons="FileIcon"
+                phosphor="FileIcon"
+                remixicon="RiFileLine"
+                className="size-5"
+              />
+            </ItemMedia>
+            <ItemContent className="inline-block truncate">
+              <ItemTitle className="inline">{file.name}</ItemTitle>
+            </ItemContent>
+            <ItemContent>
+              <Progress value={file.progress} className="w-32" />
+            </ItemContent>
+            <ItemActions className="w-16 justify-end">
+              <span className="text-sm text-muted-foreground">{file.timeRemaining}</span>
+            </ItemActions>
+          </Item>
+        ))}
+      </ItemGroup>
+    </Example>
+  )
+}
+
+export { ProgressValues, ProgressWithLabel, ProgressControlled, FileUploadList }

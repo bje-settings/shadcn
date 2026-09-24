@@ -47,11 +47,14 @@
         "rules": {
           "a11y": {
             "noLabelWithoutControl": "off",
+            "noRedundantRoles": "off",
             "useFocusableInteractive": "off",
+            "useKeyWithClickEvents": "off",
             "useSemanticElements": "off"
           },
           "suspicious": {
-            "noArrayIndexKey": "off"
+            "noArrayIndexKey": "off",
+            "noDoubleEquals": "off"
           },
           "correctness": {
             "noUnusedImports": "off"

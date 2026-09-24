@@ -10,22 +10,22 @@ import styles from './Tabs.module.scss'
 // differs between renders; Base UI puts it in ids and data-id.
 const USE_ID = /_r_[0-9a-z]+_|:r[0-9a-z]+:|«r[0-9a-z]+»/g
 
-function renderTabs(props: Partial<ComponentProps<typeof Tabs>> = {}) {
+function renderTabs(props: Partial<Record<keyof ComponentProps<typeof Tabs>, unknown>> = {}) {
   cleanup()
   render(
     <Tabs
       data-testid="subject"
-      {...({ defaultValue: 'home', ...props } as ComponentProps<typeof Tabs>)}
+      {...({ defaultValue: 'home', children: 'Tabs', ...props } as ComponentProps<typeof Tabs>)}
     />,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="tabs"]')
 }
 
-function classesOfTabs(props: Partial<ComponentProps<typeof Tabs>> = {}) {
+function classesOfTabs(props: Partial<Record<keyof ComponentProps<typeof Tabs>, unknown>> = {}) {
   return renderTabs(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
-function attributesOfTabs(props: Partial<ComponentProps<typeof Tabs>> = {}) {
+function attributesOfTabs(props: Partial<Record<keyof ComponentProps<typeof Tabs>, unknown>> = {}) {
   const element = renderTabs(props)
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
@@ -88,17 +88,24 @@ describe('Tabs', () => {
   })
 })
 
-function renderTabsList(props: Partial<ComponentProps<typeof TabsList>> = {}) {
+function renderTabsList(
+  props: Partial<Record<keyof ComponentProps<typeof TabsList>, unknown>> = {},
+) {
   cleanup()
   render(
     <Tabs defaultValue="home">
-      <TabsList data-testid="subject" {...(props as ComponentProps<typeof TabsList>)} />
+      <TabsList
+        data-testid="subject"
+        {...({ children: 'TabsList', ...props } as ComponentProps<typeof TabsList>)}
+      />
     </Tabs>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="tabs-list"]')
 }
 
-function classesOfTabsList(props: Partial<ComponentProps<typeof TabsList>> = {}) {
+function classesOfTabsList(
+  props: Partial<Record<keyof ComponentProps<typeof TabsList>, unknown>> = {},
+) {
   return renderTabsList(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -195,14 +202,18 @@ describe('TabsList', () => {
   })
 })
 
-function renderTabsTrigger(props: Partial<ComponentProps<typeof TabsTrigger>> = {}) {
+function renderTabsTrigger(
+  props: Partial<Record<keyof ComponentProps<typeof TabsTrigger>, unknown>> = {},
+) {
   cleanup()
   render(
     <Tabs defaultValue="home">
       <TabsList>
         <TabsTrigger
           data-testid="subject"
-          {...({ value: 'home', ...props } as ComponentProps<typeof TabsTrigger>)}
+          {...({ value: 'home', children: 'TabsTrigger', ...props } as ComponentProps<
+            typeof TabsTrigger
+          >)}
         />
       </TabsList>
     </Tabs>,
@@ -210,7 +221,9 @@ function renderTabsTrigger(props: Partial<ComponentProps<typeof TabsTrigger>> = 
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="tabs-trigger"]')
 }
 
-function classesOfTabsTrigger(props: Partial<ComponentProps<typeof TabsTrigger>> = {}) {
+function classesOfTabsTrigger(
+  props: Partial<Record<keyof ComponentProps<typeof TabsTrigger>, unknown>> = {},
+) {
   return renderTabsTrigger(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -506,22 +519,29 @@ describe('TabsTrigger', () => {
   })
 })
 
-function renderTabsContent(props: Partial<ComponentProps<typeof TabsContent>> = {}) {
+function renderTabsContent(
+  props: Partial<Record<keyof ComponentProps<typeof TabsContent>, unknown>> = {},
+) {
   cleanup()
   render(
     <Tabs defaultValue="account">
       <TabsContent
         data-testid="subject"
-        {...({ value: 'account', keepMounted: true, ...props } as ComponentProps<
-          typeof TabsContent
-        >)}
+        {...({
+          value: 'account',
+          keepMounted: true,
+          children: 'TabsContent',
+          ...props,
+        } as ComponentProps<typeof TabsContent>)}
       />
     </Tabs>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="tabs-content"]')
 }
 
-function classesOfTabsContent(props: Partial<ComponentProps<typeof TabsContent>> = {}) {
+function classesOfTabsContent(
+  props: Partial<Record<keyof ComponentProps<typeof TabsContent>, unknown>> = {},
+) {
   return renderTabsContent(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

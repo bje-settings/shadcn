@@ -61,6 +61,8 @@
       --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
     }
   }
+}
+.badge {
   & > svg {
     pointer-events: none;
     width: calc(var(--spacing) * 3) !important;

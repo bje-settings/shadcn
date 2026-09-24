@@ -43,6 +43,8 @@
 }
 
 :where(.breadcrumbSeparator) {
+}
+.breadcrumbSeparator {
   & > svg {
     width: calc(var(--spacing) * 3.5);
     height: calc(var(--spacing) * 3.5);
@@ -55,6 +57,8 @@
   height: calc(var(--spacing) * 5);
   align-items: center;
   justify-content: center;
+}
+.breadcrumbEllipsis {
   & > svg {
     width: calc(var(--spacing) * 4);
     height: calc(var(--spacing) * 4);

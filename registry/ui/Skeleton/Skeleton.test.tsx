@@ -6,13 +6,17 @@ import { describe, expect, it } from 'vitest'
 import { Skeleton } from './Skeleton'
 import styles from './Skeleton.module.scss'
 
-function renderSkeleton(props: Partial<ComponentProps<typeof Skeleton>> = {}) {
+function renderSkeleton(
+  props: Partial<Record<keyof ComponentProps<typeof Skeleton>, unknown>> = {},
+) {
   cleanup()
   render(<Skeleton data-testid="subject" {...(props as ComponentProps<typeof Skeleton>)} />)
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="skeleton"]')
 }
 
-function classesOfSkeleton(props: Partial<ComponentProps<typeof Skeleton>> = {}) {
+function classesOfSkeleton(
+  props: Partial<Record<keyof ComponentProps<typeof Skeleton>, unknown>> = {},
+) {
   return renderSkeleton(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

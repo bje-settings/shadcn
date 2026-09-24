@@ -31,6 +31,14 @@ import * as direction from './upstream/direction'
 import * as nativeSelect from './upstream/native-select'
 import * as accordion from './upstream/accordion'
 import * as inputOtp from './upstream/input-otp'
+import * as field from './upstream/field'
+import * as inputGroup from './upstream/input-group'
+import * as item from './upstream/item'
+import * as pagination from './upstream/pagination'
+import * as marker from './upstream/marker'
+import * as message from './upstream/message'
+import * as bubble from './upstream/bubble'
+import * as attachment from './upstream/attachment'
 
 export const upstream = {
   button: button,
@@ -64,4 +72,12 @@ export const upstream = {
   'native-select': nativeSelect,
   accordion: accordion,
   'input-otp': inputOtp,
+  field: field,
+  'input-group': inputGroup,
+  item: item,
+  pagination: pagination,
+  marker: marker,
+  message: message,
+  bubble: bubble,
+  attachment: attachment,
 }

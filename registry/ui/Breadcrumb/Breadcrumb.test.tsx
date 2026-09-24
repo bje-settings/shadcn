@@ -14,9 +14,16 @@ import {
 } from './Breadcrumb'
 import styles from './Breadcrumb.module.scss'
 
-function renderBreadcrumb(props: Partial<ComponentProps<typeof Breadcrumb>> = {}) {
+function renderBreadcrumb(
+  props: Partial<Record<keyof ComponentProps<typeof Breadcrumb>, unknown>> = {},
+) {
   cleanup()
-  render(<Breadcrumb data-testid="subject" {...(props as ComponentProps<typeof Breadcrumb>)} />)
+  render(
+    <Breadcrumb
+      data-testid="subject"
+      {...({ children: 'Breadcrumb', ...props } as ComponentProps<typeof Breadcrumb>)}
+    />,
+  )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="breadcrumb"]')
 }
 
@@ -28,17 +35,24 @@ describe('Breadcrumb', () => {
   })
 })
 
-function renderBreadcrumbList(props: Partial<ComponentProps<typeof BreadcrumbList>> = {}) {
+function renderBreadcrumbList(
+  props: Partial<Record<keyof ComponentProps<typeof BreadcrumbList>, unknown>> = {},
+) {
   cleanup()
   render(
     <Breadcrumb>
-      <BreadcrumbList data-testid="subject" {...(props as ComponentProps<typeof BreadcrumbList>)} />
+      <BreadcrumbList
+        data-testid="subject"
+        {...({ children: 'BreadcrumbList', ...props } as ComponentProps<typeof BreadcrumbList>)}
+      />
     </Breadcrumb>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="breadcrumb-list"]')
 }
 
-function classesOfBreadcrumbList(props: Partial<ComponentProps<typeof BreadcrumbList>> = {}) {
+function classesOfBreadcrumbList(
+  props: Partial<Record<keyof ComponentProps<typeof BreadcrumbList>, unknown>> = {},
+) {
   return renderBreadcrumbList(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -54,14 +68,16 @@ describe('BreadcrumbList', () => {
   })
 })
 
-function renderBreadcrumbItem(props: Partial<ComponentProps<typeof BreadcrumbItem>> = {}) {
+function renderBreadcrumbItem(
+  props: Partial<Record<keyof ComponentProps<typeof BreadcrumbItem>, unknown>> = {},
+) {
   cleanup()
   render(
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem
           data-testid="subject"
-          {...(props as ComponentProps<typeof BreadcrumbItem>)}
+          {...({ children: 'BreadcrumbItem', ...props } as ComponentProps<typeof BreadcrumbItem>)}
         />
       </BreadcrumbList>
     </Breadcrumb>,
@@ -69,7 +85,9 @@ function renderBreadcrumbItem(props: Partial<ComponentProps<typeof BreadcrumbIte
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="breadcrumb-item"]')
 }
 
-function classesOfBreadcrumbItem(props: Partial<ComponentProps<typeof BreadcrumbItem>> = {}) {
+function classesOfBreadcrumbItem(
+  props: Partial<Record<keyof ComponentProps<typeof BreadcrumbItem>, unknown>> = {},
+) {
   return renderBreadcrumbItem(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -85,7 +103,9 @@ describe('BreadcrumbItem', () => {
   })
 })
 
-function renderBreadcrumbLink(props: Partial<ComponentProps<typeof BreadcrumbLink>> = {}) {
+function renderBreadcrumbLink(
+  props: Partial<Record<keyof ComponentProps<typeof BreadcrumbLink>, unknown>> = {},
+) {
   cleanup()
   render(
     <Breadcrumb>
@@ -93,7 +113,9 @@ function renderBreadcrumbLink(props: Partial<ComponentProps<typeof BreadcrumbLin
         <BreadcrumbItem>
           <BreadcrumbLink
             data-testid="subject"
-            {...({ href: '#', ...props } as ComponentProps<typeof BreadcrumbLink>)}
+            {...({ href: '#', children: 'BreadcrumbLink', ...props } as ComponentProps<
+              typeof BreadcrumbLink
+            >)}
           />
         </BreadcrumbItem>
       </BreadcrumbList>
@@ -102,7 +124,9 @@ function renderBreadcrumbLink(props: Partial<ComponentProps<typeof BreadcrumbLin
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="breadcrumb-link"]')
 }
 
-function classesOfBreadcrumbLink(props: Partial<ComponentProps<typeof BreadcrumbLink>> = {}) {
+function classesOfBreadcrumbLink(
+  props: Partial<Record<keyof ComponentProps<typeof BreadcrumbLink>, unknown>> = {},
+) {
   return renderBreadcrumbLink(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -132,7 +156,9 @@ describe('BreadcrumbLink', () => {
   })
 })
 
-function renderBreadcrumbPage(props: Partial<ComponentProps<typeof BreadcrumbPage>> = {}) {
+function renderBreadcrumbPage(
+  props: Partial<Record<keyof ComponentProps<typeof BreadcrumbPage>, unknown>> = {},
+) {
   cleanup()
   render(
     <Breadcrumb>
@@ -140,7 +166,7 @@ function renderBreadcrumbPage(props: Partial<ComponentProps<typeof BreadcrumbPag
         <BreadcrumbItem>
           <BreadcrumbPage
             data-testid="subject"
-            {...(props as ComponentProps<typeof BreadcrumbPage>)}
+            {...({ children: 'BreadcrumbPage', ...props } as ComponentProps<typeof BreadcrumbPage>)}
           />
         </BreadcrumbItem>
       </BreadcrumbList>
@@ -149,7 +175,9 @@ function renderBreadcrumbPage(props: Partial<ComponentProps<typeof BreadcrumbPag
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="breadcrumb-page"]')
 }
 
-function classesOfBreadcrumbPage(props: Partial<ComponentProps<typeof BreadcrumbPage>> = {}) {
+function classesOfBreadcrumbPage(
+  props: Partial<Record<keyof ComponentProps<typeof BreadcrumbPage>, unknown>> = {},
+) {
   return renderBreadcrumbPage(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -166,7 +194,7 @@ describe('BreadcrumbPage', () => {
 })
 
 function renderBreadcrumbSeparator(
-  props: Partial<ComponentProps<typeof BreadcrumbSeparator>> = {},
+  props: Partial<Record<keyof ComponentProps<typeof BreadcrumbSeparator>, unknown>> = {},
 ) {
   cleanup()
   render(
@@ -185,7 +213,7 @@ function renderBreadcrumbSeparator(
 }
 
 function classesOfBreadcrumbSeparator(
-  props: Partial<ComponentProps<typeof BreadcrumbSeparator>> = {},
+  props: Partial<Record<keyof ComponentProps<typeof BreadcrumbSeparator>, unknown>> = {},
 ) {
   return renderBreadcrumbSeparator(props)?.getAttribute('class')?.split(' ') ?? []
 }
@@ -204,7 +232,9 @@ describe('BreadcrumbSeparator', () => {
   })
 })
 
-function renderBreadcrumbEllipsis(props: Partial<ComponentProps<typeof BreadcrumbEllipsis>> = {}) {
+function renderBreadcrumbEllipsis(
+  props: Partial<Record<keyof ComponentProps<typeof BreadcrumbEllipsis>, unknown>> = {},
+) {
   cleanup()
   render(
     <Breadcrumb>
@@ -224,7 +254,7 @@ function renderBreadcrumbEllipsis(props: Partial<ComponentProps<typeof Breadcrum
 }
 
 function classesOfBreadcrumbEllipsis(
-  props: Partial<ComponentProps<typeof BreadcrumbEllipsis>> = {},
+  props: Partial<Record<keyof ComponentProps<typeof BreadcrumbEllipsis>, unknown>> = {},
 ) {
   return renderBreadcrumbEllipsis(props)?.getAttribute('class')?.split(' ') ?? []
 }

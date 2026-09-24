@@ -6,13 +6,22 @@ import { describe, expect, it } from 'vitest'
 import { AspectRatio } from './AspectRatio'
 import styles from './AspectRatio.module.scss'
 
-function renderAspectRatio(props: Partial<ComponentProps<typeof AspectRatio>> = {}) {
+function renderAspectRatio(
+  props: Partial<Record<keyof ComponentProps<typeof AspectRatio>, unknown>> = {},
+) {
   cleanup()
-  render(<AspectRatio data-testid="subject" {...(props as ComponentProps<typeof AspectRatio>)} />)
+  render(
+    <AspectRatio
+      data-testid="subject"
+      {...({ children: 'AspectRatio', ...props } as ComponentProps<typeof AspectRatio>)}
+    />,
+  )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="aspect-ratio"]')
 }
 
-function classesOfAspectRatio(props: Partial<ComponentProps<typeof AspectRatio>> = {}) {
+function classesOfAspectRatio(
+  props: Partial<Record<keyof ComponentProps<typeof AspectRatio>, unknown>> = {},
+) {
   return renderAspectRatio(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

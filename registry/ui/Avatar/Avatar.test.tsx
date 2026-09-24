@@ -17,17 +17,26 @@ import styles from './Avatar.module.scss'
 // differs between renders; Base UI puts it in ids and data-id.
 const USE_ID = /_r_[0-9a-z]+_|:r[0-9a-z]+:|«r[0-9a-z]+»/g
 
-function renderAvatar(props: Partial<ComponentProps<typeof Avatar>> = {}) {
+function renderAvatar(props: Partial<Record<keyof ComponentProps<typeof Avatar>, unknown>> = {}) {
   cleanup()
-  render(<Avatar data-testid="subject" {...(props as ComponentProps<typeof Avatar>)} />)
+  render(
+    <Avatar
+      data-testid="subject"
+      {...({ children: 'Avatar', ...props } as ComponentProps<typeof Avatar>)}
+    />,
+  )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="avatar"]')
 }
 
-function classesOfAvatar(props: Partial<ComponentProps<typeof Avatar>> = {}) {
+function classesOfAvatar(
+  props: Partial<Record<keyof ComponentProps<typeof Avatar>, unknown>> = {},
+) {
   return renderAvatar(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
-function attributesOfAvatar(props: Partial<ComponentProps<typeof Avatar>> = {}) {
+function attributesOfAvatar(
+  props: Partial<Record<keyof ComponentProps<typeof Avatar>, unknown>> = {},
+) {
   const element = renderAvatar(props)
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
@@ -100,7 +109,9 @@ describe('Avatar', () => {
   })
 })
 
-function renderAvatarImage(props: Partial<ComponentProps<typeof AvatarImage>> = {}) {
+function renderAvatarImage(
+  props: Partial<Record<keyof ComponentProps<typeof AvatarImage>, unknown>> = {},
+) {
   cleanup()
   render(
     <Avatar size="sm">
@@ -118,7 +129,9 @@ function renderAvatarImage(props: Partial<ComponentProps<typeof AvatarImage>> = 
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="avatar-image"]')
 }
 
-function classesOfAvatarImage(props: Partial<ComponentProps<typeof AvatarImage>> = {}) {
+function classesOfAvatarImage(
+  props: Partial<Record<keyof ComponentProps<typeof AvatarImage>, unknown>> = {},
+) {
   return renderAvatarImage(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -407,17 +420,24 @@ describe('AvatarImage', () => {
   })
 })
 
-function renderAvatarFallback(props: Partial<ComponentProps<typeof AvatarFallback>> = {}) {
+function renderAvatarFallback(
+  props: Partial<Record<keyof ComponentProps<typeof AvatarFallback>, unknown>> = {},
+) {
   cleanup()
   render(
     <Avatar size="sm">
-      <AvatarFallback data-testid="subject" {...(props as ComponentProps<typeof AvatarFallback>)} />
+      <AvatarFallback
+        data-testid="subject"
+        {...({ children: 'AvatarFallback', ...props } as ComponentProps<typeof AvatarFallback>)}
+      />
     </Avatar>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="avatar-fallback"]')
 }
 
-function classesOfAvatarFallback(props: Partial<ComponentProps<typeof AvatarFallback>> = {}) {
+function classesOfAvatarFallback(
+  props: Partial<Record<keyof ComponentProps<typeof AvatarFallback>, unknown>> = {},
+) {
   return renderAvatarFallback(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -489,7 +509,9 @@ describe('AvatarFallback', () => {
   })
 })
 
-function renderAvatarBadge(props: Partial<ComponentProps<typeof AvatarBadge>> = {}) {
+function renderAvatarBadge(
+  props: Partial<Record<keyof ComponentProps<typeof AvatarBadge>, unknown>> = {},
+) {
   cleanup()
   render(
     <Avatar size="sm">
@@ -499,7 +521,9 @@ function renderAvatarBadge(props: Partial<ComponentProps<typeof AvatarBadge>> = 
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="avatar-badge"]')
 }
 
-function classesOfAvatarBadge(props: Partial<ComponentProps<typeof AvatarBadge>> = {}) {
+function classesOfAvatarBadge(
+  props: Partial<Record<keyof ComponentProps<typeof AvatarBadge>, unknown>> = {},
+) {
   return renderAvatarBadge(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -565,13 +589,22 @@ describe('AvatarBadge', () => {
   })
 })
 
-function renderAvatarGroup(props: Partial<ComponentProps<typeof AvatarGroup>> = {}) {
+function renderAvatarGroup(
+  props: Partial<Record<keyof ComponentProps<typeof AvatarGroup>, unknown>> = {},
+) {
   cleanup()
-  render(<AvatarGroup data-testid="subject" {...(props as ComponentProps<typeof AvatarGroup>)} />)
+  render(
+    <AvatarGroup
+      data-testid="subject"
+      {...({ children: 'AvatarGroup', ...props } as ComponentProps<typeof AvatarGroup>)}
+    />,
+  )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="avatar-group"]')
 }
 
-function classesOfAvatarGroup(props: Partial<ComponentProps<typeof AvatarGroup>> = {}) {
+function classesOfAvatarGroup(
+  props: Partial<Record<keyof ComponentProps<typeof AvatarGroup>, unknown>> = {},
+) {
   return renderAvatarGroup(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -587,13 +620,15 @@ describe('AvatarGroup', () => {
   })
 })
 
-function renderAvatarGroupCount(props: Partial<ComponentProps<typeof AvatarGroupCount>> = {}) {
+function renderAvatarGroupCount(
+  props: Partial<Record<keyof ComponentProps<typeof AvatarGroupCount>, unknown>> = {},
+) {
   cleanup()
   render(
     <AvatarGroup>
       <AvatarGroupCount
         data-testid="subject"
-        {...(props as ComponentProps<typeof AvatarGroupCount>)}
+        {...({ children: 'AvatarGroupCount', ...props } as ComponentProps<typeof AvatarGroupCount>)}
       />
     </AvatarGroup>,
   )
@@ -602,7 +637,9 @@ function renderAvatarGroupCount(props: Partial<ComponentProps<typeof AvatarGroup
     ?.closest('[data-slot="avatar-group-count"]')
 }
 
-function classesOfAvatarGroupCount(props: Partial<ComponentProps<typeof AvatarGroupCount>> = {}) {
+function classesOfAvatarGroupCount(
+  props: Partial<Record<keyof ComponentProps<typeof AvatarGroupCount>, unknown>> = {},
+) {
   return renderAvatarGroupCount(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

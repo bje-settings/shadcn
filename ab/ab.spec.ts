@@ -1,8 +1,9 @@
 // Screenshots every case on the upstream and ours pages and diffs them with
-// pixelmatch. Each worker opens each side once per theme and walks its share
-// of cases; an overlay case, whose popup portals out of its wrapper, opens its
-// own page on each side instead and compares the viewport. The report attaches
-// upstream, ours and diff images for every case.
+// pixelmatch. Each worker opens each side once per theme, starting empty, and
+// shows its share of cases one at a time with the gallery's showCase(), so a
+// page never holds more than the case under test. An overlay case, whose popup
+// portals out of its wrapper, is compared as the whole viewport. The report
+// attaches upstream, ours and diff images for every case.
 
 import { type Browser, test as base, expect, type Page } from '@playwright/test'
 import pixelmatch from 'pixelmatch'
@@ -18,19 +19,49 @@ type Pages = Record<Side, Record<Theme, Page>>
 // Any of them fails the case that was running.
 const errors = new Map<Page, string[]>()
 
-async function open(browser: Browser, side: Side, theme: Theme, only?: string): Promise<Page> {
+// Upstream's examples load avatars and photos from the web. Every such image
+// request gets the same local image instead (anything else is aborted), so
+// both sides render identical pixels without depending on the network.
+const IMAGE = (() => {
+  const png = new PNG({ width: 64, height: 64 })
+  for (let i = 0; i < png.data.length; i += 4) png.data.set([128, 144, 160, 255], i)
+  return PNG.sync.write(png)
+})()
+
+async function open(browser: Browser, side: Side, theme: Theme): Promise<Page> {
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } })
+  // Only https: the harness itself is served over http.
+  await page.route(/^https:\/\//, (route) =>
+    route.request().resourceType() === 'image'
+      ? route.fulfill({ body: IMAGE, contentType: 'image/png' })
+      : route.abort(),
+  )
   const reported: string[] = []
   errors.set(page, reported)
   page.on('pageerror', (error) => reported.push(error.message))
   page.on('console', (message) => {
     if (message.type() === 'error') reported.push(message.text())
   })
-  const query = only === undefined ? '' : `&case=${encodeURIComponent(only)}`
-  await page.goto(`http://localhost:${PORT}/${side}.html?theme=${theme}${query}`)
-  await page.locator('[data-case]').first().waitFor()
-  await page.evaluate(() => document.fonts.ready)
+  // An empty ?case= renders no case until showCase().
+  await page.goto(`http://localhost:${PORT}/${side}.html?theme=${theme}&case=`)
+  await page.waitForFunction(() => 'showCase' in window)
   return page
+}
+
+// Shows one case and waits for it, its fonts and its images: a Base UI
+// avatar swaps its fallback for the image once it loads.
+async function show(page: Page, c: Case): Promise<void> {
+  await page.evaluate((id) => {
+    ;(window as Window & { showCase?: (id: string) => void }).showCase?.(id)
+  }, c.id)
+  await page.locator(`[data-case="${c.id}"]`).waitFor({ state: 'attached' })
+  await page.evaluate(() => document.fonts.ready)
+  await page.waitForLoadState('networkidle')
+  await page
+    .locator('img')
+    .evaluateAll((images) =>
+      Promise.all(images.map((image) => (image as HTMLImageElement).decode().catch(() => {}))),
+    )
 }
 
 const test = base.extend<object, { pages: Pages }>({
@@ -46,16 +77,16 @@ const test = base.extend<object, { pages: Pages }>({
         await Promise.all(Object.values(side).map((page) => page.close()))
       }
     },
-    { scope: 'worker' },
+    // Opening a worker's pages loads every module of both sides.
+    { scope: 'worker', timeout: 120_000 },
   ],
 })
 
 // The element a state applies to: the case's data-slot element, anywhere on
-// an overlay case's page, or else the case's first child.
+// the page (a popup portals out of the case), or else the case's first child.
 function target(page: Page, c: Case) {
   if (c.slot === undefined) return page.locator(`[data-case="${c.id}"] > *`).first()
-  const scope = c.overlay ? '' : `[data-case="${c.id}"] `
-  return page.locator(`${scope}[data-slot="${c.slot}"]`).first()
+  return page.locator(`[data-slot="${c.slot}"]`).first()
 }
 
 // Whether a state can change how the case's element renders: anything with a
@@ -108,46 +139,37 @@ function padTo(png: PNG, width: number, height: number): PNG {
 test.describe.configure({ mode: 'parallel' })
 
 for (const c of cases) {
-  test(c.id, async ({ pages, browser }, testInfo) => {
-    const own = c.overlay
-      ? await Promise.all([
-          open(browser, 'upstream', c.theme, c.id),
-          open(browser, 'ours', c.theme, c.id),
-        ])
-      : undefined
-    const sides = own ?? [pages.upstream[c.theme], pages.ours[c.theme]]
+  test(c.id, async ({ pages }, testInfo) => {
+    const sides = [pages.upstream[c.theme], pages.ours[c.theme]]
     const [upstreamPage, oursPage] = sides as [Page, Page]
-    try {
-      for (const page of sides) {
-        const failed = page.locator(`[data-case="${c.id}"] [data-case-error]`)
-        if ((await failed.count()) > 0) {
-          throw new Error(`${await failed.getAttribute('data-case-error')}`)
-        }
+    for (const page of sides) errors.get(page)?.splice(0)
+    await Promise.all(sides.map((page) => show(page, c)))
+    for (const page of sides) {
+      const failed = page.locator(`[data-case="${c.id}"] [data-case-error]`)
+      if ((await failed.count()) > 0) {
+        throw new Error(`${await failed.getAttribute('data-case-error')}`)
       }
-      test.skip(!(await applies(upstreamPage, c)), `${c.state} does not apply to this element`)
-      for (const page of sides) errors.get(page)?.splice(0)
-      const [upstream, ours] = await Promise.all([capture(upstreamPage, c), capture(oursPage, c)])
-      const width = Math.max(upstream.width, ours.width)
-      const height = Math.max(upstream.height, ours.height)
-      const diff = new PNG({ width, height })
-      const pixels = pixelmatch(
-        padTo(upstream, width, height).data,
-        padTo(ours, width, height).data,
-        diff.data,
-        width,
-        height,
-        { threshold: 0.1 },
-      )
-      for (const [name, png] of Object.entries({ upstream, ours, diff })) {
-        await testInfo.attach(name, { body: PNG.sync.write(png), contentType: 'image/png' })
-      }
-      expect({ size: `${ours.width}x${ours.height}`, pixels }).toEqual({
-        size: `${upstream.width}x${upstream.height}`,
-        pixels: 0,
-      })
-      expect(sides.flatMap((page) => errors.get(page) ?? [])).toEqual([])
-    } finally {
-      await Promise.all((own ?? []).map((page) => page.close()))
     }
+    test.skip(!(await applies(upstreamPage, c)), `${c.state} does not apply to this element`)
+    const [upstream, ours] = await Promise.all([capture(upstreamPage, c), capture(oursPage, c)])
+    const width = Math.max(upstream.width, ours.width)
+    const height = Math.max(upstream.height, ours.height)
+    const diff = new PNG({ width, height })
+    const pixels = pixelmatch(
+      padTo(upstream, width, height).data,
+      padTo(ours, width, height).data,
+      diff.data,
+      width,
+      height,
+      { threshold: 0.1 },
+    )
+    for (const [name, png] of Object.entries({ upstream, ours, diff })) {
+      await testInfo.attach(name, { body: PNG.sync.write(png), contentType: 'image/png' })
+    }
+    expect({ size: `${ours.width}x${ours.height}`, pixels }).toEqual({
+      size: `${upstream.width}x${upstream.height}`,
+      pixels: 0,
+    })
+    expect(sides.flatMap((page) => errors.get(page) ?? [])).toEqual([])
   })
 }

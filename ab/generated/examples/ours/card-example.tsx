@@ -22,6 +22,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/registry/bje/ui/Card/Card'
+import { Field, FieldGroup, FieldLabel } from '@/registry/bje/ui/Field/Field'
+import { Input } from '@/registry/bje/ui/Input/Input'
 import { ToggleGroup, ToggleGroupItem } from '@/registry/bje/ui/ToggleGroup/ToggleGroup'
 import { IconPlaceholder } from '@/app/(create)/components/icon-placeholder'
 
@@ -91,6 +93,52 @@ function CardCustomSpacing() {
           </CardContent>
         </Card>
       </div>
+    </Example>
+  )
+}
+
+function CardLogin() {
+  return (
+    <Example title="Login">
+      <Card className="mx-auto w-full max-w-sm">
+        <CardHeader>
+          <CardTitle>Login to your account</CardTitle>
+          <CardDescription>Enter your email below to login to your account</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form>
+            <FieldGroup>
+              <Field>
+                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <Input id="email" type="email" placeholder="m@example.com" required />
+              </Field>
+              <Field>
+                <div className="flex items-center">
+                  <FieldLabel htmlFor="password">Password</FieldLabel>
+                  <a href="#" className="ml-auto inline-block underline-offset-4 hover:underline">
+                    Forgot your password?
+                  </a>
+                </div>
+                <Input id="password" type="password" required />
+              </Field>
+            </FieldGroup>
+          </form>
+        </CardContent>
+        <CardFooter className="flex-col gap-2">
+          <Button type="submit" className="w-full">
+            Login
+          </Button>
+          <Button variant="outline" className="w-full">
+            Login with Google
+          </Button>
+          <div className="mt-4 text-center">
+            Don&apos;t have an account?{' '}
+            <a href="#" className="underline underline-offset-4">
+              Sign up
+            </a>
+          </div>
+        </CardFooter>
+      </Card>
     </Example>
   )
 }
@@ -272,5 +320,6 @@ export {
   CardCustomSpacing,
   CardWithImage,
   CardWithImageSmall,
+  CardLogin,
   CardMeetingNotes,
 }

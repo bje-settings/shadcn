@@ -10,19 +10,28 @@ import styles from './NativeSelect.module.scss'
 // differs between renders; Base UI puts it in ids and data-id.
 const USE_ID = /_r_[0-9a-z]+_|:r[0-9a-z]+:|«r[0-9a-z]+»/g
 
-function renderNativeSelect(props: Partial<ComponentProps<typeof NativeSelect>> = {}) {
+function renderNativeSelect(
+  props: Partial<Record<keyof ComponentProps<typeof NativeSelect>, unknown>> = {},
+) {
   cleanup()
-  render(<NativeSelect data-testid="subject" {...(props as ComponentProps<typeof NativeSelect>)} />)
-  return document
-    .querySelector('[data-testid="subject"]')
-    ?.closest('[data-slot="native-select-wrapper"]')
+  render(
+    <NativeSelect
+      data-testid="subject"
+      {...({ children: 'NativeSelect', ...props } as ComponentProps<typeof NativeSelect>)}
+    />,
+  )
+  return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="native-select"]')
 }
 
-function classesOfNativeSelect(props: Partial<ComponentProps<typeof NativeSelect>> = {}) {
+function classesOfNativeSelect(
+  props: Partial<Record<keyof ComponentProps<typeof NativeSelect>, unknown>> = {},
+) {
   return renderNativeSelect(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
-function attributesOfNativeSelect(props: Partial<ComponentProps<typeof NativeSelect>> = {}) {
+function attributesOfNativeSelect(
+  props: Partial<Record<keyof ComponentProps<typeof NativeSelect>, unknown>> = {},
+) {
   const element = renderNativeSelect(props)
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
@@ -30,8 +39,8 @@ function attributesOfNativeSelect(props: Partial<ComponentProps<typeof NativeSel
 }
 
 describe('NativeSelect', () => {
-  it('renders [data-slot="native-select-wrapper"] with its classes', () => {
-    expect(classesOfNativeSelect()).toEqual(expect.arrayContaining([styles.nativeSelectWrapper]))
+  it('renders [data-slot="native-select"] with its classes', () => {
+    expect(classesOfNativeSelect()).toEqual(expect.arrayContaining([styles.nativeSelect]))
   })
 
   it('renders the same with size="default" passed explicitly', () => {
@@ -85,13 +94,17 @@ describe('NativeSelect', () => {
   })
 })
 
-function renderNativeSelectOption(props: Partial<ComponentProps<typeof NativeSelectOption>> = {}) {
+function renderNativeSelectOption(
+  props: Partial<Record<keyof ComponentProps<typeof NativeSelectOption>, unknown>> = {},
+) {
   cleanup()
   render(
     <NativeSelect>
       <NativeSelectOption
         data-testid="subject"
-        {...({ value: '', ...props } as ComponentProps<typeof NativeSelectOption>)}
+        {...({ value: '', children: 'NativeSelectOption', ...props } as ComponentProps<
+          typeof NativeSelectOption
+        >)}
       />
     </NativeSelect>,
   )
@@ -101,7 +114,7 @@ function renderNativeSelectOption(props: Partial<ComponentProps<typeof NativeSel
 }
 
 function classesOfNativeSelectOption(
-  props: Partial<ComponentProps<typeof NativeSelectOption>> = {},
+  props: Partial<Record<keyof ComponentProps<typeof NativeSelectOption>, unknown>> = {},
 ) {
   return renderNativeSelectOption(props)?.getAttribute('class')?.split(' ') ?? []
 }
@@ -469,14 +482,16 @@ describe('NativeSelectOption', () => {
 })
 
 function renderNativeSelectOptGroup(
-  props: Partial<ComponentProps<typeof NativeSelectOptGroup>> = {},
+  props: Partial<Record<keyof ComponentProps<typeof NativeSelectOptGroup>, unknown>> = {},
 ) {
   cleanup()
   render(
     <NativeSelect>
       <NativeSelectOptGroup
         data-testid="subject"
-        {...({ label: 'Fruits', ...props } as ComponentProps<typeof NativeSelectOptGroup>)}
+        {...({ label: 'Fruits', children: 'NativeSelectOptGroup', ...props } as ComponentProps<
+          typeof NativeSelectOptGroup
+        >)}
       />
     </NativeSelect>,
   )
@@ -486,7 +501,7 @@ function renderNativeSelectOptGroup(
 }
 
 function classesOfNativeSelectOptGroup(
-  props: Partial<ComponentProps<typeof NativeSelectOptGroup>> = {},
+  props: Partial<Record<keyof ComponentProps<typeof NativeSelectOptGroup>, unknown>> = {},
 ) {
   return renderNativeSelectOptGroup(props)?.getAttribute('class')?.split(' ') ?? []
 }

@@ -6,20 +6,25 @@ import { describe, expect, it } from 'vitest'
 import { Toggle, toggleVariants } from './Toggle'
 import styles from './Toggle.module.scss'
 
-function renderToggle(props: Partial<ComponentProps<typeof Toggle>> = {}) {
+function renderToggle(props: Partial<Record<keyof ComponentProps<typeof Toggle>, unknown>> = {}) {
   cleanup()
   render(
     <Toggle
       data-testid="subject"
-      {...({ 'aria-label': 'Toggle bold', defaultPressed: true, ...props } as ComponentProps<
-        typeof Toggle
-      >)}
+      {...({
+        'aria-label': 'Toggle bold',
+        defaultPressed: true,
+        children: 'Toggle',
+        ...props,
+      } as ComponentProps<typeof Toggle>)}
     />,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="toggle"]')
 }
 
-function classesOfToggle(props: Partial<ComponentProps<typeof Toggle>> = {}) {
+function classesOfToggle(
+  props: Partial<Record<keyof ComponentProps<typeof Toggle>, unknown>> = {},
+) {
   return renderToggle(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

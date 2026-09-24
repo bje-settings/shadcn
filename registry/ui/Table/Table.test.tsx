@@ -15,13 +15,13 @@ import {
 } from './Table'
 import styles from './Table.module.scss'
 
-function renderTable(props: Partial<ComponentProps<typeof Table>> = {}) {
+function renderTable(props: Partial<Record<keyof ComponentProps<typeof Table>, unknown>> = {}) {
   cleanup()
   render(<Table data-testid="subject" {...(props as ComponentProps<typeof Table>)} />)
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table"]')
 }
 
-function classesOfTable(props: Partial<ComponentProps<typeof Table>> = {}) {
+function classesOfTable(props: Partial<Record<keyof ComponentProps<typeof Table>, unknown>> = {}) {
   return renderTable(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -37,7 +37,9 @@ describe('Table', () => {
   })
 })
 
-function renderTableHeader(props: Partial<ComponentProps<typeof TableHeader>> = {}) {
+function renderTableHeader(
+  props: Partial<Record<keyof ComponentProps<typeof TableHeader>, unknown>> = {},
+) {
   cleanup()
   render(
     <Table>
@@ -47,7 +49,9 @@ function renderTableHeader(props: Partial<ComponentProps<typeof TableHeader>> = 
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-header"]')
 }
 
-function classesOfTableHeader(props: Partial<ComponentProps<typeof TableHeader>> = {}) {
+function classesOfTableHeader(
+  props: Partial<Record<keyof ComponentProps<typeof TableHeader>, unknown>> = {},
+) {
   return renderTableHeader(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -63,7 +67,9 @@ describe('TableHeader', () => {
   })
 })
 
-function renderTableBody(props: Partial<ComponentProps<typeof TableBody>> = {}) {
+function renderTableBody(
+  props: Partial<Record<keyof ComponentProps<typeof TableBody>, unknown>> = {},
+) {
   cleanup()
   render(
     <Table>
@@ -73,7 +79,9 @@ function renderTableBody(props: Partial<ComponentProps<typeof TableBody>> = {}) 
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-body"]')
 }
 
-function classesOfTableBody(props: Partial<ComponentProps<typeof TableBody>> = {}) {
+function classesOfTableBody(
+  props: Partial<Record<keyof ComponentProps<typeof TableBody>, unknown>> = {},
+) {
   return renderTableBody(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -89,7 +97,9 @@ describe('TableBody', () => {
   })
 })
 
-function renderTableFooter(props: Partial<ComponentProps<typeof TableFooter>> = {}) {
+function renderTableFooter(
+  props: Partial<Record<keyof ComponentProps<typeof TableFooter>, unknown>> = {},
+) {
   cleanup()
   render(
     <Table>
@@ -99,7 +109,9 @@ function renderTableFooter(props: Partial<ComponentProps<typeof TableFooter>> = 
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-footer"]')
 }
 
-function classesOfTableFooter(props: Partial<ComponentProps<typeof TableFooter>> = {}) {
+function classesOfTableFooter(
+  props: Partial<Record<keyof ComponentProps<typeof TableFooter>, unknown>> = {},
+) {
   return renderTableFooter(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -115,7 +127,9 @@ describe('TableFooter', () => {
   })
 })
 
-function renderTableRow(props: Partial<ComponentProps<typeof TableRow>> = {}) {
+function renderTableRow(
+  props: Partial<Record<keyof ComponentProps<typeof TableRow>, unknown>> = {},
+) {
   cleanup()
   render(
     <Table>
@@ -127,7 +141,9 @@ function renderTableRow(props: Partial<ComponentProps<typeof TableRow>> = {}) {
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-row"]')
 }
 
-function classesOfTableRow(props: Partial<ComponentProps<typeof TableRow>> = {}) {
+function classesOfTableRow(
+  props: Partial<Record<keyof ComponentProps<typeof TableRow>, unknown>> = {},
+) {
   return renderTableRow(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -147,7 +163,7 @@ describe('TableRow', () => {
     render(
       <Table>
         <TableBody>
-          <TableRow data-testid="subject">TableRow</TableRow>
+          <TableRow data-testid="subject" />
         </TableBody>
       </Table>,
     )
@@ -159,7 +175,7 @@ describe('TableRow', () => {
     render(
       <Table>
         <TableFooter>
-          <TableRow data-testid="subject">TableRow</TableRow>
+          <TableRow data-testid="subject" />
         </TableFooter>
       </Table>,
     )
@@ -167,13 +183,18 @@ describe('TableRow', () => {
   })
 })
 
-function renderTableHead(props: Partial<ComponentProps<typeof TableHead>> = {}) {
+function renderTableHead(
+  props: Partial<Record<keyof ComponentProps<typeof TableHead>, unknown>> = {},
+) {
   cleanup()
   render(
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead data-testid="subject" {...(props as ComponentProps<typeof TableHead>)} />
+          <TableHead
+            data-testid="subject"
+            {...({ children: 'TableHead', ...props } as ComponentProps<typeof TableHead>)}
+          />
         </TableRow>
       </TableHeader>
     </Table>,
@@ -181,7 +202,9 @@ function renderTableHead(props: Partial<ComponentProps<typeof TableHead>> = {}) 
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-head"]')
 }
 
-function classesOfTableHead(props: Partial<ComponentProps<typeof TableHead>> = {}) {
+function classesOfTableHead(
+  props: Partial<Record<keyof ComponentProps<typeof TableHead>, unknown>> = {},
+) {
   return renderTableHead(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -197,13 +220,18 @@ describe('TableHead', () => {
   })
 })
 
-function renderTableCell(props: Partial<ComponentProps<typeof TableCell>> = {}) {
+function renderTableCell(
+  props: Partial<Record<keyof ComponentProps<typeof TableCell>, unknown>> = {},
+) {
   cleanup()
   render(
     <Table>
       <TableBody>
         <TableRow>
-          <TableCell data-testid="subject" {...(props as ComponentProps<typeof TableCell>)} />
+          <TableCell
+            data-testid="subject"
+            {...({ children: 'TableCell', ...props } as ComponentProps<typeof TableCell>)}
+          />
         </TableRow>
       </TableBody>
     </Table>,
@@ -211,7 +239,9 @@ function renderTableCell(props: Partial<ComponentProps<typeof TableCell>> = {}) 
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-cell"]')
 }
 
-function classesOfTableCell(props: Partial<ComponentProps<typeof TableCell>> = {}) {
+function classesOfTableCell(
+  props: Partial<Record<keyof ComponentProps<typeof TableCell>, unknown>> = {},
+) {
   return renderTableCell(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -257,17 +287,24 @@ describe('TableCell', () => {
   })
 })
 
-function renderTableCaption(props: Partial<ComponentProps<typeof TableCaption>> = {}) {
+function renderTableCaption(
+  props: Partial<Record<keyof ComponentProps<typeof TableCaption>, unknown>> = {},
+) {
   cleanup()
   render(
     <Table>
-      <TableCaption data-testid="subject" {...(props as ComponentProps<typeof TableCaption>)} />
+      <TableCaption
+        data-testid="subject"
+        {...({ children: 'TableCaption', ...props } as ComponentProps<typeof TableCaption>)}
+      />
     </Table>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="table-caption"]')
 }
 
-function classesOfTableCaption(props: Partial<ComponentProps<typeof TableCaption>> = {}) {
+function classesOfTableCaption(
+  props: Partial<Record<keyof ComponentProps<typeof TableCaption>, unknown>> = {},
+) {
   return renderTableCaption(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

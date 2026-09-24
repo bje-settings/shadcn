@@ -45,6 +45,8 @@ export type PartTypes = {
   keepMounted: boolean
   // Props it requires (Progress's value)
   required: string[]
+  // It takes text as children (InputOTP's type rules children out)
+  text: boolean
 }
 
 // This repo's root: upstream's imports resolve against its node_modules
@@ -75,6 +77,7 @@ export function partTypes(
       overwrite: true,
     }),
   )
+  const checker = project.getTypeChecker().compilerObject
   return new Map(
     files.map((file, i) => {
       const parts = new Map<string, PartTypes>()
@@ -83,6 +86,7 @@ export function partTypes(
         if (!declaration || !param || !/^[A-Z]/.test(name)) continue
         const type = param.getTypeAtLocation(declaration)
         const props = new Set(type.getApparentProperties().map((p) => p.getName()))
+        const children = type.getProperty('children')?.getTypeAtLocation(declaration)
         parts.set(name, {
           className: props.has('className'),
           opens: props.has('defaultOpen'),
@@ -92,6 +96,9 @@ export function partTypes(
             .filter((p) => !p.isOptional())
             .map((p) => p.getName())
             .sort(),
+          text:
+            children !== undefined &&
+            checker.isTypeAssignableTo(checker.getStringType(), children.compilerType),
         })
       }
       return [(components[i] as PreparedComponent).upstream.name, parts]
@@ -150,8 +157,12 @@ function hasChildren(element: JSXElement): boolean {
   return element.children.some((child) => child.type !== 'JSXText' || child.value.trim() !== '')
 }
 
-// Void elements render no children; React rejects them on <textarea>.
-const CHILDLESS = new Set(['area', 'br', 'col', 'embed', 'hr', 'img', 'input', 'textarea', 'wbr'])
+// Elements that take no text: void elements, <textarea> (React rejects its
+// children) and table structure, where text is invalid nesting.
+const CHILDLESS = new Set([
+  ...['area', 'br', 'col', 'embed', 'hr', 'img', 'input', 'textarea', 'wbr'],
+  ...['table', 'thead', 'tbody', 'tfoot', 'tr', 'colgroup'],
+])
 
 // Each exported component's scaffold, from the first place the example
 // renders it, or else inside the item's root component (a ProgressTrack in a
@@ -213,7 +224,10 @@ export function scaffolds(
     return {
       ancestors: enclosing.map(opened),
       props: types.get(name)?.keepMounted ? { ...props, keepMounted: true } : props,
-      children: element ? hasChildren(element) : !CHILDLESS.has(rendered.get(name)?.tag ?? ''),
+      children:
+        types.get(name)?.text !== false &&
+        !CHILDLESS.has(rendered.get(name)?.tag ?? '') &&
+        (element ? hasChildren(element) : true),
     }
   }
   return new Map(

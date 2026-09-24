@@ -10,6 +10,12 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from '@/registry/bje/ui/Empty/Empty'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from '@/registry/bje/ui/InputGroup/InputGroup'
+import { Kbd } from '@/registry/bje/ui/Kbd/Kbd'
 import { IconPlaceholder } from '@/app/(create)/components/icon-placeholder'
 
 function EmptyBasic() {
@@ -83,6 +89,42 @@ function EmptyWithMutedBackground() {
   )
 }
 
+function EmptyWithBorder() {
+  return (
+    <Example title="With Border">
+      <Empty className="border">
+        <EmptyHeader>
+          <EmptyTitle>404 - Not Found</EmptyTitle>
+          <EmptyDescription>
+            The page you&apos;re looking for doesn&apos;t exist. Try searching for what you need
+            below.
+          </EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
+          <InputGroup className="w-3/4">
+            <InputGroupInput placeholder="Try searching for pages..." />
+            <InputGroupAddon>
+              <IconPlaceholder
+                lucide="CircleDashedIcon"
+                tabler="IconCircleDashed"
+                hugeicons="DashedLineCircleIcon"
+                phosphor="CircleDashedIcon"
+                remixicon="RiLoaderLine"
+              />
+            </InputGroupAddon>
+            <InputGroupAddon align="inline-end">
+              <Kbd>/</Kbd>
+            </InputGroupAddon>
+          </InputGroup>
+          <EmptyDescription>
+            Need help? <a href="#">Contact support</a>
+          </EmptyDescription>
+        </EmptyContent>
+      </Empty>
+    </Example>
+  )
+}
+
 function EmptyWithIcon() {
   return (
     <Example title="With Icon">
@@ -114,6 +156,42 @@ function EmptyWithIcon() {
             />
             New Post
           </Button>
+        </EmptyContent>
+      </Empty>
+    </Example>
+  )
+}
+
+function EmptyWithMutedBackgroundAlt() {
+  return (
+    <Example title="With Muted Background Alt">
+      <Empty className="bg-muted/50">
+        <EmptyHeader>
+          <EmptyTitle>404 - Not Found</EmptyTitle>
+          <EmptyDescription>
+            The page you&apos;re looking for doesn&apos;t exist. Try searching for what you need
+            below.
+          </EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
+          <InputGroup className="w-3/4">
+            <InputGroupInput placeholder="Try searching for pages..." />
+            <InputGroupAddon>
+              <IconPlaceholder
+                lucide="CircleDashedIcon"
+                tabler="IconCircleDashed"
+                hugeicons="DashedLineCircleIcon"
+                phosphor="CircleDashedIcon"
+                remixicon="RiLoaderLine"
+              />
+            </InputGroupAddon>
+            <InputGroupAddon align="inline-end">
+              <Kbd>/</Kbd>
+            </InputGroupAddon>
+          </InputGroup>
+          <EmptyDescription>
+            Need help? <a href="#">Contact support</a>
+          </EmptyDescription>
         </EmptyContent>
       </Empty>
     </Example>
@@ -167,4 +245,11 @@ function EmptyInCard() {
   )
 }
 
-export { EmptyBasic, EmptyWithMutedBackground, EmptyWithIcon, EmptyInCard }
+export {
+  EmptyBasic,
+  EmptyWithMutedBackground,
+  EmptyWithBorder,
+  EmptyWithIcon,
+  EmptyWithMutedBackgroundAlt,
+  EmptyInCard,
+}

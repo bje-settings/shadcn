@@ -578,7 +578,7 @@ export const fixtures = [
     component: 'Table',
     slot: 'table',
     ancestors: [],
-    children: true,
+    children: false,
     overlay: false,
     label: 'Table',
     props: {},
@@ -593,7 +593,7 @@ export const fixtures = [
         props: {},
       },
     ],
-    children: true,
+    children: false,
     overlay: false,
     label: 'TableHeader',
     props: {},
@@ -608,7 +608,7 @@ export const fixtures = [
         props: {},
       },
     ],
-    children: true,
+    children: false,
     overlay: false,
     label: 'TableBody',
     props: {},
@@ -623,7 +623,7 @@ export const fixtures = [
         props: {},
       },
     ],
-    children: true,
+    children: false,
     overlay: false,
     label: 'TableFooter',
     props: {},
@@ -642,7 +642,7 @@ export const fixtures = [
         props: {},
       },
     ],
-    children: true,
+    children: false,
     overlay: false,
     label: 'TableRow',
     props: {},
@@ -1469,7 +1469,7 @@ export const fixtures = [
   {
     item: 'native-select',
     component: 'NativeSelect',
-    slot: 'native-select-wrapper',
+    slot: 'native-select',
     ancestors: [],
     children: true,
     overlay: false,
@@ -1648,6 +1648,1384 @@ export const fixtures = [
     children: false,
     overlay: false,
     label: 'InputOTPSeparator',
+    props: {},
+  },
+  {
+    item: 'field',
+    component: 'FieldSet',
+    slot: 'field-set',
+    ancestors: [
+      {
+        component: 'FieldGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'FieldSet',
+    props: {},
+  },
+  {
+    item: 'field',
+    component: 'FieldLegend',
+    slot: 'field-legend',
+    ancestors: [
+      {
+        component: 'FieldGroup',
+        props: {},
+      },
+      {
+        component: 'FieldSet',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'FieldLegend',
+    props: {},
+  },
+  {
+    item: 'field',
+    component: 'FieldGroup',
+    slot: 'field-group',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'FieldGroup',
+    props: {},
+  },
+  {
+    item: 'field',
+    component: 'Field',
+    slot: 'field',
+    ancestors: [
+      {
+        component: 'FieldGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'Field orientation=vertical',
+    props: {
+      orientation: 'vertical',
+    },
+  },
+  {
+    item: 'field',
+    component: 'Field',
+    slot: 'field',
+    ancestors: [
+      {
+        component: 'FieldGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'Field orientation=horizontal',
+    props: {
+      orientation: 'horizontal',
+    },
+  },
+  {
+    item: 'field',
+    component: 'Field',
+    slot: 'field',
+    ancestors: [
+      {
+        component: 'FieldGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'Field orientation=responsive',
+    props: {
+      orientation: 'responsive',
+    },
+  },
+  {
+    item: 'field',
+    component: 'FieldContent',
+    slot: 'field-content',
+    ancestors: [
+      {
+        component: 'FieldGroup',
+        props: {},
+      },
+      {
+        component: 'Field',
+        props: {
+          orientation: 'horizontal',
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'FieldContent',
+    props: {},
+  },
+  {
+    item: 'field',
+    component: 'FieldLabel',
+    slot: 'field-label',
+    ancestors: [
+      {
+        component: 'FieldGroup',
+        props: {},
+      },
+      {
+        component: 'Field',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'FieldLabel',
+    props: {
+      htmlFor: 'input-basic',
+    },
+  },
+  {
+    item: 'field',
+    component: 'FieldTitle',
+    slot: 'field-label',
+    ancestors: [
+      {
+        component: 'FieldGroup',
+        props: {},
+      },
+      {
+        component: 'FieldLabel',
+        props: {
+          htmlFor: 'checkbox-with-title',
+        },
+      },
+      {
+        component: 'Field',
+        props: {
+          orientation: 'horizontal',
+        },
+      },
+      {
+        component: 'FieldContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'FieldTitle',
+    props: {},
+  },
+  {
+    item: 'field',
+    component: 'FieldDescription',
+    slot: 'field-description',
+    ancestors: [
+      {
+        component: 'FieldGroup',
+        props: {},
+      },
+      {
+        component: 'Field',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'FieldDescription',
+    props: {},
+  },
+  {
+    item: 'field',
+    component: 'FieldSeparator',
+    slot: 'field-separator',
+    ancestors: [
+      {
+        component: 'Field',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'FieldSeparator',
+    props: {},
+  },
+  {
+    item: 'field',
+    component: 'FieldError',
+    slot: 'field-error',
+    ancestors: [
+      {
+        component: 'Field',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'FieldError',
+    props: {},
+  },
+  {
+    item: 'input-group',
+    component: 'InputGroup',
+    slot: 'input-group',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'InputGroup',
+    props: {},
+  },
+  {
+    item: 'input-group',
+    component: 'InputGroupAddon',
+    slot: 'input-group-addon',
+    ancestors: [
+      {
+        component: 'InputGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'InputGroupAddon align=inline-start',
+    props: {
+      align: 'inline-start',
+    },
+  },
+  {
+    item: 'input-group',
+    component: 'InputGroupAddon',
+    slot: 'input-group-addon',
+    ancestors: [
+      {
+        component: 'InputGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'InputGroupAddon align=inline-end',
+    props: {
+      align: 'inline-end',
+    },
+  },
+  {
+    item: 'input-group',
+    component: 'InputGroupAddon',
+    slot: 'input-group-addon',
+    ancestors: [
+      {
+        component: 'InputGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'InputGroupAddon align=block-start',
+    props: {
+      align: 'block-start',
+    },
+  },
+  {
+    item: 'input-group',
+    component: 'InputGroupAddon',
+    slot: 'input-group-addon',
+    ancestors: [
+      {
+        component: 'InputGroup',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'InputGroupAddon align=block-end',
+    props: {
+      align: 'block-end',
+    },
+  },
+  {
+    item: 'input-group',
+    component: 'InputGroupButton',
+    ancestors: [
+      {
+        component: 'InputGroup',
+        props: {},
+      },
+      {
+        component: 'InputGroupAddon',
+        props: {
+          align: 'inline-end',
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'InputGroupButton size=xs',
+    props: {
+      size: 'xs',
+    },
+  },
+  {
+    item: 'input-group',
+    component: 'InputGroupButton',
+    ancestors: [
+      {
+        component: 'InputGroup',
+        props: {},
+      },
+      {
+        component: 'InputGroupAddon',
+        props: {
+          align: 'inline-end',
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'InputGroupButton size=sm',
+    props: {
+      size: 'sm',
+    },
+  },
+  {
+    item: 'input-group',
+    component: 'InputGroupButton',
+    ancestors: [
+      {
+        component: 'InputGroup',
+        props: {},
+      },
+      {
+        component: 'InputGroupAddon',
+        props: {
+          align: 'inline-end',
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'InputGroupButton size=icon-xs',
+    props: {
+      size: 'icon-xs',
+    },
+  },
+  {
+    item: 'input-group',
+    component: 'InputGroupButton',
+    ancestors: [
+      {
+        component: 'InputGroup',
+        props: {},
+      },
+      {
+        component: 'InputGroupAddon',
+        props: {
+          align: 'inline-end',
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'InputGroupButton size=icon-sm',
+    props: {
+      size: 'icon-sm',
+    },
+  },
+  {
+    item: 'input-group',
+    component: 'InputGroupText',
+    ancestors: [
+      {
+        component: 'InputGroup',
+        props: {},
+      },
+      {
+        component: 'InputGroupAddon',
+        props: {
+          align: 'block-start',
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'InputGroupText',
+    props: {},
+  },
+  {
+    item: 'input-group',
+    component: 'InputGroupInput',
+    slot: 'input-group-control',
+    ancestors: [
+      {
+        component: 'InputGroup',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'InputGroupInput',
+    props: {
+      id: 'input-group-02',
+      placeholder: 'Placeholder',
+    },
+  },
+  {
+    item: 'input-group',
+    component: 'InputGroupTextarea',
+    slot: 'input-group-control',
+    ancestors: [
+      {
+        component: 'InputGroup',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'InputGroupTextarea',
+    props: {
+      id: 'feedback-textarea',
+      placeholder: 'Share your thoughts...',
+    },
+  },
+  {
+    item: 'item',
+    component: 'ItemGroup',
+    slot: 'item-group',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'ItemGroup',
+    props: {},
+  },
+  {
+    item: 'item',
+    component: 'ItemSeparator',
+    slot: 'item-separator',
+    ancestors: [
+      {
+        component: 'ItemGroup',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'ItemSeparator',
+    props: {},
+  },
+  {
+    item: 'item',
+    component: 'Item',
+    slot: 'item',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Item variant=default',
+    props: {
+      variant: 'default',
+    },
+  },
+  {
+    item: 'item',
+    component: 'Item',
+    slot: 'item',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Item variant=outline',
+    props: {
+      variant: 'outline',
+    },
+  },
+  {
+    item: 'item',
+    component: 'Item',
+    slot: 'item',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Item variant=muted',
+    props: {
+      variant: 'muted',
+    },
+  },
+  {
+    item: 'item',
+    component: 'Item',
+    slot: 'item',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Item size=default',
+    props: {
+      size: 'default',
+    },
+  },
+  {
+    item: 'item',
+    component: 'Item',
+    slot: 'item',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Item size=sm',
+    props: {
+      size: 'sm',
+    },
+  },
+  {
+    item: 'item',
+    component: 'Item',
+    slot: 'item',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Item size=xs',
+    props: {
+      size: 'xs',
+    },
+  },
+  {
+    item: 'item',
+    component: 'ItemMedia',
+    slot: 'item-media',
+    ancestors: [
+      {
+        component: 'Item',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'ItemMedia variant=default',
+    props: {
+      variant: 'default',
+    },
+  },
+  {
+    item: 'item',
+    component: 'ItemMedia',
+    slot: 'item-media',
+    ancestors: [
+      {
+        component: 'Item',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'ItemMedia variant=icon',
+    props: {
+      variant: 'icon',
+    },
+  },
+  {
+    item: 'item',
+    component: 'ItemMedia',
+    slot: 'item-media',
+    ancestors: [
+      {
+        component: 'Item',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'ItemMedia variant=image',
+    props: {
+      variant: 'image',
+    },
+  },
+  {
+    item: 'item',
+    component: 'ItemContent',
+    slot: 'item-content',
+    ancestors: [
+      {
+        component: 'Item',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'ItemContent',
+    props: {},
+  },
+  {
+    item: 'item',
+    component: 'ItemTitle',
+    slot: 'item-title',
+    ancestors: [
+      {
+        component: 'Item',
+        props: {},
+      },
+      {
+        component: 'ItemContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'ItemTitle',
+    props: {},
+  },
+  {
+    item: 'item',
+    component: 'ItemDescription',
+    slot: 'item-description',
+    ancestors: [
+      {
+        component: 'Item',
+        props: {},
+      },
+      {
+        component: 'ItemContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'ItemDescription',
+    props: {},
+  },
+  {
+    item: 'item',
+    component: 'ItemActions',
+    slot: 'item-actions',
+    ancestors: [
+      {
+        component: 'Item',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'ItemActions',
+    props: {},
+  },
+  {
+    item: 'item',
+    component: 'ItemHeader',
+    slot: 'item-header',
+    ancestors: [
+      {
+        component: 'Item',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'ItemHeader',
+    props: {},
+  },
+  {
+    item: 'item',
+    component: 'ItemFooter',
+    slot: 'item-footer',
+    ancestors: [
+      {
+        component: 'Item',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'ItemFooter',
+    props: {},
+  },
+  {
+    item: 'pagination',
+    component: 'Pagination',
+    slot: 'pagination',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Pagination',
+    props: {},
+  },
+  {
+    item: 'pagination',
+    component: 'PaginationContent',
+    slot: 'pagination-content',
+    ancestors: [
+      {
+        component: 'Pagination',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'PaginationContent',
+    props: {},
+  },
+  {
+    item: 'pagination',
+    component: 'PaginationItem',
+    slot: 'pagination-item',
+    ancestors: [
+      {
+        component: 'Pagination',
+        props: {},
+      },
+      {
+        component: 'PaginationContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'PaginationItem',
+    props: {},
+  },
+  {
+    item: 'pagination',
+    component: 'PaginationLink',
+    slot: 'pagination-link',
+    ancestors: [
+      {
+        component: 'Pagination',
+        props: {},
+      },
+      {
+        component: 'PaginationContent',
+        props: {},
+      },
+      {
+        component: 'PaginationItem',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'PaginationLink',
+    props: {
+      href: '#',
+    },
+  },
+  {
+    item: 'pagination',
+    component: 'PaginationPrevious',
+    ancestors: [
+      {
+        component: 'Pagination',
+        props: {},
+      },
+      {
+        component: 'PaginationContent',
+        props: {},
+      },
+      {
+        component: 'PaginationItem',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'PaginationPrevious',
+    props: {
+      href: '#',
+    },
+  },
+  {
+    item: 'pagination',
+    component: 'PaginationNext',
+    ancestors: [
+      {
+        component: 'Pagination',
+        props: {},
+      },
+      {
+        component: 'PaginationContent',
+        props: {},
+      },
+      {
+        component: 'PaginationItem',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'PaginationNext',
+    props: {
+      href: '#',
+    },
+  },
+  {
+    item: 'pagination',
+    component: 'PaginationEllipsis',
+    slot: 'pagination-ellipsis',
+    ancestors: [
+      {
+        component: 'Pagination',
+        props: {},
+      },
+      {
+        component: 'PaginationContent',
+        props: {},
+      },
+      {
+        component: 'PaginationItem',
+        props: {},
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'PaginationEllipsis',
+    props: {},
+  },
+  {
+    item: 'marker',
+    component: 'Marker',
+    slot: 'marker',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Marker variant=default',
+    props: {
+      variant: 'default',
+    },
+  },
+  {
+    item: 'marker',
+    component: 'Marker',
+    slot: 'marker',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Marker variant=separator',
+    props: {
+      variant: 'separator',
+    },
+  },
+  {
+    item: 'marker',
+    component: 'Marker',
+    slot: 'marker',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Marker variant=border',
+    props: {
+      variant: 'border',
+    },
+  },
+  {
+    item: 'marker',
+    component: 'MarkerIcon',
+    slot: 'marker-icon',
+    ancestors: [
+      {
+        component: 'Marker',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'MarkerIcon',
+    props: {},
+  },
+  {
+    item: 'marker',
+    component: 'MarkerContent',
+    slot: 'marker-content',
+    ancestors: [
+      {
+        component: 'Marker',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'MarkerContent',
+    props: {},
+  },
+  {
+    item: 'message',
+    component: 'MessageGroup',
+    slot: 'message-group',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'MessageGroup',
+    props: {},
+  },
+  {
+    item: 'message',
+    component: 'Message',
+    slot: 'message',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Message',
+    props: {},
+  },
+  {
+    item: 'message',
+    component: 'MessageAvatar',
+    slot: 'message-avatar',
+    ancestors: [
+      {
+        component: 'Message',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'MessageAvatar',
+    props: {},
+  },
+  {
+    item: 'message',
+    component: 'MessageContent',
+    slot: 'message-content',
+    ancestors: [
+      {
+        component: 'Message',
+        props: {
+          align: 'end',
+        },
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'MessageContent',
+    props: {},
+  },
+  {
+    item: 'message',
+    component: 'MessageHeader',
+    slot: 'message-header',
+    ancestors: [
+      {
+        component: 'Message',
+        props: {},
+      },
+      {
+        component: 'MessageContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'MessageHeader',
+    props: {},
+  },
+  {
+    item: 'message',
+    component: 'MessageFooter',
+    slot: 'message-footer',
+    ancestors: [
+      {
+        component: 'Message',
+        props: {
+          align: 'end',
+        },
+      },
+      {
+        component: 'MessageContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'MessageFooter',
+    props: {},
+  },
+  {
+    item: 'bubble',
+    component: 'BubbleGroup',
+    slot: 'bubble-group',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'BubbleGroup',
+    props: {},
+  },
+  {
+    item: 'bubble',
+    component: 'Bubble',
+    slot: 'bubble',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Bubble variant=default',
+    props: {
+      variant: 'default',
+    },
+  },
+  {
+    item: 'bubble',
+    component: 'Bubble',
+    slot: 'bubble',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Bubble variant=secondary',
+    props: {
+      variant: 'secondary',
+    },
+  },
+  {
+    item: 'bubble',
+    component: 'Bubble',
+    slot: 'bubble',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Bubble variant=muted',
+    props: {
+      variant: 'muted',
+    },
+  },
+  {
+    item: 'bubble',
+    component: 'Bubble',
+    slot: 'bubble',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Bubble variant=tinted',
+    props: {
+      variant: 'tinted',
+    },
+  },
+  {
+    item: 'bubble',
+    component: 'Bubble',
+    slot: 'bubble',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Bubble variant=outline',
+    props: {
+      variant: 'outline',
+    },
+  },
+  {
+    item: 'bubble',
+    component: 'Bubble',
+    slot: 'bubble',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Bubble variant=ghost',
+    props: {
+      variant: 'ghost',
+    },
+  },
+  {
+    item: 'bubble',
+    component: 'Bubble',
+    slot: 'bubble',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Bubble variant=destructive',
+    props: {
+      variant: 'destructive',
+    },
+  },
+  {
+    item: 'bubble',
+    component: 'BubbleContent',
+    slot: 'bubble-content',
+    ancestors: [
+      {
+        component: 'Bubble',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'BubbleContent',
+    props: {},
+  },
+  {
+    item: 'bubble',
+    component: 'BubbleReactions',
+    slot: 'bubble-reactions',
+    ancestors: [
+      {
+        component: 'Bubble',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'BubbleReactions side=top',
+    props: {
+      role: 'img',
+      'aria-label': 'Reaction: thumbs up',
+      side: 'top',
+    },
+  },
+  {
+    item: 'bubble',
+    component: 'BubbleReactions',
+    slot: 'bubble-reactions',
+    ancestors: [
+      {
+        component: 'Bubble',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'BubbleReactions side=bottom',
+    props: {
+      role: 'img',
+      'aria-label': 'Reaction: thumbs up',
+      side: 'bottom',
+    },
+  },
+  {
+    item: 'bubble',
+    component: 'BubbleReactions',
+    slot: 'bubble-reactions',
+    ancestors: [
+      {
+        component: 'Bubble',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'BubbleReactions align=start',
+    props: {
+      role: 'img',
+      'aria-label': 'Reaction: thumbs up',
+      align: 'start',
+    },
+  },
+  {
+    item: 'bubble',
+    component: 'BubbleReactions',
+    slot: 'bubble-reactions',
+    ancestors: [
+      {
+        component: 'Bubble',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'BubbleReactions align=end',
+    props: {
+      role: 'img',
+      'aria-label': 'Reaction: thumbs up',
+      align: 'end',
+    },
+  },
+  {
+    item: 'attachment',
+    component: 'Attachment',
+    slot: 'attachment',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Attachment size=default',
+    props: {
+      size: 'default',
+    },
+  },
+  {
+    item: 'attachment',
+    component: 'Attachment',
+    slot: 'attachment',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Attachment size=sm',
+    props: {
+      size: 'sm',
+    },
+  },
+  {
+    item: 'attachment',
+    component: 'Attachment',
+    slot: 'attachment',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Attachment size=xs',
+    props: {
+      size: 'xs',
+    },
+  },
+  {
+    item: 'attachment',
+    component: 'Attachment',
+    slot: 'attachment',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Attachment orientation=horizontal',
+    props: {
+      orientation: 'horizontal',
+    },
+  },
+  {
+    item: 'attachment',
+    component: 'Attachment',
+    slot: 'attachment',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'Attachment orientation=vertical',
+    props: {
+      orientation: 'vertical',
+    },
+  },
+  {
+    item: 'attachment',
+    component: 'AttachmentMedia',
+    slot: 'attachment-media',
+    ancestors: [
+      {
+        component: 'Attachment',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'AttachmentMedia variant=icon',
+    props: {
+      variant: 'icon',
+    },
+  },
+  {
+    item: 'attachment',
+    component: 'AttachmentMedia',
+    slot: 'attachment-media',
+    ancestors: [
+      {
+        component: 'Attachment',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'AttachmentMedia variant=image',
+    props: {
+      variant: 'image',
+    },
+  },
+  {
+    item: 'attachment',
+    component: 'AttachmentContent',
+    slot: 'attachment-content',
+    ancestors: [
+      {
+        component: 'Attachment',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'AttachmentContent',
+    props: {},
+  },
+  {
+    item: 'attachment',
+    component: 'AttachmentTitle',
+    slot: 'attachment-title',
+    ancestors: [
+      {
+        component: 'Attachment',
+        props: {},
+      },
+      {
+        component: 'AttachmentContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'AttachmentTitle',
+    props: {},
+  },
+  {
+    item: 'attachment',
+    component: 'AttachmentDescription',
+    slot: 'attachment-description',
+    ancestors: [
+      {
+        component: 'Attachment',
+        props: {},
+      },
+      {
+        component: 'AttachmentContent',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'AttachmentDescription',
+    props: {},
+  },
+  {
+    item: 'attachment',
+    component: 'AttachmentActions',
+    slot: 'attachment-actions',
+    ancestors: [
+      {
+        component: 'Attachment',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'AttachmentActions',
+    props: {},
+  },
+  {
+    item: 'attachment',
+    component: 'AttachmentAction',
+    slot: 'attachment-action',
+    ancestors: [
+      {
+        component: 'Attachment',
+        props: {},
+      },
+      {
+        component: 'AttachmentActions',
+        props: {},
+      },
+    ],
+    children: true,
+    overlay: false,
+    label: 'AttachmentAction',
+    props: {
+      'aria-label': 'Remove sales-dashboard.pdf',
+    },
+  },
+  {
+    item: 'attachment',
+    component: 'AttachmentTrigger',
+    slot: 'attachment-trigger',
+    ancestors: [
+      {
+        component: 'Attachment',
+        props: {
+          size: 'sm',
+        },
+      },
+    ],
+    children: false,
+    overlay: false,
+    label: 'AttachmentTrigger',
+    props: {},
+  },
+  {
+    item: 'attachment',
+    component: 'AttachmentGroup',
+    slot: 'attachment-group',
+    ancestors: [],
+    children: true,
+    overlay: false,
+    label: 'AttachmentGroup',
     props: {},
   },
 ]

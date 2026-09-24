@@ -8,6 +8,9 @@
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": false,
     "types": ["node", "vite/client"],
+    // Upstream's docs examples, compiled here as written, index arrays
+    // without checking for undefined.
+    "noUncheckedIndexedAccess": false,
     "paths": {
       "@/registry/bje/ui/*": ["../registry/ui/*"],
       "@/registry/base-vega/ui/*": ["./generated/upstream/*"],

@@ -97,7 +97,13 @@
     width: calc(var(--spacing) * 3);
     height: calc(var(--spacing) * 3);
   }
-  &:is(:where([data-slot="avatar"])[data-size="sm"] *), &:is(:where([data-slot="avatar"])[data-size="default"] *) > svg, &:is(:where([data-slot="avatar"])[data-size="lg"] *) > svg {
+  &:is(:where([data-slot="avatar"])[data-size="sm"] *) {
+    width: calc(var(--spacing) * 2);
+    height: calc(var(--spacing) * 2);
+  }
+}
+.avatarBadge {
+  &:is(:where([data-slot="avatar"])[data-size="default"] *) > svg, &:is(:where([data-slot="avatar"])[data-size="lg"] *) > svg {
     width: calc(var(--spacing) * 2);
     height: calc(var(--spacing) * 2);
   }
@@ -108,6 +114,8 @@
 
 :where(.avatarGroup) {
   display: flex;
+}
+.avatarGroup {
   :where(& > :not(:last-child)) {
     --tw-space-x-reverse: 0;
     margin-inline-start: calc(calc(var(--spacing) * -2) * var(--tw-space-x-reverse));
@@ -144,6 +152,8 @@
     width: calc(var(--spacing) * 6);
     height: calc(var(--spacing) * 6);
   }
+}
+.avatarGroupCount {
   & > svg {
     width: calc(var(--spacing) * 4);
     height: calc(var(--spacing) * 4);

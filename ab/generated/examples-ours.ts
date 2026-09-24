@@ -30,6 +30,14 @@ import * as scrollAreaExample from './examples/ours/scroll-area-example'
 import * as nativeSelectExample from './examples/ours/native-select-example'
 import * as accordionExample from './examples/ours/accordion-example'
 import * as inputOtpExample from './examples/ours/input-otp-example'
+import * as fieldExample from './examples/ours/field-example'
+import * as inputGroupExample from './examples/ours/input-group-example'
+import * as itemExample from './examples/ours/item-example'
+import * as paginationExample from './examples/ours/pagination-example'
+import * as markerExample from './examples/ours/marker-example'
+import * as messageExample from './examples/ours/message-example'
+import * as bubbleExample from './examples/ours/bubble-example'
+import * as attachmentExample from './examples/ours/attachment-example'
 
 export const oursExamples = {
   'button-example': buttonExample,
@@ -62,4 +70,12 @@ export const oursExamples = {
   'native-select-example': nativeSelectExample,
   'accordion-example': accordionExample,
   'input-otp-example': inputOtpExample,
+  'field-example': fieldExample,
+  'input-group-example': inputGroupExample,
+  'item-example': itemExample,
+  'pagination-example': paginationExample,
+  'marker-example': markerExample,
+  'message-example': messageExample,
+  'bubble-example': bubbleExample,
+  'attachment-example': attachmentExample,
 }

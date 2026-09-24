@@ -11,6 +11,12 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from '@/registry/bje/ui/Empty/Empty'
+import { Field, FieldLabel } from '@/registry/bje/ui/Field/Field'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from '@/registry/bje/ui/InputGroup/InputGroup'
 import { Spinner } from '@/registry/bje/ui/Spinner/Spinner'
 import { IconPlaceholder } from '@/app/(create)/components/icon-placeholder'
 
@@ -72,6 +78,22 @@ function SpinnerInBadges() {
   )
 }
 
+function SpinnerInInputGroup() {
+  return (
+    <Example title="In Input Group">
+      <Field>
+        <FieldLabel htmlFor="input-group-spinner">Input Group</FieldLabel>
+        <InputGroup>
+          <InputGroupInput id="input-group-spinner" />
+          <InputGroupAddon>
+            <Spinner />
+          </InputGroupAddon>
+        </InputGroup>
+      </Field>
+    </Example>
+  )
+}
+
 function SpinnerInEmpty() {
   return (
     <Example title="In Empty State" containerClassName="lg:col-span-full">
@@ -113,4 +135,4 @@ function SpinnerInEmpty() {
   )
 }
 
-export { SpinnerBasic, SpinnerInButtons, SpinnerInBadges, SpinnerInEmpty }
+export { SpinnerBasic, SpinnerInButtons, SpinnerInBadges, SpinnerInInputGroup, SpinnerInEmpty }

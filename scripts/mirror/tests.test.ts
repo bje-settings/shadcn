@@ -95,7 +95,7 @@ export { Chip, ChipList, ChipItem }`,
     )
     expect(test).toContain('import { Chip, ChipItem, ChipList } from "./Chip"')
     expect(test).toContain(
-      'render(<Chip defaultOpen value="a" count={2}><ChipList><ChipItem data-testid="subject" {...({ "value": "a", ...props } as ComponentProps<typeof ChipItem>)} /></ChipList></Chip>)',
+      'render(<Chip defaultOpen value="a" count={2}><ChipList><ChipItem data-testid="subject" {...({ "value": "a", "children": "ChipItem", ...props } as ComponentProps<typeof ChipItem>)} /></ChipList></Chip>)',
     )
     expect(test).toContain('  cleanup()\n')
     expect(test).toContain(
@@ -116,7 +116,7 @@ export { Chip, ChipList, ChipItem }`,
 export { Chip }`,
       {
         types: new Map([
-          ['Chip', { className: false, opens: true, keepMounted: false, required: [] }],
+          ['Chip', { className: false, opens: true, keepMounted: false, required: [], text: true }],
         ]),
         scaffolds: new Map([
           [
@@ -159,7 +159,7 @@ export { x as "y" } from "@base-ui/react/odd"`)
     expect(() =>
       generate(`${header}
 export function Chip({ className }) { return <span data-slot="chip" className={cn("x", className)} /> }
-export function ChipIcon() { return <svg /> }`),
+export function ChipIcon() { return null }`),
     ).toThrow('chip: no test template for ChipIcon yet')
   })
 

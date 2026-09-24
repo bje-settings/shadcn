@@ -56,7 +56,7 @@ function defaultClasses(set: VariantSet): string[] {
     `styles.${set.base}`,
     ...set.groups.flatMap((group) => {
       const option = group.options.find((o) => o.value === group.default)
-      return option ? [`styles.${option.slot}`] : []
+      return option?.slot ? [`styles.${option.slot}`] : []
     }),
   ]
 }
@@ -158,37 +158,48 @@ function componentTests(
   // the ids React's useId makes differ between renders.
   const explicit = component.defaults.filter((d) => !groupNames.has(d.prop))
 
-  // Partial: a test passes only the props it is about, and leaves a required
-  // one (AspectRatio's ratio) unset.
+  // A test passes only the props it is about, leaving a required one
+  // (AspectRatio's ratio) unset, and may pass null for a cva() group upstream
+  // types without it (Bubble's align), which the variants function accepts.
   const props = `ComponentProps<typeof ${component.name}>`
+  const params = `props: Partial<Record<keyof ${props}, unknown>> = {}`
   // Rendered inside its scaffold, whose popups portal out of the container,
   // so each render starts from an empty document and queries all of it.
   // The scaffold's props go in with the test's on top, as one object:
   // separate JSX attributes would repeat a required prop the test's props
-  // type also holds.
-  const own =
-    Object.keys(scaffold.props).length > 0 ? objectLiteral(scaffold.props, 'props') : 'props'
+  // type also holds. So do children, when it takes them (some render nothing
+  // without, like FieldError): JSX children would not narrow a props union
+  // (InputOTP's).
+  const own = {
+    ...scaffold.props,
+    ...(scaffold.children ? { children: component.name } : {}),
+  }
+  const spread = Object.keys(own).length > 0 ? objectLiteral(own, 'props') : 'props'
   const rendered = scaffolded(
     scaffold.ancestors,
-    `<${component.name} data-testid="subject" {...(${own} as ${props})} />`,
+    `<${component.name} data-testid="subject" {...(${spread} as ${props})} />`,
     attributes,
   )
   // The component under test carries data-testid="subject", so a copy of
   // the same part its scaffold renders (Progress renders its own
   // ProgressTrack) is never the one checked. Its data-slot element is the
   // subject or encloses it (NativeSelect's wrapper around the select).
-  const slot = q(`[data-slot="${component.dataSlot}"]`)
+  const subject = `document.querySelector('[data-testid="subject"]')`
+  const found =
+    component.dataSlot === undefined
+      ? subject
+      : `${subject}?.closest(${q(`[data-slot="${component.dataSlot}"]`)})`
   const lines = [
-    `function ${render}(props: Partial<${props}> = {}) {`,
+    `function ${render}(${params}) {`,
     '  cleanup()',
     `  render(${rendered})`,
-    `  return document.querySelector('[data-testid="subject"]')?.closest(${slot})`,
+    `  return ${found}`,
     '}',
     '',
     // Only an element with classes of its own, or cva() groups, checks them.
     ...(expected.length > 0 || groups.length > 0
       ? [
-          `function ${classes}(props: Partial<${props}> = {}) {`,
+          `function ${classes}(${params}) {`,
           `  return ${render}(props)?.getAttribute("class")?.split(" ") ?? []`,
           '}',
           '',
@@ -197,7 +208,7 @@ function componentTests(
   ]
   if (explicit.length > 0) {
     lines.push(
-      `function ${attributesOf}(props: Partial<${props}> = {}) {`,
+      `function ${attributesOf}(${params}) {`,
       `  const element = ${render}(props)`,
       '  return Object.fromEntries(',
       '    [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, "")]),',
@@ -211,17 +222,20 @@ function componentTests(
   // own; the className test below still finds it by its data-slot.
   if (expected.length > 0) {
     lines.push(
-      `  it(${q(`renders [data-slot="${component.dataSlot}"] with its classes`)}, () => {`,
+      `  it(${q(component.dataSlot === undefined ? 'renders with its classes' : `renders [data-slot="${component.dataSlot}"] with its classes`)}, () => {`,
       `    expect(${classes}()).toEqual(expect.arrayContaining([${expected.join(', ')}]))`,
       '  })',
     )
   }
 
-  for (const group of groups) {
+  // An option without classes has nothing to apply.
+  const styledOptions = (group: VariantSet['groups'][number]) =>
+    group.options.filter((o) => o.slot !== undefined)
+  for (const group of groups.filter((g) => styledOptions(g).length > 0)) {
     lines.push(
       '',
       '  it.each([',
-      ...group.options.map((o) => `    [${q(o.value)}, styles.${o.slot}],`),
+      ...styledOptions(group).map((o) => `    [${q(o.value)}, styles.${o.slot}],`),
       `  ] as const)(${q(`${group.name} %s applies its class`)}, (value, className) => {`,
       `    expect(${classes}({ ${group.name}: value })).toContain(className)`,
       '  })',
@@ -229,7 +243,9 @@ function componentTests(
   }
   if (set && groups.length > 0) {
     const nulls = groups.map((group) => `${group.name}: null`).join(', ')
-    const optionClasses = groups.flatMap((group) => group.options.map((o) => `styles.${o.slot}`))
+    const optionClasses = groups.flatMap((group) =>
+      styledOptions(group).map((o) => `styles.${o.slot}`),
+    )
     lines.push(
       '',
       '  it("applies no group class for a null group", () => {',

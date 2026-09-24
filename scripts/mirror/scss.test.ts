@@ -6,6 +6,7 @@ const none: SlotOptions = {
   consumerClasses: new Map(),
   markers: new Map(),
   classProbe: () => [],
+  globalClasses: new Set(['dark']),
 }
 
 async function convert(classes: string[], options: Partial<SlotOptions> = {}) {
@@ -117,6 +118,31 @@ describe('slotToScss', () => {
     expect(scss).toContain('  &::selection {')
   })
 
+  it("styles descendants at the class's specificity and the slot itself at zero", async () => {
+    const { scss } = await convert(['flex', '*:w-full', '[&_svg]:size-4', 'hover:underline'])
+    expect(scss).toBe(
+      [
+        ':where(.root) {',
+        '  display: flex;',
+        '  &:hover {',
+        '    @media (hover: hover) {',
+        '      text-decoration-line: underline;',
+        '    }',
+        '  }',
+        '}',
+        '.root {',
+        '  :is(& > *) {',
+        '    width: 100%;',
+        '  }',
+        '  & svg {',
+        '    width: calc(var(--spacing) * 4);',
+        '    height: calc(var(--spacing) * 4);',
+        '  }',
+        '}',
+      ].join('\n'),
+    )
+  })
+
   it('keeps !important', async () => {
     const { scss } = await convert(['flex!'])
     expect(scss).toContain('display: flex !important;')
@@ -126,7 +152,9 @@ describe('slotToScss', () => {
     const classProbe = (fragment: string) =>
       fragment === 'size-' ? ['[data-slot="spinner"]', '[data-slot="icon"]'] : []
     const { scss } = await convert(["[&_svg:not([class*='size-'])]:size-4"], { classProbe })
-    expect(scss).toContain('  & svg:not([data-slot="icon"], [data-slot="spinner"]) {\n')
+    expect(scss).toContain('  & svg:where(:not([data-slot="icon"], [data-slot="spinner"])) {\n')
+    // A default an icon's own size class overrides: zero specificity.
+    expect(scss).toMatch(/^:where\(\.root\) \{\n {2}& svg/)
   })
 
   it('drops a class probe that finds nothing', async () => {

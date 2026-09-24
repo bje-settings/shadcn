@@ -6,18 +6,24 @@ import { describe, expect, it } from 'vitest'
 import { RadioGroup, RadioGroupItem } from './RadioGroup'
 import styles from './RadioGroup.module.scss'
 
-function renderRadioGroup(props: Partial<ComponentProps<typeof RadioGroup>> = {}) {
+function renderRadioGroup(
+  props: Partial<Record<keyof ComponentProps<typeof RadioGroup>, unknown>> = {},
+) {
   cleanup()
   render(
     <RadioGroup
       data-testid="subject"
-      {...({ defaultValue: 'comfortable', ...props } as ComponentProps<typeof RadioGroup>)}
+      {...({ defaultValue: 'comfortable', children: 'RadioGroup', ...props } as ComponentProps<
+        typeof RadioGroup
+      >)}
     />,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="radio-group"]')
 }
 
-function classesOfRadioGroup(props: Partial<ComponentProps<typeof RadioGroup>> = {}) {
+function classesOfRadioGroup(
+  props: Partial<Record<keyof ComponentProps<typeof RadioGroup>, unknown>> = {},
+) {
   return renderRadioGroup(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -73,7 +79,9 @@ describe('RadioGroup', () => {
   })
 })
 
-function renderRadioGroupItem(props: Partial<ComponentProps<typeof RadioGroupItem>> = {}) {
+function renderRadioGroupItem(
+  props: Partial<Record<keyof ComponentProps<typeof RadioGroupItem>, unknown>> = {},
+) {
   cleanup()
   render(
     <RadioGroup defaultValue="comfortable">
@@ -88,7 +96,9 @@ function renderRadioGroupItem(props: Partial<ComponentProps<typeof RadioGroupIte
     ?.closest('[data-slot="radio-group-item"]')
 }
 
-function classesOfRadioGroupItem(props: Partial<ComponentProps<typeof RadioGroupItem>> = {}) {
+function classesOfRadioGroupItem(
+  props: Partial<Record<keyof ComponentProps<typeof RadioGroupItem>, unknown>> = {},
+) {
   return renderRadioGroupItem(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

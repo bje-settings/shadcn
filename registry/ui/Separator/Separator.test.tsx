@@ -10,17 +10,23 @@ import styles from './Separator.module.scss'
 // differs between renders; Base UI puts it in ids and data-id.
 const USE_ID = /_r_[0-9a-z]+_|:r[0-9a-z]+:|«r[0-9a-z]+»/g
 
-function renderSeparator(props: Partial<ComponentProps<typeof Separator>> = {}) {
+function renderSeparator(
+  props: Partial<Record<keyof ComponentProps<typeof Separator>, unknown>> = {},
+) {
   cleanup()
   render(<Separator data-testid="subject" {...(props as ComponentProps<typeof Separator>)} />)
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="separator"]')
 }
 
-function classesOfSeparator(props: Partial<ComponentProps<typeof Separator>> = {}) {
+function classesOfSeparator(
+  props: Partial<Record<keyof ComponentProps<typeof Separator>, unknown>> = {},
+) {
   return renderSeparator(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
-function attributesOfSeparator(props: Partial<ComponentProps<typeof Separator>> = {}) {
+function attributesOfSeparator(
+  props: Partial<Record<keyof ComponentProps<typeof Separator>, unknown>> = {},
+) {
   const element = renderSeparator(props)
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),

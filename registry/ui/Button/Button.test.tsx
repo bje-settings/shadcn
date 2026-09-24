@@ -6,13 +6,20 @@ import { describe, expect, it } from 'vitest'
 import { Button, buttonVariants } from './Button'
 import styles from './Button.module.scss'
 
-function renderButton(props: Partial<ComponentProps<typeof Button>> = {}) {
+function renderButton(props: Partial<Record<keyof ComponentProps<typeof Button>, unknown>> = {}) {
   cleanup()
-  render(<Button data-testid="subject" {...(props as ComponentProps<typeof Button>)} />)
+  render(
+    <Button
+      data-testid="subject"
+      {...({ children: 'Button', ...props } as ComponentProps<typeof Button>)}
+    />,
+  )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="button"]')
 }
 
-function classesOfButton(props: Partial<ComponentProps<typeof Button>> = {}) {
+function classesOfButton(
+  props: Partial<Record<keyof ComponentProps<typeof Button>, unknown>> = {},
+) {
   return renderButton(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

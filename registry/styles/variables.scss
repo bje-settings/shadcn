@@ -10,6 +10,7 @@
       --tw-translate-x: 0;
       --tw-translate-y: 0;
       --tw-translate-z: 0;
+      --tw-scroll-snap-strictness: proximity;
       --tw-space-x-reverse: 0;
       --tw-border-style: solid;
       --tw-leading: initial;
@@ -84,6 +85,8 @@
     --font-weight-normal: 400;
     --font-weight-medium: 500;
     --tracking-tight: -.025em;
+    --leading-tight: 1.25;
+    --leading-snug: 1.375;
     --leading-normal: 1.5;
     --leading-relaxed: 1.625;
     --radius-md: calc(var(--radius) * .8);
@@ -334,6 +337,12 @@
   syntax: "*";
   inherits: false;
   initial-value: 0;
+}
+
+@property --tw-scroll-snap-strictness {
+  syntax: "*";
+  inherits: false;
+  initial-value: proximity;
 }
 
 @property --tw-space-x-reverse {

@@ -6,13 +6,15 @@ import { describe, expect, it } from 'vitest'
 import { Spinner } from './Spinner'
 import styles from './Spinner.module.scss'
 
-function renderSpinner(props: Partial<ComponentProps<typeof Spinner>> = {}) {
+function renderSpinner(props: Partial<Record<keyof ComponentProps<typeof Spinner>, unknown>> = {}) {
   cleanup()
   render(<Spinner data-testid="subject" {...(props as ComponentProps<typeof Spinner>)} />)
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="spinner"]')
 }
 
-function classesOfSpinner(props: Partial<ComponentProps<typeof Spinner>> = {}) {
+function classesOfSpinner(
+  props: Partial<Record<keyof ComponentProps<typeof Spinner>, unknown>> = {},
+) {
   return renderSpinner(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

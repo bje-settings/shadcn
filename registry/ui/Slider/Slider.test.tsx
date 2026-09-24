@@ -10,7 +10,7 @@ import styles from './Slider.module.scss'
 // differs between renders; Base UI puts it in ids and data-id.
 const USE_ID = /_r_[0-9a-z]+_|:r[0-9a-z]+:|«r[0-9a-z]+»/g
 
-function renderSlider(props: Partial<ComponentProps<typeof Slider>> = {}) {
+function renderSlider(props: Partial<Record<keyof ComponentProps<typeof Slider>, unknown>> = {}) {
   cleanup()
   render(
     <Slider
@@ -21,11 +21,15 @@ function renderSlider(props: Partial<ComponentProps<typeof Slider>> = {}) {
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="slider"]')
 }
 
-function classesOfSlider(props: Partial<ComponentProps<typeof Slider>> = {}) {
+function classesOfSlider(
+  props: Partial<Record<keyof ComponentProps<typeof Slider>, unknown>> = {},
+) {
   return renderSlider(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
-function attributesOfSlider(props: Partial<ComponentProps<typeof Slider>> = {}) {
+function attributesOfSlider(
+  props: Partial<Record<keyof ComponentProps<typeof Slider>, unknown>> = {},
+) {
   const element = renderSlider(props)
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),

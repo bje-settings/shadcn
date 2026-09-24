@@ -21,6 +21,7 @@ const valid = {
   harnessDir: 'ab/generated',
   consumerClasses: [{ classes: ['border-b'], reason: 'consumer' }],
   coverageExclusions: { button: 'why' },
+  globalClasses: [{ classes: ['dark'], reason: 'dark mode' }],
 }
 
 function withChange(change: Record<string, unknown>) {

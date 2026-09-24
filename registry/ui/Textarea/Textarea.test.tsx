@@ -6,7 +6,9 @@ import { describe, expect, it } from 'vitest'
 import { Textarea } from './Textarea'
 import styles from './Textarea.module.scss'
 
-function renderTextarea(props: Partial<ComponentProps<typeof Textarea>> = {}) {
+function renderTextarea(
+  props: Partial<Record<keyof ComponentProps<typeof Textarea>, unknown>> = {},
+) {
   cleanup()
   render(
     <Textarea
@@ -17,7 +19,9 @@ function renderTextarea(props: Partial<ComponentProps<typeof Textarea>> = {}) {
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="textarea"]')
 }
 
-function classesOfTextarea(props: Partial<ComponentProps<typeof Textarea>> = {}) {
+function classesOfTextarea(
+  props: Partial<Record<keyof ComponentProps<typeof Textarea>, unknown>> = {},
+) {
   return renderTextarea(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

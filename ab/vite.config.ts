@@ -23,7 +23,9 @@ export default defineConfig({
       '@/app/(create)/components/icon-placeholder': `${ab}stubs/icon-placeholder.tsx`,
     },
   },
-  server: { fs: { allow: [repo] } },
+  // Console output stays in the browser: the A/B spec reads it there, and
+  // forwarding every page's messages to the server slows a parallel run.
+  server: { fs: { allow: [repo] }, forwardConsole: false },
   build: {
     rollupOptions: {
       input: {

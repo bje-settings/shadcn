@@ -191,6 +191,7 @@ export async function buildComponent(
     markers: context.markers,
     classProbe: context.classProbe,
     consumerClasses: consumerClassReasons(config),
+    globalClasses: new Set(config.globalClasses.flatMap(({ classes }) => classes)),
   }
   for (const slot of source.slots) {
     const block = slotToScss(await compile(slot.classes), slot, options)

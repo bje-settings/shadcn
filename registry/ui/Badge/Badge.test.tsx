@@ -6,13 +6,18 @@ import { describe, expect, it } from 'vitest'
 import { Badge, badgeVariants } from './Badge'
 import styles from './Badge.module.scss'
 
-function renderBadge(props: Partial<ComponentProps<typeof Badge>> = {}) {
+function renderBadge(props: Partial<Record<keyof ComponentProps<typeof Badge>, unknown>> = {}) {
   cleanup()
-  render(<Badge data-testid="subject" {...(props as ComponentProps<typeof Badge>)} />)
+  render(
+    <Badge
+      data-testid="subject"
+      {...({ children: 'Badge', ...props } as ComponentProps<typeof Badge>)}
+    />,
+  )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="badge"]')
 }
 
-function classesOfBadge(props: Partial<ComponentProps<typeof Badge>> = {}) {
+function classesOfBadge(props: Partial<Record<keyof ComponentProps<typeof Badge>, unknown>> = {}) {
   return renderBadge(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

@@ -38,6 +38,11 @@ export type SlotOptions = {
   classProbe: (fragment: string) => string[]
   // Reason each configured consumer class's rules are dropped, by class
   consumerClasses: Map<string, string>
+  // Classes a selector may name outside the module (`.dark` from the dark
+  // variant), kept as :global() so CSS modules leave them alone. Group and
+  // peer markers become the selector `markers` gives them; any other outside
+  // class would never be on an element here.
+  globalClasses: Set<string>
   // Selector each group/peer marker class becomes: the data-slot of the
   // elements carrying it (`[data-slot="card"]` for `group/card`), or their
   // module class when they render none.
@@ -61,19 +66,15 @@ function wrappersOf(rule: Rule, layer: AtRule): string[] {
   return wrappers
 }
 
-// Classes Tailwind variants may name outside the element: `.dark` from the
-// dark variant, marked :global() so CSS modules leave it alone, and group or
-// peer markers, which become the selector options.markers gives them. Any
-// other class would never be on an element here.
-const GLOBAL_CLASSES = new Set(['dark'])
-
 // Tailwind's group and peer marker classes: they have no CSS of their own.
 export const MARKER = /^(group|peer)(\/[\w-]+)?$/
 
 // A `:not()` whose every argument probes class names, like upstream's
 // `svg:not([class*="size-"])`: a default for icons that set no size of their
-// own. It becomes `:not()` of the mirrored elements whose upstream classes
-// match, or goes when none do.
+// own. It becomes `:where(:not())` of the mirrored elements whose upstream
+// classes match, or goes when none do. :where() keeps it from adding
+// specificity, so a consumer's own size class on an icon still wins, as it
+// does upstream where the probe excludes that icon.
 function resolveClassProbes(root: selectorParser.Root, classProbe: SlotOptions['classProbe']) {
   root.walkPseudos((pseudo) => {
     if (pseudo.value !== ':not') return
@@ -86,10 +87,10 @@ function resolveClassProbes(root: selectorParser.Root, classProbe: SlotOptions['
     if (!probes.every((probe) => typeof probe === 'string')) return
     const selectors = [...new Set(probes.flatMap((probe) => classProbe(probe)))].sort()
     if (selectors.length === 0) pseudo.remove()
-    else {
-      pseudo.removeAll()
-      for (const node of selectorParser().astSync(selectors.join(', ')).nodes) pseudo.append(node)
-    }
+    else
+      pseudo.replaceWith(
+        selectorParser().astSync(`:where(:not(${selectors.join(', ')}))`).first.first,
+      )
   })
 }
 
@@ -115,7 +116,7 @@ function nestSelector(
         node.replaceWith(replacement)
         return
       }
-      if (!GLOBAL_CLASSES.has(node.value)) {
+      if (!options.globalClasses.has(node.value)) {
         throw new Error(
           `selector ${selector} references class .${node.value} outside the module; list it in consumerClasses if only a consumer adds it`,
         )
@@ -181,11 +182,31 @@ function dropReason(
   return missing && `needs a ${missing} marker, which no mirrored component carries.`
 }
 
+// Whether a nested selector styles another element than the slot's own: a
+// combinator follows `&` (`& svg`, `& > *`, `:is(& > *)`).
+function targetsDescendant(selector: string): boolean {
+  let descendant = false
+  selectorParser((root) => {
+    root.walkNesting((nesting) => {
+      const siblings = (nesting.parent as selectorParser.Selector).nodes
+      if (siblings.slice(siblings.indexOf(nesting) + 1).some((n) => n.type === 'combinator')) {
+        descendant = true
+      }
+    })
+  }).processSync(selector)
+  return descendant
+}
+
 export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssBlock {
   const candidates = new Set(slot.classes)
   const resolved = new Set<string>()
   const dropped = new Set<string>()
+  // The slot's own rules sit at zero specificity, so a consumer's className
+  // wins as tailwind-merge makes it win upstream. Rules styling descendants
+  // (Field's `*:w-full`) keep the class's specificity, as upstream's do: a
+  // child's own zero-specificity rules must not outrank them.
   const root: Block = { key: `:where(.${slot.name})`, items: [] }
+  const context: Block = { key: `.${slot.name}`, items: [] }
   const reads = new Set<string>()
   const sets = new Set<string>()
 
@@ -205,23 +226,34 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
       return false
     })
     if (kept.length === 0) return
-    const selectors = [
-      ...new Set(kept.map((selector) => nestSelector(selector, candidates, resolved, options))),
-    ]
+    // A rule gated on a class probe is a default an element's own class
+    // overrides (an icon's size), so it stays at zero specificity even when it
+    // styles descendants.
+    const nested = kept.map((raw) => {
+      const selector = nestSelector(raw, candidates, resolved, options)
+      return { selector, context: targetsDescendant(selector) && !/\[class\*=/.test(raw) }
+    })
+    const selectors = [...new Set(nested.map((n) => n.selector))]
     const decls: string[] = []
     rule.walkDecls((decl) => {
       if (decl.prop.startsWith('--')) sets.add(decl.prop)
       for (const [, name] of decl.value.matchAll(/var\((--[\w-]+)/g)) reads.add(name as string)
       decls.push(`${decl.prop}: ${decl.value}${decl.important ? ' !important' : ''}`)
     })
-    const selector = selectors.join(', ')
     // Any other selector inspecting class names looks for Tailwind classes no
     // element carries here.
-    if (/\[class[~|^$*]?=/.test(selector)) {
-      throw new Error(`${slot.name}: selector ${selector} matches class names outside :not()`)
-    }
+    const probe = selectors.find((selector) => /\[class[~|^$*]?=/.test(selector))
+    if (probe) throw new Error(`${slot.name}: selector ${probe} matches class names outside :not()`)
     const wrappers = wrappersOf(rule, layer)
-    insert(root, selector === '&' ? wrappers : [selector, ...wrappers], decls)
+    for (const [block, inContext] of [
+      [root, false],
+      [context, true],
+    ] as const) {
+      const group = new Set(nested.filter((n) => n.context === inContext).map((n) => n.selector))
+      const selector = [...group].join(', ')
+      if (selector === '') continue
+      insert(block, selector === '&' ? wrappers : [selector, ...wrappers], decls)
+    }
   })
 
   const unresolved = slot.classes.filter((c) => !resolved.has(c))
@@ -230,7 +262,10 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
     throw new Error(`${slot.name}: Tailwind produced no CSS for ${unknown.join(' ')}`)
   }
   return {
-    scss: print(root, 0).join('\n'),
+    scss: [root, context]
+      .filter((block) => block === root || block.items.length > 0)
+      .flatMap((block) => print(block, 0))
+      .join('\n'),
     unresolved,
     customProperties: [...reads].filter((name) => !sets.has(name)).sort(),
     dropped: [...dropped],

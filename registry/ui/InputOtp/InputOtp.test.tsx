@@ -6,18 +6,24 @@ import { describe, expect, it } from 'vitest'
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from './InputOtp'
 import styles from './InputOtp.module.scss'
 
-function renderInputOTP(props: Partial<ComponentProps<typeof InputOTP>> = {}) {
+function renderInputOTP(
+  props: Partial<Record<keyof ComponentProps<typeof InputOTP>, unknown>> = {},
+) {
   cleanup()
   render(
     <InputOTP
       data-testid="subject"
-      {...({ id: 'simple', maxLength: 6, ...props } as ComponentProps<typeof InputOTP>)}
+      {...({ id: 'simple', maxLength: 6, children: 'InputOTP', ...props } as ComponentProps<
+        typeof InputOTP
+      >)}
     />,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="input-otp"]')
 }
 
-function classesOfInputOTP(props: Partial<ComponentProps<typeof InputOTP>> = {}) {
+function classesOfInputOTP(
+  props: Partial<Record<keyof ComponentProps<typeof InputOTP>, unknown>> = {},
+) {
   return renderInputOTP(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -103,17 +109,24 @@ describe('InputOTP', () => {
   })
 })
 
-function renderInputOTPGroup(props: Partial<ComponentProps<typeof InputOTPGroup>> = {}) {
+function renderInputOTPGroup(
+  props: Partial<Record<keyof ComponentProps<typeof InputOTPGroup>, unknown>> = {},
+) {
   cleanup()
   render(
     <InputOTP id="simple" maxLength={6}>
-      <InputOTPGroup data-testid="subject" {...(props as ComponentProps<typeof InputOTPGroup>)} />
+      <InputOTPGroup
+        data-testid="subject"
+        {...({ children: 'InputOTPGroup', ...props } as ComponentProps<typeof InputOTPGroup>)}
+      />
     </InputOTP>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="input-otp-group"]')
 }
 
-function classesOfInputOTPGroup(props: Partial<ComponentProps<typeof InputOTPGroup>> = {}) {
+function classesOfInputOTPGroup(
+  props: Partial<Record<keyof ComponentProps<typeof InputOTPGroup>, unknown>> = {},
+) {
   return renderInputOTPGroup(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -199,7 +212,9 @@ describe('InputOTPGroup', () => {
   })
 })
 
-function renderInputOTPSlot(props: Partial<ComponentProps<typeof InputOTPSlot>> = {}) {
+function renderInputOTPSlot(
+  props: Partial<Record<keyof ComponentProps<typeof InputOTPSlot>, unknown>> = {},
+) {
   cleanup()
   render(
     <InputOTP id="simple" maxLength={6}>
@@ -214,7 +229,9 @@ function renderInputOTPSlot(props: Partial<ComponentProps<typeof InputOTPSlot>> 
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="input-otp-slot"]')
 }
 
-function classesOfInputOTPSlot(props: Partial<ComponentProps<typeof InputOTPSlot>> = {}) {
+function classesOfInputOTPSlot(
+  props: Partial<Record<keyof ComponentProps<typeof InputOTPSlot>, unknown>> = {},
+) {
   return renderInputOTPSlot(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -770,7 +787,9 @@ describe('InputOTPSlot', () => {
   })
 })
 
-function renderInputOTPSeparator(props: Partial<ComponentProps<typeof InputOTPSeparator>> = {}) {
+function renderInputOTPSeparator(
+  props: Partial<Record<keyof ComponentProps<typeof InputOTPSeparator>, unknown>> = {},
+) {
   cleanup()
   render(
     <InputOTP id="simple" maxLength={6}>
@@ -785,7 +804,9 @@ function renderInputOTPSeparator(props: Partial<ComponentProps<typeof InputOTPSe
     ?.closest('[data-slot="input-otp-separator"]')
 }
 
-function classesOfInputOTPSeparator(props: Partial<ComponentProps<typeof InputOTPSeparator>> = {}) {
+function classesOfInputOTPSeparator(
+  props: Partial<Record<keyof ComponentProps<typeof InputOTPSeparator>, unknown>> = {},
+) {
   return renderInputOTPSeparator(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

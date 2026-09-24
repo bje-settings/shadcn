@@ -10,7 +10,7 @@ import styles from './Switch.module.scss'
 // differs between renders; Base UI puts it in ids and data-id.
 const USE_ID = /_r_[0-9a-z]+_|:r[0-9a-z]+:|«r[0-9a-z]+»/g
 
-function renderSwitch(props: Partial<ComponentProps<typeof Switch>> = {}) {
+function renderSwitch(props: Partial<Record<keyof ComponentProps<typeof Switch>, unknown>> = {}) {
   cleanup()
   render(
     <Switch
@@ -21,11 +21,15 @@ function renderSwitch(props: Partial<ComponentProps<typeof Switch>> = {}) {
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="switch"]')
 }
 
-function classesOfSwitch(props: Partial<ComponentProps<typeof Switch>> = {}) {
+function classesOfSwitch(
+  props: Partial<Record<keyof ComponentProps<typeof Switch>, unknown>> = {},
+) {
   return renderSwitch(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
-function attributesOfSwitch(props: Partial<ComponentProps<typeof Switch>> = {}) {
+function attributesOfSwitch(
+  props: Partial<Record<keyof ComponentProps<typeof Switch>, unknown>> = {},
+) {
   const element = renderSwitch(props)
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),

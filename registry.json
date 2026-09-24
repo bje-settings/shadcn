@@ -909,6 +909,230 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "field",
+      "type": "registry:ui",
+      "title": "Field",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/label", "@bje/separator", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Field/Field.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Field/Field.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Field/Field.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input-group",
+      "type": "registry:ui",
+      "title": "InputGroup",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/input", "@bje/textarea", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/InputGroup/InputGroup.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/InputGroup/InputGroup.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/InputGroup/InputGroup.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "item",
+      "type": "registry:ui",
+      "title": "Item",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/separator", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Item/Item.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Item/Item.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Item/Item.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "pagination",
+      "type": "registry:ui",
+      "title": "Pagination",
+      "dependencies": ["clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Pagination/Pagination.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Pagination/Pagination.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Pagination/Pagination.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "marker",
+      "type": "registry:ui",
+      "title": "Marker",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Marker/Marker.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Marker/Marker.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Marker/Marker.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "message",
+      "type": "registry:ui",
+      "title": "Message",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Message/Message.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Message/Message.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Message/Message.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "bubble",
+      "type": "registry:ui",
+      "title": "Bubble",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Bubble/Bubble.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Bubble/Bubble.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Bubble/Bubble.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "attachment",
+      "type": "registry:ui",
+      "title": "Attachment",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/ui/Attachment/Attachment.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Attachment/Attachment.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/ui/Attachment/Attachment.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

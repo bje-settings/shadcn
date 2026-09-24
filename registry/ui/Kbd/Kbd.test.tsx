@@ -6,13 +6,18 @@ import { describe, expect, it } from 'vitest'
 import { Kbd, KbdGroup } from './Kbd'
 import styles from './Kbd.module.scss'
 
-function renderKbd(props: Partial<ComponentProps<typeof Kbd>> = {}) {
+function renderKbd(props: Partial<Record<keyof ComponentProps<typeof Kbd>, unknown>> = {}) {
   cleanup()
-  render(<Kbd data-testid="subject" {...(props as ComponentProps<typeof Kbd>)} />)
+  render(
+    <Kbd
+      data-testid="subject"
+      {...({ children: 'Kbd', ...props } as ComponentProps<typeof Kbd>)}
+    />,
+  )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="kbd"]')
 }
 
-function classesOfKbd(props: Partial<ComponentProps<typeof Kbd>> = {}) {
+function classesOfKbd(props: Partial<Record<keyof ComponentProps<typeof Kbd>, unknown>> = {}) {
   return renderKbd(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -38,13 +43,22 @@ describe('Kbd', () => {
   })
 })
 
-function renderKbdGroup(props: Partial<ComponentProps<typeof KbdGroup>> = {}) {
+function renderKbdGroup(
+  props: Partial<Record<keyof ComponentProps<typeof KbdGroup>, unknown>> = {},
+) {
   cleanup()
-  render(<KbdGroup data-testid="subject" {...(props as ComponentProps<typeof KbdGroup>)} />)
+  render(
+    <KbdGroup
+      data-testid="subject"
+      {...({ children: 'KbdGroup', ...props } as ComponentProps<typeof KbdGroup>)}
+    />,
+  )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="kbd-group"]')
 }
 
-function classesOfKbdGroup(props: Partial<ComponentProps<typeof KbdGroup>> = {}) {
+function classesOfKbdGroup(
+  props: Partial<Record<keyof ComponentProps<typeof KbdGroup>, unknown>> = {},
+) {
   return renderKbdGroup(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

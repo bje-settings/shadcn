@@ -26,8 +26,11 @@ function DialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
 function DialogClose(props: React.ComponentProps<typeof Button>) {
   return <Button data-slot="dialog-close" {...props} />
 }
+function DialogMeter(props: { value: number; className?: string; children?: undefined }) {
+  return <div data-slot="dialog-meter" {...props} />
+}
 const helper = 1
-export { Dialog, DialogTitle, DialogClose, helper }`,
+export { Dialog, DialogTitle, DialogClose, DialogMeter, helper }`,
     },
   ],
 }
@@ -54,9 +57,19 @@ export { Button }`,
     const types = partTypes('base-vega', prepared)
     expect(types.get('dialog')).toEqual(
       new Map([
-        ['Dialog', { className: false, opens: true, keepMounted: false, required: [] }],
-        ['DialogTitle', { className: true, opens: false, keepMounted: false, required: [] }],
-        ['DialogClose', { className: true, opens: false, keepMounted: false, required: [] }],
+        ['Dialog', { className: false, opens: true, keepMounted: false, required: [], text: true }],
+        [
+          'DialogTitle',
+          { className: true, opens: false, keepMounted: false, required: [], text: true },
+        ],
+        [
+          'DialogClose',
+          { className: true, opens: false, keepMounted: false, required: [], text: true },
+        ],
+        [
+          'DialogMeter',
+          { className: true, opens: false, keepMounted: false, required: ['value'], text: false },
+        ],
       ]),
     )
   }, 30_000)
@@ -76,13 +89,13 @@ export { Chips, Chip, ChipInput, ChipMenu, ChipPanel }`,
     'chip',
     'bje',
   )
-  const part = { className: true, opens: false, keepMounted: false, required: [] }
+  const part = { className: true, opens: false, keepMounted: false, required: [], text: true }
   const types = new Map([
-    ['Chips', part],
+    ['Chips', { ...part, text: false }],
     ['Chip', part],
     ['ChipInput', part],
-    ['ChipMenu', { className: false, opens: true, keepMounted: false, required: [] }],
-    ['ChipPanel', { ...part, keepMounted: true, required: [] }],
+    ['ChipMenu', { className: false, opens: true, keepMounted: false, required: [], text: true }],
+    ['ChipPanel', { ...part, keepMounted: true, required: [], text: true }],
   ])
 
   it("nests each part as the example first renders it, with the example's literal props", () => {
@@ -130,7 +143,8 @@ export { Chips, Chip, ChipInput, ChipMenu, ChipPanel }`,
       children: false,
       others: [],
     })
-    expect(result.get('Chips')?.children).toBe(true)
+    // The example passes Chips children, but its type takes no text.
+    expect(result.get('Chips')?.children).toBe(false)
   })
 
   it('renders a part the example never uses on its own, or inside the item root', () => {

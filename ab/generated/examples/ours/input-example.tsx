@@ -2,6 +2,7 @@
 
 import { Example } from '@/registry/base-vega/components/example'
 import { Button } from '@/registry/bje/ui/Button/Button'
+import { Field, FieldDescription, FieldLabel } from '@/registry/bje/ui/Field/Field'
 import { Input } from '@/registry/bje/ui/Input/Input'
 import { NativeSelect, NativeSelectOption } from '@/registry/bje/ui/NativeSelect/NativeSelect'
 
@@ -17,6 +18,81 @@ function InputInvalid() {
   return (
     <Example title="Invalid">
       <Input type="text" placeholder="Error" aria-invalid="true" />
+    </Example>
+  )
+}
+
+function InputWithLabel() {
+  return (
+    <Example title="With Label">
+      <Field>
+        <FieldLabel htmlFor="input-demo-email">Email</FieldLabel>
+        <Input id="input-demo-email" type="email" placeholder="name@example.com" />
+      </Field>
+    </Example>
+  )
+}
+
+function InputWithDescription() {
+  return (
+    <Example title="With Description">
+      <Field>
+        <FieldLabel htmlFor="input-demo-username">Username</FieldLabel>
+        <Input id="input-demo-username" type="text" placeholder="Enter your username" />
+        <FieldDescription>Choose a unique username for your account.</FieldDescription>
+      </Field>
+    </Example>
+  )
+}
+
+function InputDisabled() {
+  return (
+    <Example title="Disabled">
+      <Field>
+        <FieldLabel htmlFor="input-demo-disabled">Email</FieldLabel>
+        <Input id="input-demo-disabled" type="email" placeholder="Email" disabled />
+      </Field>
+    </Example>
+  )
+}
+
+function InputTypes() {
+  return (
+    <Example title="Input Types">
+      <div className="flex w-full flex-col gap-6">
+        <Field>
+          <FieldLabel htmlFor="input-demo-password">Password</FieldLabel>
+          <Input id="input-demo-password" type="password" placeholder="Password" />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="input-demo-tel">Phone</FieldLabel>
+          <Input id="input-demo-tel" type="tel" placeholder="+1 (555) 123-4567" />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="input-demo-url">URL</FieldLabel>
+          <Input id="input-demo-url" type="url" placeholder="https://example.com" />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="input-demo-search">Search</FieldLabel>
+          <Input id="input-demo-search" type="search" placeholder="Search" />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="input-demo-number">Number</FieldLabel>
+          <Input id="input-demo-number" type="number" placeholder="123" />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="input-demo-date">Date</FieldLabel>
+          <Input id="input-demo-date" type="date" />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="input-demo-time">Time</FieldLabel>
+          <Input id="input-demo-time" type="time" />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="input-demo-file">File</FieldLabel>
+          <Input id="input-demo-file" type="file" />
+        </Field>
+      </div>
     </Example>
   )
 }
@@ -47,4 +123,13 @@ function InputWithNativeSelect() {
   )
 }
 
-export { InputBasic, InputInvalid, InputWithButton, InputWithNativeSelect }
+export {
+  InputBasic,
+  InputInvalid,
+  InputWithLabel,
+  InputWithDescription,
+  InputDisabled,
+  InputTypes,
+  InputWithButton,
+  InputWithNativeSelect,
+}

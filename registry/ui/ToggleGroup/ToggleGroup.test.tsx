@@ -10,22 +10,30 @@ import styles from './ToggleGroup.module.scss'
 // differs between renders; Base UI puts it in ids and data-id.
 const USE_ID = /_r_[0-9a-z]+_|:r[0-9a-z]+:|«r[0-9a-z]+»/g
 
-function renderToggleGroup(props: Partial<ComponentProps<typeof ToggleGroup>> = {}) {
+function renderToggleGroup(
+  props: Partial<Record<keyof ComponentProps<typeof ToggleGroup>, unknown>> = {},
+) {
   cleanup()
   render(
     <ToggleGroup
       data-testid="subject"
-      {...({ multiple: true, ...props } as ComponentProps<typeof ToggleGroup>)}
+      {...({ multiple: true, children: 'ToggleGroup', ...props } as ComponentProps<
+        typeof ToggleGroup
+      >)}
     />,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="toggle-group"]')
 }
 
-function classesOfToggleGroup(props: Partial<ComponentProps<typeof ToggleGroup>> = {}) {
+function classesOfToggleGroup(
+  props: Partial<Record<keyof ComponentProps<typeof ToggleGroup>, unknown>> = {},
+) {
   return renderToggleGroup(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
-function attributesOfToggleGroup(props: Partial<ComponentProps<typeof ToggleGroup>> = {}) {
+function attributesOfToggleGroup(
+  props: Partial<Record<keyof ComponentProps<typeof ToggleGroup>, unknown>> = {},
+) {
   const element = renderToggleGroup(props)
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),
@@ -228,15 +236,20 @@ describe('ToggleGroup', () => {
   })
 })
 
-function renderToggleGroupItem(props: Partial<ComponentProps<typeof ToggleGroupItem>> = {}) {
+function renderToggleGroupItem(
+  props: Partial<Record<keyof ComponentProps<typeof ToggleGroupItem>, unknown>> = {},
+) {
   cleanup()
   render(
     <ToggleGroup multiple spacing={1}>
       <ToggleGroupItem
         data-testid="subject"
-        {...({ value: 'bold', 'aria-label': 'Toggle bold', ...props } as ComponentProps<
-          typeof ToggleGroupItem
-        >)}
+        {...({
+          value: 'bold',
+          'aria-label': 'Toggle bold',
+          children: 'ToggleGroupItem',
+          ...props,
+        } as ComponentProps<typeof ToggleGroupItem>)}
       />
     </ToggleGroup>,
   )
@@ -245,11 +258,15 @@ function renderToggleGroupItem(props: Partial<ComponentProps<typeof ToggleGroupI
     ?.closest('[data-slot="toggle-group-item"]')
 }
 
-function classesOfToggleGroupItem(props: Partial<ComponentProps<typeof ToggleGroupItem>> = {}) {
+function classesOfToggleGroupItem(
+  props: Partial<Record<keyof ComponentProps<typeof ToggleGroupItem>, unknown>> = {},
+) {
   return renderToggleGroupItem(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
-function attributesOfToggleGroupItem(props: Partial<ComponentProps<typeof ToggleGroupItem>> = {}) {
+function attributesOfToggleGroupItem(
+  props: Partial<Record<keyof ComponentProps<typeof ToggleGroupItem>, unknown>> = {},
+) {
   const element = renderToggleGroupItem(props)
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),

@@ -37,6 +37,8 @@
   &[data-size="sm"] {
     --card-spacing: calc(var(--spacing) * 4);
   }
+}
+.card {
   :is(& > *):is(img:first-child) {
     border-top-left-radius: calc(var(--radius) * 1.4);
     border-top-right-radius: calc(var(--radius) * 1.4);

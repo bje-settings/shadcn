@@ -20,8 +20,8 @@ export type Fixture = {
   item: string
   component: string
   label: string
-  // The element to hover, focus and disable: its data-slot
-  slot: string
+  // The element to hover, focus and disable: its data-slot, if it has one
+  slot?: string
   // Its scaffold's ancestors, and its props: the scaffold's and a cva option
   ancestors: Part[]
   props: Record<string, Literal>
@@ -60,7 +60,7 @@ export function fixturesFor(input: HarnessInput): Fixture[] {
       const base = {
         item: name,
         component: component.name,
-        slot: component.dataSlot,
+        ...(component.dataSlot !== undefined ? { slot: component.dataSlot } : {}),
         ancestors: scaffold.ancestors,
         children: scaffold.children,
         overlay: scaffold.ancestors.some((part) => part.props.defaultOpen === true),

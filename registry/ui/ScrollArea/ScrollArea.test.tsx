@@ -10,13 +10,22 @@ import styles from './ScrollArea.module.scss'
 // differs between renders; Base UI puts it in ids and data-id.
 const USE_ID = /_r_[0-9a-z]+_|:r[0-9a-z]+:|«r[0-9a-z]+»/g
 
-function renderScrollArea(props: Partial<ComponentProps<typeof ScrollArea>> = {}) {
+function renderScrollArea(
+  props: Partial<Record<keyof ComponentProps<typeof ScrollArea>, unknown>> = {},
+) {
   cleanup()
-  render(<ScrollArea data-testid="subject" {...(props as ComponentProps<typeof ScrollArea>)} />)
+  render(
+    <ScrollArea
+      data-testid="subject"
+      {...({ children: 'ScrollArea', ...props } as ComponentProps<typeof ScrollArea>)}
+    />,
+  )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="scroll-area"]')
 }
 
-function classesOfScrollArea(props: Partial<ComponentProps<typeof ScrollArea>> = {}) {
+function classesOfScrollArea(
+  props: Partial<Record<keyof ComponentProps<typeof ScrollArea>, unknown>> = {},
+) {
   return renderScrollArea(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -32,7 +41,9 @@ describe('ScrollArea', () => {
   })
 })
 
-function renderScrollBar(props: Partial<ComponentProps<typeof ScrollBar>> = {}) {
+function renderScrollBar(
+  props: Partial<Record<keyof ComponentProps<typeof ScrollBar>, unknown>> = {},
+) {
   cleanup()
   render(
     <ScrollArea>
@@ -47,11 +58,15 @@ function renderScrollBar(props: Partial<ComponentProps<typeof ScrollBar>> = {}) 
     ?.closest('[data-slot="scroll-area-scrollbar"]')
 }
 
-function classesOfScrollBar(props: Partial<ComponentProps<typeof ScrollBar>> = {}) {
+function classesOfScrollBar(
+  props: Partial<Record<keyof ComponentProps<typeof ScrollBar>, unknown>> = {},
+) {
   return renderScrollBar(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
-function attributesOfScrollBar(props: Partial<ComponentProps<typeof ScrollBar>> = {}) {
+function attributesOfScrollBar(
+  props: Partial<Record<keyof ComponentProps<typeof ScrollBar>, unknown>> = {},
+) {
   const element = renderScrollBar(props)
   return Object.fromEntries(
     [...(element?.attributes ?? [])].map((a) => [a.name, a.value.replace(USE_ID, '')]),

@@ -6,13 +6,18 @@ import { describe, expect, it } from 'vitest'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from './Empty'
 import styles from './Empty.module.scss'
 
-function renderEmpty(props: Partial<ComponentProps<typeof Empty>> = {}) {
+function renderEmpty(props: Partial<Record<keyof ComponentProps<typeof Empty>, unknown>> = {}) {
   cleanup()
-  render(<Empty data-testid="subject" {...(props as ComponentProps<typeof Empty>)} />)
+  render(
+    <Empty
+      data-testid="subject"
+      {...({ children: 'Empty', ...props } as ComponentProps<typeof Empty>)}
+    />,
+  )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="empty"]')
 }
 
-function classesOfEmpty(props: Partial<ComponentProps<typeof Empty>> = {}) {
+function classesOfEmpty(props: Partial<Record<keyof ComponentProps<typeof Empty>, unknown>> = {}) {
   return renderEmpty(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -28,17 +33,24 @@ describe('Empty', () => {
   })
 })
 
-function renderEmptyHeader(props: Partial<ComponentProps<typeof EmptyHeader>> = {}) {
+function renderEmptyHeader(
+  props: Partial<Record<keyof ComponentProps<typeof EmptyHeader>, unknown>> = {},
+) {
   cleanup()
   render(
     <Empty>
-      <EmptyHeader data-testid="subject" {...(props as ComponentProps<typeof EmptyHeader>)} />
+      <EmptyHeader
+        data-testid="subject"
+        {...({ children: 'EmptyHeader', ...props } as ComponentProps<typeof EmptyHeader>)}
+      />
     </Empty>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="empty-header"]')
 }
 
-function classesOfEmptyHeader(props: Partial<ComponentProps<typeof EmptyHeader>> = {}) {
+function classesOfEmptyHeader(
+  props: Partial<Record<keyof ComponentProps<typeof EmptyHeader>, unknown>> = {},
+) {
   return renderEmptyHeader(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -54,19 +66,26 @@ describe('EmptyHeader', () => {
   })
 })
 
-function renderEmptyMedia(props: Partial<ComponentProps<typeof EmptyMedia>> = {}) {
+function renderEmptyMedia(
+  props: Partial<Record<keyof ComponentProps<typeof EmptyMedia>, unknown>> = {},
+) {
   cleanup()
   render(
     <Empty>
       <EmptyHeader>
-        <EmptyMedia data-testid="subject" {...(props as ComponentProps<typeof EmptyMedia>)} />
+        <EmptyMedia
+          data-testid="subject"
+          {...({ children: 'EmptyMedia', ...props } as ComponentProps<typeof EmptyMedia>)}
+        />
       </EmptyHeader>
     </Empty>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="empty-icon"]')
 }
 
-function classesOfEmptyMedia(props: Partial<ComponentProps<typeof EmptyMedia>> = {}) {
+function classesOfEmptyMedia(
+  props: Partial<Record<keyof ComponentProps<typeof EmptyMedia>, unknown>> = {},
+) {
   return renderEmptyMedia(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -99,19 +118,26 @@ describe('EmptyMedia', () => {
   })
 })
 
-function renderEmptyTitle(props: Partial<ComponentProps<typeof EmptyTitle>> = {}) {
+function renderEmptyTitle(
+  props: Partial<Record<keyof ComponentProps<typeof EmptyTitle>, unknown>> = {},
+) {
   cleanup()
   render(
     <Empty>
       <EmptyHeader>
-        <EmptyTitle data-testid="subject" {...(props as ComponentProps<typeof EmptyTitle>)} />
+        <EmptyTitle
+          data-testid="subject"
+          {...({ children: 'EmptyTitle', ...props } as ComponentProps<typeof EmptyTitle>)}
+        />
       </EmptyHeader>
     </Empty>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="empty-title"]')
 }
 
-function classesOfEmptyTitle(props: Partial<ComponentProps<typeof EmptyTitle>> = {}) {
+function classesOfEmptyTitle(
+  props: Partial<Record<keyof ComponentProps<typeof EmptyTitle>, unknown>> = {},
+) {
   return renderEmptyTitle(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -127,14 +153,18 @@ describe('EmptyTitle', () => {
   })
 })
 
-function renderEmptyDescription(props: Partial<ComponentProps<typeof EmptyDescription>> = {}) {
+function renderEmptyDescription(
+  props: Partial<Record<keyof ComponentProps<typeof EmptyDescription>, unknown>> = {},
+) {
   cleanup()
   render(
     <Empty>
       <EmptyHeader>
         <EmptyDescription
           data-testid="subject"
-          {...(props as ComponentProps<typeof EmptyDescription>)}
+          {...({ children: 'EmptyDescription', ...props } as ComponentProps<
+            typeof EmptyDescription
+          >)}
         />
       </EmptyHeader>
     </Empty>,
@@ -144,7 +174,9 @@ function renderEmptyDescription(props: Partial<ComponentProps<typeof EmptyDescri
     ?.closest('[data-slot="empty-description"]')
 }
 
-function classesOfEmptyDescription(props: Partial<ComponentProps<typeof EmptyDescription>> = {}) {
+function classesOfEmptyDescription(
+  props: Partial<Record<keyof ComponentProps<typeof EmptyDescription>, unknown>> = {},
+) {
   return renderEmptyDescription(props)?.getAttribute('class')?.split(' ') ?? []
 }
 
@@ -172,17 +204,24 @@ describe('EmptyDescription', () => {
   })
 })
 
-function renderEmptyContent(props: Partial<ComponentProps<typeof EmptyContent>> = {}) {
+function renderEmptyContent(
+  props: Partial<Record<keyof ComponentProps<typeof EmptyContent>, unknown>> = {},
+) {
   cleanup()
   render(
     <Empty>
-      <EmptyContent data-testid="subject" {...(props as ComponentProps<typeof EmptyContent>)} />
+      <EmptyContent
+        data-testid="subject"
+        {...({ children: 'EmptyContent', ...props } as ComponentProps<typeof EmptyContent>)}
+      />
     </Empty>,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="empty-content"]')
 }
 
-function classesOfEmptyContent(props: Partial<ComponentProps<typeof EmptyContent>> = {}) {
+function classesOfEmptyContent(
+  props: Partial<Record<keyof ComponentProps<typeof EmptyContent>, unknown>> = {},
+) {
   return renderEmptyContent(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

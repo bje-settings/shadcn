@@ -2,11 +2,12 @@
 // data-case. `?theme=dark` puts `.dark` on <html>, as shadcn apps do, so
 // variables that resolve at the root (Tailwind's --color-*) switch too.
 // `?case=<id>` narrows the page to one case, the only way an overlay case
-// renders; index.html passes both through.
+// renders; index.html passes both through. `window.showCase(id)` switches the
+// narrowed case without a reload: the A/B run shows every case that way.
 // A case that throws renders its error in place, marked data-case-error, so
 // it fails alone rather than blanking the page.
 
-import { Component, type ReactNode } from 'react'
+import { Component, type ReactNode, useEffect, useState } from 'react'
 import { cases, type Side } from './cases'
 
 class CaseBoundary extends Component<{ children: ReactNode }, { error?: Error }> {
@@ -25,7 +26,10 @@ class CaseBoundary extends Component<{ children: ReactNode }, { error?: Error }>
 export function Gallery({ side }: { side: Side }) {
   const params = new URLSearchParams(window.location.search)
   const theme = params.get('theme') === 'dark' ? 'dark' : 'light'
-  const only = params.get('case')
+  const [only, setOnly] = useState(params.get('case'))
+  useEffect(() => {
+    ;(window as Window & { showCase?: (id: string) => void }).showCase = setOnly
+  }, [])
   document.documentElement.classList.toggle('dark', theme === 'dark')
   return (
     <main
@@ -43,6 +47,10 @@ export function Gallery({ side }: { side: Side }) {
             <CaseBoundary>{c.render(side)}</CaseBoundary>
           </div>
         ))}
+      {/* Somewhere off screen for Tab to go, so the A/B run's Tab and
+          Shift+Tab return keyboard focus to a case's last focusable element. */}
+      {/* biome-ignore lint/a11y/noNoninteractiveTabindex: a focus target for the A/B run only */}
+      <span tabIndex={0} style={{ position: 'fixed', left: -100, top: -100 }} />
     </main>
   )
 }

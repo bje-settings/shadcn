@@ -6,18 +6,20 @@ import { describe, expect, it } from 'vitest'
 import { Label } from './Label'
 import styles from './Label.module.scss'
 
-function renderLabel(props: Partial<ComponentProps<typeof Label>> = {}) {
+function renderLabel(props: Partial<Record<keyof ComponentProps<typeof Label>, unknown>> = {}) {
   cleanup()
   render(
     <Label
       data-testid="subject"
-      {...({ htmlFor: 'label-demo-terms', ...props } as ComponentProps<typeof Label>)}
+      {...({ htmlFor: 'label-demo-terms', children: 'Label', ...props } as ComponentProps<
+        typeof Label
+      >)}
     />,
   )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="label"]')
 }
 
-function classesOfLabel(props: Partial<ComponentProps<typeof Label>> = {}) {
+function classesOfLabel(props: Partial<Record<keyof ComponentProps<typeof Label>, unknown>> = {}) {
   return renderLabel(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

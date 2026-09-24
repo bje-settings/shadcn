@@ -11,6 +11,8 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
+}
+.emptyMedia {
   & svg {
     pointer-events: none;
     flex-shrink: 0;
@@ -31,7 +33,7 @@
   border-radius: var(--radius);
   background-color: var(--muted);
   color: var(--foreground);
-  & svg:not([data-slot="accordion-trigger"], [data-slot="alert"], [data-slot="avatar"], [data-slot="avatar-badge"], [data-slot="avatar-fallback"], [data-slot="avatar-group-count"], [data-slot="avatar-image"], [data-slot="badge"], [data-slot="breadcrumb-ellipsis"], [data-slot="breadcrumb-separator"], [data-slot="button"], [data-slot="button-group-text"], [data-slot="checkbox"], [data-slot="checkbox-indicator"], [data-slot="empty-icon"], [data-slot="input-otp-separator"], [data-slot="input-otp-slot"], [data-slot="kbd"], [data-slot="native-select-icon"], [data-slot="radio-group-indicator"], [data-slot="radio-group-item"], [data-slot="scroll-area-viewport"], [data-slot="slider-thumb"], [data-slot="spinner"], [data-slot="switch-thumb"], [data-slot="tabs-trigger"], [data-slot="toggle"]) {
+  & svg:where(:not([data-slot="accordion-trigger"], [data-slot="alert"], [data-slot="attachment-media"], [data-slot="avatar"], [data-slot="avatar-badge"], [data-slot="avatar-fallback"], [data-slot="avatar-group-count"], [data-slot="avatar-image"], [data-slot="badge"], [data-slot="breadcrumb-ellipsis"], [data-slot="breadcrumb-separator"], [data-slot="button"], [data-slot="button-group-text"], [data-slot="checkbox"], [data-slot="checkbox-indicator"], [data-slot="empty-icon"], [data-slot="input-group-addon"], [data-slot="input-group-control"], [data-slot="input-otp-separator"], [data-slot="input-otp-slot"], [data-slot="item-media"], [data-slot="kbd"], [data-slot="marker"], [data-slot="marker-icon"], [data-slot="native-select-icon"], [data-slot="pagination-ellipsis"], [data-slot="radio-group-indicator"], [data-slot="radio-group-item"], [data-slot="scroll-area-viewport"], [data-slot="slider-thumb"], [data-slot="spinner"], [data-slot="switch-thumb"], [data-slot="tabs-trigger"], [data-slot="toggle"])) {
     width: calc(var(--spacing) * 6);
     height: calc(var(--spacing) * 6);
   }
@@ -76,6 +78,8 @@
   font-size: var(--text-sm);
   line-height: var(--leading-relaxed);
   color: var(--muted-foreground);
+}
+.emptyDescription {
   & > a {
     text-decoration-line: underline;
     text-underline-offset: 4px;

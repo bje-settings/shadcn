@@ -19,6 +19,8 @@
 }
 
 :where(.tableHeader) {
+}
+.tableHeader {
   & tr {
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 1px;
@@ -26,6 +28,8 @@
 }
 
 :where(.tableBody) {
+}
+.tableBody {
   & tr:last-child {
     border-style: var(--tw-border-style);
     border-width: 0;
@@ -41,6 +45,8 @@
   }
   --tw-font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
+}
+.tableFooter {
   & > tr:last-child {
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 0;

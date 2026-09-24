@@ -6,7 +6,9 @@ import { describe, expect, it } from 'vitest'
 import { Checkbox } from './Checkbox'
 import styles from './Checkbox.module.scss'
 
-function renderCheckbox(props: Partial<ComponentProps<typeof Checkbox>> = {}) {
+function renderCheckbox(
+  props: Partial<Record<keyof ComponentProps<typeof Checkbox>, unknown>> = {},
+) {
   cleanup()
   render(
     <Checkbox
@@ -17,7 +19,9 @@ function renderCheckbox(props: Partial<ComponentProps<typeof Checkbox>> = {}) {
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="checkbox"]')
 }
 
-function classesOfCheckbox(props: Partial<ComponentProps<typeof Checkbox>> = {}) {
+function classesOfCheckbox(
+  props: Partial<Record<keyof ComponentProps<typeof Checkbox>, unknown>> = {},
+) {
   return renderCheckbox(props)?.getAttribute('class')?.split(' ') ?? []
 }
 

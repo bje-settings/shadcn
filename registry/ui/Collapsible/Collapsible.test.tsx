@@ -5,9 +5,16 @@ import type { ComponentProps } from 'react'
 import { describe, expect, it } from 'vitest'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './Collapsible'
 
-function renderCollapsible(props: Partial<ComponentProps<typeof Collapsible>> = {}) {
+function renderCollapsible(
+  props: Partial<Record<keyof ComponentProps<typeof Collapsible>, unknown>> = {},
+) {
   cleanup()
-  render(<Collapsible data-testid="subject" {...(props as ComponentProps<typeof Collapsible>)} />)
+  render(
+    <Collapsible
+      data-testid="subject"
+      {...({ children: 'Collapsible', ...props } as ComponentProps<typeof Collapsible>)}
+    />,
+  )
   return document.querySelector('[data-testid="subject"]')?.closest('[data-slot="collapsible"]')
 }
 
@@ -19,13 +26,17 @@ describe('Collapsible', () => {
   })
 })
 
-function renderCollapsibleTrigger(props: Partial<ComponentProps<typeof CollapsibleTrigger>> = {}) {
+function renderCollapsibleTrigger(
+  props: Partial<Record<keyof ComponentProps<typeof CollapsibleTrigger>, unknown>> = {},
+) {
   cleanup()
   render(
     <Collapsible defaultOpen>
       <CollapsibleTrigger
         data-testid="subject"
-        {...(props as ComponentProps<typeof CollapsibleTrigger>)}
+        {...({ children: 'CollapsibleTrigger', ...props } as ComponentProps<
+          typeof CollapsibleTrigger
+        >)}
       />
     </Collapsible>,
   )
@@ -42,13 +53,17 @@ describe('CollapsibleTrigger', () => {
   })
 })
 
-function renderCollapsibleContent(props: Partial<ComponentProps<typeof CollapsibleContent>> = {}) {
+function renderCollapsibleContent(
+  props: Partial<Record<keyof ComponentProps<typeof CollapsibleContent>, unknown>> = {},
+) {
   cleanup()
   render(
     <Collapsible defaultOpen>
       <CollapsibleContent
         data-testid="subject"
-        {...({ keepMounted: true, ...props } as ComponentProps<typeof CollapsibleContent>)}
+        {...({ keepMounted: true, children: 'CollapsibleContent', ...props } as ComponentProps<
+          typeof CollapsibleContent
+        >)}
       />
     </Collapsible>,
   )
