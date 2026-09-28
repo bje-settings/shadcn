@@ -1,9 +1,10 @@
 // Ours: the generated components with their CSS modules, the generated global
-// stylesheets and the mirrored Typeset, loaded as a consumer would.
-import '../registry/styles/fonts.css'
-import '../registry/styles/variables.scss'
-import '../registry/styles/base.scss'
-import '../registry/styles/typeset.css'
+// stylesheets and the mirrored Typeset, loaded as a consumer would. The
+// harness compares mirror.config.json's upstream.compare style, vega.
+import '../registry/vega/styles/fonts.css'
+import '../registry/vega/styles/variables.scss'
+import '../registry/vega/styles/base.scss'
+import '../registry/vega/styles/typeset.css'
 // Layout for the examples' own markup; the components are ours.
 import './generated/examples.css'
 import { createRoot } from 'react-dom/client'

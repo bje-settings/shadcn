@@ -1,15 +1,14 @@
 {
   // Registry items are copied into consumer projects, which resolve imports
   // like a bundler: extensionless relative imports and CSS module imports.
+  // This covers the hand-written items (lib); each style's generated
+  // registry/<style>/tsconfig.json extends it, mapping the cross-component
+  // imports the shadcn CLI rewrites on install to that style's own items.
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "module": "preserve",
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": false,
-    // Cross-component imports, which the shadcn CLI rewrites to the
-    // consumer's ui alias on install. `bje` must match mirror.config.json's
-    // namespace.
-    "paths": { "@/registry/bje/ui/*": ["./ui/*"], "@/registry/bje/hooks/*": ["./hooks/*"] }
+    "allowImportingTsExtensions": false
   },
-  "include": [".", "../types"]
+  "include": ["lib", "../types"]
 }

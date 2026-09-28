@@ -3,9 +3,16 @@
 // with a stated reason, never a lowered threshold.
 import { readFileSync } from 'node:fs'
 import { defineConfig } from 'vitest/config'
+import { shortStyle } from './scripts/mirror/config.ts'
 import { pascalCase } from './scripts/mirror/names.ts'
 
 const mirror = JSON.parse(readFileSync(new URL('./mirror.config.json', import.meta.url), 'utf8'))
+// Generated items are tested and covered for the compare style only: every
+// style ships the same generated tests, and running each style's would
+// multiply CI time while the repository is internal. The others rely on the
+// mirror build's own checks.
+const style = shortStyle(mirror.upstream.compare)
+const dir = (key: 'outputDir' | 'hooksDir') => mirror[key].replaceAll('{style}', style)
 
 export default defineConfig({
   test: {
@@ -22,12 +29,14 @@ export default defineConfig({
           name: 'registry',
           // Cross-component imports, as mapped in registry/tsconfig.json.
           alias: {
-            [`@/registry/${mirror.namespace}/ui`]: new URL('./registry/ui', import.meta.url)
+            [`@/registry/${mirror.namespace}/ui`]: new URL(`./${dir('outputDir')}`, import.meta.url)
               .pathname,
-            [`@/registry/${mirror.namespace}/hooks`]: new URL('./registry/hooks', import.meta.url)
-              .pathname,
+            [`@/registry/${mirror.namespace}/hooks`]: new URL(
+              `./${dir('hooksDir')}`,
+              import.meta.url,
+            ).pathname,
           },
-          include: ['registry/**/*.test.{ts,tsx}'],
+          include: [`registry/${style}/**/*.test.{ts,tsx}`, 'registry/lib/**/*.test.{ts,tsx}'],
           environment: 'jsdom',
           // Compile CSS modules with Sass and keep class names as written, the
           // way a consumer's bundler would resolve `styles.x`.
@@ -40,18 +49,19 @@ export default defineConfig({
       // Named, not discovered: a configuration that finds its own inputs can
       // find zero of them and still report 100%.
       // ab/ is the Playwright A/B harness: exercised by `pnpm ab`, not vitest.
-      include: ['registry/**/*.{ts,tsx}', 'scripts/**/*.ts'],
+      include: [`registry/${style}/**/*.{ts,tsx}`, 'registry/lib/**/*.{ts,tsx}', 'scripts/**/*.ts'],
       exclude: [
         '**/*.test.{ts,tsx}',
         // Mirrored components with upstream logic no generated test reaches;
         // mirror.config.json gives each reason.
         ...Object.keys(mirror.coverageExclusions ?? {}).flatMap((item) => {
           const file = pascalCase(item)
-          return [`${mirror.outputDir}/${file}/${file}.tsx`, `${mirror.hooksDir}/${item}.ts`]
+          return [`${dir('outputDir')}/${file}/${file}.tsx`, `${dir('hooksDir')}/${item}.ts`]
         }),
-        // The process entry point: wires cli.ts to the real process, fetch
-        // and console, and holds no logic of its own.
+        // The process entry points: they wire cli.ts and registries.ts to the
+        // real process, fetch, console and shadcn CLI, and hold no logic.
         'scripts/mirror/main.ts',
+        'scripts/mirror/build.ts',
       ],
       // json-summary feeds the CI guard against an empty report; cobertura
       // feeds actions/upload-code-coverage for the enterprise ruleset.

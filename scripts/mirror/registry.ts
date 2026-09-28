@@ -1,7 +1,7 @@
-// Upserts generated items into registry.json. Hand-written items keep their
-// place; generated ones are replaced in place or appended. Generated items the
-// mirror no longer produces (a component removed from mirror.config.json) are
-// dropped, since their files are gone.
+// Each style's registry catalog: the hand-written items of the base
+// registry.json, then the style's generated items, under the style's own
+// homepage. Generated in full, so an item the mirror stops producing (a
+// component removed from mirror.config.json) goes with its files.
 
 import type { RegistryItem } from './component.ts'
 import { Shape } from './parse.ts'
@@ -24,19 +24,13 @@ export function parseRegistry(raw: unknown, where: string): Registry {
   return registry as Registry
 }
 
-export function upsertItems(
-  registry: Registry,
-  items: RegistryItem[],
-  { owned }: { owned: (item: RegistryEntry) => boolean },
-): Registry {
-  const generated = new Set(items.map((item) => item.name))
-  const next: RegistryEntry[] = registry.items.filter(
-    (existing) => generated.has(existing.name) || !owned(existing),
-  )
-  for (const item of items) {
-    const index = next.findIndex((existing) => existing.name === item.name)
-    if (index === -1) next.push(item)
-    else next[index] = item
-  }
-  return { ...registry, items: next }
+// `style` is the short name the site serves the style under: the registry's
+// homepage is the site's, plus that path.
+export function styleRegistry(base: Registry, items: RegistryItem[], style: string): Registry {
+  if (typeof base.homepage !== 'string') throw new Error('registry.json: homepage must be a string')
+  const homepage = `${base.homepage}/${style}`
+  const handWritten = new Set(base.items.map((item) => item.name))
+  const clash = items.find((item) => handWritten.has(item.name))
+  if (clash) throw new Error(`registry.json: ${clash.name} is hand-written and generated`)
+  return { ...base, homepage, items: [...base.items, ...items] }
 }

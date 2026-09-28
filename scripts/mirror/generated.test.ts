@@ -1,22 +1,28 @@
 // The committed output must be exactly what `mirror build` produces from the
 // committed snapshots: a hand edit to a generated file, or a pipeline change
-// without `pnpm mirror:build`, fails here. Covers components, hooks, global
-// stylesheets, the rebuilt project CSS and registry.json, and proves every
-// generated stylesheet compiles with Sass.
+// without `pnpm mirror:build`, fails here. Covers, for every style, components,
+// hooks, global stylesheets, the rebuilt project CSS, registry catalog and
+// tsconfig, and proves every generated stylesheet compiles with Sass.
 
 import { cp, mkdtemp, readdir, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join, relative } from 'node:path'
+import { dirname, join, relative } from 'node:path'
 import { compile } from 'sass'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { run } from './cli.ts'
+import { forStyle } from './config.ts'
 import { formatWithBiome } from './format.ts'
-import { config, root } from './test-support.ts'
+import { parsed, root } from './test-support.ts'
 
-const snapshots = join(config.snapshotDir, config.upstream.style)
+const styles = parsed.upstream.styles.map((style) => forStyle(parsed, style))
+const snapshotDirs = styles.map((config) => join(config.snapshotDir, config.upstream.style))
 // The A/B harness inputs are not committed (see .gitignore): pnpm ab
 // regenerates them.
-const outputDirs = [config.outputDir, config.hooksDir, config.globalsDir]
+const outputDirs = styles.flatMap((config) => [
+  config.outputDir,
+  config.hooksDir,
+  config.globalsDir,
+])
 let built: string
 
 async function files(base: string, dir: string): Promise<string[]> {
@@ -27,24 +33,26 @@ async function files(base: string, dir: string): Promise<string[]> {
     .sort()
 }
 
+// Builds every style: allow for the whole suite running alongside.
 beforeAll(async () => {
   built = await mkdtemp(join(tmpdir(), 'mirror-generated-'))
   for (const path of ['mirror.config.json', 'registry.json']) {
     await cp(join(root, path), join(built, path))
   }
-  for (const path of await files(root, snapshots)) {
-    if (path.endsWith('.json')) await cp(join(root, path), join(built, path), { recursive: true })
+  for (const snapshots of snapshotDirs) {
+    for (const path of await files(root, snapshots)) {
+      if (path.endsWith('.json')) await cp(join(root, path), join(built, path), { recursive: true })
+    }
   }
-  await cp(join(root, config.snapshotDir, 'typeset'), join(built, config.snapshotDir, 'typeset'), {
-    recursive: true,
-  })
+  const typeset = join(parsed.snapshotDir, 'typeset')
+  await cp(join(root, typeset), join(built, typeset), { recursive: true })
   await run(['build'], {
     root: built,
     fetch: () => Promise.reject(new Error('build must not fetch')),
     log: () => {},
     format: (path, content) => formatWithBiome(root, path, content),
   })
-}, 60_000)
+}, 180_000)
 
 afterAll(async () => {
   await rm(built, { recursive: true, force: true })
@@ -60,7 +68,11 @@ describe('generated output', () => {
   it('matches the pipeline output byte for byte', async () => {
     const paths = [
       'registry.json',
-      join(snapshots, 'index.css'),
+      ...snapshotDirs.map((snapshots) => join(snapshots, 'index.css')),
+      ...styles.flatMap(({ registryFile }) => [
+        registryFile,
+        join(dirname(registryFile), 'tsconfig.json'),
+      ]),
       ...(await Promise.all(outputDirs.map((dir) => files(built, dir)))).flat(),
     ]
     for (const path of paths) {

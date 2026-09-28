@@ -8,7 +8,7 @@
     "node": ">=22.18.0 <23"
   },
   "scripts": {
-    "build": "shadcn build",
+    "build": "node scripts/mirror/build.ts",
     "test": "vitest run --coverage",
     "mirror:fetch": "node scripts/mirror/main.ts fetch",
     "mirror:build": "node scripts/mirror/main.ts build",

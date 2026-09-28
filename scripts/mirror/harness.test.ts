@@ -1,29 +1,34 @@
 import { describe, expect, it } from 'vitest'
-import { parseConfig } from './config.ts'
+import { forStyle, parseConfig } from './config.ts'
 import { fixturesFor, harnessFiles } from './harness.ts'
 import type { PartTypes, Scaffold } from './parts.ts'
 import { type TransformedComponent, transformComponent } from './tsx.ts'
 
-const config = parseConfig({
-  namespace: 'bje',
-  upstream: {
-    url: 'https://example.com/{style}/{name}.json',
-    colorsUrl: 'https://example.com/colors/{name}.json',
-    style: 'base-vega',
-  },
-  theme: { baseColor: 'neutral', font: 'inter', iconLibrary: 'lucide' },
-  components: ['chip-set'],
-  typeset: {
-    stylesheet: 'https://example.com/typeset.css',
-    fixturesUrl: 'https://example.com/fixtures/{name}.ts',
-    fixtures: [],
-  },
-  snapshotDir: 'upstream',
-  outputDir: 'registry/ui',
-  hooksDir: 'registry/hooks',
-  globalsDir: 'registry/styles',
-  harnessDir: 'ab/generated',
-})
+const config = forStyle(
+  parseConfig({
+    namespace: 'bje',
+    upstream: {
+      url: 'https://example.com/{style}/{name}.json',
+      colorsUrl: 'https://example.com/colors/{name}.json',
+      styles: ['base-vega'],
+      compare: 'base-vega',
+    },
+    theme: { baseColor: 'neutral', font: 'inter', iconLibrary: 'lucide' },
+    components: ['chip-set'],
+    typeset: {
+      stylesheet: 'https://example.com/typeset.css',
+      fixturesUrl: 'https://example.com/fixtures/{name}.ts',
+      fixtures: [],
+    },
+    snapshotDir: 'upstream',
+    outputDir: 'registry/{style}/ui',
+    hooksDir: 'registry/{style}/hooks',
+    globalsDir: 'registry/{style}/styles',
+    harnessDir: 'ab/generated',
+    registryFile: 'registry/{style}/registry.json',
+  }),
+  'base-vega',
+)
 
 const chip = `import { cva } from "class-variance-authority"
 import { cn } from "cn"

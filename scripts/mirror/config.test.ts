@@ -3,7 +3,9 @@ import {
   checkConfiguredParts,
   colorsUrl,
   consumerClassReasons,
+  forStyle,
   parseConfig,
+  shortStyle,
   upstreamUrl,
 } from './config.ts'
 
@@ -12,7 +14,8 @@ const valid = {
   upstream: {
     url: 'https://example.com/{style}/{name}.json',
     colorsUrl: 'https://example.com/colors/{name}.json',
-    style: 'base-vega',
+    styles: ['base-vega', 'base-luma'],
+    compare: 'base-vega',
   },
   theme: { baseColor: 'neutral', font: 'inter', iconLibrary: 'lucide' },
   components: ['button', 'icon-button'],
@@ -22,10 +25,11 @@ const valid = {
     fixtures: ['docs'],
   },
   snapshotDir: 'upstream',
-  outputDir: 'registry/ui',
-  hooksDir: 'registry/hooks',
-  globalsDir: 'registry/styles',
+  outputDir: 'registry/{style}/ui',
+  hooksDir: 'registry/{style}/hooks',
+  globalsDir: 'registry/{style}/styles',
   harnessDir: 'ab/generated',
+  registryFile: 'registry/{style}/registry.json',
   consumerClasses: [{ classes: ['border-b'], reason: 'consumer' }],
   coverageExclusions: { button: 'why' },
   globalClasses: [{ classes: ['dark'], reason: 'dark mode' }],
@@ -44,7 +48,8 @@ function withChange(change: Record<string, unknown>) {
 describe('parseConfig', () => {
   it('accepts a valid config and builds item URLs', () => {
     const config = parseConfig(valid)
-    expect(config).toEqual(valid)
+    // As parsed, the config builds the compare style.
+    expect(config).toEqual({ ...valid, upstream: { ...valid.upstream, style: 'base-vega' } })
     expect(upstreamUrl(config, 'button')).toBe('https://example.com/base-vega/button.json')
     expect(colorsUrl(config)).toBe('https://example.com/colors/neutral.json')
   })
@@ -72,7 +77,7 @@ describe('parseConfig', () => {
     ['a missing upstream', withChange({ upstream: 'x' }), 'upstream must be an object'],
     [
       'a missing url',
-      withChange({ upstream: { style: 'base-vega' } }),
+      withChange({ upstream: { styles: ['base-vega'], compare: 'base-vega' } }),
       'upstream.url must be a non-empty string',
     ],
     [
@@ -102,9 +107,34 @@ describe('parseConfig', () => {
     ['repeated components', withChange({ components: ['a', 'a'] }), 'components must not repeat'],
     ['a non-kebab namespace', withChange({ namespace: 'Bje' }), 'namespace must be kebab-case'],
     [
+      'non-array styles',
+      withChange({ upstream: { ...valid.upstream, styles: 'base-vega' } }),
+      'upstream.styles must be a non-empty array of kebab-case style names',
+    ],
+    [
+      'empty styles',
+      withChange({ upstream: { ...valid.upstream, styles: [] } }),
+      'upstream.styles must be a non-empty array of kebab-case style names',
+    ],
+    [
       'a non-kebab style',
-      withChange({ upstream: { ...valid.upstream, style: 'base/vega' } }),
-      'upstream.style must be kebab-case',
+      withChange({ upstream: { ...valid.upstream, styles: ['base/vega'] } }),
+      'upstream.styles must be a non-empty array of kebab-case style names',
+    ],
+    [
+      'repeated styles',
+      withChange({ upstream: { ...valid.upstream, styles: ['base-vega', 'base-vega'] } }),
+      'upstream.styles must not repeat',
+    ],
+    [
+      'a compare style that is not listed',
+      withChange({ upstream: { ...valid.upstream, compare: 'base-nova' } }),
+      'upstream.compare: base-nova is not in upstream.styles',
+    ],
+    [
+      'an output path without {style}',
+      withChange({ outputDir: 'registry/ui' }),
+      'outputDir must contain {style}',
     ],
     [
       'a theme without an icon library',
@@ -173,6 +203,27 @@ describe('parseConfig', () => {
     ['a missing outputDir', withChange({ outputDir: '' }), 'outputDir must be'],
   ])('rejects %s', (_, raw, message) => {
     expect(() => parseConfig(raw)).toThrow(message)
+  })
+})
+
+describe('forStyle', () => {
+  it("sets the style and resolves its output paths with the style's short name", () => {
+    const luma = forStyle(parseConfig(valid), 'base-luma')
+    expect(luma.upstream).toMatchObject({ style: 'base-luma', compare: 'base-vega' })
+    expect(luma).toMatchObject({
+      outputDir: 'registry/luma/ui',
+      hooksDir: 'registry/luma/hooks',
+      globalsDir: 'registry/luma/styles',
+      registryFile: 'registry/luma/registry.json',
+      harnessDir: 'ab/generated',
+    })
+  })
+})
+
+describe('shortStyle', () => {
+  it('drops the base- prefix, and keeps a name without one', () => {
+    expect(shortStyle('base-vega')).toBe('vega')
+    expect(shortStyle('new-york')).toBe('new-york')
   })
 })
 

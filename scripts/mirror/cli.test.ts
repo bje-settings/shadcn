@@ -43,16 +43,20 @@ const example = {
   ],
 }
 
-// What each upstream URL serves: the component and its example above, the
-// real style index, font and base color snapshots, and a small Typeset
-// stylesheet and fixture. Anything else is a 404.
+// What each upstream URL serves, for both styles: the component and its
+// example above, the real style index, font and base color snapshots, and a
+// small Typeset stylesheet and fixture. Anything else is a 404.
 let responses: Record<string, unknown>
-const allResponses = {
-  'https://example.com/base-vega/badge.json': upstream,
-  'https://example.com/base-vega/index.json': snapshot('index'),
-  'https://example.com/base-vega/font-inter.json': snapshot('font-inter'),
+const styleResponses = (style: string) => ({
+  [`https://example.com/${style}/badge.json`]: upstream,
+  [`https://example.com/${style}/index.json`]: snapshot('index'),
+  [`https://example.com/${style}/font-inter.json`]: snapshot('font-inter'),
   'https://example.com/colors/neutral.json': snapshot('colors-neutral'),
-  'https://example.com/base-vega/badge-example.json': example,
+  [`https://example.com/${style}/badge-example.json`]: example,
+})
+const allResponses = {
+  ...styleResponses('base-vega'),
+  ...styleResponses('base-luma'),
   'https://example.com/typeset.css':
     '@layer components { .typeset { color: var(--color-foreground); } }\n',
   'https://example.com/fixtures/docs.ts': 'export const DOCS_HTML = `<h1>Docs</h1>`\n',
@@ -94,7 +98,8 @@ beforeEach(async () => {
       upstream: {
         url: 'https://example.com/{style}/{name}.json',
         colorsUrl: 'https://example.com/colors/{name}.json',
-        style: 'base-vega',
+        styles: ['base-vega', 'base-luma'],
+        compare: 'base-vega',
       },
       theme: { baseColor: 'neutral', font: 'inter', iconLibrary: 'lucide' },
       components: ['badge'],
@@ -104,15 +109,16 @@ beforeEach(async () => {
         fixtures: ['docs'],
       },
       snapshotDir: 'upstream',
-      outputDir: 'registry/ui',
-      hooksDir: 'registry/hooks',
-      globalsDir: 'registry/styles',
+      outputDir: 'registry/{style}/ui',
+      hooksDir: 'registry/{style}/hooks',
+      globalsDir: 'registry/{style}/styles',
       harnessDir: 'ab/generated',
+      registryFile: 'registry/{style}/registry.json',
     }),
   )
   await writeFile(
     join(root, 'registry.json'),
-    JSON.stringify({ name: 'bje', items: [{ name: 'cn' }] }),
+    JSON.stringify({ name: 'bje', homepage: 'https://example.com', items: [{ name: 'cn' }] }),
   )
 })
 
@@ -121,9 +127,17 @@ afterEach(async () => {
 })
 
 describe('mirror fetch', () => {
-  it('snapshots each configured item and the theme sources', async () => {
+  it("snapshots each style's items and theme sources, and Typeset once", async () => {
     await run(['fetch'], io())
-    expect(requests).toEqual(Object.keys(allResponses))
+    const colors = 'https://example.com/colors/neutral.json'
+    expect(requests).toEqual([
+      ...Object.keys(styleResponses('base-vega')),
+      ...Object.keys(styleResponses('base-luma')),
+      'https://example.com/typeset.css',
+      'https://example.com/fixtures/docs.ts',
+    ])
+    expect(requests.filter((url) => url === colors)).toHaveLength(2)
+    expect(JSON.parse(await read('upstream/base-luma/badge.json'))).toEqual(upstream)
     expect(JSON.parse(await read('upstream/base-vega/badge.json'))).toEqual(upstream)
     expect(JSON.parse(await read('upstream/base-vega/colors-neutral.json'))).toEqual(
       snapshot('colors-neutral'),
@@ -134,6 +148,11 @@ describe('mirror fetch', () => {
       'fetched base-vega/font-inter',
       'fetched base-vega/colors-neutral',
       'fetched base-vega/badge-example',
+      'fetched base-luma/badge',
+      'fetched base-luma/index',
+      'fetched base-luma/font-inter',
+      'fetched base-luma/colors-neutral',
+      'fetched base-luma/badge-example',
       'fetched typeset/typeset.css',
       'fetched typeset/fixtures/docs.ts',
     ])
@@ -160,6 +179,7 @@ describe('mirror fetch', () => {
   it('skips a component with no example, drops its old snapshot, and builds without one', async () => {
     await run(['fetch'], io())
     delete responses['https://example.com/base-vega/badge-example.json']
+    delete responses['https://example.com/base-luma/badge-example.json']
     await run(['fetch'], io())
     expect(logs).toContain('no badge-example upstream')
     await expect(stat(join(root, 'upstream/base-vega/badge-example.json'))).rejects.toThrow(
@@ -177,28 +197,46 @@ describe('mirror fetch', () => {
 })
 
 describe('mirror build', () => {
-  it('generates components, globals and harness inputs, and upserts registry.json', async () => {
+  it("generates each style's components, globals and registry, and the compare style's harness", async () => {
     await run(['fetch'], io())
     logs = []
     await run(['build'], io())
     expect(await read('upstream/base-vega/index.css')).toContain('@import "tailwindcss";')
-    expect(await read('registry/ui/Badge/Badge.tsx')).toContain('badgeVariants({ className: c })')
-    expect(await read('registry/ui/Badge/Badge.test.tsx')).toContain('describe("Badge"')
-    expect(await read('registry/ui/Badge/Badge.module.scss')).toContain(':where(.badge) {')
-    expect(await read('registry/styles/variables.scss')).toContain('--background: oklch(100% 0 0);')
-    expect(await read('registry/styles/base.scss')).toContain('@layer base {')
-    expect(await read('registry/styles/fonts.css')).toContain(
+    expect(await read('registry/vega/ui/Badge/Badge.tsx')).toContain(
+      'badgeVariants({ className: c })',
+    )
+    expect(await read('registry/vega/ui/Badge/Badge.test.tsx')).toContain('describe("Badge"')
+    expect(await read('registry/vega/ui/Badge/Badge.module.scss')).toContain(':where(.badge) {')
+    expect(await read('registry/vega/styles/variables.scss')).toContain(
+      '--background: oklch(100% 0 0);',
+    )
+    expect(await read('registry/vega/styles/base.scss')).toContain('@layer base {')
+    expect(await read('registry/vega/styles/fonts.css')).toContain(
       '@import "@fontsource-variable/inter";',
     )
-    expect(await read('registry/styles/typeset.css')).toBe(
+    expect(await read('registry/vega/styles/typeset.css')).toBe(
       '/* Mirrored from https://example.com/typeset.css by scripts/mirror. Do not edit. */\n\n@layer components { .typeset { color: var(--color-foreground); } }\n',
     )
-    expect(await read('registry/styles/variables.scss')).toContain(
+    expect(await read('registry/vega/styles/variables.scss')).toContain(
       '--color-foreground: var(--foreground);',
     )
     expect(await read('ab/generated/ours.ts')).toContain('@/registry/bje/ui/Badge/Badge')
     expect(await read('ab/generated/typeset.ts')).toContain('<h1>Docs</h1>')
-    const registry = JSON.parse(await read('registry.json'))
+    expect(await read('registry/luma/ui/Badge/Badge.module.scss')).toContain(':where(.badge) {')
+    expect(JSON.parse(await read('registry/luma/tsconfig.json'))).toEqual({
+      extends: '../tsconfig.json',
+      compilerOptions: {
+        paths: { '@/registry/bje/ui/*': ['./ui/*'], '@/registry/bje/hooks/*': ['./hooks/*'] },
+      },
+      include: ['.', '../../types'],
+    })
+    // The base keeps only the hand-written items.
+    expect(JSON.parse(await read('registry.json')).items).toEqual([{ name: 'cn' }])
+    const luma = JSON.parse(await read('registry/luma/registry.json'))
+    expect(luma.homepage).toBe('https://example.com/luma')
+    expect(luma.items[1].files[0].path).toBe('registry/luma/ui/Badge/Badge.tsx')
+    const registry = JSON.parse(await read('registry/vega/registry.json'))
+    expect(registry.homepage).toBe('https://example.com/vega')
     expect(registry.items.map((item: { name: string }) => item.name)).toEqual([
       'cn',
       'badge',
@@ -214,17 +252,17 @@ describe('mirror build', () => {
       registryDependencies: [],
       files: [
         {
-          path: 'registry/styles/variables.scss',
+          path: 'registry/vega/styles/variables.scss',
           type: 'registry:file',
           target: '@components/styles/variables.scss',
         },
         {
-          path: 'registry/styles/base.scss',
+          path: 'registry/vega/styles/base.scss',
           type: 'registry:file',
           target: '@components/styles/base.scss',
         },
         {
-          path: 'registry/styles/fonts.css',
+          path: 'registry/vega/styles/fonts.css',
           type: 'registry:file',
           target: '@components/styles/fonts.css',
         },
@@ -239,20 +277,26 @@ describe('mirror build', () => {
       registryDependencies: ['@bje/globals'],
       files: [
         {
-          path: 'registry/styles/typeset.css',
+          path: 'registry/vega/styles/typeset.css',
           type: 'registry:file',
           target: '@components/styles/typeset.css',
         },
       ],
     })
-    expect(logs).toEqual([
-      'built badge: registry/ui/Badge/Badge.tsx, registry/ui/Badge/Badge.module.scss, registry/ui/Badge/Badge.test.tsx',
+    const built = (style: string) => [
+      `built badge: registry/${style}/ui/Badge/Badge.tsx, registry/${style}/ui/Badge/Badge.module.scss, registry/${style}/ui/Badge/Badge.test.tsx`,
       '  badge: no CSS for group',
-      'built globals: registry/styles/variables.scss, registry/styles/base.scss, registry/styles/fonts.css',
-      'built typeset: registry/styles/typeset.css',
+      `built globals: registry/${style}/styles/variables.scss, registry/${style}/styles/base.scss, registry/${style}/styles/fonts.css`,
+      `built typeset: registry/${style}/styles/typeset.css`,
+    ]
+    expect(logs).toEqual([
+      ...built('vega'),
       'example badge-example: 1 of 2 sub-examples',
       '  skipped BadgeOther: needs other',
       'built A/B harness inputs in ab/generated',
+      'built registry/vega/registry.json, registry/vega/tsconfig.json',
+      ...built('luma'),
+      'built registry/luma/registry.json, registry/luma/tsconfig.json',
     ])
     expect(await read('ab/generated/examples/ours/badge-example.tsx')).toContain(
       'import { Badge } from "@/registry/bje/ui/Badge/Badge"',
@@ -289,28 +333,10 @@ describe('mirror build', () => {
     await expect(run(['build'], io())).rejects.toThrow('EISDIR')
   })
 
-  it('drops the registry item of a component no longer configured', async () => {
-    await writeFile(
-      join(root, 'registry.json'),
-      JSON.stringify({
-        name: 'bje',
-        items: [
-          { name: 'cn', files: [{ path: 'registry/lib/cn.ts' }] },
-          { name: 'old', files: [{ path: 'registry/ui/Old/Old.tsx' }] },
-          { name: 'bare' },
-        ],
-      }),
-    )
+  it('refuses a base registry without a homepage', async () => {
+    await writeFile(join(root, 'registry.json'), JSON.stringify({ name: 'bje', items: [] }))
     await run(['fetch'], io())
-    await run(['build'], io())
-    const registry = JSON.parse(await read('registry.json'))
-    expect(registry.items.map((item: { name: string }) => item.name)).toEqual([
-      'cn',
-      'bare',
-      'badge',
-      'globals',
-      'typeset',
-    ])
+    await expect(run(['build'], io())).rejects.toThrow('registry.json: homepage must be a string')
   })
 
   it('asks for a fetch when the typeset snapshot is missing', async () => {
