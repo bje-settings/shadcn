@@ -2,9 +2,36 @@
 //
 // Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):
 //   --background --container-xs --foreground --radius --spacing --text-xs --text-xs--line-height
-//   --transform-origin --tw-animation-delay --tw-animation-direction --tw-animation-duration
-//   --tw-animation-fill-mode --tw-animation-iteration-count --tw-duration --tw-ease --tw-leading
-//   --tw-translate-x
+//   --transform-origin
+
+// Defaults for the internal variables the rules below compose with.
+@layer properties {
+  :where(.tooltipContent),
+  :where(.tooltipContentArrow) {
+    --animation-delay: 0s;
+    --animation-direction: normal;
+    --animation-duration: initial;
+    --animation-fill-mode: none;
+    --animation-iteration-count: 1;
+    --duration: initial;
+    --ease: initial;
+    --enter-blur: 0;
+    --enter-opacity: 1;
+    --enter-rotate: 0;
+    --enter-scale: 1;
+    --enter-translate-x: 0;
+    --enter-translate-y: 0;
+    --exit-blur: 0;
+    --exit-opacity: 1;
+    --exit-rotate: 0;
+    --exit-scale: 1;
+    --exit-translate-x: 0;
+    --exit-translate-y: 0;
+    --leading: initial;
+    --transform-translate-x: 0;
+    --transform-translate-y: 0;
+  }
+}
 
 :where(.tooltipContentPositioner) {
   isolation: isolate;
@@ -24,40 +51,40 @@
   padding-inline: calc(var(--spacing) * 3);
   padding-block: calc(var(--spacing) * 1.5);
   font-size: var(--text-xs);
-  line-height: var(--tw-leading, var(--text-xs--line-height));
+  line-height: var(--leading, var(--text-xs--line-height));
   color: var(--background);
   &:has([data-slot="kbd"]) {
     padding-right: calc(var(--spacing) * 1.5);
   }
   &[data-side="bottom"] {
-    --tw-enter-translate-y: calc(2*var(--spacing)*-1);
+    --enter-translate-y: calc(2*var(--spacing)*-1);
   }
   &[data-side="inline-end"] {
-    --tw-enter-translate-x: calc(2*var(--spacing)*-1);
+    --enter-translate-x: calc(2*var(--spacing)*-1);
   }
   &[data-side="inline-start"], &[data-side="left"] {
-    --tw-enter-translate-x: calc(2*var(--spacing));
+    --enter-translate-x: calc(2*var(--spacing));
   }
   &[data-side="right"] {
-    --tw-enter-translate-x: calc(2*var(--spacing)*-1);
+    --enter-translate-x: calc(2*var(--spacing)*-1);
   }
   &[data-side="top"] {
-    --tw-enter-translate-y: calc(2*var(--spacing));
+    --enter-translate-y: calc(2*var(--spacing));
   }
   &[data-state="delayed-open"] {
-    animation: enter var(--tw-animation-duration, var(--tw-duration, .15s))var(--tw-ease, ease)var(--tw-animation-delay, 0s)var(--tw-animation-iteration-count, 1)var(--tw-animation-direction, normal)var(--tw-animation-fill-mode, none);
-    --tw-enter-opacity: 0;
-    --tw-enter-scale: .95;
+    animation: enter var(--animation-duration, var(--duration, .15s))var(--ease, ease)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+    --enter-opacity: 0;
+    --enter-scale: .95;
   }
   &:where([data-state="open"]), &:where([data-open]:not([data-open="false"])) {
-    animation: enter var(--tw-animation-duration, var(--tw-duration, .15s))var(--tw-ease, ease)var(--tw-animation-delay, 0s)var(--tw-animation-iteration-count, 1)var(--tw-animation-direction, normal)var(--tw-animation-fill-mode, none);
-    --tw-enter-opacity: 0;
-    --tw-enter-scale: .95;
+    animation: enter var(--animation-duration, var(--duration, .15s))var(--ease, ease)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+    --enter-opacity: 0;
+    --enter-scale: .95;
   }
   &:where([data-state="closed"]), &:where([data-closed]:not([data-closed="false"])) {
-    animation: exit var(--tw-animation-duration, var(--tw-duration, .15s))var(--tw-ease, ease)var(--tw-animation-delay, 0s)var(--tw-animation-iteration-count, 1)var(--tw-animation-direction, normal)var(--tw-animation-fill-mode, none);
-    --tw-exit-opacity: 0;
-    --tw-exit-scale: .95;
+    animation: exit var(--animation-duration, var(--duration, .15s))var(--ease, ease)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+    --exit-opacity: 0;
+    --exit-scale: .95;
   }
 }
 .tooltipContent {
@@ -73,8 +100,8 @@
   z-index: 50;
   width: calc(var(--spacing) * 2.5);
   height: calc(var(--spacing) * 2.5);
-  --tw-translate-y: calc(-50% - 2px);
-  translate: var(--tw-translate-x) var(--tw-translate-y);
+  --transform-translate-y: calc(-50% - 2px);
+  translate: var(--transform-translate-x) var(--transform-translate-y);
   rotate: 45deg;
   border-radius: 2px;
   background-color: var(--foreground);
@@ -85,26 +112,26 @@
   &[data-side="inline-end"] {
     top: 50% !important;
     left: calc(var(--spacing) * -1);
-    --tw-translate-y: calc(calc(1 / 2 * 100%) * -1);
-    translate: var(--tw-translate-x) var(--tw-translate-y);
+    --transform-translate-y: calc(calc(1 / 2 * 100%) * -1);
+    translate: var(--transform-translate-x) var(--transform-translate-y);
   }
   &[data-side="inline-start"] {
     top: 50% !important;
     right: calc(var(--spacing) * -1);
-    --tw-translate-y: calc(calc(1 / 2 * 100%) * -1);
-    translate: var(--tw-translate-x) var(--tw-translate-y);
+    --transform-translate-y: calc(calc(1 / 2 * 100%) * -1);
+    translate: var(--transform-translate-x) var(--transform-translate-y);
   }
   &[data-side="left"] {
     top: 50% !important;
     right: calc(var(--spacing) * -1);
-    --tw-translate-y: calc(calc(1 / 2 * 100%) * -1);
-    translate: var(--tw-translate-x) var(--tw-translate-y);
+    --transform-translate-y: calc(calc(1 / 2 * 100%) * -1);
+    translate: var(--transform-translate-x) var(--transform-translate-y);
   }
   &[data-side="right"] {
     top: 50% !important;
     left: calc(var(--spacing) * -1);
-    --tw-translate-y: calc(calc(1 / 2 * 100%) * -1);
-    translate: var(--tw-translate-x) var(--tw-translate-y);
+    --transform-translate-y: calc(calc(1 / 2 * 100%) * -1);
+    translate: var(--transform-translate-x) var(--transform-translate-y);
   }
   &[data-side="top"] {
     bottom: calc(var(--spacing) * -2.5);

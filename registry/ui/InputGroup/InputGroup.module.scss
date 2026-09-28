@@ -3,14 +3,38 @@
 // Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):
 //   --default-transition-duration --default-transition-timing-function --destructive
 //   --font-weight-medium --input --muted-foreground --radius --ring --spacing --text-sm
-//   --text-sm--line-height --tw-border-style --tw-duration --tw-ease --tw-inset-ring-shadow
-//   --tw-inset-shadow --tw-leading --tw-ring-color --tw-ring-inset --tw-ring-offset-shadow
-//   --tw-ring-offset-width --tw-ring-shadow --tw-shadow-color
+//   --text-sm--line-height
 //
 // Upstream classes with no CSS output, dropped:
 //   group/input-group
 //
 // Dropped rules: Card's header and footer and InputGroup's addons pad only when a consumer passes Tailwind's border-b or border-t, which no element carries here.
+
+// Defaults for the internal variables the rules below compose with.
+@layer properties {
+  :where(.inputGroup),
+  :where(.inputGroupAddon),
+  :where(.inputGroupButton),
+  :where(.inputGroupControl),
+  :where(.inputGroupTextSpan),
+  :where(.inputGroupTextarea) {
+    --border-style: solid;
+    --duration: initial;
+    --ease: initial;
+    --font-weight: initial;
+    --inset-ring-shadow: 0 0 #0000;
+    --inset-shadow: 0 0 #0000;
+    --leading: initial;
+    --outline-style: solid;
+    --ring-color: initial;
+    --ring-inset: initial;
+    --ring-offset-shadow: 0 0 #0000;
+    --ring-offset-width: 0px;
+    --ring-shadow: 0 0 #0000;
+    --shadow: 0 0 #0000;
+    --shadow-color: initial;
+  }
+}
 
 :where(.inputGroupAddon) {
   display: flex;
@@ -21,8 +45,8 @@
   gap: calc(var(--spacing) * 2);
   padding-block: calc(var(--spacing) * 1.5);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
-  --tw-font-weight: var(--font-weight-medium);
+  line-height: var(--leading, var(--text-sm--line-height));
+  --font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
   color: var(--muted-foreground);
   -webkit-user-select: none;
@@ -88,9 +112,9 @@
   align-items: center;
   gap: calc(var(--spacing) * 2);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
-  --tw-shadow: 0 0 #0000;
-  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  line-height: var(--leading, var(--text-sm--line-height));
+  --shadow: 0 0 #0000;
+  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
 }
 
 :where(.inputGroupButtonSizeXs) {
@@ -129,37 +153,37 @@
   min-width: 0;
   align-items: center;
   border-radius: calc(var(--radius) * .8);
-  border-style: var(--tw-border-style);
+  border-style: var(--border-style);
   border-width: 1px;
   border-color: var(--input);
-  --tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, #0000000d);
-  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  --shadow: 0 1px 2px 0 var(--shadow-color, #0000000d);
+  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
   transition-property: color, box-shadow;
-  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-  transition-duration: var(--tw-duration, var(--default-transition-duration));
-  --tw-outline-style: none;
+  transition-timing-function: var(--ease, var(--default-transition-timing-function));
+  transition-duration: var(--duration, var(--default-transition-duration));
+  --outline-style: none;
   outline-style: none;
   :where([data-slot="combobox-content"]) &:focus-within {
     border-color: inherit;
-    --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(0px + var(--ring-offset-width)) var(--ring-color, currentcolor);
+    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
   }
   &:has([data-slot="input-group-control"]:focus-visible) {
     border-color: var(--ring);
-    --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    --tw-ring-color: var(--ring);
+    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
+    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-color: var(--ring);
     @supports (color: color-mix(in lab, red, red)) {
-      --tw-ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
+      --ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
     }
   }
   &:has([data-slot][aria-invalid="true"]) {
     border-color: var(--destructive);
-    --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    --tw-ring-color: var(--destructive);
+    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
+    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-color: var(--destructive);
     @supports (color: color-mix(in lab, red, red)) {
-      --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+      --ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
     }
   }
   &:has( > [data-align="block-end"]) {
@@ -180,9 +204,9 @@
     }
   }
   &:is(:global(.dark) *):has([data-slot][aria-invalid="true"]) {
-    --tw-ring-color: var(--destructive);
+    --ring-color: var(--destructive);
     @supports (color: color-mix(in lab, red, red)) {
-      --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
+      --ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
     }
   }
 }
@@ -206,7 +230,7 @@
   align-items: center;
   gap: calc(var(--spacing) * 2);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
+  line-height: var(--leading, var(--text-sm--line-height));
   color: var(--muted-foreground);
   & svg:where(:not([data-slot="accordion-trigger"], [data-slot="alert"], [data-slot="alert-dialog-media"], [data-slot="attachment-media"], [data-slot="avatar"], [data-slot="avatar-badge"], [data-slot="avatar-fallback"], [data-slot="avatar-group-count"], [data-slot="avatar-image"], [data-slot="badge"], [data-slot="breadcrumb-ellipsis"], [data-slot="breadcrumb-separator"], [data-slot="button"], [data-slot="button-group-text"], [data-slot="checkbox"], [data-slot="checkbox-indicator"], [data-slot="combobox-item"], [data-slot="combobox-trigger"], [data-slot="command"], [data-slot="command-item"], [data-slot="context-menu-checkbox-item"], [data-slot="context-menu-item"], [data-slot="context-menu-radio-item"], [data-slot="context-menu-sub-trigger"], [data-slot="dropdown-menu-checkbox-item"], [data-slot="dropdown-menu-item"], [data-slot="dropdown-menu-radio-item"], [data-slot="dropdown-menu-sub-trigger"], [data-slot="empty-icon"], [data-slot="input-group-addon"], [data-slot="input-group-control"], [data-slot="input-otp-separator"], [data-slot="input-otp-slot"], [data-slot="item-media"], [data-slot="kbd"], [data-slot="marker"], [data-slot="marker-icon"], [data-slot="menubar-item"], [data-slot="menubar-radio-item"], [data-slot="menubar-sub-trigger"], [data-slot="message-scroller"], [data-slot="message-scroller-viewport"], [data-slot="native-select-icon"], [data-slot="navigation-menu-link"], [data-slot="pagination-ellipsis"], [data-slot="questionnaire-choice-indicator"], [data-slot="questionnaire-choice-indicator-check"], [data-slot="questionnaire-choice-indicator-dot"], [data-slot="questionnaire-choice-input"], [data-slot="questionnaire-choice-shortcut"], [data-slot="radio-group-indicator"], [data-slot="radio-group-item"], [data-slot="scroll-area-viewport"], [data-slot="select-item"], [data-slot="select-scroll-down-button"], [data-slot="select-scroll-up-button"], [data-slot="select-trigger"], [data-slot="sidebar-group-action"], [data-slot="sidebar-group-label"], [data-slot="sidebar-inner"], [data-slot="sidebar-menu-action"], [data-slot="sidebar-menu-button"], [data-slot="sidebar-menu-sub-button"], [data-slot="slider-thumb"], [data-slot="spinner"], [data-slot="switch-thumb"], [data-slot="tabs-trigger"], [data-slot="toast-icon"], [data-slot="toggle"])) {
     width: calc(var(--spacing) * 4);
@@ -222,14 +246,14 @@
 :where(.inputGroupControl) {
   flex: 1;
   border-radius: 0;
-  border-style: var(--tw-border-style);
+  border-style: var(--border-style);
   border-width: 0;
   background-color: #0000;
-  --tw-shadow: 0 0 #0000;
-  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  --shadow: 0 0 #0000;
+  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
   &, &:focus-visible, &[aria-invalid="true"] {
-    --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(0px + var(--ring-offset-width)) var(--ring-color, currentcolor);
+    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
   }
   &:is(:global(.dark) *) {
     background-color: #0000;
@@ -240,15 +264,15 @@
   flex: 1;
   resize: none;
   border-radius: 0;
-  border-style: var(--tw-border-style);
+  border-style: var(--border-style);
   border-width: 0;
   background-color: #0000;
   padding-block: calc(var(--spacing) * 2);
-  --tw-shadow: 0 0 #0000;
-  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  --shadow: 0 0 #0000;
+  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
   &, &:focus-visible, &[aria-invalid="true"] {
-    --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(0px + var(--ring-offset-width)) var(--ring-color, currentcolor);
+    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
   }
   &:is(:global(.dark) *) {
     background-color: #0000;

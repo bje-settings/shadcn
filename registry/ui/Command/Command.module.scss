@@ -3,11 +3,34 @@
 // Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):
 //   --border --font-weight-medium --foreground --input --muted --muted-foreground --popover
 //   --popover-foreground --radius --spacing --text-sm --text-sm--line-height --text-xs
-//   --text-xs--line-height --tracking-widest --tw-inset-ring-shadow --tw-inset-shadow --tw-leading
-//   --tw-ring-offset-shadow --tw-ring-shadow --tw-translate-x
+//   --text-xs--line-height --tracking-widest
 //
 // Upstream classes with no CSS output, dropped:
 //   group/command-item
+
+// Defaults for the internal variables the rules below compose with.
+@layer properties {
+  :is(:where(.commandGroup) *)[cmdk-group-heading],
+  :where(.commandDialogDialogContent),
+  :where(.commandEmpty),
+  :where(.commandInput),
+  :where(.commandInputInputGroup),
+  :where(.commandItem),
+  :where(.commandList),
+  :where(.commandShortcut) {
+    --font-weight: initial;
+    --inset-ring-shadow: 0 0 #0000;
+    --inset-shadow: 0 0 #0000;
+    --leading: initial;
+    --outline-style: solid;
+    --ring-offset-shadow: 0 0 #0000;
+    --ring-shadow: 0 0 #0000;
+    --shadow: 0 0 #0000;
+    --tracking: initial;
+    --transform-translate-x: 0;
+    --transform-translate-y: 0;
+  }
+}
 
 :where(.command) {
   display: flex;
@@ -35,8 +58,8 @@
 
 :where(.commandDialogDialogContent) {
   top: 33.3333%;
-  --tw-translate-y: 0px;
-  translate: var(--tw-translate-x) var(--tw-translate-y);
+  --transform-translate-y: 0px;
+  translate: var(--transform-translate-x) var(--transform-translate-y);
   overflow: hidden;
   border-radius: calc(var(--radius) * 1.4) !important;
   padding: 0;
@@ -58,8 +81,8 @@
   @supports (color: color-mix(in lab, red, red)) {
     background-color: color-mix(in oklab, var(--input) 30%, transparent);
   }
-  --tw-shadow: 0 0 #0000 !important;
-  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow) !important;
+  --shadow: 0 0 #0000 !important;
+  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow) !important;
 }
 .commandInputInputGroup {
   :is(& > *)[data-slot="input-group-addon"] {
@@ -70,8 +93,8 @@
 :where(.commandInput) {
   width: 100%;
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
-  --tw-outline-style: none;
+  line-height: var(--leading, var(--text-sm--line-height));
+  --outline-style: none;
   outline-style: none;
   @media (forced-colors: active) {
     outline-offset: 2px;
@@ -100,7 +123,7 @@
   scroll-padding-block: var(--spacing);
   overflow-x: hidden;
   overflow-y: auto;
-  --tw-outline-style: none;
+  --outline-style: none;
   outline-style: none;
 }
 
@@ -108,7 +131,7 @@
   padding-block: calc(var(--spacing) * 6);
   text-align: center;
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
+  line-height: var(--leading, var(--text-sm--line-height));
 }
 
 :where(.commandGroup) {
@@ -121,8 +144,8 @@
     padding-inline: calc(var(--spacing) * 2);
     padding-block: calc(var(--spacing) * 1.5);
     font-size: var(--text-xs);
-    line-height: var(--tw-leading, var(--text-xs--line-height));
-    --tw-font-weight: var(--font-weight-medium);
+    line-height: var(--leading, var(--text-xs--line-height));
+    --font-weight: var(--font-weight-medium);
     font-weight: var(--font-weight-medium);
     color: var(--muted-foreground);
   }
@@ -145,8 +168,8 @@
   padding-inline: calc(var(--spacing) * 2);
   padding-block: calc(var(--spacing) * 1.5);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
-  --tw-outline-style: none;
+  line-height: var(--leading, var(--text-sm--line-height));
+  --outline-style: none;
   outline-style: none;
   @media (forced-colors: active) {
     outline-offset: 2px;
@@ -194,8 +217,8 @@
 :where(.commandShortcut) {
   margin-left: auto;
   font-size: var(--text-xs);
-  line-height: var(--tw-leading, var(--text-xs--line-height));
-  --tw-tracking: var(--tracking-widest);
+  line-height: var(--leading, var(--text-xs--line-height));
+  --tracking: var(--tracking-widest);
   letter-spacing: var(--tracking-widest);
   color: var(--muted-foreground);
   &:is(:where([data-slot="command-item"]):where([data-selected="true"]) *) {

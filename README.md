@@ -83,10 +83,20 @@ For each component, the build:
    none is noted in the header. Rules that need a configured consumer class (Card's `[.border-b]:`
    padding) are dropped and listed in the module's header and the build log; any other outside
    class fails the build.
-4. Lists in the module's header the custom properties it reads and does not set (global tokens,
+4. Renames Tailwind's internal variables, the ones that compose one property from several
+   utilities (a shadow and a focus ring share one `box-shadow`, animate-in's keyframes read
+   `--enter-*`), by dropping the `tw-` prefix: `--tw-ring-shadow` becomes `--ring-shadow`. A family
+   whose bare names a component already uses is renamed whole (`--tw-translate-*` becomes
+   `--transform-translate-*`, since Drawer and Toast set their own `--translate-x`), and a renamed
+   variable that collides with a theme token or any other variable fails the build
+   (`scripts/mirror/internal.ts`). Upstream registers these globally with `@property`; here each
+   module declares defaults for the ones it uses, on the elements that use them, in
+   `@layer properties`. A layered rule loses to every unlayered one, and every module declares the
+   same constants, so modules never conflict.
+5. Lists in the module's header the custom properties it reads and does not set (global tokens,
    or set by an enclosing slot or an inline style). Any class Tailwind produces no CSS for, other
    than `group`/`peer` markers and `classesWithoutCss` entries, fails the build.
-5. Generates `<Name>.test.tsx` covering every exported component: its `data-slot` and classes,
+6. Generates `<Name>.test.tsx` covering every exported component: its `data-slot` and classes,
    every option of every `cva()` group, null groups, literal prop defaults, and consumer
    `className`, that other values of boolean and union-typed defaults and default children change
    the render, exported hooks
@@ -99,9 +109,12 @@ For each component, the build:
    `environment: 'jsdom'`; the item lists the test's devDependencies.
 
 It also generates the global stylesheets, the `@bje/globals` item every component depends on:
-`variables.scss` (theme tokens, light and dark colors, Tailwind's `@property` registrations) and
-`base.scss` (Tailwind's preflight plus shadcn's base layer). Both are split out of Tailwind's own
-output over every mirrored component's classes, so they match what an upstream project ships.
+`variables.scss` (Tailwind's whole default theme, shadcn's light and dark colors, and the
+`@property` registrations of shadcn's own utilities) and `base.scss` (Tailwind's preflight plus
+shadcn's base layer, and the keyframes components animate with). Both are split out of Tailwind's
+own output over every mirrored component's classes. The theme is compiled static
+(`theme(static)`), so `variables.scss` holds every default theme variable, not only the ones
+components read, and no Tailwind internal: a consumer's globals are the tokens components read.
 A third file, `fonts.css`, imports the font package (`@fontsource-variable/inter`). Consumers import
 all three once.
 

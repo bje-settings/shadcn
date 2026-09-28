@@ -2,8 +2,24 @@
 //
 // Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):
 //   --default-transition-duration --default-transition-timing-function --font-weight-medium --muted
-//   --muted-foreground --primary --spacing --text-sm --text-sm--line-height --tw-duration --tw-ease
-//   --tw-leading --tw-numeric-figure --tw-numeric-fraction --tw-ordinal --tw-slashed-zero
+//   --muted-foreground --primary --spacing --text-sm --text-sm--line-height
+
+// Defaults for the internal variables the rules below compose with.
+@layer properties {
+  :where(.progressIndicator),
+  :where(.progressLabel),
+  :where(.progressValue) {
+    --duration: initial;
+    --ease: initial;
+    --font-weight: initial;
+    --leading: initial;
+    --numeric-figure: initial;
+    --numeric-fraction: initial;
+    --numeric-spacing: initial;
+    --ordinal: initial;
+    --slashed-zero: initial;
+  }
+}
 
 :where(.progress) {
   display: flex;
@@ -26,22 +42,22 @@
   height: 100%;
   background-color: var(--primary);
   transition-property: all;
-  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-  transition-duration: var(--tw-duration, var(--default-transition-duration));
+  transition-timing-function: var(--ease, var(--default-transition-timing-function));
+  transition-duration: var(--duration, var(--default-transition-duration));
 }
 
 :where(.progressLabel) {
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
-  --tw-font-weight: var(--font-weight-medium);
+  line-height: var(--leading, var(--text-sm--line-height));
+  --font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
 }
 
 :where(.progressValue) {
   margin-left: auto;
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
+  line-height: var(--leading, var(--text-sm--line-height));
   color: var(--muted-foreground);
-  --tw-numeric-spacing: tabular-nums;
-  font-variant-numeric: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
+  --numeric-spacing: tabular-nums;
+  font-variant-numeric: var(--ordinal, ) var(--slashed-zero, ) var(--numeric-figure, ) var(--numeric-spacing, ) var(--numeric-fraction, );
 }

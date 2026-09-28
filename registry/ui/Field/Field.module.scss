@@ -3,12 +3,33 @@
 // Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):
 //   --background --destructive --font-weight-medium --font-weight-normal --leading-normal
 //   --leading-snug --muted --muted-foreground --primary --radius --ring --spacing --text-base
-//   --text-base--line-height --text-sm --text-sm--line-height --tw-border-style
-//   --tw-inset-ring-shadow --tw-inset-shadow --tw-leading --tw-ring-inset --tw-ring-offset-shadow
-//   --tw-ring-offset-width --tw-shadow
+//   --text-base--line-height --text-sm --text-sm--line-height
 //
 // Upstream classes with no CSS output, dropped:
 //   group/field group/field-group group/field-content group/field-label peer/field-label
+
+// Defaults for the internal variables the rules below compose with.
+@layer properties {
+  :where(.fieldContent),
+  :where(.fieldDescription),
+  :where(.fieldError),
+  :where(.fieldLabel),
+  :where(.fieldLegend),
+  :where(.fieldSeparator),
+  :where(.fieldTitle) {
+    --border-style: solid;
+    --font-weight: initial;
+    --inset-ring-shadow: 0 0 #0000;
+    --inset-shadow: 0 0 #0000;
+    --leading: initial;
+    --ring-color: initial;
+    --ring-inset: initial;
+    --ring-offset-shadow: 0 0 #0000;
+    --ring-offset-width: 0px;
+    --ring-shadow: 0 0 #0000;
+    --shadow: 0 0 #0000;
+  }
+}
 
 :where(.field) {
   display: flex;
@@ -92,15 +113,15 @@
 
 :where(.fieldLegend) {
   margin-bottom: calc(var(--spacing) * 3);
-  --tw-font-weight: var(--font-weight-medium);
+  --font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
   &[data-variant="label"] {
     font-size: var(--text-sm);
-    line-height: var(--tw-leading, var(--text-sm--line-height));
+    line-height: var(--leading, var(--text-sm--line-height));
   }
   &[data-variant="legend"] {
     font-size: var(--text-base);
-    line-height: var(--tw-leading, var(--text-base--line-height));
+    line-height: var(--leading, var(--text-base--line-height));
   }
 }
 
@@ -125,7 +146,7 @@
   flex: 1;
   flex-direction: column;
   gap: var(--spacing);
-  --tw-leading: var(--leading-snug);
+  --leading: var(--leading-snug);
   line-height: var(--leading-snug);
 }
 
@@ -133,7 +154,7 @@
   display: flex;
   width: fit-content;
   gap: calc(var(--spacing) * 2);
-  --tw-leading: var(--leading-snug);
+  --leading: var(--leading-snug);
   line-height: var(--leading-snug);
   &:is(:where([data-slot="field"])[data-disabled="true"] *) {
     opacity: .5;
@@ -152,7 +173,7 @@
     width: 100%;
     flex-direction: column;
     border-radius: calc(var(--radius) * .8);
-    border-style: var(--tw-border-style);
+    border-style: var(--border-style);
     border-width: 1px;
   }
   &:has( > [data-slot="field"]):not(:has(:is(:disabled, [data-disabled]))):hover {
@@ -165,11 +186,11 @@
   }
   &:has( > [data-slot="field"]):has(:focus-visible) {
     border-color: var(--ring);
-    --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    --tw-ring-color: var(--ring);
+    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
+    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-color: var(--ring);
     @supports (color: color-mix(in lab, red, red)) {
-      --tw-ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
+      --ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
     }
   }
   &:is(:global(.dark) *):has(:where([data-state="checked"]), :where([data-checked]:not([data-checked="false"]))) {
@@ -195,8 +216,8 @@
   align-items: center;
   gap: calc(var(--spacing) * 2);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
-  --tw-font-weight: var(--font-weight-medium);
+  line-height: var(--leading, var(--text-sm--line-height));
+  --font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
   &:is(:where([data-slot="field"])[data-disabled="true"] *) {
     opacity: .5;
@@ -206,10 +227,10 @@
 :where(.fieldDescription) {
   text-align: left;
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
-  --tw-leading: var(--leading-normal);
+  line-height: var(--leading, var(--text-sm--line-height));
+  --leading: var(--leading-normal);
   line-height: var(--leading-normal);
-  --tw-font-weight: var(--font-weight-normal);
+  --font-weight: var(--font-weight-normal);
   font-weight: var(--font-weight-normal);
   color: var(--muted-foreground);
   &:is(:where([data-slot="field"]):has(:where([data-orientation="horizontal"])) *) {
@@ -240,7 +261,7 @@
   margin-block: calc(var(--spacing) * -2);
   height: calc(var(--spacing) * 5);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
+  line-height: var(--leading, var(--text-sm--line-height));
   &:is(:where([data-slot="field-group"])[data-variant="outline"] *) {
     margin-bottom: calc(var(--spacing) * -2);
   }
@@ -272,8 +293,8 @@
 
 :where(.fieldError) {
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
-  --tw-font-weight: var(--font-weight-normal);
+  line-height: var(--leading, var(--text-sm--line-height));
+  --font-weight: var(--font-weight-normal);
   font-weight: var(--font-weight-normal);
   color: var(--destructive);
 }

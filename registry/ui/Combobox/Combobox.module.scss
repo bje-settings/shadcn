@@ -5,13 +5,55 @@
 //   --default-transition-duration --default-transition-timing-function --destructive
 //   --font-weight-medium --foreground --input --muted --muted-foreground --popover
 //   --popover-foreground --radius --ring --spacing --text-sm --text-sm--line-height --text-xs
-//   --text-xs--line-height --transform-origin --tw-animation-delay --tw-animation-direction
-//   --tw-animation-duration --tw-animation-fill-mode --tw-animation-iteration-count
-//   --tw-border-style --tw-duration --tw-ease --tw-inset-ring-shadow --tw-inset-shadow --tw-leading
-//   --tw-ring-inset --tw-ring-offset-shadow --tw-ring-offset-width --tw-shadow-color
+//   --text-xs--line-height --transform-origin
 //
 // Upstream classes with no CSS output, dropped:
 //   group/combobox-content
+
+// Defaults for the internal variables the rules below compose with.
+@layer properties {
+  :is(:where(.comboboxContent) > *)[data-slot="input-group"],
+  :where(.comboboxChip),
+  :where(.comboboxChipInput),
+  :where(.comboboxChips),
+  :where(.comboboxContent),
+  :where(.comboboxEmpty),
+  :where(.comboboxItem),
+  :where(.comboboxLabel) {
+    --animation-delay: 0s;
+    --animation-direction: normal;
+    --animation-duration: initial;
+    --animation-fill-mode: none;
+    --animation-iteration-count: 1;
+    --border-style: solid;
+    --duration: initial;
+    --ease: initial;
+    --enter-blur: 0;
+    --enter-opacity: 1;
+    --enter-rotate: 0;
+    --enter-scale: 1;
+    --enter-translate-x: 0;
+    --enter-translate-y: 0;
+    --exit-blur: 0;
+    --exit-opacity: 1;
+    --exit-rotate: 0;
+    --exit-scale: 1;
+    --exit-translate-x: 0;
+    --exit-translate-y: 0;
+    --font-weight: initial;
+    --inset-ring-shadow: 0 0 #0000;
+    --inset-shadow: 0 0 #0000;
+    --leading: initial;
+    --outline-style: solid;
+    --ring-color: initial;
+    --ring-inset: initial;
+    --ring-offset-shadow: 0 0 #0000;
+    --ring-offset-width: 0px;
+    --ring-shadow: 0 0 #0000;
+    --shadow: 0 0 #0000;
+    --shadow-color: initial;
+  }
+}
 
 :where(.comboboxTrigger) {
   & svg:where(:not([data-slot="accordion-trigger"], [data-slot="alert"], [data-slot="alert-dialog-media"], [data-slot="attachment-media"], [data-slot="avatar"], [data-slot="avatar-badge"], [data-slot="avatar-fallback"], [data-slot="avatar-group-count"], [data-slot="avatar-image"], [data-slot="badge"], [data-slot="breadcrumb-ellipsis"], [data-slot="breadcrumb-separator"], [data-slot="button"], [data-slot="button-group-text"], [data-slot="checkbox"], [data-slot="checkbox-indicator"], [data-slot="combobox-item"], [data-slot="combobox-trigger"], [data-slot="command"], [data-slot="command-item"], [data-slot="context-menu-checkbox-item"], [data-slot="context-menu-item"], [data-slot="context-menu-radio-item"], [data-slot="context-menu-sub-trigger"], [data-slot="dropdown-menu-checkbox-item"], [data-slot="dropdown-menu-item"], [data-slot="dropdown-menu-radio-item"], [data-slot="dropdown-menu-sub-trigger"], [data-slot="empty-icon"], [data-slot="input-group-addon"], [data-slot="input-group-control"], [data-slot="input-otp-separator"], [data-slot="input-otp-slot"], [data-slot="item-media"], [data-slot="kbd"], [data-slot="marker"], [data-slot="marker-icon"], [data-slot="menubar-item"], [data-slot="menubar-radio-item"], [data-slot="menubar-sub-trigger"], [data-slot="message-scroller"], [data-slot="message-scroller-viewport"], [data-slot="native-select-icon"], [data-slot="navigation-menu-link"], [data-slot="pagination-ellipsis"], [data-slot="questionnaire-choice-indicator"], [data-slot="questionnaire-choice-indicator-check"], [data-slot="questionnaire-choice-indicator-dot"], [data-slot="questionnaire-choice-input"], [data-slot="questionnaire-choice-shortcut"], [data-slot="radio-group-indicator"], [data-slot="radio-group-item"], [data-slot="scroll-area-viewport"], [data-slot="select-item"], [data-slot="select-scroll-down-button"], [data-slot="select-scroll-up-button"], [data-slot="select-trigger"], [data-slot="sidebar-group-action"], [data-slot="sidebar-group-label"], [data-slot="sidebar-inner"], [data-slot="sidebar-menu-action"], [data-slot="sidebar-menu-button"], [data-slot="sidebar-menu-sub-button"], [data-slot="slider-thumb"], [data-slot="spinner"], [data-slot="switch-thumb"], [data-slot="tabs-trigger"], [data-slot="toast-icon"], [data-slot="toggle"])) {
@@ -60,43 +102,43 @@
   border-radius: calc(var(--radius) * .8);
   background-color: var(--popover);
   color: var(--popover-foreground);
-  --tw-shadow: 0 4px 6px -1px var(--tw-shadow-color, #0000001a), 0 2px 4px -2px var(--tw-shadow-color, #0000001a);
-  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  --tw-ring-color: var(--foreground);
+  --shadow: 0 4px 6px -1px var(--shadow-color, #0000001a), 0 2px 4px -2px var(--shadow-color, #0000001a);
+  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+  --ring-shadow: var(--ring-inset, ) 0 0 0 calc(1px + var(--ring-offset-width)) var(--ring-color, currentcolor);
+  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+  --ring-color: var(--foreground);
   @supports (color: color-mix(in lab, red, red)) {
-    --tw-ring-color: color-mix(in oklab, var(--foreground) 10%, transparent);
+    --ring-color: color-mix(in oklab, var(--foreground) 10%, transparent);
   }
-  --tw-duration: .1s;
+  --duration: .1s;
   transition-duration: .1s;
   &[data-chips="true"] {
     min-width: var(--anchor-width);
   }
   &[data-side="bottom"] {
-    --tw-enter-translate-y: calc(2*var(--spacing)*-1);
+    --enter-translate-y: calc(2*var(--spacing)*-1);
   }
   &[data-side="inline-end"] {
-    --tw-enter-translate-x: calc(2*var(--spacing)*-1);
+    --enter-translate-x: calc(2*var(--spacing)*-1);
   }
   &[data-side="inline-start"], &[data-side="left"] {
-    --tw-enter-translate-x: calc(2*var(--spacing));
+    --enter-translate-x: calc(2*var(--spacing));
   }
   &[data-side="right"] {
-    --tw-enter-translate-x: calc(2*var(--spacing)*-1);
+    --enter-translate-x: calc(2*var(--spacing)*-1);
   }
   &[data-side="top"] {
-    --tw-enter-translate-y: calc(2*var(--spacing));
+    --enter-translate-y: calc(2*var(--spacing));
   }
   &:where([data-state="open"]), &:where([data-open]:not([data-open="false"])) {
-    animation: enter var(--tw-animation-duration, var(--tw-duration, .15s))var(--tw-ease, ease)var(--tw-animation-delay, 0s)var(--tw-animation-iteration-count, 1)var(--tw-animation-direction, normal)var(--tw-animation-fill-mode, none);
-    --tw-enter-opacity: 0;
-    --tw-enter-scale: .95;
+    animation: enter var(--animation-duration, var(--duration, .15s))var(--ease, ease)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+    --enter-opacity: 0;
+    --enter-scale: .95;
   }
   &:where([data-state="closed"]), &:where([data-closed]:not([data-closed="false"])) {
-    animation: exit var(--tw-animation-duration, var(--tw-duration, .15s))var(--tw-ease, ease)var(--tw-animation-delay, 0s)var(--tw-animation-iteration-count, 1)var(--tw-animation-direction, normal)var(--tw-animation-fill-mode, none);
-    --tw-exit-opacity: 0;
-    --tw-exit-scale: .95;
+    animation: exit var(--animation-duration, var(--duration, .15s))var(--ease, ease)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+    --exit-opacity: 0;
+    --exit-scale: .95;
   }
 }
 .comboboxContent {
@@ -112,8 +154,8 @@
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--input) 30%, transparent);
     }
-    --tw-shadow: 0 0 #0000;
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    --shadow: 0 0 #0000;
+    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
   }
 }
 
@@ -145,8 +187,8 @@
   padding-right: calc(var(--spacing) * 8);
   padding-left: calc(var(--spacing) * 2);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
-  --tw-outline-style: none;
+  line-height: var(--leading, var(--text-sm--line-height));
+  --outline-style: none;
   outline-style: none;
   @media (forced-colors: active) {
     outline-offset: 2px;
@@ -196,7 +238,7 @@
   padding-inline: calc(var(--spacing) * 2);
   padding-block: calc(var(--spacing) * 1.5);
   font-size: var(--text-xs);
-  line-height: var(--tw-leading, var(--text-xs--line-height));
+  line-height: var(--leading, var(--text-xs--line-height));
   color: var(--muted-foreground);
 }
 
@@ -207,7 +249,7 @@
   padding-block: calc(var(--spacing) * 2);
   text-align: center;
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
+  line-height: var(--leading, var(--text-sm--line-height));
   color: var(--muted-foreground);
   &:is(:where([data-slot="combobox-content"])[data-empty] *) {
     display: flex;
@@ -228,7 +270,7 @@
   align-items: center;
   gap: calc(var(--spacing) * 1.5);
   border-radius: calc(var(--radius) * .8);
-  border-style: var(--tw-border-style);
+  border-style: var(--border-style);
   border-width: 1px;
   border-color: var(--input);
   background-color: #0000;
@@ -236,28 +278,28 @@
   padding-inline: calc(var(--spacing) * 2.5);
   padding-block: calc(var(--spacing) * 1.5);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
-  --tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, #0000000d);
-  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  line-height: var(--leading, var(--text-sm--line-height));
+  --shadow: 0 1px 2px 0 var(--shadow-color, #0000000d);
+  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
   transition-property: color, box-shadow;
-  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-  transition-duration: var(--tw-duration, var(--default-transition-duration));
+  transition-timing-function: var(--ease, var(--default-transition-timing-function));
+  transition-duration: var(--duration, var(--default-transition-duration));
   &:focus-within {
     border-color: var(--ring);
-    --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    --tw-ring-color: var(--ring);
+    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
+    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-color: var(--ring);
     @supports (color: color-mix(in lab, red, red)) {
-      --tw-ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
+      --ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
     }
   }
   &:has([aria-invalid="true"]) {
     border-color: var(--destructive);
-    --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    --tw-ring-color: var(--destructive);
+    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
+    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-color: var(--destructive);
     @supports (color: color-mix(in lab, red, red)) {
-      --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+      --ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
     }
   }
   &:has([data-slot="combobox-chip"]) {
@@ -274,9 +316,9 @@
     @supports (color: color-mix(in lab, red, red)) {
       border-color: color-mix(in oklab, var(--destructive) 50%, transparent);
     }
-    --tw-ring-color: var(--destructive);
+    --ring-color: var(--destructive);
     @supports (color: color-mix(in lab, red, red)) {
-      --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
+      --ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
     }
   }
 }
@@ -292,8 +334,8 @@
   background-color: var(--muted);
   padding-inline: calc(var(--spacing) * 1.5);
   font-size: var(--text-xs);
-  line-height: var(--tw-leading, var(--text-xs--line-height));
-  --tw-font-weight: var(--font-weight-medium);
+  line-height: var(--leading, var(--text-xs--line-height));
+  --font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
   white-space: nowrap;
   color: var(--foreground);
@@ -324,6 +366,6 @@
 :where(.comboboxChipInput) {
   min-width: calc(var(--spacing) * 16);
   flex: 1;
-  --tw-outline-style: none;
+  --outline-style: none;
   outline-style: none;
 }

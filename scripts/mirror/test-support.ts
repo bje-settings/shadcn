@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { parseConfig } from './config.ts'
 import { type BaseColor, type FontItem, projectCss, type StyleIndex } from './project-css.ts'
+import { registrations } from './scss.ts'
 import { compileCandidates } from './tailwind.ts'
 
 export const root = process.cwd()
@@ -24,3 +25,12 @@ export const input = projectCss(
 )
 
 export const compile = (candidates: string[]) => compileCandidates(input, candidates)
+
+// The internal variables' defaults, as `mirror build` gathers them over every
+// mirrored class: enough utilities here to register each one the tests use.
+export const internalDefaults = registrations(
+  await compile([
+    ...['border', 'ring-3', 'shadow-xs', 'translate-y-px', 'leading-none', 'animate-in'],
+    ...['content-[""]', 'duration-200', 'ease-in-out'],
+  ]),
+)

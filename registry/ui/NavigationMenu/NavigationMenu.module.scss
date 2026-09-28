@@ -4,10 +4,7 @@
 //   --available-width --border --default-transition-duration --default-transition-timing-function
 //   --font-weight-medium --foreground --muted --popover --popover-foreground --popup-height
 //   --popup-width --positioner-height --positioner-width --radius --ring --spacing --text-sm
-//   --text-sm--line-height --transform-origin --tw-animation-delay --tw-animation-direction
-//   --tw-animation-duration --tw-animation-fill-mode --tw-animation-iteration-count --tw-content
-//   --tw-duration --tw-ease --tw-inset-ring-shadow --tw-inset-shadow --tw-leading --tw-ring-inset
-//   --tw-ring-offset-shadow --tw-ring-offset-width --tw-ring-shadow --tw-shadow --tw-shadow-color
+//   --text-sm--line-height --transform-origin
 //
 // Upstream classes with no CSS output, dropped:
 //   group/navigation-menu-trigger group/navigation-menu group group
@@ -16,6 +13,56 @@
 //   data-starting-style:data-activation-direction=left:translate-x-[-50%]
 //   data-starting-style:data-activation-direction=right:translate-x-[50%]
 //   data-[ending-style]:easing-[ease] xs:w-(--popup-width)
+
+// Defaults for the internal variables the rules below compose with.
+@layer properties {
+  :is(:where(.navigationMenuContent) *)[data-slot="navigation-menu-link"]:focus,
+  :where(.navigationMenuContent),
+  :where(.navigationMenuIndicator),
+  :where(.navigationMenuIndicatorDiv),
+  :where(.navigationMenuLink),
+  :where(.navigationMenuPositionerPopup),
+  :where(.navigationMenuPositionerPositioner),
+  :where(.navigationMenuPositionerPositioner)[data-side="bottom"]:before,
+  :where(.navigationMenuTriggerChevronDownIcon),
+  :where(.navigationMenuTriggerStyle) {
+    --animation-delay: 0s;
+    --animation-direction: normal;
+    --animation-duration: initial;
+    --animation-fill-mode: none;
+    --animation-iteration-count: 1;
+    --content: "";
+    --duration: initial;
+    --ease: initial;
+    --enter-blur: 0;
+    --enter-opacity: 1;
+    --enter-rotate: 0;
+    --enter-scale: 1;
+    --enter-translate-x: 0;
+    --enter-translate-y: 0;
+    --exit-blur: 0;
+    --exit-opacity: 1;
+    --exit-rotate: 0;
+    --exit-scale: 1;
+    --exit-translate-x: 0;
+    --exit-translate-y: 0;
+    --font-weight: initial;
+    --inset-ring-shadow: 0 0 #0000;
+    --inset-shadow: 0 0 #0000;
+    --leading: initial;
+    --outline-style: solid;
+    --ring-color: initial;
+    --ring-inset: initial;
+    --ring-offset-shadow: 0 0 #0000;
+    --ring-offset-width: 0px;
+    --ring-shadow: 0 0 #0000;
+    --scale-x: 1;
+    --scale-y: 1;
+    --scale-z: 1;
+    --shadow: 0 0 #0000;
+    --shadow-color: initial;
+  }
+}
 
 :where(.navigationMenuTriggerStyle) {
   display: inline-flex;
@@ -27,13 +74,13 @@
   padding-inline: calc(var(--spacing) * 4);
   padding-block: calc(var(--spacing) * 2);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
-  --tw-font-weight: var(--font-weight-medium);
+  line-height: var(--leading, var(--text-sm--line-height));
+  --font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
   transition-property: all;
-  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-  transition-duration: var(--tw-duration, var(--default-transition-duration));
-  --tw-outline-style: none;
+  transition-timing-function: var(--ease, var(--default-transition-timing-function));
+  transition-duration: var(--duration, var(--default-transition-duration));
+  --outline-style: none;
   outline-style: none;
   &:hover {
     @media (hover: hover) {
@@ -44,13 +91,13 @@
     background-color: var(--muted);
   }
   &:focus-visible {
-    --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    --tw-ring-color: var(--ring);
+    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
+    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-color: var(--ring);
     @supports (color: color-mix(in lab, red, red)) {
-      --tw-ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
+      --ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
     }
-    outline-style: var(--tw-outline-style);
+    outline-style: var(--outline-style);
     outline-width: 1px;
   }
   &:disabled {
@@ -115,10 +162,10 @@
   margin-left: var(--spacing);
   width: calc(var(--spacing) * 3);
   height: calc(var(--spacing) * 3);
-  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
-  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-  transition-duration: var(--tw-duration, var(--default-transition-duration));
-  --tw-duration: .3s;
+  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --gradient-from, --gradient-via, --gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
+  transition-timing-function: var(--ease, var(--default-transition-timing-function));
+  transition-duration: var(--duration, var(--default-transition-duration));
+  --duration: .3s;
   transition-duration: .3s;
   &:is(:where([data-slot="navigation-menu-trigger"])[data-popup-open] *), &:is(:is(:where([data-slot="navigation-menu-trigger"]):where([data-state="open"]), :where([data-slot="navigation-menu-trigger"]):where([data-open]:not([data-open="false"]))) *) {
     rotate: 180deg;
@@ -131,66 +178,66 @@
   padding: calc(var(--spacing) * 2);
   padding-right: calc(var(--spacing) * 2.5);
   transition-property: opacity, transform, translate;
-  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-  transition-duration: var(--tw-duration, var(--default-transition-duration));
-  --tw-duration: .35s;
+  transition-timing-function: var(--ease, var(--default-transition-timing-function));
+  transition-duration: var(--duration, var(--default-transition-duration));
+  --duration: .35s;
   transition-duration: .35s;
-  --tw-ease: cubic-bezier(.22,1,.36,1);
+  --ease: cubic-bezier(.22,1,.36,1);
   transition-timing-function: cubic-bezier(.22, 1, .36, 1);
   &:is(:where([data-slot="navigation-menu"])[data-viewport="false"] *) {
     border-radius: calc(var(--radius) * .8);
     background-color: var(--popover);
     color: var(--popover-foreground);
-    --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, #0000001a), 0 1px 2px -1px var(--tw-shadow-color, #0000001a);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    --tw-ring-color: var(--foreground);
+    --shadow: 0 1px 3px 0 var(--shadow-color, #0000001a), 0 1px 2px -1px var(--shadow-color, #0000001a);
+    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(1px + var(--ring-offset-width)) var(--ring-color, currentcolor);
+    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-color: var(--foreground);
     @supports (color: color-mix(in lab, red, red)) {
-      --tw-ring-color: color-mix(in oklab, var(--foreground) 10%, transparent);
+      --ring-color: color-mix(in oklab, var(--foreground) 10%, transparent);
     }
-    --tw-duration: .3s;
+    --duration: .3s;
     transition-duration: .3s;
   }
   &[data-ending-style], &[data-starting-style] {
     opacity: 0;
   }
   &[data-motion="from-end"] {
-    --tw-enter-translate-x: calc(52*var(--spacing));
+    --enter-translate-x: calc(52*var(--spacing));
   }
   &[data-motion="from-start"] {
-    --tw-enter-translate-x: calc(52*var(--spacing)*-1);
+    --enter-translate-x: calc(52*var(--spacing)*-1);
   }
   &[data-motion="to-end"] {
-    --tw-exit-translate-x: calc(52*var(--spacing));
+    --exit-translate-x: calc(52*var(--spacing));
   }
   &[data-motion="to-start"] {
-    --tw-exit-translate-x: calc(52*var(--spacing)*-1);
+    --exit-translate-x: calc(52*var(--spacing)*-1);
   }
   &[data-motion^="from-"] {
-    animation: enter var(--tw-animation-duration, var(--tw-duration, .15s))var(--tw-ease, ease)var(--tw-animation-delay, 0s)var(--tw-animation-iteration-count, 1)var(--tw-animation-direction, normal)var(--tw-animation-fill-mode, none);
-    --tw-enter-opacity: 0;
+    animation: enter var(--animation-duration, var(--duration, .15s))var(--ease, ease)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+    --enter-opacity: 0;
   }
   &[data-motion^="to-"] {
-    animation: exit var(--tw-animation-duration, var(--tw-duration, .15s))var(--tw-ease, ease)var(--tw-animation-delay, 0s)var(--tw-animation-iteration-count, 1)var(--tw-animation-direction, normal)var(--tw-animation-fill-mode, none);
-    --tw-exit-opacity: 0;
+    animation: exit var(--animation-duration, var(--duration, .15s))var(--ease, ease)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+    --exit-opacity: 0;
   }
   &:is(:where([data-slot="navigation-menu"])[data-viewport="false"] *):where([data-state="open"]), &:is(:where([data-slot="navigation-menu"])[data-viewport="false"] *):where([data-open]:not([data-open="false"])) {
-    animation: enter var(--tw-animation-duration, var(--tw-duration, .15s))var(--tw-ease, ease)var(--tw-animation-delay, 0s)var(--tw-animation-iteration-count, 1)var(--tw-animation-direction, normal)var(--tw-animation-fill-mode, none);
-    --tw-enter-opacity: 0;
-    --tw-enter-scale: .95;
+    animation: enter var(--animation-duration, var(--duration, .15s))var(--ease, ease)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+    --enter-opacity: 0;
+    --enter-scale: .95;
   }
   &:is(:where([data-slot="navigation-menu"])[data-viewport="false"] *):where([data-state="closed"]), &:is(:where([data-slot="navigation-menu"])[data-viewport="false"] *):where([data-closed]:not([data-closed="false"])) {
-    animation: exit var(--tw-animation-duration, var(--tw-duration, .15s))var(--tw-ease, ease)var(--tw-animation-delay, 0s)var(--tw-animation-iteration-count, 1)var(--tw-animation-direction, normal)var(--tw-animation-fill-mode, none);
-    --tw-exit-opacity: 0;
-    --tw-exit-scale: .95;
+    animation: exit var(--animation-duration, var(--duration, .15s))var(--ease, ease)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+    --exit-opacity: 0;
+    --exit-scale: .95;
   }
 }
 .navigationMenuContent {
   :is(& *)[data-slot="navigation-menu-link"]:focus {
-    --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    --tw-outline-style: none;
+    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(0px + var(--ring-offset-width)) var(--ring-color, currentcolor);
+    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --outline-style: none;
     outline-style: none;
   }
 }
@@ -202,21 +249,21 @@
   width: var(--positioner-width);
   max-width: var(--available-width);
   transition-property: top, left, right, bottom;
-  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-  transition-duration: var(--tw-duration, var(--default-transition-duration));
-  --tw-duration: .35s;
+  transition-timing-function: var(--ease, var(--default-transition-timing-function));
+  transition-duration: var(--duration, var(--default-transition-duration));
+  --duration: .35s;
   transition-duration: .35s;
-  --tw-ease: cubic-bezier(.22,1,.36,1);
+  --ease: cubic-bezier(.22,1,.36,1);
   transition-timing-function: cubic-bezier(.22, 1, .36, 1);
   &[data-instant] {
     transition-property: none;
   }
   &[data-side="bottom"]:before {
-    content: var(--tw-content);
+    content: var(--content);
     top: -10px;
-    content: var(--tw-content);
+    content: var(--content);
     right: 0;
-    content: var(--tw-content);
+    content: var(--content);
     left: 0;
   }
 }
@@ -229,37 +276,37 @@
   border-radius: var(--radius);
   background-color: var(--popover);
   color: var(--popover-foreground);
-  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, #0000001a), 0 1px 2px -1px var(--tw-shadow-color, #0000001a);
-  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  --tw-ring-color: var(--foreground);
+  --shadow: 0 1px 3px 0 var(--shadow-color, #0000001a), 0 1px 2px -1px var(--shadow-color, #0000001a);
+  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+  --ring-shadow: var(--ring-inset, ) 0 0 0 calc(1px + var(--ring-offset-width)) var(--ring-color, currentcolor);
+  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+  --ring-color: var(--foreground);
   @supports (color: color-mix(in lab, red, red)) {
-    --tw-ring-color: color-mix(in oklab, var(--foreground) 10%, transparent);
+    --ring-color: color-mix(in oklab, var(--foreground) 10%, transparent);
   }
   transition-property: opacity, transform, width, height, scale, translate;
-  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-  transition-duration: var(--tw-duration, var(--default-transition-duration));
-  --tw-duration: .35s;
+  transition-timing-function: var(--ease, var(--default-transition-timing-function));
+  transition-duration: var(--duration, var(--default-transition-duration));
+  --duration: .35s;
   transition-duration: .35s;
-  --tw-ease: cubic-bezier(.22,1,.36,1);
+  --ease: cubic-bezier(.22,1,.36,1);
   transition-timing-function: cubic-bezier(.22, 1, .36, 1);
-  --tw-outline-style: none;
+  --outline-style: none;
   outline-style: none;
   &[data-ending-style] {
-    --tw-scale-x: 90%;
-    --tw-scale-y: 90%;
-    --tw-scale-z: 90%;
-    scale: var(--tw-scale-x) var(--tw-scale-y);
+    --scale-x: 90%;
+    --scale-y: 90%;
+    --scale-z: 90%;
+    scale: var(--scale-x) var(--scale-y);
     opacity: 0;
-    --tw-duration: .15s;
+    --duration: .15s;
     transition-duration: .15s;
   }
   &[data-starting-style] {
-    --tw-scale-x: 90%;
-    --tw-scale-y: 90%;
-    --tw-scale-z: 90%;
-    scale: var(--tw-scale-x) var(--tw-scale-y);
+    --scale-x: 90%;
+    --scale-y: 90%;
+    --scale-z: 90%;
+    scale: var(--scale-x) var(--scale-y);
     opacity: 0;
   }
 }
@@ -278,11 +325,11 @@
   border-radius: calc(var(--radius) * .8);
   padding: calc(var(--spacing) * 2);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
+  line-height: var(--leading, var(--text-sm--line-height));
   transition-property: all;
-  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-  transition-duration: var(--tw-duration, var(--default-transition-duration));
-  --tw-outline-style: none;
+  transition-timing-function: var(--ease, var(--default-transition-timing-function));
+  transition-duration: var(--duration, var(--default-transition-duration));
+  --outline-style: none;
   outline-style: none;
   &:hover {
     @media (hover: hover) {
@@ -293,13 +340,13 @@
     background-color: var(--muted);
   }
   &:focus-visible {
-    --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    --tw-ring-color: var(--ring);
+    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
+    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-color: var(--ring);
     @supports (color: color-mix(in lab, red, red)) {
-      --tw-ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
+      --ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
     }
-    outline-style: var(--tw-outline-style);
+    outline-style: var(--outline-style);
     outline-width: 1px;
   }
   :where([data-slot="navigation-menu-content"]) & {
@@ -334,12 +381,12 @@
   justify-content: center;
   overflow: hidden;
   &[data-state="hidden"] {
-    animation: exit var(--tw-animation-duration, var(--tw-duration, .15s))var(--tw-ease, ease)var(--tw-animation-delay, 0s)var(--tw-animation-iteration-count, 1)var(--tw-animation-direction, normal)var(--tw-animation-fill-mode, none);
-    --tw-exit-opacity: 0;
+    animation: exit var(--animation-duration, var(--duration, .15s))var(--ease, ease)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+    --exit-opacity: 0;
   }
   &[data-state="visible"] {
-    animation: enter var(--tw-animation-duration, var(--tw-duration, .15s))var(--tw-ease, ease)var(--tw-animation-delay, 0s)var(--tw-animation-iteration-count, 1)var(--tw-animation-direction, normal)var(--tw-animation-fill-mode, none);
-    --tw-enter-opacity: 0;
+    animation: enter var(--animation-duration, var(--duration, .15s))var(--ease, ease)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+    --enter-opacity: 0;
   }
 }
 
@@ -351,6 +398,6 @@
   rotate: 45deg;
   border-top-left-radius: calc(var(--radius) * .6);
   background-color: var(--border);
-  --tw-shadow: 0 4px 6px -1px var(--tw-shadow-color, #0000001a), 0 2px 4px -2px var(--tw-shadow-color, #0000001a);
-  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  --shadow: 0 4px 6px -1px var(--shadow-color, #0000001a), 0 2px 4px -2px var(--shadow-color, #0000001a);
+  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
 }

@@ -2,8 +2,23 @@
 //
 // Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):
 //   --font-weight-medium --input --muted --radius --spacing --text-sm --text-sm--line-height
-//   --tw-border-style --tw-inset-ring-shadow --tw-inset-shadow --tw-leading --tw-ring-offset-shadow
-//   --tw-ring-shadow --tw-shadow-color
+
+// Defaults for the internal variables the rules below compose with.
+@layer properties {
+  :where(.buttonGroupText),
+  :where(.orientationHorizontal) > [data-slot] ~ [data-slot],
+  :where(.orientationVertical) > [data-slot] ~ [data-slot] {
+    --border-style: solid;
+    --font-weight: initial;
+    --inset-ring-shadow: 0 0 #0000;
+    --inset-shadow: 0 0 #0000;
+    --leading: initial;
+    --ring-offset-shadow: 0 0 #0000;
+    --ring-shadow: 0 0 #0000;
+    --shadow: 0 0 #0000;
+    --shadow-color: initial;
+  }
+}
 
 :where(.buttonGroup) {
   display: flex;
@@ -44,7 +59,7 @@
   & > [data-slot] ~ [data-slot] {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-    border-left-style: var(--tw-border-style);
+    border-left-style: var(--border-style);
     border-left-width: 0;
   }
 }
@@ -64,7 +79,7 @@
   & > [data-slot] ~ [data-slot] {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
-    border-top-style: var(--tw-border-style);
+    border-top-style: var(--border-style);
     border-top-width: 0;
   }
 }
@@ -74,16 +89,16 @@
   align-items: center;
   gap: calc(var(--spacing) * 2);
   border-radius: calc(var(--radius) * .8);
-  border-style: var(--tw-border-style);
+  border-style: var(--border-style);
   border-width: 1px;
   background-color: var(--muted);
   padding-inline: calc(var(--spacing) * 2.5);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
-  --tw-font-weight: var(--font-weight-medium);
+  line-height: var(--leading, var(--text-sm--line-height));
+  --font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
-  --tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, #0000000d);
-  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  --shadow: 0 1px 2px 0 var(--shadow-color, #0000000d);
+  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
   & svg:where(:not([data-slot="accordion-trigger"], [data-slot="alert"], [data-slot="alert-dialog-media"], [data-slot="attachment-media"], [data-slot="avatar"], [data-slot="avatar-badge"], [data-slot="avatar-fallback"], [data-slot="avatar-group-count"], [data-slot="avatar-image"], [data-slot="badge"], [data-slot="breadcrumb-ellipsis"], [data-slot="breadcrumb-separator"], [data-slot="button"], [data-slot="button-group-text"], [data-slot="checkbox"], [data-slot="checkbox-indicator"], [data-slot="combobox-item"], [data-slot="combobox-trigger"], [data-slot="command"], [data-slot="command-item"], [data-slot="context-menu-checkbox-item"], [data-slot="context-menu-item"], [data-slot="context-menu-radio-item"], [data-slot="context-menu-sub-trigger"], [data-slot="dropdown-menu-checkbox-item"], [data-slot="dropdown-menu-item"], [data-slot="dropdown-menu-radio-item"], [data-slot="dropdown-menu-sub-trigger"], [data-slot="empty-icon"], [data-slot="input-group-addon"], [data-slot="input-group-control"], [data-slot="input-otp-separator"], [data-slot="input-otp-slot"], [data-slot="item-media"], [data-slot="kbd"], [data-slot="marker"], [data-slot="marker-icon"], [data-slot="menubar-item"], [data-slot="menubar-radio-item"], [data-slot="menubar-sub-trigger"], [data-slot="message-scroller"], [data-slot="message-scroller-viewport"], [data-slot="native-select-icon"], [data-slot="navigation-menu-link"], [data-slot="pagination-ellipsis"], [data-slot="questionnaire-choice-indicator"], [data-slot="questionnaire-choice-indicator-check"], [data-slot="questionnaire-choice-indicator-dot"], [data-slot="questionnaire-choice-input"], [data-slot="questionnaire-choice-shortcut"], [data-slot="radio-group-indicator"], [data-slot="radio-group-item"], [data-slot="scroll-area-viewport"], [data-slot="select-item"], [data-slot="select-scroll-down-button"], [data-slot="select-scroll-up-button"], [data-slot="select-trigger"], [data-slot="sidebar-group-action"], [data-slot="sidebar-group-label"], [data-slot="sidebar-inner"], [data-slot="sidebar-menu-action"], [data-slot="sidebar-menu-button"], [data-slot="sidebar-menu-sub-button"], [data-slot="slider-thumb"], [data-slot="spinner"], [data-slot="switch-thumb"], [data-slot="tabs-trigger"], [data-slot="toast-icon"], [data-slot="toggle"])) {
     width: calc(var(--spacing) * 4);
     height: calc(var(--spacing) * 4);

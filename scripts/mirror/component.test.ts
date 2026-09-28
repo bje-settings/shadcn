@@ -10,7 +10,7 @@ import {
   type UpstreamItem,
 } from './component.ts'
 import { parseConfig } from './config.ts'
-import { compile, root } from './test-support.ts'
+import { compile, internalDefaults, root } from './test-support.ts'
 
 const config = parseConfig({
   namespace: 'bje',
@@ -40,7 +40,7 @@ async function build(item: UpstreamItem, compiler = compile) {
   const prepared = await prepareComponent(item, config, cssPath)
   const context = {
     slotOptions: {
-      ...sharedSlotOptions(config, [prepared]),
+      ...sharedSlotOptions(config, [prepared], internalDefaults),
       markers: markerSelectors([prepared], prepared),
     },
     types: new Map(),

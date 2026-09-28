@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { type SlotOptions, slotToScss } from './scss.ts'
-import { compile } from './test-support.ts'
+import { registrations, type SlotOptions, slotToScss } from './scss.ts'
+import { compile, internalDefaults } from './test-support.ts'
 
 const none: SlotOptions = {
   consumerClasses: new Map(),
@@ -8,6 +8,7 @@ const none: SlotOptions = {
   classProbe: () => [],
   globalClasses: new Set(['dark']),
   withoutCss: new Set(),
+  internalDefaults,
 }
 
 async function convert(classes: string[], options: Partial<SlotOptions> = {}) {
@@ -185,13 +186,65 @@ describe('slotToScss', () => {
       customProperties: [],
       empty: true,
       dropped: [],
+      defaults: {},
+      defaultSelectors: [],
+      internal: [],
+      external: [],
     })
   })
 
   it('lists custom properties read but not set', async () => {
     const { customProperties } = await convert(['bg-primary', 'translate-y-px'])
     expect(customProperties).toContain('--primary')
-    expect(customProperties).toContain('--tw-translate-x')
-    expect(customProperties).not.toContain('--tw-translate-y')
+    // Internal variables get defaults in the module, so none is listed.
+    expect(customProperties.filter((name) => name.includes('translate'))).toEqual([])
+  })
+
+  it('renames internal variables and lists their defaults and the elements using them', async () => {
+    const block = await convert([
+      ...['bg-primary', 'shadow-xs', 'focus-visible:ring-3', 'before:content-[""]'],
+    ])
+    expect(block.scss).not.toContain('--tw-')
+    expect(block.scss).toContain('--shadow: 0 1px 2px 0 var(--shadow-color, #0000000d);')
+    expect(block.defaults).toMatchObject({ '--shadow': '0 0 #0000', '--ring-inset': 'initial' })
+    // States are the slot's own element; a pseudo-element keeps its selector.
+    expect(block.defaultSelectors).toEqual([':where(.root)', ':where(.root):before'])
+    expect(block.internal).toContain('--ring-shadow')
+    expect(block.external).not.toContain('--ring-shadow')
+    expect(block.external).toContain('--primary')
+  })
+
+  it('keeps a descendant as the element its defaults go on', async () => {
+    const { defaultSelectors } = await convert(['*:shadow-xs'])
+    expect(defaultSelectors).toEqual([':is(:where(.root) > *)'])
+  })
+
+  it('gives an animated slot the defaults its keyframes read', async () => {
+    const { defaults } = await convert(['animate-in'])
+    expect(defaults).toMatchObject({ '--enter-opacity': '1', '--enter-blur': '0' })
+  })
+
+  it('gives no default to a variable only named in transition-property', async () => {
+    const { scss, defaults } = await convert(['transition-colors'])
+    expect(scss).toContain('--gradient-from')
+    expect(defaults).not.toHaveProperty('--gradient-from')
+  })
+
+  it('refuses an internal variable with no registration', async () => {
+    await expect(convert(['shadow-xs'], { internalDefaults: new Map() })).rejects.toThrow(
+      /^root: no registration for --/,
+    )
+  })
+})
+
+describe('registrations', () => {
+  it("maps each internal variable, renamed, to Tailwind's fallback value", () => {
+    const table = registrations(
+      '@layer properties { @supports (x: y) { *, ::before { --tw-a: 0px; --tw-b: initial; --other: 1 } } } @layer theme { :root { --tw-c: 1 } }',
+    )
+    expect([...table]).toEqual([
+      ['--a', '0px'],
+      ['--b', 'initial'],
+    ])
   })
 })

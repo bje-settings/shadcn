@@ -2,8 +2,19 @@
 //
 // Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):
 //   --default-transition-duration --default-transition-timing-function --font-weight-normal
-//   --foreground --muted-foreground --spacing --text-sm --text-sm--line-height --tw-duration
-//   --tw-ease --tw-leading
+//   --foreground --muted-foreground --spacing --text-sm --text-sm--line-height
+
+// Defaults for the internal variables the rules below compose with.
+@layer properties {
+  :where(.breadcrumbLink),
+  :where(.breadcrumbList),
+  :where(.breadcrumbPage) {
+    --duration: initial;
+    --ease: initial;
+    --font-weight: initial;
+    --leading: initial;
+  }
+}
 
 :where(.breadcrumbList) {
   display: flex;
@@ -11,7 +22,7 @@
   align-items: center;
   gap: calc(var(--spacing) * 1.5);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
+  line-height: var(--leading, var(--text-sm--line-height));
   overflow-wrap: break-word;
   color: var(--muted-foreground);
   @media (min-width: 40rem) {
@@ -26,9 +37,9 @@
 }
 
 :where(.breadcrumbLink) {
-  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
-  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-  transition-duration: var(--tw-duration, var(--default-transition-duration));
+  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --gradient-from, --gradient-via, --gradient-to;
+  transition-timing-function: var(--ease, var(--default-transition-timing-function));
+  transition-duration: var(--duration, var(--default-transition-duration));
   &:hover {
     @media (hover: hover) {
       color: var(--foreground);
@@ -37,7 +48,7 @@
 }
 
 :where(.breadcrumbPage) {
-  --tw-font-weight: var(--font-weight-normal);
+  --font-weight: var(--font-weight-normal);
   font-weight: var(--font-weight-normal);
   color: var(--foreground);
 }

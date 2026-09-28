@@ -13,8 +13,10 @@
 // Rules styling descendants (`*:w-full`, `& svg`) nest under .slot and keep
 // upstream's specificity.
 
-import postcss, { type AtRule, type Rule } from 'postcss'
+import postcss, { type AtRule, type Root, type Rule } from 'postcss'
 import selectorParser from 'postcss-selector-parser'
+
+import { internalName, renameInternal } from './internal.ts'
 
 export type Slot = {
   // camelCase module class name
@@ -36,6 +38,15 @@ export type ScssBlock = {
   // Why rules were dropped or loosened here: a consumer class, or a class
   // probe no mirrored element matches.
   dropped: string[]
+  // Defaults for the internal variables (internal.ts) the block uses, and
+  // the elements that use them, for the module's properties layer: the
+  // slot's own element, and any pseudo-element or descendant a rule styles.
+  defaults: Record<string, string>
+  defaultSelectors: string[]
+  // Renamed internal variables the block uses, and every other custom
+  // property it reads or sets, to check that the two never share a name.
+  internal: string[]
+  external: string[]
 }
 
 export type SlotOptions = {
@@ -55,6 +66,8 @@ export type SlotOptions = {
   // elements carrying it (`[data-slot="card"]` for `group/card`), or their
   // module class when they render none.
   markers: Map<string, string>
+  // Initial value of every internal variable, renamed (registrations())
+  internalDefaults: Map<string, string>
 }
 
 type Item = { decl: string } | Block
@@ -218,6 +231,61 @@ function targetsDescendant(selector: string): boolean {
   return descendant
 }
 
+const INTERNAL_NAME = /--tw-[\w-]+/g
+
+// Each internal variable's default, renamed, from Tailwind's own fallback for
+// browsers without @property: the @layer properties rule setting them on every
+// element. Its values suit an unregistered variable (`0px` where the
+// registration's initial-value is a bare `0`, which calc() would reject). A
+// utility can read a variable only another registers (text-sm reads the
+// leading-* one), so the caller compiles every mirrored class once for the
+// whole table.
+export function registrations(css: string): Map<string, string> {
+  const defaults = new Map<string, string>()
+  postcss.parse(css).walkAtRules('layer', (layer) => {
+    if (layer.params !== 'properties') return
+    layer.walkDecls(/^--tw-/, (decl) => {
+      defaults.set(internalName(decl.prop), decl.value)
+    })
+  })
+  return defaults
+}
+
+// The internal variables each @keyframes reads (tw-animate-css's enter and
+// exit), by keyframes name.
+function keyframeReads(root: Root): Map<string, string[]> {
+  const reads = new Map<string, string[]>()
+  root.each((node) => {
+    if (node.type !== 'atrule' || node.name !== 'keyframes') return
+    reads.set(
+      node.params,
+      [...node.toString().matchAll(INTERNAL_NAME)].map(([name]) => internalName(name)),
+    )
+  })
+  return reads
+}
+
+// Tailwind's optimizer writes these with one colon.
+const LEGACY_PSEUDO_ELEMENTS = new Set([':before', ':after', ':first-line', ':first-letter'])
+
+// The element a nested selector styles, for the defaults: a state of the slot
+// (`&:hover`, `&[aria-invalid]`, `&:is(.dark *)`) is the slot's own element;
+// a pseudo-element or a descendant keeps its selector.
+function defaultTarget(selector: string, slot: string): string {
+  const root = selectorParser().astSync(selector)
+  let pseudoElement = false
+  root.walkPseudos((pseudo) => {
+    if (pseudo.value.startsWith('::') || LEGACY_PSEUDO_ELEMENTS.has(pseudo.value)) {
+      pseudoElement = true
+    }
+  })
+  if (!pseudoElement && !targetsDescendant(selector)) return `:where(.${slot})`
+  root.walkNesting((nesting) => {
+    nesting.replaceWith(selectorParser().astSync(`:where(.${slot})`).first.first)
+  })
+  return root.toString()
+}
+
 export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssBlock {
   const candidates = new Set(slot.classes)
   const resolved = new Set<string>()
@@ -231,13 +299,16 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
   const context: Block = { key: `.${slot.name}`, items: [] }
   const reads = new Set<string>()
   const sets = new Set<string>()
+  // Elements that use an internal variable, and the variables
+  const users = new Set<string>()
+  const internalNames = new Set<string>()
 
-  const layer = postcss
-    .parse(css)
-    .nodes.find(
-      (node): node is AtRule =>
-        node.type === 'atrule' && node.name === 'layer' && node.params === 'utilities',
-    )
+  const parsed = postcss.parse(css)
+  const keyframes = keyframeReads(parsed)
+  const layer = parsed.nodes.find(
+    (node): node is AtRule =>
+      node.type === 'atrule' && node.name === 'layer' && node.params === 'utilities',
+  )
 
   layer?.walkRules((rule) => {
     const kept = rule.selectors.filter((selector) => {
@@ -257,11 +328,33 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
     })
     const selectors = [...new Set(nested.map((n) => n.selector))]
     const decls: string[] = []
+    let internal = false
     rule.walkDecls((decl) => {
-      if (decl.prop.startsWith('--')) sets.add(decl.prop)
-      for (const [, name] of decl.value.matchAll(/var\((--[\w-]+)/g)) reads.add(name as string)
-      decls.push(`${decl.prop}: ${decl.value}${decl.important ? ' !important' : ''}`)
+      const prop = renameInternal(decl.prop)
+      const value = renameInternal(decl.value)
+      // Set or read with var(): transition-colors also names the gradient
+      // variables in transition-property, which needs no default.
+      const used = [
+        ...decl.prop.matchAll(INTERNAL_NAME),
+        ...decl.value.matchAll(/var\((--tw-[\w-]+)/g),
+      ].map((match) => match[1] ?? match[0])
+      for (const name of used) {
+        internalNames.add(internalName(name))
+        internal = true
+      }
+      if (decl.prop === 'animation' || decl.prop === 'animation-name') {
+        for (const word of decl.value.split(/[\s,]+/)) {
+          for (const name of keyframes.get(word) ?? []) {
+            internalNames.add(name)
+            internal = true
+          }
+        }
+      }
+      if (prop.startsWith('--')) sets.add(prop)
+      for (const [, name] of value.matchAll(/var\((--[\w-]+)/g)) reads.add(name as string)
+      decls.push(`${prop}: ${value}${decl.important ? ' !important' : ''}`)
     })
+    if (internal) for (const n of nested) users.add(defaultTarget(n.selector, slot.name))
     // Any other selector inspecting class names looks for Tailwind classes no
     // element carries here.
     const probe = selectors.find((selector) => /\[class[~|^$*]?=/.test(selector))
@@ -289,7 +382,9 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
       .flatMap((block) => print(block, 0))
       .join('\n'),
     unresolved,
-    customProperties: [...reads].filter((name) => !sets.has(name)).sort(),
+    customProperties: [...reads]
+      .filter((name) => !sets.has(name) && !internalNames.has(name))
+      .sort(),
     empty: root.items.length === 0 && context.items.length === 0,
     dropped: [
       ...dropped,
@@ -298,5 +393,15 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
           `upstream skips elements whose classes contain "${probe}", and no mirrored element does: the default applies to every match.`,
       ),
     ],
+    defaults: Object.fromEntries(
+      [...internalNames].sort().map((name) => {
+        const value = options.internalDefaults.get(name)
+        if (value === undefined) throw new Error(`${slot.name}: no registration for ${name}`)
+        return [name, value]
+      }),
+    ),
+    defaultSelectors: [...users].sort(),
+    internal: [...internalNames].sort(),
+    external: [...new Set([...reads, ...sets])].filter((name) => !internalNames.has(name)).sort(),
   }
 }

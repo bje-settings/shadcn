@@ -8,16 +8,27 @@ describe('globalStylesheets', () => {
     const { variables, base } = globalStylesheets(css, '// header')
     expect(variables.startsWith('// header\n\n@layer properties {')).toBe(true)
     expect(variables).toContain('@layer theme {')
-    expect(variables).toContain('@property --tw-ring-shadow {')
+    // shadcn's own registrations stay; Tailwind's internal ones are the modules'.
+    expect(variables).toContain('@property --shimmer-angle {')
+    for (const sheet of [variables, base]) expect(sheet).not.toContain('--tw-')
     expect(variables).toContain(':root {')
     expect(variables).toContain('.dark {')
     expect(base).toMatch(/^\/\/ header\n\/\*! tailwindcss v[\d.]+ \| MIT License/)
     expect(base).toContain('@layer base {')
     expect(base).toContain('@keyframes enter {')
+    expect(base).toContain('opacity: var(--enter-opacity, 1);')
     for (const sheet of [variables, base]) {
       expect(sheet).not.toContain('.bg-primary')
       expect(sheet).not.toContain('.shimmer')
     }
+  })
+
+  it('drops a properties fallback left with no declaration', () => {
+    const css =
+      '@layer properties { @supports (x: y) { *, ::before { --tw-a: 0 } } } @layer theme { :root { --b: 1 } }'
+    expect(globalStylesheets(css, '// h').variables).toBe(
+      '// h\n\n@layer theme { :root { --b: 1 } }\n',
+    )
   })
 
   it('omits the license line when there is no comment', () => {

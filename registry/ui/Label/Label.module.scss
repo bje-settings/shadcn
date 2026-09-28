@@ -3,15 +3,23 @@
 // Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):
 //   --font-weight-medium --spacing --text-sm --text-sm--line-height
 
+// Defaults for the internal variables the rules below compose with.
+@layer properties {
+  :where(.label) {
+    --font-weight: initial;
+    --leading: initial;
+  }
+}
+
 :where(.label) {
   display: flex;
   align-items: center;
   gap: calc(var(--spacing) * 2);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
-  --tw-leading: 1;
+  line-height: var(--leading, var(--text-sm--line-height));
+  --leading: 1;
   line-height: 1;
-  --tw-font-weight: var(--font-weight-medium);
+  --font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
   -webkit-user-select: none;
   user-select: none;
