@@ -14,7 +14,7 @@ Source for the `@bje` [shadcn registry](https://ui.shadcn.com/docs/registry).
 | `ab/`            | Visual A/B harness: upstream (Tailwind) vs ours, screenshot diffs       |
 | `upstream/`      | Upstream snapshots (items, examples, theme, Typeset) and the generated `<style>/index.css` |
 | `scripts/mirror` | The mirror pipeline                                                      |
-| `public/r/`      | `pnpm build` output, one JSON file per item (gitignored)                |
+| `public/r/`      | `pnpm build` output, one JSON file per item (gitignored); the site root |
 
 ## Development
 
@@ -182,9 +182,47 @@ To add a hand-written item:
    `dependencies` or `registryDependencies`.
 3. Run `pnpm build` and `pnpm test`.
 
+## Using the registry
+
+The registry is served at `https://shadcn.bje.co`. It is not listed in the shadcn registry
+directory, so add it to the consuming project's `components.json`:
+
+```json
+{
+  "registries": {
+    "@bje": "https://shadcn.bje.co/{name}.json"
+  }
+}
+```
+
+Then `pnpm dlx shadcn add @bje/button`. The entry is needed even when installing an item by URL:
+items declare `registryDependencies` as `@bje/<item>`, which resolve only through it. Components
+also need `sass` (see [Mirror](#mirror)).
+
 ## Hosting
 
-Not decided yet. Publishing to the shadcn registry directory is tracked in #1.
+GitHub Pages serves `public/r/` as the site root, so `/registry.json` and `/<item>.json` sit at the
+registry root. The site is public; the repo stays internal. The CI `deploy` job publishes on every
+push to `main`, once `build`, `vitest`, `types`, `biome` and `ab` pass, then fetches
+`https://shadcn.bje.co/registry.json` to confirm the site serves it.
+
+Outside this repo:
+
+- **DNS:** Cloudflare `CNAME` `shadcn` to `bje-settings.github.io`, DNS only (not proxied), so
+  GitHub can issue and renew the certificate.
+- **Domain verification:** `bje.co` is verified for the `bje-settings` org (a TXT record in
+  Cloudflare), which prevents subdomain takeover.
+- **Pages settings** (not in terraform), applied with the API:
+
+  ```bash
+  gh api -X POST repos/bje-settings/shadcn/pages -f build_type=workflow
+  gh api -X PUT repos/bje-settings/shadcn/pages -f cname=shadcn.bje.co -F public=true
+  gh api -X PUT repos/bje-settings/shadcn/pages -F https_enforced=true  # once the certificate is issued
+  ```
+
+## License
+
+MIT (`LICENSE`). The published JSON inlines shadcn/ui's source, so shadcn's notice is kept.
 
 ## Claude Code
 
