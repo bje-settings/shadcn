@@ -11,13 +11,16 @@ on:
 permissions:
   contents: read
 
+# A newer push to a pull request cancels its running CI. On main a newer push
+# queues instead, so a deploy is never cut off mid-flight.
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 # Job names are a contract: the repo ruleset Require CI (23915809) requires
 # build, vitest, types, biome and ab by exact name. A renamed job never reports,
 # and every pull request waits on it forever. Update the ruleset with any rename.
+# deploy is not required: it runs on pushes to main only.
 jobs:
   # `shadcn build` validates registry.json and every item against the schema.
   build:
@@ -30,6 +33,13 @@ jobs:
         run: pnpm build
       - name: Refuse a build that writes no registry
         run: jq -e '.name == "bje" and (.items | length > 0)' public/r/registry.json
+      # public/r is the site root, so /registry.json and /<item>.json sit at the
+      # registry root. The deploy job publishes it once every check passes.
+      - name: Upload the registry for GitHub Pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: public/r
 
   vitest:
     name: vitest
@@ -134,3 +144,26 @@ jobs:
           name: ab-report
           path: ab/report
           retention-days: 14
+
+  # Publishes the build job's public/r to GitHub Pages at shadcn.bje.co, only
+  # from main and only once every required check passes. The site is public;
+  # the repo stays internal.
+  deploy:
+    name: deploy
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [build, vitest, types, biome, ab]
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
+      - name: Refuse a site that serves no registry
+        run: |
+          curl -fsS --retry 5 --retry-delay 10 --retry-all-errors https://shadcn.bje.co/registry.json \
+            | jq -e '.name == "bje" and (.items | length > 0)'
