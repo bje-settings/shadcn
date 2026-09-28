@@ -86,6 +86,10 @@ function io(status = 200): Io {
 
 const read = async (path: string) => readFile(join(root, path), 'utf8')
 
+// A build compiles every style's classes with Tailwind, which takes longer than
+// vitest's default timeout on CI's runners.
+const BUILDS = { timeout: 30_000 }
+
 beforeEach(async () => {
   root = await mkdtemp(join(tmpdir(), 'mirror-'))
   logs = []
@@ -126,7 +130,7 @@ afterEach(async () => {
   await rm(root, { recursive: true, force: true })
 })
 
-describe('mirror fetch', () => {
+describe('mirror fetch', BUILDS, () => {
   it("snapshots each style's items and theme sources, and Typeset once", async () => {
     await run(['fetch'], io())
     const colors = 'https://example.com/colors/neutral.json'
@@ -196,7 +200,7 @@ describe('mirror fetch', () => {
   })
 })
 
-describe('mirror build', () => {
+describe('mirror build', BUILDS, () => {
   it("generates each style's components, globals and registry, and the compare style's harness", async () => {
     await run(['fetch'], io())
     logs = []
