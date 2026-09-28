@@ -6,12 +6,39 @@
 //   --radius --ring --scroll-fade-e-size --scroll-fade-mask --scroll-fade-reveal
 //   --scroll-fade-s-size --scroll-fade-size --shimmer-angle --shimmer-color --shimmer-duration
 //   --shimmer-image --shimmer-spread --shimmer-text-fill --spacing --text-sm --text-sm--line-height
-//   --text-xs --text-xs--line-height --tw-duration --tw-ease --tw-inset-ring-shadow
-//   --tw-inset-shadow --tw-leading --tw-ring-inset --tw-ring-offset-shadow --tw-ring-offset-width
-//   --tw-shadow
+//   --text-xs --text-xs--line-height
 //
 // Upstream classes with no CSS output, dropped:
 //   group/attachment
+
+// Defaults for the internal variables the rules below compose with.
+@layer properties {
+  :where(.attachment),
+  :where(.attachmentContent),
+  :where(.attachmentDescription),
+  :where(.attachmentGroup),
+  :where(.attachmentTitle),
+  :where(.attachmentTrigger),
+  :where(.sizeDefault),
+  :where(.sizeSm),
+  :where(.sizeXs) {
+    --border-style: solid;
+    --duration: initial;
+    --ease: initial;
+    --font-weight: initial;
+    --inset-ring-shadow: 0 0 #0000;
+    --inset-shadow: 0 0 #0000;
+    --leading: initial;
+    --outline-style: solid;
+    --ring-color: initial;
+    --ring-inset: initial;
+    --ring-offset-shadow: 0 0 #0000;
+    --ring-offset-width: 0px;
+    --ring-shadow: 0 0 #0000;
+    --scroll-snap-strictness: proximity;
+    --shadow: 0 0 #0000;
+  }
+}
 
 :where(.attachment) {
   position: relative;
@@ -22,19 +49,19 @@
   flex-shrink: 0;
   flex-wrap: wrap;
   border-radius: calc(var(--radius) * 1.4);
-  border-style: var(--tw-border-style);
+  border-style: var(--border-style);
   border-width: 1px;
   background-color: var(--card);
   color: var(--card-foreground);
-  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
-  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-  transition-duration: var(--tw-duration, var(--default-transition-duration));
+  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --gradient-from, --gradient-via, --gradient-to;
+  transition-timing-function: var(--ease, var(--default-transition-timing-function));
+  transition-duration: var(--duration, var(--default-transition-duration));
   &:focus-within {
-    --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    --tw-ring-color: var(--ring);
+    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(1px + var(--ring-offset-width)) var(--ring-color, currentcolor);
+    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-color: var(--ring);
     @supports (color: color-mix(in lab, red, red)) {
-      --tw-ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
+      --ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
     }
   }
   &:has( > a,  > button):hover {
@@ -52,7 +79,7 @@
     }
   }
   &[data-state="idle"] {
-    --tw-border-style: dashed;
+    --border-style: dashed;
     border-style: dashed;
   }
 }
@@ -60,7 +87,7 @@
 :where(.sizeDefault) {
   gap: calc(var(--spacing) * 2);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
+  line-height: var(--leading, var(--text-sm--line-height));
   &:has([data-slot="attachment-content"]) {
     padding-inline: calc(var(--spacing) * 2.5);
     padding-block: calc(var(--spacing) * 2);
@@ -73,7 +100,7 @@
 :where(.sizeSm) {
   gap: calc(var(--spacing) * 2.5);
   font-size: var(--text-xs);
-  line-height: var(--tw-leading, var(--text-xs--line-height));
+  line-height: var(--leading, var(--text-xs--line-height));
   &:has([data-slot="attachment-content"]) {
     padding-inline: calc(var(--spacing) * 2);
     padding-block: calc(var(--spacing) * 1.5);
@@ -87,7 +114,7 @@
   gap: calc(var(--spacing) * 1.5);
   border-radius: var(--radius);
   font-size: var(--text-xs);
-  line-height: var(--tw-leading, var(--text-xs--line-height));
+  line-height: var(--leading, var(--text-xs--line-height));
   &:has([data-slot="attachment-content"]) {
     padding-inline: calc(var(--spacing) * 1.5);
     padding-block: var(--spacing);
@@ -180,7 +207,7 @@
   max-width: 100%;
   min-width: 0;
   flex: 1;
-  --tw-leading: var(--leading-tight);
+  --leading: var(--leading-tight);
   line-height: var(--leading-tight);
   &:is(:where([data-slot="attachment"])[data-orientation="vertical"] *) {
     padding-inline: var(--spacing);
@@ -194,7 +221,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  --tw-font-weight: var(--font-weight-medium);
+  --font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
   &:is(:where([data-slot="attachment"])[data-state="processing"] *) {
     --_spread: var(--shimmer-spread, calc(3ch + 40px));
@@ -251,7 +278,7 @@
   white-space: nowrap;
   overflow: hidden;
   font-size: var(--text-xs);
-  line-height: var(--tw-leading, var(--text-xs--line-height));
+  line-height: var(--leading, var(--text-xs--line-height));
   color: var(--muted-foreground);
   &:is(:where([data-slot="attachment"])[data-state="error"] *) {
     color: var(--destructive);
@@ -279,7 +306,7 @@
   position: absolute;
   inset: 0;
   z-index: 10;
-  --tw-outline-style: none;
+  --outline-style: none;
   outline-style: none;
 }
 
@@ -320,8 +347,8 @@
     --scroll-fade-s: var(--_scroll-fade-size-s);
     --scroll-fade-e: var(--_scroll-fade-size-e);
   }
-  scroll-snap-type: x var(--tw-scroll-snap-strictness);
-  --tw-scroll-snap-strictness: mandatory;
+  scroll-snap-type: x var(--scroll-snap-strictness);
+  --scroll-snap-strictness: mandatory;
   scroll-padding-inline: var(--spacing);
   scrollbar-width: none;
   gap: calc(var(--spacing) * 3);

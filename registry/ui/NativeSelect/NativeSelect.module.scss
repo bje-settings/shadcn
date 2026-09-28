@@ -3,12 +3,33 @@
 // Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):
 //   --default-transition-duration --default-transition-timing-function --destructive --input
 //   --muted-foreground --primary --primary-foreground --radius --ring --spacing --text-sm
-//   --text-sm--line-height --tw-border-style --tw-duration --tw-ease --tw-inset-ring-shadow
-//   --tw-inset-shadow --tw-leading --tw-ring-inset --tw-ring-offset-shadow --tw-ring-offset-width
-//   --tw-shadow-color --tw-translate-x
+//   --text-sm--line-height
 //
 // Upstream classes with no CSS output, dropped:
 //   group/native-select
+
+// Defaults for the internal variables the rules below compose with.
+@layer properties {
+  :where(.nativeSelect),
+  :where(.nativeSelectIcon) {
+    --border-style: solid;
+    --duration: initial;
+    --ease: initial;
+    --inset-ring-shadow: 0 0 #0000;
+    --inset-shadow: 0 0 #0000;
+    --leading: initial;
+    --outline-style: solid;
+    --ring-color: initial;
+    --ring-inset: initial;
+    --ring-offset-shadow: 0 0 #0000;
+    --ring-offset-width: 0px;
+    --ring-shadow: 0 0 #0000;
+    --shadow: 0 0 #0000;
+    --shadow-color: initial;
+    --transform-translate-x: 0;
+    --transform-translate-y: 0;
+  }
+}
 
 :where(.nativeSelectWrapper) {
   position: relative;
@@ -24,7 +45,7 @@
   min-width: 0;
   appearance: none;
   border-radius: calc(var(--radius) * .8);
-  border-style: var(--tw-border-style);
+  border-style: var(--border-style);
   border-width: 1px;
   border-color: var(--input);
   background-color: #0000;
@@ -32,13 +53,13 @@
   padding-right: calc(var(--spacing) * 8);
   padding-left: calc(var(--spacing) * 2.5);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
-  --tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, #0000000d);
-  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  line-height: var(--leading, var(--text-sm--line-height));
+  --shadow: 0 1px 2px 0 var(--shadow-color, #0000000d);
+  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
   transition-property: color, box-shadow;
-  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-  transition-duration: var(--tw-duration, var(--default-transition-duration));
-  --tw-outline-style: none;
+  transition-timing-function: var(--ease, var(--default-transition-timing-function));
+  transition-duration: var(--duration, var(--default-transition-duration));
+  --outline-style: none;
   outline-style: none;
   -webkit-user-select: none;
   user-select: none;
@@ -51,11 +72,11 @@
   }
   &:focus-visible {
     border-color: var(--ring);
-    --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    --tw-ring-color: var(--ring);
+    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
+    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-color: var(--ring);
     @supports (color: color-mix(in lab, red, red)) {
-      --tw-ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
+      --ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
     }
   }
   &:disabled {
@@ -64,11 +85,11 @@
   }
   &[aria-invalid="true"] {
     border-color: var(--destructive);
-    --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    --tw-ring-color: var(--destructive);
+    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
+    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-color: var(--destructive);
     @supports (color: color-mix(in lab, red, red)) {
-      --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+      --ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
     }
   }
   &[data-size="sm"] {
@@ -93,9 +114,9 @@
     @supports (color: color-mix(in lab, red, red)) {
       border-color: color-mix(in oklab, var(--destructive) 50%, transparent);
     }
-    --tw-ring-color: var(--destructive);
+    --ring-color: var(--destructive);
     @supports (color: color-mix(in lab, red, red)) {
-      --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
+      --ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
     }
   }
 }
@@ -113,8 +134,8 @@
   right: calc(var(--spacing) * 2.5);
   width: calc(var(--spacing) * 4);
   height: calc(var(--spacing) * 4);
-  --tw-translate-y: calc(calc(1 / 2 * 100%) * -1);
-  translate: var(--tw-translate-x) var(--tw-translate-y);
+  --transform-translate-y: calc(calc(1 / 2 * 100%) * -1);
+  translate: var(--transform-translate-x) var(--transform-translate-y);
   color: var(--muted-foreground);
   -webkit-user-select: none;
   user-select: none;

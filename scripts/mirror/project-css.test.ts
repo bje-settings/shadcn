@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { layoutCss, projectCss } from './project-css.ts'
+import { layoutCss, projectCss, staticTheme } from './project-css.ts'
 
 const color = {
   cssVarsV4: {
@@ -58,6 +58,20 @@ describe('layoutCss', () => {
     expect(css).not.toContain('@layer base')
     expect(css).toContain('@source "./examples";')
     // tailwind-merge's text size over leading, for the examples' own classes
-    expect(css).toContain(':not([class*="leading-"]) {\n  --tw-leading: initial;\n}')
+    expect(css).toContain(':not([class*="leading-"]) {\n  --leading: initial;\n}')
+  })
+})
+
+describe('staticTheme', () => {
+  it('imports Tailwind with its whole theme emitted', () => {
+    expect(staticTheme('@import "tailwindcss";\n@import "x";')).toBe(
+      '@import "tailwindcss" theme(static);\n@import "x";',
+    )
+  })
+
+  it('refuses project CSS that imports Tailwind otherwise', () => {
+    expect(() => staticTheme('@import "tailwindcss" source(none);')).toThrow(
+      'project CSS does not import tailwindcss as @import "tailwindcss";',
+    )
   })
 })

@@ -2,11 +2,24 @@
 //
 // Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):
 //   --card --card-foreground --destructive --font-weight-medium --foreground --muted-foreground
-//   --radius --spacing --text-sm --text-sm--line-height --tw-border-style --tw-leading
-//   --tw-translate-x
+//   --radius --spacing --text-sm --text-sm--line-height
 //
 // Upstream classes with no CSS output, dropped:
 //   group/alert
+
+// Defaults for the internal variables the rules below compose with.
+@layer properties {
+  :is(:where(.alert) > *):is(svg),
+  :where(.alert),
+  :where(.alertDescription),
+  :where(.alertTitle) {
+    --border-style: solid;
+    --font-weight: initial;
+    --leading: initial;
+    --transform-translate-x: 0;
+    --transform-translate-y: 0;
+  }
+}
 
 :where(.alert) {
   position: relative;
@@ -14,13 +27,13 @@
   width: 100%;
   gap: calc(var(--spacing) * .5);
   border-radius: var(--radius);
-  border-style: var(--tw-border-style);
+  border-style: var(--border-style);
   border-width: 1px;
   padding-inline: calc(var(--spacing) * 4);
   padding-block: calc(var(--spacing) * 3);
   text-align: left;
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
+  line-height: var(--leading, var(--text-sm--line-height));
   &:has([data-slot="alert-action"]) {
     position: relative;
     padding-right: calc(var(--spacing) * 18);
@@ -37,8 +50,8 @@
 .alert {
   :is(& > *):is(svg) {
     grid-row: span 2 / span 2;
-    --tw-translate-y: calc(var(--spacing) * .5);
-    translate: var(--tw-translate-x) var(--tw-translate-y);
+    --transform-translate-y: calc(var(--spacing) * .5);
+    translate: var(--transform-translate-x) var(--transform-translate-y);
     color: currentColor;
   }
 }
@@ -65,7 +78,7 @@
 }
 
 :where(.alertTitle) {
-  --tw-font-weight: var(--font-weight-medium);
+  --font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
   &:is(:where([data-slot="alert"]):has( > svg) *) {
     grid-column-start: 2;
@@ -85,7 +98,7 @@
 
 :where(.alertDescription) {
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
+  line-height: var(--leading, var(--text-sm--line-height));
   text-wrap: balance;
   color: var(--muted-foreground);
   @media (min-width: 48rem) {

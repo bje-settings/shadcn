@@ -3,12 +3,36 @@
 // Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):
 //   --background --cell-radius --cell-size --font-weight-medium --font-weight-normal --foreground
 //   --muted --muted-foreground --popover --primary --primary-foreground --radius-md --ring
-//   --spacing --text-sm --text-sm--line-height --text-xs --text-xs--line-height --tw-border-style
-//   --tw-content --tw-inset-ring-shadow --tw-inset-shadow --tw-leading --tw-ring-inset
-//   --tw-ring-offset-shadow --tw-ring-offset-width --tw-shadow
+//   --spacing --text-sm --text-sm--line-height --text-xs --text-xs--line-height
 //
 // Upstream classes with no CSS output, dropped:
 //   group/calendar group/day
+
+// Defaults for the internal variables the rules below compose with.
+@layer properties {
+  :where(.calendarCaptionLabel),
+  :where(.calendarCaptionLabelLabel),
+  :where(.calendarCaptionLabelNotLabel),
+  :where(.calendarDayButtonButton),
+  :where(.calendarDayButtonButton) > span,
+  :where(.calendarDropdowns),
+  :where(.calendarRangeEnd):after,
+  :where(.calendarRangeStart):after,
+  :where(.calendarWeekday) {
+    --border-style: solid;
+    --content: "";
+    --font-weight: initial;
+    --inset-ring-shadow: 0 0 #0000;
+    --inset-shadow: 0 0 #0000;
+    --leading: initial;
+    --ring-color: initial;
+    --ring-inset: initial;
+    --ring-offset-shadow: 0 0 #0000;
+    --ring-offset-width: 0px;
+    --ring-shadow: 0 0 #0000;
+    --shadow: 0 0 #0000;
+  }
+}
 
 :where(.calendarDayPicker) {
   background-color: var(--background);
@@ -96,8 +120,8 @@
   justify-content: center;
   gap: calc(var(--spacing) * 1.5);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
-  --tw-font-weight: var(--font-weight-medium);
+  line-height: var(--leading, var(--text-sm--line-height));
+  --font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
 }
 
@@ -115,7 +139,7 @@
 
 :where(.calendarCaptionLabelLabel) {
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
+  line-height: var(--leading, var(--text-sm--line-height));
 }
 
 :where(.calendarCaptionLabelNotLabel) {
@@ -124,7 +148,7 @@
   gap: var(--spacing);
   border-radius: var(--cell-radius);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
+  line-height: var(--leading, var(--text-sm--line-height));
 }
 .calendarCaptionLabelNotLabel {
   & > svg {
@@ -135,7 +159,7 @@
 }
 
 :where(.calendarCaptionLabel) {
-  --tw-font-weight: var(--font-weight-medium);
+  --font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
   -webkit-user-select: none;
   user-select: none;
@@ -154,7 +178,7 @@
   flex: 1;
   border-radius: var(--cell-radius);
   font-size: .8rem;
-  --tw-font-weight: var(--font-weight-normal);
+  --font-weight: var(--font-weight-normal);
   font-weight: var(--font-weight-normal);
   color: var(--muted-foreground);
   -webkit-user-select: none;
@@ -224,15 +248,15 @@
   border-bottom-left-radius: var(--cell-radius);
   background-color: var(--muted);
   &:after {
-    content: var(--tw-content);
+    content: var(--content);
     position: absolute;
-    content: var(--tw-content);
+    content: var(--content);
     inset-block: 0;
-    content: var(--tw-content);
+    content: var(--content);
     right: 0;
-    content: var(--tw-content);
+    content: var(--content);
     width: calc(var(--spacing) * 4);
-    content: var(--tw-content);
+    content: var(--content);
     background-color: var(--muted);
   }
 }
@@ -249,15 +273,15 @@
   border-bottom-right-radius: var(--cell-radius);
   background-color: var(--muted);
   &:after {
-    content: var(--tw-content);
+    content: var(--content);
     position: absolute;
-    content: var(--tw-content);
+    content: var(--content);
     inset-block: 0;
-    content: var(--tw-content);
+    content: var(--content);
     left: 0;
-    content: var(--tw-content);
+    content: var(--content);
     width: calc(var(--spacing) * 4);
-    content: var(--tw-content);
+    content: var(--content);
     background-color: var(--muted);
   }
 }
@@ -322,21 +346,21 @@
   min-width: var(--cell-size);
   flex-direction: column;
   gap: var(--spacing);
-  border-style: var(--tw-border-style);
+  border-style: var(--border-style);
   border-width: 0;
-  --tw-leading: 1;
+  --leading: 1;
   line-height: 1;
-  --tw-font-weight: var(--font-weight-normal);
+  --font-weight: var(--font-weight-normal);
   font-weight: var(--font-weight-normal);
   &:is(:where(.calendarDay)[data-focused="true"] *) {
     position: relative;
     z-index: 10;
     border-color: var(--ring);
-    --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    --tw-ring-color: var(--ring);
+    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
+    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-color: var(--ring);
     @supports (color: color-mix(in lab, red, red)) {
-      --tw-ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
+      --ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
     }
   }
   &[data-range-end="true"] {
@@ -371,7 +395,7 @@
 .calendarDayButtonButton {
   & > span {
     font-size: var(--text-xs);
-    line-height: var(--tw-leading, var(--text-xs--line-height));
+    line-height: var(--leading, var(--text-xs--line-height));
     opacity: .7;
   }
 }

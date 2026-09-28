@@ -8,6 +8,8 @@
 //
 // Reference: packages/shadcn/src/utils/updaters/update-css-vars.ts.
 
+import { internalName } from './internal.ts'
+
 export type StyleIndex = { css?: CssTree }
 export type CssTree = { [key: string]: CssTree }
 
@@ -113,14 +115,23 @@ export function layoutCss(
     `@source ${JSON.stringify(source)};`,
     '',
     // Upstream, tailwind-merge drops a component's leading-* when the example
-    // passes a text size, and Tailwind's text-* reads --tw-leading if set. The
-    // component's module still sets it here, so the example's text size
-    // clears it, unless the example passes its own leading-*.
+    // passes a text size, so the component's other text-size rules (a
+    // group-data size variant) read no leading. The component's module still
+    // sets it here, so the example's text size clears it, unless the example
+    // passes its own leading-*.
     `:is(${TEXT_SIZES.map((size) => `.text-${size}`).join(', ')}):not([class*="leading-"]) {`,
-    '  --tw-leading: initial;',
+    `  ${internalName('--tw-leading')}: initial;`,
     '}',
     '',
   ].join('\n')
+}
+
+// The project CSS with Tailwind's theme emitted whole (theme(static)), for the
+// global stylesheets.
+export function staticTheme(css: string): string {
+  const plain = '@import "tailwindcss";'
+  if (!css.includes(plain)) throw new Error(`project CSS does not import tailwindcss as ${plain}`)
+  return css.replace(plain, '@import "tailwindcss" theme(static);')
 }
 
 const TEXT_SIZES = [

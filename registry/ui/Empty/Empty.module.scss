@@ -3,7 +3,19 @@
 // Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):
 //   --container-sm --font-sans --font-weight-medium --foreground --leading-relaxed --muted
 //   --muted-foreground --primary --radius --spacing --text-lg --text-lg--line-height --text-sm
-//   --text-sm--line-height --tracking-tight --tw-leading
+//   --text-sm--line-height --tracking-tight
+
+// Defaults for the internal variables the rules below compose with.
+@layer properties {
+  :where(.empty),
+  :where(.emptyContent),
+  :where(.emptyTitle) {
+    --border-style: solid;
+    --font-weight: initial;
+    --leading: initial;
+    --tracking: initial;
+  }
+}
 
 :where(.emptyMedia) {
   margin-bottom: calc(var(--spacing) * 2);
@@ -49,7 +61,7 @@
   justify-content: center;
   gap: calc(var(--spacing) * 4);
   border-radius: var(--radius);
-  --tw-border-style: dashed;
+  --border-style: dashed;
   border-style: dashed;
   padding: calc(var(--spacing) * 12);
   text-align: center;
@@ -67,10 +79,10 @@
 :where(.emptyTitle) {
   font-family: var(--font-sans);
   font-size: var(--text-lg);
-  line-height: var(--tw-leading, var(--text-lg--line-height));
-  --tw-font-weight: var(--font-weight-medium);
+  line-height: var(--leading, var(--text-lg--line-height));
+  --font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
-  --tw-tracking: var(--tracking-tight);
+  --tracking: var(--tracking-tight);
   letter-spacing: var(--tracking-tight);
 }
 
@@ -98,6 +110,6 @@
   align-items: center;
   gap: calc(var(--spacing) * 4);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
+  line-height: var(--leading, var(--text-sm--line-height));
   text-wrap: balance;
 }

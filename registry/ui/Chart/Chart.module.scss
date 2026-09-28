@@ -3,16 +3,42 @@
 // Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):
 //   --aspect-video --background --border --color-bg --color-border --font-mono --font-weight-medium
 //   --foreground --muted --muted-foreground --radius --spacing --text-xs --text-xs--line-height
-//   --tw-border-style --tw-inset-ring-shadow --tw-inset-shadow --tw-leading --tw-numeric-figure
-//   --tw-numeric-fraction --tw-ordinal --tw-ring-offset-shadow --tw-ring-shadow --tw-shadow-color
-//   --tw-slashed-zero
+
+// Defaults for the internal variables the rules below compose with.
+@layer properties {
+  :where(.chart),
+  :where(.chart) :global(.recharts-layer),
+  :where(.chart) :global(.recharts-sector),
+  :where(.chart) :global(.recharts-surface),
+  :where(.chartTooltipContent),
+  :where(.chartTooltipContentDiv),
+  :where(.chartTooltipContentDiv5),
+  :where(.chartTooltipContentDivDashed),
+  :where(.chartTooltipContentSpan2) {
+    --border-style: solid;
+    --font-weight: initial;
+    --inset-ring-shadow: 0 0 #0000;
+    --inset-shadow: 0 0 #0000;
+    --leading: initial;
+    --numeric-figure: initial;
+    --numeric-fraction: initial;
+    --numeric-spacing: initial;
+    --ordinal: initial;
+    --outline-style: solid;
+    --ring-offset-shadow: 0 0 #0000;
+    --ring-shadow: 0 0 #0000;
+    --shadow: 0 0 #0000;
+    --shadow-color: initial;
+    --slashed-zero: initial;
+  }
+}
 
 :where(.chart) {
   display: flex;
   aspect-ratio: var(--aspect-video);
   justify-content: center;
   font-size: var(--text-xs);
-  line-height: var(--tw-leading, var(--text-xs--line-height));
+  line-height: var(--leading, var(--text-xs--line-height));
 }
 .chart {
   & :global(.recharts-cartesian-axis-tick) text {
@@ -31,7 +57,7 @@
     stroke: #0000;
   }
   & :global(.recharts-layer) {
-    --tw-outline-style: none;
+    --outline-style: none;
     outline-style: none;
     @media (forced-colors: active) {
       outline-offset: 2px;
@@ -48,7 +74,7 @@
     stroke: var(--border);
   }
   & :global(.recharts-sector) {
-    --tw-outline-style: none;
+    --outline-style: none;
     outline-style: none;
     @media (forced-colors: active) {
       outline-offset: 2px;
@@ -59,7 +85,7 @@
     stroke: #0000;
   }
   & :global(.recharts-surface) {
-    --tw-outline-style: none;
+    --outline-style: none;
     outline-style: none;
     @media (forced-colors: active) {
       outline-offset: 2px;
@@ -69,7 +95,7 @@
 }
 
 :where(.chartTooltipContentDiv) {
-  --tw-font-weight: var(--font-weight-medium);
+  --font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
 }
 
@@ -79,7 +105,7 @@
   align-items: flex-start;
   gap: calc(var(--spacing) * 1.5);
   border-radius: var(--radius);
-  border-style: var(--tw-border-style);
+  border-style: var(--border-style);
   border-width: 1px;
   border-color: var(--border);
   @supports (color: color-mix(in lab, red, red)) {
@@ -89,9 +115,9 @@
   padding-inline: calc(var(--spacing) * 2.5);
   padding-block: calc(var(--spacing) * 1.5);
   font-size: var(--text-xs);
-  line-height: var(--tw-leading, var(--text-xs--line-height));
-  --tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, #0000001a), 0 8px 10px -6px var(--tw-shadow-color, #0000001a);
-  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  line-height: var(--leading, var(--text-xs--line-height));
+  --shadow: 0 20px 25px -5px var(--shadow-color, #0000001a), 0 8px 10px -6px var(--shadow-color, #0000001a);
+  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
 }
 
 :where(.chartTooltipContentDiv2) {
@@ -129,9 +155,9 @@
 
 :where(.chartTooltipContentDivDashed) {
   width: 0;
-  border-style: var(--tw-border-style);
+  border-style: var(--border-style);
   border-width: 1.5px;
-  --tw-border-style: dashed;
+  --border-style: dashed;
   border-style: dashed;
   background-color: #0000;
 }
@@ -159,7 +185,7 @@
   display: flex;
   flex: 1;
   justify-content: space-between;
-  --tw-leading: 1;
+  --leading: 1;
   line-height: 1;
 }
 
@@ -169,11 +195,11 @@
 
 :where(.chartTooltipContentSpan2) {
   font-family: var(--font-mono);
-  --tw-font-weight: var(--font-weight-medium);
+  --font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
   color: var(--foreground);
-  --tw-numeric-spacing: tabular-nums;
-  font-variant-numeric: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
+  --numeric-spacing: tabular-nums;
+  font-variant-numeric: var(--ordinal, ) var(--slashed-zero, ) var(--numeric-figure, ) var(--numeric-spacing, ) var(--numeric-fraction, );
 }
 
 :where(.chartLegendContentDivTop) {

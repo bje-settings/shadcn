@@ -25,10 +25,12 @@ import {
 import { prepareExample } from './examples.ts'
 import { globalStylesheets } from './globals.ts'
 import { type HarnessExample, type HarnessInput, harnessFiles } from './harness.ts'
+import { checkCollisions } from './internal.ts'
 import { pascalCase } from './names.ts'
 import { type PartTypes, partTypes, scaffolds } from './parts.ts'
-import { layoutCss, projectCss } from './project-css.ts'
+import { layoutCss, projectCss, staticTheme } from './project-css.ts'
 import { parseRegistry, upsertItems } from './registry.ts'
+import { registrations } from './scss.ts'
 import { parseBaseColor, parseFontItem, parseStyleIndex, parseUpstreamItem } from './snapshots.ts'
 import { compileCandidates } from './tailwind.ts'
 import { fixtureHtml, type TypesetFixture } from './typeset.ts'
@@ -204,7 +206,16 @@ async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
   const items: RegistryItem[] = []
   const harness: HarnessInput[] = []
   const classes = new Set<string>()
-  const shared = sharedSlotOptions(config, prepared)
+  const internal = new Set<string>()
+  const external = new Set<string>()
+  const allClasses = prepared.flatMap(({ transformed }) =>
+    transformed.slots.flatMap((s) => s.classes),
+  )
+  const shared = sharedSlotOptions(
+    config,
+    prepared,
+    registrations(await compile([...new Set(allClasses)].sort())),
+  )
   for (const component of prepared) {
     const { name } = component.upstream
     const itemTypes = types.get(name) as Map<string, PartTypes>
@@ -234,6 +245,8 @@ async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
     }
     for (const file of built.files) await writeFormatted(io, file.path, file.content)
     for (const c of built.classes) classes.add(c)
+    for (const name of built.internal) internal.add(name)
+    for (const name of built.external) external.add(name)
     items.push(built.item)
     harness.push({
       name,
@@ -255,10 +268,14 @@ async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
   // Typeset is imported after Tailwind upstream, which makes Tailwind emit the
   // theme variables it reads (--color-foreground, --font-heading, ...).
   const typesetCss = await readTypeset(io, config, 'typeset.css')
+  // A static theme emits Tailwind's whole default theme, not only the values
+  // these classes read, so a consumer's global stylesheet is the full set.
   const sheets = globalStylesheets(
-    await compileCandidates(`${css}\n${typesetCss}`, [...classes].sort()),
+    await compileCandidates(staticTheme(`${css}\n${typesetCss}`), [...classes].sort()),
     header,
   )
+  for (const [, name] of sheets.variables.matchAll(/(--[\w-]+)\s*:/g)) external.add(name as string)
+  checkCollisions(internal, external)
   const files = [
     ...Object.entries(sheets).map(([sheet, content]) => ({
       path: `${config.globalsDir}/${sheet}.scss`,

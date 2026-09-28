@@ -2,7 +2,15 @@
 //
 // Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):
 //   --background --font-weight-medium --muted --muted-foreground --radius --spacing --text-xs
-//   --text-xs--line-height --tw-leading
+//   --text-xs--line-height
+
+// Defaults for the internal variables the rules below compose with.
+@layer properties {
+  :where(.kbd) {
+    --font-weight: initial;
+    --leading: initial;
+  }
+}
 
 :where(.kbd) {
   pointer-events: none;
@@ -18,8 +26,8 @@
   padding-inline: var(--spacing);
   font-family: Inter Variable, sans-serif;
   font-size: var(--text-xs);
-  line-height: var(--tw-leading, var(--text-xs--line-height));
-  --tw-font-weight: var(--font-weight-medium);
+  line-height: var(--leading, var(--text-xs--line-height));
+  --font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
   color: var(--muted-foreground);
   -webkit-user-select: none;

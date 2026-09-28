@@ -2,10 +2,23 @@
 //
 // Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):
 //   --font-weight-medium --muted --muted-foreground --spacing --text-sm --text-sm--line-height
-//   --text-xs --text-xs--line-height --tw-leading --tw-translate-x
+//   --text-xs --text-xs--line-height
 //
 // Upstream classes with no CSS output, dropped:
 //   group/message
+
+// Defaults for the internal variables the rules below compose with.
+@layer properties {
+  :where(.message),
+  :where(.messageAvatar),
+  :where(.messageFooter),
+  :where(.messageHeader) {
+    --font-weight: initial;
+    --leading: initial;
+    --transform-translate-x: 0;
+    --transform-translate-y: 0;
+  }
+}
 
 :where(.messageGroup) {
   display: flex;
@@ -21,7 +34,7 @@
   min-width: 0;
   gap: calc(var(--spacing) * 2);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
+  line-height: var(--leading, var(--text-sm--line-height));
   &[data-align="end"] {
     flex-direction: row-reverse;
   }
@@ -39,8 +52,8 @@
   border-radius: 3.40282e38px;
   background-color: var(--muted);
   &:is(:where([data-slot="message"]):has([data-slot="message-footer"]) *) {
-    --tw-translate-y: calc(var(--spacing) * -8);
-    translate: var(--tw-translate-x) var(--tw-translate-y);
+    --transform-translate-y: calc(var(--spacing) * -8);
+    translate: var(--transform-translate-x) var(--transform-translate-y);
   }
 }
 
@@ -65,8 +78,8 @@
   align-items: center;
   padding-inline: calc(var(--spacing) * 3);
   font-size: var(--text-xs);
-  line-height: var(--tw-leading, var(--text-xs--line-height));
-  --tw-font-weight: var(--font-weight-medium);
+  line-height: var(--leading, var(--text-xs--line-height));
+  --font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
   color: var(--muted-foreground);
   &:is(:where([data-slot="message"]):has([data-variant="ghost"]) *) {
@@ -81,8 +94,8 @@
   align-items: center;
   padding-inline: calc(var(--spacing) * 3);
   font-size: var(--text-xs);
-  line-height: var(--tw-leading, var(--text-xs--line-height));
-  --tw-font-weight: var(--font-weight-medium);
+  line-height: var(--leading, var(--text-xs--line-height));
+  --font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
   color: var(--muted-foreground);
   &:is(:where([data-slot="message"]):has([data-variant="ghost"]) *) {

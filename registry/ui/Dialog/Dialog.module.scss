@@ -3,12 +3,57 @@
 // Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):
 //   --blur-xs --color-black --container-md --font-sans --font-weight-medium --foreground
 //   --muted-foreground --popover --popover-foreground --radius --spacing --text-sm
-//   --text-sm--line-height --tw-animation-delay --tw-animation-direction --tw-animation-duration
-//   --tw-animation-fill-mode --tw-animation-iteration-count --tw-backdrop-brightness
-//   --tw-backdrop-contrast --tw-backdrop-grayscale --tw-backdrop-hue-rotate --tw-backdrop-invert
-//   --tw-backdrop-opacity --tw-backdrop-saturate --tw-backdrop-sepia --tw-ease
-//   --tw-inset-ring-shadow --tw-inset-shadow --tw-leading --tw-ring-inset --tw-ring-offset-shadow
-//   --tw-ring-offset-width --tw-shadow
+//   --text-sm--line-height
+
+// Defaults for the internal variables the rules below compose with.
+@layer properties {
+  :where(.dialogContent),
+  :where(.dialogDescription),
+  :where(.dialogOverlay),
+  :where(.dialogTitle) {
+    --animation-delay: 0s;
+    --animation-direction: normal;
+    --animation-duration: initial;
+    --animation-fill-mode: none;
+    --animation-iteration-count: 1;
+    --backdrop-blur: initial;
+    --backdrop-brightness: initial;
+    --backdrop-contrast: initial;
+    --backdrop-grayscale: initial;
+    --backdrop-hue-rotate: initial;
+    --backdrop-invert: initial;
+    --backdrop-opacity: initial;
+    --backdrop-saturate: initial;
+    --backdrop-sepia: initial;
+    --duration: initial;
+    --ease: initial;
+    --enter-blur: 0;
+    --enter-opacity: 1;
+    --enter-rotate: 0;
+    --enter-scale: 1;
+    --enter-translate-x: 0;
+    --enter-translate-y: 0;
+    --exit-blur: 0;
+    --exit-opacity: 1;
+    --exit-rotate: 0;
+    --exit-scale: 1;
+    --exit-translate-x: 0;
+    --exit-translate-y: 0;
+    --font-weight: initial;
+    --inset-ring-shadow: 0 0 #0000;
+    --inset-shadow: 0 0 #0000;
+    --leading: initial;
+    --outline-style: solid;
+    --ring-color: initial;
+    --ring-inset: initial;
+    --ring-offset-shadow: 0 0 #0000;
+    --ring-offset-width: 0px;
+    --ring-shadow: 0 0 #0000;
+    --shadow: 0 0 #0000;
+    --transform-translate-x: 0;
+    --transform-translate-y: 0;
+  }
+}
 
 :where(.dialogOverlay) {
   position: fixed;
@@ -19,20 +64,20 @@
   @supports (color: color-mix(in lab, red, red)) {
     background-color: color-mix(in oklab, var(--color-black) 10%, transparent);
   }
-  --tw-duration: .1s;
+  --duration: .1s;
   transition-duration: .1s;
   @supports ((-webkit-backdrop-filter: var(--tw)) or (backdrop-filter: var(--tw))) {
-    --tw-backdrop-blur: blur(var(--blur-xs));
-    -webkit-backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
-    backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
+    --backdrop-blur: blur(var(--blur-xs));
+    -webkit-backdrop-filter: var(--backdrop-blur, ) var(--backdrop-brightness, ) var(--backdrop-contrast, ) var(--backdrop-grayscale, ) var(--backdrop-hue-rotate, ) var(--backdrop-invert, ) var(--backdrop-opacity, ) var(--backdrop-saturate, ) var(--backdrop-sepia, );
+    backdrop-filter: var(--backdrop-blur, ) var(--backdrop-brightness, ) var(--backdrop-contrast, ) var(--backdrop-grayscale, ) var(--backdrop-hue-rotate, ) var(--backdrop-invert, ) var(--backdrop-opacity, ) var(--backdrop-saturate, ) var(--backdrop-sepia, );
   }
   &:where([data-state="open"]), &:where([data-open]:not([data-open="false"])) {
-    animation: enter var(--tw-animation-duration, var(--tw-duration, .15s))var(--tw-ease, ease)var(--tw-animation-delay, 0s)var(--tw-animation-iteration-count, 1)var(--tw-animation-direction, normal)var(--tw-animation-fill-mode, none);
-    --tw-enter-opacity: 0;
+    animation: enter var(--animation-duration, var(--duration, .15s))var(--ease, ease)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+    --enter-opacity: 0;
   }
   &:where([data-state="closed"]), &:where([data-closed]:not([data-closed="false"])) {
-    animation: exit var(--tw-animation-duration, var(--tw-duration, .15s))var(--tw-ease, ease)var(--tw-animation-delay, 0s)var(--tw-animation-iteration-count, 1)var(--tw-animation-direction, normal)var(--tw-animation-fill-mode, none);
-    --tw-exit-opacity: 0;
+    animation: exit var(--animation-duration, var(--duration, .15s))var(--ease, ease)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+    --exit-opacity: 0;
   }
 }
 
@@ -44,39 +89,39 @@
   display: grid;
   width: 100%;
   max-width: calc(100% - 2rem);
-  --tw-translate-x: calc(calc(1 / 2 * 100%) * -1);
-  translate: var(--tw-translate-x) var(--tw-translate-y);
-  --tw-translate-y: calc(calc(1 / 2 * 100%) * -1);
-  translate: var(--tw-translate-x) var(--tw-translate-y);
+  --transform-translate-x: calc(calc(1 / 2 * 100%) * -1);
+  translate: var(--transform-translate-x) var(--transform-translate-y);
+  --transform-translate-y: calc(calc(1 / 2 * 100%) * -1);
+  translate: var(--transform-translate-x) var(--transform-translate-y);
   gap: calc(var(--spacing) * 6);
   border-radius: calc(var(--radius) * 1.4);
   background-color: var(--popover);
   padding: calc(var(--spacing) * 6);
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
+  line-height: var(--leading, var(--text-sm--line-height));
   color: var(--popover-foreground);
-  --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  --tw-ring-color: var(--foreground);
+  --ring-shadow: var(--ring-inset, ) 0 0 0 calc(1px + var(--ring-offset-width)) var(--ring-color, currentcolor);
+  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+  --ring-color: var(--foreground);
   @supports (color: color-mix(in lab, red, red)) {
-    --tw-ring-color: color-mix(in oklab, var(--foreground) 10%, transparent);
+    --ring-color: color-mix(in oklab, var(--foreground) 10%, transparent);
   }
-  --tw-duration: .1s;
+  --duration: .1s;
   transition-duration: .1s;
-  --tw-outline-style: none;
+  --outline-style: none;
   outline-style: none;
   @media (min-width: 40rem) {
     max-width: var(--container-md);
   }
   &:where([data-state="open"]), &:where([data-open]:not([data-open="false"])) {
-    animation: enter var(--tw-animation-duration, var(--tw-duration, .15s))var(--tw-ease, ease)var(--tw-animation-delay, 0s)var(--tw-animation-iteration-count, 1)var(--tw-animation-direction, normal)var(--tw-animation-fill-mode, none);
-    --tw-enter-opacity: 0;
-    --tw-enter-scale: .95;
+    animation: enter var(--animation-duration, var(--duration, .15s))var(--ease, ease)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+    --enter-opacity: 0;
+    --enter-scale: .95;
   }
   &:where([data-state="closed"]), &:where([data-closed]:not([data-closed="false"])) {
-    animation: exit var(--tw-animation-duration, var(--tw-duration, .15s))var(--tw-ease, ease)var(--tw-animation-delay, 0s)var(--tw-animation-iteration-count, 1)var(--tw-animation-direction, normal)var(--tw-animation-fill-mode, none);
-    --tw-exit-opacity: 0;
-    --tw-exit-scale: .95;
+    animation: exit var(--animation-duration, var(--duration, .15s))var(--ease, ease)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+    --exit-opacity: 0;
+    --exit-scale: .95;
   }
 }
 
@@ -116,15 +161,15 @@
 
 :where(.dialogTitle) {
   font-family: var(--font-sans);
-  --tw-leading: 1;
+  --leading: 1;
   line-height: 1;
-  --tw-font-weight: var(--font-weight-medium);
+  --font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
 }
 
 :where(.dialogDescription) {
   font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
+  line-height: var(--leading, var(--text-sm--line-height));
   color: var(--muted-foreground);
 }
 .dialogDescription {

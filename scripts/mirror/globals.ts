@@ -1,16 +1,23 @@
 // Splits Tailwind's output for the project CSS, compiled over every mirrored
 // component's classes, into the global stylesheets a consumer imports once:
 //
-// - variables.scss: @layer properties (fallbacks for Tailwind's --tw-*
-//   variables), @layer theme (the tokens the components use), the @property
-//   registrations, and the base color's :root and .dark variables.
+// - variables.scss: @layer theme (Tailwind's whole default theme, which the
+//   caller compiles static), the base color's :root and .dark variables, and
+//   the @property registrations and @layer properties fallbacks of shadcn's
+//   own utilities (scroll-fade, shimmer).
 // - base.scss: @layer base (Tailwind's preflight plus shadcn's base rules) and
 //   any @keyframes the components animate with.
+//
+// Tailwind's internal --tw-* variables are not globals: each module declares
+// the ones it uses (internal.ts), so their registrations and fallbacks go, and
+// the keyframes read them by their renamed names.
 //
 // Utilities are the components' own CSS and live in their modules. Anything
 // else at the top level fails the build rather than being guessed at.
 
-import postcss, { type ChildNode } from 'postcss'
+import postcss, { type ChildNode, type Container } from 'postcss'
+
+import { renameInternal } from './internal.ts'
 
 export type GlobalStylesheets = { variables: string; base: string }
 
@@ -22,7 +29,7 @@ function destination(node: ChildNode): Destination {
     return 'variables'
   }
   if (node.type === 'atrule') {
-    if (node.name === 'property') return 'variables'
+    if (node.name === 'property') return node.params.startsWith('--tw-') ? 'drop' : 'variables'
     if (node.name === 'keyframes') return 'base'
     if (node.name === 'layer') {
       if (node.params === 'properties' || node.params === 'theme') return 'variables'
@@ -41,11 +48,27 @@ function destination(node: ChildNode): Destination {
   throw new Error(`globals: no destination for top-level ${node.toString().split('\n')[0]}`)
 }
 
+// Fallback blocks left with no declaration, innermost first.
+function removeEmpty(container: Container): void {
+  for (const node of [...(container.nodes ?? [])]) {
+    if (node.type !== 'rule' && node.type !== 'atrule') continue
+    removeEmpty(node)
+    if (node.nodes?.length === 0) node.remove()
+  }
+}
+
 export function globalStylesheets(css: string, header: string): GlobalStylesheets {
   const parts: Record<Destination, string[]> = { variables: [], base: [], drop: [] }
   const root = postcss.parse(css)
   const license = root.nodes.find((node) => node.type === 'comment')
-  for (const node of root.nodes) parts[destination(node)].push(node.toString())
+  root.walkAtRules('layer', (layer) => {
+    if (layer.params === 'properties')
+      layer.walkDecls(/^--tw-/, (decl) => {
+        decl.remove()
+      })
+  })
+  removeEmpty(root)
+  for (const node of root.nodes) parts[destination(node)].push(renameInternal(node.toString()))
   const file = (blocks: string[], extra: string[] = []) =>
     [header, ...extra, '', blocks.join('\n\n'), ''].join('\n')
   return {
