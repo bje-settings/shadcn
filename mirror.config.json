@@ -3,7 +3,8 @@
   "upstream": {
     "url": "https://ui.shadcn.com/r/styles/{style}/{name}.json",
     "colorsUrl": "https://ui.shadcn.com/r/colors/{name}.json",
-    "style": "base-vega"
+    "styles": ["base-vega", "base-luma"],
+    "compare": "base-vega"
   },
   "theme": {
     "baseColor": "neutral",
@@ -81,10 +82,11 @@
     "fixtures": ["docs", "chat", "changelog", "notes", "recipe", "elements"]
   },
   "snapshotDir": "upstream",
-  "outputDir": "registry/ui",
-  "hooksDir": "registry/hooks",
-  "globalsDir": "registry/styles",
+  "outputDir": "registry/{style}/ui",
+  "hooksDir": "registry/{style}/hooks",
+  "globalsDir": "registry/{style}/styles",
   "harnessDir": "ab/generated",
+  "registryFile": "registry/{style}/registry.json",
   "consumerClasses": [
     {
       "classes": ["border-b", "border-t"],

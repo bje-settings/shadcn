@@ -22,19 +22,23 @@ concurrency:
 # and every pull request waits on it forever. Update the ruleset with any rename.
 # deploy is not required: it runs on pushes to main only.
 jobs:
-  # `shadcn build` validates registry.json and every item against the schema.
+  # `shadcn build` validates each style's registry.json and every item against
+  # the schema.
   build:
     name: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/node-pnpm
-      - name: Build the registry
+      - name: Build the registries
         run: pnpm build
-      - name: Refuse a build that writes no registry
-        run: jq -e '.name == "bje" and (.items | length > 0)' public/r/registry.json
-      # public/r is the site root, so /registry.json and /<item>.json sit at the
-      # registry root. The deploy job publishes it once every check passes.
+      - name: Refuse a build that writes no registry for a style
+        run: |
+          for style in $(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json); do
+            jq -e '.name == "bje" and (.items | length > 0)' "public/r/$style/registry.json"
+          done
+      # public/r is the site root; each style is a flat registry under
+      # /<style>/. The deploy job publishes it once every check passes.
       - name: Upload the registry for GitHub Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v5
@@ -73,12 +77,14 @@ jobs:
       # committed.
       - name: Generate the A/B harness inputs
         run: pnpm mirror:build
-      # Three projects: scripts resolve like node; registry items and the A/B
-      # harness like a bundler.
+      # Scripts resolve like node; registry items (hand-written, then each
+      # style's) and the A/B harness like a bundler.
       - name: Type-check the TypeScript
         run: |
           pnpm exec tsc -p tsconfig.json
-          pnpm exec tsc -p registry/tsconfig.json
+          for project in registry/tsconfig.json registry/*/tsconfig.json; do
+            pnpm exec tsc -p "$project"
+          done
           pnpm exec tsc -p ab/tsconfig.json
 
   biome:
@@ -119,8 +125,12 @@ jobs:
             echo run=false >> "$GITHUB_OUTPUT"
             exit 0
           fi
+          # Styles other than the compare one have no A/B case: their generated
+          # output and snapshots do not reach it either.
+          others=$(jq -r '.upstream.compare as $c | [.upstream.styles[] | select(. != $c) | sub("^base-"; "")] | join("|")' mirror.config.json)
           relevant=$(git diff --name-only HEAD^1 HEAD | grep -Ev \
-            '(\.md$|^\.claude/|\.test\.tsx?$|^lefthook\.yml$|^biome\.json$|^vitest\.config\.ts$)' || true)
+            '(\.md$|^\.claude/|\.test\.tsx?$|^lefthook\.yml$|^biome\.json$|^vitest\.config\.ts$)' \
+            | { if [ -n "$others" ]; then grep -Ev "^(registry/|upstream/base-)($others)/"; else cat; fi; } || true)
           if [ -n "$relevant" ]; then
             echo run=true >> "$GITHUB_OUTPUT"
           else
@@ -163,7 +173,13 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
-      - name: Refuse a site that serves no registry
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: mirror.config.json
+          sparse-checkout-cone-mode: false
+      - name: Refuse a site that serves no registry for a style
         run: |
-          curl -fsS --retry 5 --retry-delay 10 --retry-all-errors https://shadcn.bje.co/registry.json \
-            | jq -e '.name == "bje" and (.items | length > 0)'
+          for style in $(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json); do
+            curl -fsS --retry 5 --retry-delay 10 --retry-all-errors "https://shadcn.bje.co/$style/registry.json" \
+              | jq -e '.name == "bje" and (.items | length > 0)'
+          done

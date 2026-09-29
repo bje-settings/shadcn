@@ -13,13 +13,13 @@ pre-commit:
     # that was not staged.
     types:
       glob: '{*.ts,*.tsx,tsconfig.json}'
-      run: pnpm exec tsc -p tsconfig.json && pnpm exec tsc -p registry/tsconfig.json && pnpm exec tsc -p ab/tsconfig.json
+      run: pnpm exec tsc -p tsconfig.json && for p in registry/tsconfig.json registry/*/tsconfig.json ab/tsconfig.json; do pnpm exec tsc -p "$p" || exit 1; done
 
     vitest-related:
       glob: '*.{ts,tsx}'
       run: pnpm exec vitest related --run --coverage.enabled=false --passWithNoTests {staged_files}
 
-    # Validates registry.json and every item against the shadcn schema.
+    # Validates each style's registry.json and every item against the shadcn schema.
     build:
-      glob: '{registry.json,registry/**}'
+      glob: '{registry.json,registry/**,mirror.config.json}'
       run: pnpm build

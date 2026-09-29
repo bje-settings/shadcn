@@ -1,12 +1,12 @@
-// `mirror fetch` snapshots the configured upstream items, their docs examples,
-// the style index, font and base color, and shadcn/typeset into the repo.
-// `mirror build` reads only those snapshots and writes the project CSS,
-// components, global stylesheets, typeset, A/B harness inputs and
-// registry.json, so a conversion change is reviewable without upstream moving
-// underneath it.
+// `mirror fetch` snapshots, for each configured style, the upstream items, their
+// docs examples, the style index, font and base color, and shadcn/typeset once,
+// into the repo. `mirror build` reads only those snapshots and writes each
+// style's project CSS, components, global stylesheets, typeset, tsconfig and
+// registry catalog, and the compare style's A/B harness inputs, so a
+// conversion change is reviewable without upstream moving underneath it.
 
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
+import { dirname, join, relative } from 'node:path'
 import {
   buildComponent,
   markerSelectors,
@@ -18,8 +18,10 @@ import {
   checkConfiguredParts,
   colorsUrl,
   consumerClassReasons,
+  forStyle,
   type MirrorConfig,
   parseConfig,
+  shortStyle,
   upstreamUrl,
 } from './config.ts'
 import { prepareExample } from './examples.ts'
@@ -29,7 +31,7 @@ import { checkCollisions } from './internal.ts'
 import { pascalCase } from './names.ts'
 import { type PartTypes, partTypes, scaffolds } from './parts.ts'
 import { layoutCss, projectCss, staticTheme } from './project-css.ts'
-import { parseRegistry, upsertItems } from './registry.ts'
+import { parseRegistry, styleRegistry } from './registry.ts'
 import { registrations } from './scss.ts'
 import { parseBaseColor, parseFontItem, parseStyleIndex, parseUpstreamItem } from './snapshots.ts'
 import { compileCandidates } from './tailwind.ts'
@@ -114,7 +116,7 @@ function sources(config: MirrorConfig): Source[] {
   ]
 }
 
-async function fetchAll(io: Io, config: MirrorConfig): Promise<void> {
+async function fetchStyle(io: Io, config: MirrorConfig): Promise<void> {
   for (const { name, url, parse, optional } of sources(config)) {
     const path = snapshotPath(io, config, name)
     const response = await io.fetch(url)
@@ -131,7 +133,10 @@ async function fetchAll(io: Io, config: MirrorConfig): Promise<void> {
     await writeText(path, `${JSON.stringify(item, null, 2)}\n`)
     io.log(`fetched ${config.upstream.style}/${name}`)
   }
+}
 
+// shadcn/typeset is one stylesheet for every style.
+async function fetchTypeset(io: Io, config: MirrorConfig): Promise<void> {
   const typeset: [string, string][] = [
     ['typeset.css', config.typeset.stylesheet],
     ...config.typeset.fixtures.map((name): [string, string] => [
@@ -183,7 +188,25 @@ async function readTypeset(io: Io, config: MirrorConfig, path: string): Promise<
   return text ?? missingSnapshot(`typeset/${path}`)
 }
 
-async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
+// The compilerOptions each style's registry/<style>/tsconfig.json resolves its
+// cross-component imports with, as registry/tsconfig.json does for lib.
+function styleTsconfig(config: MirrorConfig): string {
+  const dir = dirname(config.registryFile)
+  const path = (target: string) => `./${relative(dir, target)}/*`
+  const tsconfig = {
+    extends: '../tsconfig.json',
+    compilerOptions: {
+      paths: {
+        [`@/registry/${config.namespace}/ui/*`]: [path(config.outputDir)],
+        [`@/registry/${config.namespace}/hooks/*`]: [path(config.hooksDir)],
+      },
+    },
+    include: ['.', '../../types'],
+  }
+  return `${JSON.stringify(tsconfig, null, 2)}\n`
+}
+
+async function buildStyle(io: Io, config: MirrorConfig, compare: boolean): Promise<void> {
   const { style } = config.upstream
   const font = await readSnapshot(io, config, `font-${config.theme.font}`, parseFontItem)
   const index = await readSnapshot(io, config, 'index', parseStyleIndex)
@@ -316,53 +339,55 @@ async function buildAll(io: Io, config: MirrorConfig): Promise<void> {
   io.log(`built globals: ${files.map((file) => file.path).join(', ')}`)
   io.log(`built typeset: ${typesetFile.path}`)
 
-  const mirrored = new Set(config.components)
-  const dropped = new Set(consumerClassReasons(config).keys())
-  // Packages mirrored items import or upstream lists for them (date-fns for
-  // Calendar), without version pins (recharts@3.8.0).
-  const packages = new Set(
-    [
-      ...items.flatMap((item) => item.dependencies),
-      ...prepared.flatMap(({ upstream }) => upstream.dependencies ?? []),
-    ].map((dependency) => dependency.replace(/(?<=.)@[^@]*$/, '')),
-  )
-  const examples: HarnessExample[] = []
-  for (const [name, source] of exampleSources) {
-    if (source === undefined) continue
-    const example = `${name}-example`
-    const prepared = prepareExample(source, style, config.namespace, mirrored, dropped, packages)
-    examples.push({ name: example, prepared })
-    io.log(
-      `example ${example}: ${prepared.kept.length} of ${prepared.kept.length + prepared.skipped.length} sub-examples`,
+  // Only the compare style is checked against upstream.
+  if (compare) {
+    const mirrored = new Set(config.components)
+    const dropped = new Set(consumerClassReasons(config).keys())
+    // Packages mirrored items import or upstream lists for them (date-fns for
+    // Calendar), without version pins (recharts@3.8.0).
+    const packages = new Set(
+      [
+        ...items.flatMap((item) => item.dependencies),
+        ...prepared.flatMap(({ upstream }) => upstream.dependencies ?? []),
+      ].map((dependency) => dependency.replace(/(?<=.)@[^@]*$/, '')),
     )
-    for (const { name: sub, reasons } of prepared.skipped) {
-      io.log(`  skipped ${sub}: ${reasons.join('; ')}`)
+    const examples: HarnessExample[] = []
+    for (const [name, source] of exampleSources) {
+      if (source === undefined) continue
+      const example = `${name}-example`
+      const prepared = prepareExample(source, style, config.namespace, mirrored, dropped, packages)
+      examples.push({ name: example, prepared })
+      io.log(
+        `example ${example}: ${prepared.kept.length} of ${prepared.kept.length + prepared.skipped.length} sub-examples`,
+      )
+      for (const { name: sub, reasons } of prepared.skipped) {
+        io.log(`  skipped ${sub}: ${reasons.join('; ')}`)
+      }
     }
+
+    const typeset: TypesetFixture[] = []
+    for (const name of config.typeset.fixtures) {
+      typeset.push(...fixtureHtml(name, await readTypeset(io, config, `fixtures/${name}.ts`)))
+    }
+
+    const harnessHeader = `// Generated by scripts/mirror from shadcn ${style}. Do not edit.`
+    const layout = layoutCss(index, colors, font, './examples/ours')
+    const inputs = { components: harness, examples, layoutCss: layout, typeset }
+    for (const file of harnessFiles(config, inputs, harnessHeader)) {
+      await writeFormatted(io, file.path, file.content)
+    }
+    io.log(`built A/B harness inputs in ${config.harnessDir}`)
   }
 
-  const typeset: TypesetFixture[] = []
-  for (const name of config.typeset.fixtures) {
-    typeset.push(...fixtureHtml(name, await readTypeset(io, config, `fixtures/${name}.ts`)))
-  }
-
-  const harnessHeader = `// Generated by scripts/mirror from shadcn ${style}. Do not edit.`
-  const layout = layoutCss(index, colors, font, './examples/ours')
-  const inputs = { components: harness, examples, layoutCss: layout, typeset }
-  for (const file of harnessFiles(config, inputs, harnessHeader)) {
-    await writeFormatted(io, file.path, file.content)
-  }
-  io.log(`built A/B harness inputs in ${config.harnessDir}`)
-
-  const registryPath = join(io.root, 'registry.json')
-  const generatedDirs = [config.outputDir, config.hooksDir, config.globalsDir].map(
-    (dir) => `${dir}/`,
-  )
-  const registry = upsertItems(parseRegistry(await readJson(registryPath), registryPath), items, {
-    // Items the mirror generated before and config no longer produces.
-    owned: (item) =>
-      (item.files ?? []).some(({ path }) => generatedDirs.some((dir) => path.startsWith(dir))),
-  })
-  await writeFormatted(io, 'registry.json', `${JSON.stringify(registry, null, 2)}\n`)
+  // registry.json holds the hand-written items; each style publishes them with
+  // its own under its path of the site.
+  const basePath = join(io.root, 'registry.json')
+  const base = parseRegistry(await readJson(basePath), basePath)
+  const registry = styleRegistry(base, items, shortStyle(config.upstream.style))
+  await writeFormatted(io, config.registryFile, `${JSON.stringify(registry, null, 2)}\n`)
+  const tsconfig = join(dirname(config.registryFile), 'tsconfig.json')
+  await writeFormatted(io, tsconfig, styleTsconfig(config))
+  io.log(`built ${config.registryFile}, ${tsconfig}`)
 }
 
 export async function run(args: string[], io: Io): Promise<void> {
@@ -371,6 +396,10 @@ export async function run(args: string[], io: Io): Promise<void> {
     throw new Error('usage: mirror <fetch|build>')
   }
   const config = parseConfig(await readJson(join(io.root, 'mirror.config.json')))
-  if (command === 'fetch') await fetchAll(io, config)
-  else await buildAll(io, config)
+  for (const style of config.upstream.styles) {
+    const styled = forStyle(config, style)
+    if (command === 'fetch') await fetchStyle(io, styled)
+    else await buildStyle(io, styled, style === config.upstream.compare)
+  }
+  if (command === 'fetch') await fetchTypeset(io, config)
 }

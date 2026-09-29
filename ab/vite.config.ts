@@ -10,18 +10,24 @@ import { defineConfig } from 'vite'
 const repo = fileURLToPath(new URL('..', import.meta.url))
 const ab = fileURLToPath(new URL('.', import.meta.url))
 const config = JSON.parse(readFileSync(`${repo}mirror.config.json`, 'utf8'))
+// The harness compares one style: ours from its generated output, upstream's
+// under the style's registry path.
+// {style} is the short name, as scripts/mirror/config.ts's shortStyle gives it.
+const { compare } = config.upstream
+const ours = (key: 'outputDir' | 'hooksDir') =>
+  `${repo}${config[key].replaceAll('{style}', compare.replace(/^base-/, ''))}`
 
 export default defineConfig({
   root: ab,
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      [`@/registry/${config.namespace}/ui`]: `${repo}registry/ui`,
-      [`@/registry/${config.namespace}/hooks`]: `${repo}registry/hooks`,
-      [`@/registry/${config.upstream.style}/ui`]: `${ab}generated/upstream`,
-      [`@/registry/${config.upstream.style}/hooks`]: `${ab}generated/upstream/hooks`,
+      [`@/registry/${config.namespace}/ui`]: ours('outputDir'),
+      [`@/registry/${config.namespace}/hooks`]: ours('hooksDir'),
+      [`@/registry/${compare}/ui`]: `${ab}generated/upstream`,
+      [`@/registry/${compare}/hooks`]: `${ab}generated/upstream/hooks`,
       // Docs-only imports in upstream's examples, replaced by stand-ins.
-      [`@/registry/${config.upstream.style}/components/example`]: `${ab}stubs/example.tsx`,
+      [`@/registry/${compare}/components/example`]: `${ab}stubs/example.tsx`,
       '@/app/(create)/components/icon-placeholder': `${ab}stubs/icon-placeholder.tsx`,
     },
   },

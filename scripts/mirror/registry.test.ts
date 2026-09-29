@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { RegistryItem } from './component.ts'
-import { parseRegistry, upsertItems } from './registry.ts'
+import { parseRegistry, styleRegistry } from './registry.ts'
 
 const item = (name: string, title: string, path = `registry/ui/${name}.tsx`): RegistryItem => ({
   name,
@@ -12,25 +12,29 @@ const item = (name: string, title: string, path = `registry/ui/${name}.tsx`): Re
   files: [{ path, type: 'registry:ui' }],
 })
 
-const owned = (entry: { files?: { path: string }[] }) =>
-  (entry.files ?? []).some(({ path }) => path.startsWith('registry/ui/'))
-
-describe('upsertItems', () => {
-  it('replaces items in place, appends new ones and keeps hand-written ones', () => {
-    const registry = { name: 'bje', items: [{ name: 'cn' }, item('button', 'Old')] }
-    const next = upsertItems(registry, [item('button', 'New'), item('card', 'Card')], { owned })
-    expect(next.name).toBe('bje')
-    expect(next.items).toEqual([{ name: 'cn' }, item('button', 'New'), item('card', 'Card')])
-    expect(registry.items[1]).toEqual(item('button', 'Old'))
+describe('styleRegistry', () => {
+  it('lists the hand-written items, then the generated ones, under the style homepage', () => {
+    const base = { name: 'bje', homepage: 'https://x', items: [{ name: 'cn' }] }
+    const next = styleRegistry(base, [item('button', 'Button')], 'vega')
+    expect(next).toEqual({
+      name: 'bje',
+      homepage: 'https://x/vega',
+      items: [{ name: 'cn' }, item('button', 'Button')],
+    })
+    expect(base.items).toEqual([{ name: 'cn' }])
   })
 
-  it('drops generated items the mirror no longer produces', () => {
-    const registry = {
-      items: [item('removed', 'Removed'), item('lib', 'Lib', 'registry/lib/x.ts')],
-    }
-    expect(upsertItems(registry, [], { owned }).items).toEqual([
-      item('lib', 'Lib', 'registry/lib/x.ts'),
-    ])
+  it('refuses a generated item that shares a hand-written name', () => {
+    const base = { homepage: 'https://x', items: [{ name: 'cn' }] }
+    expect(() => styleRegistry(base, [item('cn', 'Cn')], 'vega')).toThrow(
+      'registry.json: cn is hand-written and generated',
+    )
+  })
+
+  it('refuses a base registry without a homepage', () => {
+    expect(() => styleRegistry({ items: [] }, [], 'vega')).toThrow(
+      'registry.json: homepage must be a string',
+    )
   })
 })
 

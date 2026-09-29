@@ -1,4 +1,4 @@
-// mirror.config.json: which upstream style and components the mirror
+// mirror.config.json: which upstream styles and components the mirror
 // converts, and where it writes them. Validated by hand so a typo fails the
 // run with the field name rather than surfacing later as `undefined`.
 
@@ -25,6 +25,13 @@ export type MirrorConfig = {
     url: string
     // Base color themes, e.g. https://ui.shadcn.com/r/colors/{name}.json
     colorsUrl: string
+    // The styles mirrored, each published as its own registry
+    styles: string[]
+    // The style CI checks with the A/B harness and the generated tests. Other
+    // styles rely on the build's own checks while the repository is internal.
+    compare: string
+    // The style this config builds: compare as parsed, each style's own from
+    // forStyle().
     style: string
   }
   // The preset's theme choices (the shadcn CLI's `vega` preset is neutral + inter).
@@ -43,6 +50,8 @@ export type MirrorConfig = {
     fixtures: string[]
   }
   snapshotDir: string
+  // Output paths below take {style}, the style's short name (vega for
+  // base-vega), until forStyle() resolves them.
   outputDir: string
   // Where mirrored hooks go (use-mobile)
   hooksDir: string
@@ -50,6 +59,9 @@ export type MirrorConfig = {
   globalsDir: string
   // Generated inputs for the A/B harness
   harnessDir: string
+  // The style's registry catalog: registry.json's hand-written items plus
+  // the generated ones
+  registryFile: string
   // Tailwind classes upstream styles gate on when a consumer passes them
   // (CardHeader pads once given `border-b`). No element carries them here, so
   // those rules are dropped and listed in the module's header, and A/B skips
@@ -102,6 +114,32 @@ function name(record: Record<string, unknown>, key: string, path: string): strin
   return value
 }
 
+// A path each style writes its own copy of: it must name the style.
+function styled(record: Record<string, unknown>, key: string): string {
+  const value = string(record, key, '')
+  if (!value.includes('{style}')) shape.fail(`${key} must contain {style}`)
+  return value
+}
+
+// The name a style's output and published registry go by: vega for base-vega.
+export function shortStyle(style: string): string {
+  return style.replace(/^base-/, '')
+}
+
+// The config one style builds with: its upstream style set, and {style}
+// resolved in its output paths.
+export function forStyle(config: MirrorConfig, style: string): MirrorConfig {
+  const resolve = (path: string) => path.replaceAll('{style}', shortStyle(style))
+  return {
+    ...config,
+    upstream: { ...config.upstream, style },
+    outputDir: resolve(config.outputDir),
+    hooksDir: resolve(config.hooksDir),
+    globalsDir: resolve(config.globalsDir),
+    registryFile: resolve(config.registryFile),
+  }
+}
+
 export function parseConfig(raw: unknown): MirrorConfig {
   if (!isRecord(raw)) shape.fail('must be an object')
   const upstream = shape.record(raw.upstream, 'upstream')
@@ -112,6 +150,18 @@ export function parseConfig(raw: unknown): MirrorConfig {
 
   const colorsUrl = string(upstream, 'colorsUrl', 'upstream.')
   if (!colorsUrl.includes('{name}')) shape.fail('upstream.colorsUrl must contain {name}')
+  const styles = upstream.styles
+  if (
+    !Array.isArray(styles) ||
+    styles.length === 0 ||
+    !styles.every((style) => typeof style === 'string' && KEBAB.test(style))
+  ) {
+    shape.fail('upstream.styles must be a non-empty array of kebab-case style names')
+  }
+  if (new Set(styles).size !== styles.length) shape.fail('upstream.styles must not repeat')
+  const compare = name(upstream, 'compare', 'upstream.')
+  if (!styles.includes(compare))
+    shape.fail(`upstream.compare: ${compare} is not in upstream.styles`)
   const theme = shape.record(raw.theme, 'theme')
 
   const components = raw.components
@@ -197,7 +247,7 @@ export function parseConfig(raw: unknown): MirrorConfig {
 
   return {
     namespace: name(raw, 'namespace', ''),
-    upstream: { url, colorsUrl, style: name(upstream, 'style', 'upstream.') },
+    upstream: { url, colorsUrl, styles, compare, style: compare },
     theme: {
       baseColor: name(theme, 'baseColor', 'theme.'),
       font: name(theme, 'font', 'theme.'),
@@ -206,10 +256,11 @@ export function parseConfig(raw: unknown): MirrorConfig {
     components,
     typeset: { stylesheet: string(typeset, 'stylesheet', 'typeset.'), fixturesUrl, fixtures },
     snapshotDir: string(raw, 'snapshotDir', ''),
-    outputDir: string(raw, 'outputDir', ''),
-    hooksDir: string(raw, 'hooksDir', ''),
-    globalsDir: string(raw, 'globalsDir', ''),
+    outputDir: styled(raw, 'outputDir'),
+    hooksDir: styled(raw, 'hooksDir'),
+    globalsDir: styled(raw, 'globalsDir'),
     harnessDir: string(raw, 'harnessDir', ''),
+    registryFile: styled(raw, 'registryFile'),
     consumerClasses,
     globalClasses,
     classesWithoutCss,

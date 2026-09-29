@@ -3,15 +3,18 @@
 
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { parseConfig } from './config.ts'
+import { forStyle, parseConfig } from './config.ts'
 import { type BaseColor, type FontItem, projectCss, type StyleIndex } from './project-css.ts'
 import { registrations } from './scss.ts'
 import { compileCandidates } from './tailwind.ts'
 
 export const root = process.cwd()
-export const config = parseConfig(
+// As parsed, with {style} in its output paths
+export const parsed = parseConfig(
   JSON.parse(readFileSync(join(root, 'mirror.config.json'), 'utf8')),
 )
+// The compare style's, as `mirror build` resolves it
+export const config = forStyle(parsed, parsed.upstream.compare)
 
 export function snapshot<T>(name: string): T {
   const path = join(root, config.snapshotDir, config.upstream.style, `${name}.json`)

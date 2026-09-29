@@ -9,30 +9,35 @@ import {
   sharedSlotOptions,
   type UpstreamItem,
 } from './component.ts'
-import { parseConfig } from './config.ts'
+import { forStyle, parseConfig } from './config.ts'
 import { compile, internalDefaults, root } from './test-support.ts'
 
-const config = parseConfig({
-  namespace: 'bje',
-  upstream: {
-    url: 'https://example.com/{style}/{name}.json',
-    colorsUrl: 'https://example.com/colors/{name}.json',
-    style: 'base-vega',
-  },
-  theme: { baseColor: 'neutral', font: 'inter', iconLibrary: 'lucide' },
-  components: ['badge'],
-  typeset: {
-    stylesheet: 'https://example.com/typeset.css',
-    fixturesUrl: 'https://example.com/fixtures/{name}.ts',
-    fixtures: [],
-  },
-  snapshotDir: 'upstream',
-  outputDir: 'registry/ui',
-  hooksDir: 'registry/hooks',
-  globalsDir: 'registry/styles',
-  harnessDir: 'ab/generated',
-  consumerClasses: [{ classes: ['border-b'], reason: 'consumer class' }],
-})
+const config = forStyle(
+  parseConfig({
+    namespace: 'bje',
+    upstream: {
+      url: 'https://example.com/{style}/{name}.json',
+      colorsUrl: 'https://example.com/colors/{name}.json',
+      styles: ['base-vega'],
+      compare: 'base-vega',
+    },
+    theme: { baseColor: 'neutral', font: 'inter', iconLibrary: 'lucide' },
+    components: ['badge'],
+    typeset: {
+      stylesheet: 'https://example.com/typeset.css',
+      fixturesUrl: 'https://example.com/fixtures/{name}.ts',
+      fixtures: [],
+    },
+    snapshotDir: 'upstream',
+    outputDir: 'registry/{style}/ui',
+    hooksDir: 'registry/{style}/hooks',
+    globalsDir: 'registry/{style}/styles',
+    harnessDir: 'ab/generated',
+    registryFile: 'registry/{style}/registry.json',
+    consumerClasses: [{ classes: ['border-b'], reason: 'consumer class' }],
+  }),
+  'base-vega',
+)
 
 const cssPath = join(root, 'upstream/base-vega/index.css')
 
@@ -81,9 +86,9 @@ describe('buildComponent', () => {
       ],
       registryDependencies: ['@bje/globals'],
       files: [
-        { path: 'registry/ui/Badge/Badge.tsx', type: 'registry:ui' },
-        { path: 'registry/ui/Badge/Badge.module.scss', type: 'registry:ui' },
-        { path: 'registry/ui/Badge/Badge.test.tsx', type: 'registry:ui' },
+        { path: 'registry/vega/ui/Badge/Badge.tsx', type: 'registry:ui' },
+        { path: 'registry/vega/ui/Badge/Badge.module.scss', type: 'registry:ui' },
+        { path: 'registry/vega/ui/Badge/Badge.test.tsx', type: 'registry:ui' },
       ],
     })
     const [tsx, scss, test] = result.files
