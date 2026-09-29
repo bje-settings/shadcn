@@ -163,7 +163,10 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [build, vitest, types, biome, ab]
     runs-on: ubuntu-latest
+    # Job permissions replace the workflow's: contents: read lets the site
+    # check check out mirror.config.json for the style list.
     permissions:
+      contents: read
       pages: write
       id-token: write
     environment:
