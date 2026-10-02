@@ -86,11 +86,23 @@ describe('parseFontItem', () => {
     })
   })
 
-  it('rejects a variable that is not a custom property', () => {
-    expect(() =>
-      parseFontItem({ font: { ...font, variable: 'font-sans' }, title: 'Inter' }, 'f'),
-    ).toThrow('f: font.variable must be a custom property')
-  })
+  it.each(['font-sans', '--font-sans; --x', '--Font'])(
+    'rejects %s as a variable, which is written into CSS as it is',
+    (variable) => {
+      expect(() => parseFontItem({ font: { ...font, variable }, title: 'Inter' }, 'f')).toThrow(
+        'f: font.variable must be a custom property',
+      )
+    },
+  )
+
+  it.each(["'X'; } body { color: red", 'X {', 'X }', 'X\\3b'])(
+    'rejects %s as a family, which could end the declaration or the rule',
+    (family) => {
+      expect(() => parseFontItem({ font: { ...font, family }, title: 'Inter' }, 'f')).toThrow(
+        'f: font.family must be a single declaration value',
+      )
+    },
+  )
 
   it('rejects an item without a title', () => {
     expect(() => parseFontItem({ font }, 'f')).toThrow('f: title must be a non-empty string')
