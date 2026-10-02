@@ -5,7 +5,7 @@ styled with SCSS modules instead of Tailwind.
 
 ## Styles
 
-Each of upstream's Base UI styles is its own registry at `https://shadcn.bje.co/<style>/`: `vega`,
+Each mirrored Base UI style is its own registry at `https://shadcn.bje.co/<style>/`: `vega`,
 `luma`, `nova`, `maia`, `lyra`, `mira`, `sera` and `rhea`. Styles differ in their components'
 classes, not only in variables, so a project uses one style. Every style uses shadcn's neutral base
 color, the Inter font and lucide icons.

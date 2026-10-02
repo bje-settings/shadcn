@@ -60,7 +60,8 @@ For each component, the build:
    - Probe defaults start at upstream's specificity and repeat the probe's `:not()` once per rank.
      Base defaults with the same variant rank in Tailwind's candidate order
      (`compareCandidates` in `scripts/mirror/component.ts`), so of two reaching one icon, the one
-     Tailwind puts later wins. A variant option's default outranks every base default.
+     Tailwind puts later wins. A variant option's default, or one with another variant before the
+     probe (`group-data-[...]/card:`), outranks every base default.
    - A slot's `leading-*` rule, on a slot that also sets a named text size (`text-sm`), skips the
      elements whose `data-slot` sets a named text size and no leading, as tailwind-merge drops it
      when one component renders through another (`render={<CardDescription />}`).
@@ -68,7 +69,8 @@ For each component, the build:
      `text-[0.8rem]`) and no leading gets `line-height: inherit`, as tailwind-merge drops the named
      size's line-height.
    - Rules that need a configured consumer class (Card's `[.border-b]:` padding) are dropped and
-     listed in the module's header and the build log; any other outside class fails the build.
+     listed in the module's header and the build log. An outside class in `globalClasses` stays,
+     as `:global()`; any other fails the build.
 4. Renames Tailwind's internal variables, the ones that compose one property from several
    utilities (a shadow and a focus ring share one `box-shadow`, animate-in's keyframes read
    `--enter-*`), by dropping the `tw-` prefix: `--tw-ring-shadow` becomes `--ring-shadow`. A family
