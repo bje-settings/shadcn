@@ -53,6 +53,11 @@ describe('parseCatalog', () => {
   it('refuses a catalog without items', () => {
     expect(() => parseCatalog({ name: 'bje' })).toThrow('registry.json: items must be an array')
   })
+
+  it('refuses a catalog without a name, or an item without one', () => {
+    expect(() => parseCatalog({ items: [] })).toThrow('registry.json')
+    expect(() => parseCatalog({ name: 'bje', items: [{}] })).toThrow('items[0].name')
+  })
 })
 
 describe('parseItem', () => {
@@ -86,6 +91,14 @@ describe('parseItem', () => {
   it('refuses an item without files', () => {
     expect(() => parseItem({ name: 'cn' }, 'cn.json')).toThrow('cn.json: files must be an array')
   })
+
+  it('refuses a file without content, and a null dependency list', () => {
+    const files = [{ path: 'a.ts', type: 'registry:lib' }]
+    expect(() => parseItem({ name: 'cn', files }, 'cn.json')).toThrow('files[0].content')
+    expect(() => parseItem({ name: 'cn', dependencies: null, files: [] }, 'cn.json')).toThrow(
+      'dependencies',
+    )
+  })
 })
 
 describe('expectedPath', () => {
@@ -95,6 +108,12 @@ describe('expectedPath', () => {
     )
     expect(expectedPath({ path: 'a', type: 'registry:file', target: '@hooks/a.ts' })).toBe(
       'src/hooks/a.ts',
+    )
+    expect(expectedPath({ path: 'a', type: 'registry:file', target: '@ui/A/a.tsx' })).toBe(
+      'src/components/ui/A/a.tsx',
+    )
+    expect(expectedPath({ path: 'a', type: 'registry:file', target: '@lib/a.ts' })).toBe(
+      'src/lib/a.ts',
     )
   })
 
@@ -168,39 +187,76 @@ describe('importedPackages', () => {
 })
 
 describe('undeclaredImports', () => {
-  const file = (content: string) => ({ path: 'f.tsx', type: 'registry:ui', content })
+  const file = (content: string, path = 'f.tsx') => ({ path, type: 'registry:ui', content })
 
-  it('accepts an import declared by the item, its registry dependencies, or the scaffold', () => {
+  it('accepts an import declared by the item, the items it reaches, or the scaffold', () => {
     const items = [
-      item({ name: 'cn', dependencies: ['clsx'] }),
-      item({ name: 'button', registryDependencies: ['@bje/cn'], devDependencies: ['vitest'] }),
+      item({
+        name: 'cn',
+        dependencies: ['clsx'],
+        files: [file("import 'clsx'", 'registry/lib/cn.ts')],
+      }),
+      item({
+        name: 'button',
+        registryDependencies: ['@bje/cn'],
+        devDependencies: ['vitest'],
+        files: [file('', 'registry/vega/ui/Button/Button.tsx')],
+      }),
+      // cn only through button.
       item({
         name: 'chart',
         dependencies: ['recharts@3.8.0'],
-        registryDependencies: ['@bje/button', '@bje/cn'],
+        registryDependencies: ['@bje/button'],
         files: [
           file(
-            "import 'clsx'\nimport 'recharts'\nimport 'vitest'\nimport 'react'\nimport 'react-dom'",
+            [
+              "import 'clsx'",
+              "import 'recharts'",
+              "import 'vitest'",
+              "import 'react'",
+              "import 'react-dom'",
+              "import { Button } from '@/registry/bje/ui/Button/Button'",
+              "import { cn } from '@/registry/bje/lib/cn'",
+              "import '@/registry/bje/ui/Chart/Chart.module.scss'",
+            ].join('\n'),
+            'registry/vega/ui/Chart/Chart.tsx',
           ),
+          file('', 'registry/vega/ui/Chart/Chart.module.scss'),
         ],
       }),
     ]
     expect(undeclaredImports(items, 'bje')).toEqual([])
   })
 
-  it('reports an import nothing declares, and a registry dependency not in the registry', () => {
+  it('reports an import or item nothing it reaches declares, once each', () => {
     const items = [
       item({
         name: 'a',
-        registryDependencies: ['@bje/b', '@bje/gone'],
-        files: [file("import 'x'")],
+        registryDependencies: ['@bje/b', '@bje/gone', 'c'],
+        files: [
+          file(
+            [
+              "import 'x/one'",
+              "import 'x/two'",
+              "import 'y'",
+              "import { C } from '@/registry/bje/ui/C/C'",
+              "import { D } from '@/registry/bje/ui/D/D'",
+            ].join('\n'),
+          ),
+        ],
       }),
       // A cycle back to a is followed once.
       item({ name: 'b', registryDependencies: ['@bje/a'] }),
+      // Not reached from a: a bare name is the CLI's default registry's.
+      item({ name: 'c', dependencies: ['y'], files: [file('', 'registry/vega/ui/C/C.tsx')] }),
     ]
     expect(undeclaredImports(items, 'bje')).toEqual([
       'a: registry dependency @bje/gone is not in the registry',
+      'a: registry dependency c is not in the registry',
       'a: f.tsx imports x, which no dependency declares',
+      'a: f.tsx imports y, which no dependency declares',
+      'a: f.tsx imports @/registry/bje/ui/C/C from c, which no registry dependency reaches',
+      'a: f.tsx imports @/registry/bje/ui/D/D, which no item ships',
     ])
   })
 })
@@ -221,13 +277,16 @@ describe('installProblems', () => {
   it('accepts every file in place and every package listed at its version', () => {
     project(
       {
-        dependencies: { recharts: '3.8.0', 'react-day-picker': '^10' },
+        dependencies: { recharts: '3.8.0', 'react-day-picker': '^10', ranged: '^1.2.3' },
         devDependencies: { sass: '1' },
       },
       '3.8.0',
     )
     write('src/components/ui/Chart/Chart.tsx', '')
-    expect(installProblems([chart], dir)).toEqual([])
+    // A range is not a pin: ranged has no installed manifest to read.
+    expect(
+      installProblems([{ ...chart, dependencies: [...chart.dependencies, 'ranged@^1.2.3'] }], dir),
+    ).toEqual([])
   })
 
   it('reports a file not written, a package not listed, and a version not installed', () => {
@@ -263,9 +322,14 @@ describe('scaffoldFiles', () => {
       lib: '@/lib',
       utils: '@/lib/utils',
     })
-    expect(JSON.parse(files['tsconfig.json'] as string).compilerOptions.paths).toEqual({
-      '@/*': ['./src/*'],
-    })
+    const { compilerOptions } = JSON.parse(files['tsconfig.json'] as string)
+    expect(compilerOptions.paths).toEqual({ '@/*': ['./src/*'] })
+    expect(compilerOptions.strict).toBe(true)
+    expect(files['.npmrc']).toBe('registry=https://registry.npmjs.org/\n')
+    // The build compiles every module and stylesheet, and no test.
+    expect(files['src/main.ts']).toContain(
+      "['./**/*.{ts,tsx,css,scss}', '!./**/*.test.{ts,tsx}', '!./main.ts']",
+    )
     expect(Object.keys(files).sort()).toEqual([
       '.npmrc',
       'components.json',
@@ -298,6 +362,7 @@ describe('serve', () => {
     write('r/button.json', '{"name":"button"}')
     write('r/sub/x.json', '{}')
     write('secret.json', '{}')
+    write('rx.json', '{}')
     const server = await serve(join(dir, 'r'))
     try {
       expect(await get(server.url, '/button.json')).toEqual({
@@ -308,6 +373,8 @@ describe('serve', () => {
       expect((await get(server.url, '/sub')).status).toBe(404)
       expect((await get(server.url, '/')).status).toBe(404)
       expect((await get(server.url, '/%2E%2E%2Fsecret.json')).status).toBe(404)
+      // A sibling whose name starts with the directory's.
+      expect((await get(server.url, '/%2E%2E%2Frx.json')).status).toBe(404)
     } finally {
       await server.close()
     }
@@ -342,10 +409,12 @@ describe('run', () => {
 
   let calls: string[]
   let logs: string[]
+  let served: string | undefined
 
   beforeEach(() => {
     calls = []
     logs = []
+    served = undefined
     write(
       'r/registry.json',
       JSON.stringify({ name: 'bje', items: [{ name: 'cn' }, { name: 'button' }] }),
@@ -358,7 +427,9 @@ describe('run', () => {
   // Stands in for pnpm and the shadcn CLI: `shadcn add` fetches each item
   // through components.json, as the CLI does, and writes it where its alias
   // puts it, rewritten unless told otherwise.
-  function io(options: { rewrite?: boolean; failing?: string } = {}): Io {
+  function io(
+    options: { rewrite?: boolean; failing?: string; skip?: string; packages?: object } = {},
+  ): Io {
     const project = join(dir, 'p')
     return {
       root: dir,
@@ -370,6 +441,10 @@ describe('run', () => {
       exec: async (command, args, cwd) => {
         const call = `${command} ${args.join(' ')}`
         calls.push(`${call} @ ${cwd === project ? 'project' : 'root'}`)
+        if (args[1] === 'shadcn') {
+          const { registries } = JSON.parse(readFileSync(join(project, 'components.json'), 'utf8'))
+          served = registries['@bje'].replace('{name}', 'cn')
+        }
         if (options.failing !== undefined && call.includes(options.failing)) {
           throw new Error(`${call} exited 1`)
         }
@@ -380,6 +455,7 @@ describe('run', () => {
           const response = await fetch(config.registries['@bje'].replace('{name}', name))
           const fetched = parseItem(await response.json(), name)
           for (const file of fetched.files) {
+            if (file.path === options.skip) continue
             const content =
               options.rewrite === false ? file.content : file.content.replace('@/registry/bje', '@')
             mkdirSync(dirname(join(project, expectedPath(file))), { recursive: true })
@@ -388,7 +464,7 @@ describe('run', () => {
         }
         writeFileSync(
           join(project, 'package.json'),
-          JSON.stringify({ dependencies: { clsx: '2' } }),
+          JSON.stringify(options.packages ?? { dependencies: { clsx: '2' } }),
         )
       },
     }
@@ -433,9 +509,33 @@ describe('run', () => {
     expect(calls).toHaveLength(3)
   })
 
-  it('fails when a command fails', async () => {
+  it('fails on a file not written or a package not listed, before type-checking', async () => {
+    await expect(run(io({ skip: 'registry/lib/cn.ts', packages: {} }))).rejects.toThrow(
+      [
+        'cn: registry/lib/cn.ts was not written to src/lib/cn.ts',
+        "cn: clsx is not in the project's package.json",
+      ].join('\n'),
+    )
+    expect(calls).toHaveLength(3)
+  })
+
+  it.each([
+    ['add react', 1],
+    ['add -D', 2],
+    ['shadcn add', 3],
+    ['tsc', 4],
+    ['vitest', 5],
+    ['vite build', 6],
+  ])('fails, and stops, when %s fails', async (failing, count) => {
+    await expect(run(io({ failing }))).rejects.toThrow(`${failing}`)
+    expect(calls).toHaveLength(count)
+    // Let any command left running without an await reach the fake.
+    await new Promise((done) => setTimeout(done, 10))
+    expect(calls).toHaveLength(count)
+  })
+
+  it('stops serving the registry when the install fails', async () => {
     await expect(run(io({ failing: 'shadcn add' }))).rejects.toThrow('shadcn add')
-    await expect(run(io({ failing: 'vitest' }))).rejects.toThrow('vitest run exited 1')
-    expect(calls.at(-1)).toBe('pnpm exec vitest run @ project')
+    await expect(fetch(served as string)).rejects.toThrow()
   })
 })
