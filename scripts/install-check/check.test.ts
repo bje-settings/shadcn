@@ -92,7 +92,7 @@ describe('parseItem', () => {
     expect(() => parseItem({ name: 'cn' }, 'cn.json')).toThrow('cn.json: files must be an array')
   })
 
-  it('refuses a file without content, and a null dependency list', () => {
+  it('refuses a file without content, type or path, and a null dependency list', () => {
     const files = [{ path: 'a.ts', type: 'registry:lib' }]
     expect(() => parseItem({ name: 'cn', files }, 'cn.json')).toThrow('files[0].content')
     const untyped = [{ path: 'a.ts', content: '' }]
@@ -195,7 +195,7 @@ describe('undeclaredImports', () => {
 
   it('accepts an import declared by the item, the items it reaches, or the scaffold', () => {
     const items = [
-      // Ships Button's path too, and is not reached: another owner is.
+      // Ships Button's path too, before Button, and is not reached: another owner is.
       item({ name: 'copy', files: [file('', 'registry/vega/ui/Button/Button.tsx')] }),
       item({
         name: 'cn',
@@ -232,6 +232,8 @@ describe('undeclaredImports', () => {
           file('', 'registry/vega/ui/Chart/Chart.module.scss'),
         ],
       }),
+      // The same, after cn.
+      item({ name: 'copy2', files: [file('', 'registry/lib/cn.ts')] }),
     ]
     expect(undeclaredImports(items, 'bje')).toEqual([])
   })
