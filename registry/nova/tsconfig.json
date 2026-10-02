@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@/registry/bje/ui/*": ["./ui/*"],
+      "@/registry/bje/hooks/*": ["./hooks/*"]
+    }
+  },
+  "include": [".", "../../types"]
+}
