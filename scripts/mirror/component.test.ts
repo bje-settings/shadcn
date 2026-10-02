@@ -282,7 +282,8 @@ function B() { return <p data-slot="b" className="text-sm tracking-tight" /> }
 function C() { return <p data-slot="c" className="leading-5" /> }
 function D() { return <p data-slot="d" className="text-sm" /> }
 function E() { return <p data-slot="d" className="leading-6" /> }
-export { A, B, C, D, E }`,
+function F() { return <p data-slot="f" className="flex" /> }
+export { A, B, C, D, E, F }`,
         },
       ],
     }
@@ -309,6 +310,12 @@ describe('probeRanks', () => {
       await prepareComponent(item('one', 'size-4'), config, cssPath),
       await prepareComponent(item('two', 'size-3.5'), config, cssPath),
       await prepareComponent(item('three', 'size-12'), config, cssPath),
+      // A variant group without a probe does not count.
+      await prepareComponent(
+        item('four', 'size-4 hover:underline hover:flex hover:block hover:grid'),
+        config,
+        cssPath,
+      ),
     ])
     expect(rank("[&_svg:not([class*='size-'])]:size-3.5", false)).toBe(0)
     expect(rank("[&_svg:not([class*='size-'])]:size-4", false)).toBe(1)

@@ -69,6 +69,23 @@ describe('slotToScss', () => {
     expect(unresolved).toEqual([])
   })
 
+  it('fails on a missing marker when only another of the slot classes is without CSS', async () => {
+    await expect(
+      convert(['toaster', 'group-hover/card:block'], { withoutCss: new Set(['toaster']) }),
+    ).rejects.toThrow('needs a group/card marker')
+  })
+
+  it('keeps a named text size slot leading off elements that set their own text size', async () => {
+    const textSized = ['[data-slot="b"]']
+    const { scss } = await convert(['text-sm', 'leading-relaxed'], { textSized })
+    expect(scss).toContain('  &:where(:not([data-slot="b"])) {\n')
+    // No named size of its own, or a leading under a variant: no gate.
+    expect((await convert(['leading-relaxed'], { textSized })).scss).not.toContain(':where(:not(')
+    expect((await convert(['text-sm', 'md:leading-5'], { textSized })).scss).not.toContain(
+      ':where(:not(',
+    )
+  })
+
   it('inherits the line-height for a slot that resets it', async () => {
     const classes = ['flex', 'text-[0.8rem]']
     const { scss } = slotToScss(

@@ -72,13 +72,17 @@ function A({ className }) {
       <i className="size-2" />
       <i data-slot="has" className="size-2" />
       <i className="mx-1" />
-      <b data-slot="b" title={cn("size-3", className)} />
+      <b title={cn("size-3", className)} />
     </>
   )
 }`
     const { code, sized } = transformComponent(source, 'a', 'bje')
     expect(code.match(/data-class-size=""/g)).toHaveLength(3)
     expect(code).not.toContain('<i data-slot="has" data-class-size')
+    expect(code).not.toContain('<b data-class-size')
+    // The attribute goes right after the tag name, inside the opening tag.
+    expect(code).toContain('<Icon data-class-size="" className=')
+    expect(code).toContain('<i data-class-size="" className=')
     expect(sized).toHaveLength(3)
   })
 
