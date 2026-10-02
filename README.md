@@ -44,7 +44,8 @@ mirrored and published whole. Output paths take `{style}`, the style's short nam
 
 Every style's output is checked to match the pipeline (`scripts/mirror/generated.test.ts`), builds
 with `shadcn build`, type-checks, runs its generated tests under coverage and is compared with
-upstream by the A/B harness: in CI, one `ab-style` leg per style.
+upstream by the A/B harness. CI runs a `vitest-leg` and an `ab-style` leg per style; the `vitest`
+job merges the legs' coverage and holds it at 100.
 
 The rest records, each with a reason, what the pipeline cannot infer:
 

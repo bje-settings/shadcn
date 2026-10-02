@@ -20,8 +20,8 @@ concurrency:
 # Job names are a contract: the repo ruleset Require CI (23915809) requires
 # build, vitest, types, biome and ab by exact name. A renamed job never reports,
 # and every pull request waits on it forever. Update the ruleset with any rename.
-# deploy is not required: it runs on pushes to main only. ab is a fan-in over
-# one ab-style leg per style, so the required name holds whatever the styles.
+# deploy is not required: it runs on pushes to main only. vitest and ab are
+# fan-ins over legs per style, so the required names hold whatever the styles.
 jobs:
   # `shadcn build` validates each style's registry.json and every item against
   # the schema.
@@ -46,25 +46,108 @@ jobs:
         with:
           path: public/r
 
+  # The vitest legs: one per style (its registry project and its part of
+  # scripts/mirror/generated.test.ts, which rebuilds it), and one for the rest
+  # (scripts and registry/lib).
+  vitest-legs:
+    name: vitest-legs
+    runs-on: ubuntu-latest
+    outputs:
+      legs: ${{ steps.list.outputs.legs }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: mirror.config.json
+          sparse-checkout-cone-mode: false
+      - name: List the legs
+        id: list
+        # Assigned first, so a jq failure fails the step.
+        run: |
+          legs=$(jq -c '[.upstream.styles[] | sub("^base-"; "")] + ["shared"]' mirror.config.json)
+          echo "legs=$legs" >> "$GITHUB_OUTPUT"
+
+  # Each leg runs its vitest projects and keeps its results and coverage as a
+  # blob for the vitest job to merge. Thresholds are off here: one leg covers
+  # only part of the code, and the merged report holds them at 100.
+  vitest-leg:
+    name: vitest-leg (${{ matrix.leg }})
+    needs: vitest-legs
+    runs-on: ubuntu-latest
+    strategy:
+      # One leg's failure does not cancel the others.
+      fail-fast: false
+      matrix:
+        leg: ${{ fromJSON(needs.vitest-legs.outputs.legs) }}
+    env:
+      LEG: ${{ matrix.leg }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-pnpm
+      - name: Validate lefthook.yml
+        if: matrix.leg == 'shared'
+        run: pnpm exec lefthook validate
+      # Each run keeps its results and coverage as a blob, with thresholds
+      # off and a one-line coverage summary.
+      - name: Run the leg's tests
+        run: |
+          leg() {
+            pnpm exec vitest run "$@" --coverage --coverage.reporter=text-summary \
+              --coverage.thresholds.lines=0 --coverage.thresholds.functions=0 \
+              --coverage.thresholds.branches=0 --coverage.thresholds.statements=0 \
+              --reporter=default --reporter=blob
+          }
+          if [ "$LEG" = shared ]; then
+            leg --project scripts --project registry/lib --exclude scripts/mirror/generated.test.ts \
+              --outputFile.blob=vitest-reports/shared.json
+          else
+            # generated.test.ts names each style's describe block after it.
+            style=$(jq -er --arg leg "$LEG" '.upstream.styles[] | select(sub("^base-"; "") == $leg)' mirror.config.json)
+            leg --project "registry/$LEG" --outputFile.blob="vitest-reports/$LEG-registry.json"
+            leg --project scripts scripts/mirror/generated.test.ts -t "^generated output for $style " \
+              --outputFile.blob="vitest-reports/$LEG-generated.json"
+          fi
+      - uses: actions/upload-artifact@v7
+        with:
+          name: vitest-blob-${{ matrix.leg }}
+          path: vitest-reports/
+          if-no-files-found: error
+          retention-days: 1
+
+  # The required vitest check. It runs whatever happened above, so it reports
+  # even when a leg failed or never started, and passes only when every leg
+  # passed and their merged coverage is 100.
   vitest:
     name: vitest
+    if: always()
+    needs: [vitest-legs, vitest-leg]
     runs-on: ubuntu-latest
     permissions:
       contents: read
       code-quality: write
     steps:
+      - name: Require every leg to pass
+        env:
+          LEGS: ${{ needs.vitest-legs.result }}
+          RUNS: ${{ needs.vitest-leg.result }}
+        run: |
+          echo "vitest-legs: $LEGS, vitest-leg: $RUNS"
+          [ "$LEGS" = success ] && [ "$RUNS" = success ]
       - uses: actions/checkout@v7
       - uses: ./.github/actions/node-pnpm
-      - name: Validate lefthook.yml
-        run: pnpm exec lefthook validate
-      - name: Run the vitest suite with coverage at 100
-        run: pnpm test
-      # vitest thresholds pass over an empty file set, so each style must
-      # appear in the report.
-      - name: Refuse a coverage report that names no file of a style
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: vitest-blob-*
+          merge-multiple: true
+          path: vitest-reports
+      # Thresholds and reporters come from vitest.config.ts, as in `pnpm test`.
+      - name: Merge the legs' results and enforce coverage at 100
+        run: pnpm exec vitest run --merge-reports=vitest-reports --coverage
+      # vitest thresholds pass over an empty file set, so every leg's code
+      # must appear in the report: each style's, registry/lib and scripts.
+      - name: Refuse a coverage report that misses a leg
         run: |
-          for style in $(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json); do
-            jq -e --arg dir "/registry/$style/" '[keys[] | select(contains($dir))] | length > 0' coverage/coverage-summary.json
+          for dir in $(jq -r '.upstream.styles[] | sub("^base-"; "") | "registry/\(.)"' mirror.config.json) registry/lib scripts; do
+            jq -e --arg dir "/$dir/" '[keys[] | select(contains($dir))] | length > 0' coverage/coverage-summary.json
           done
       - uses: actions/upload-code-coverage@v1
         with:
