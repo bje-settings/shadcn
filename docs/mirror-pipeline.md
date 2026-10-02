@@ -11,10 +11,11 @@ pnpm mirror:build [style]   # convert the snapshots, for every style or one
 ```
 
 `mirror:fetch` writes, per style, each configured item, its docs example (`<item>-example`) where
-upstream has one, the style's index, the font and the base color to `upstream/<style>/`, and
+upstream has one, the style's index, the font and the base color to `upstream/base-<style>/`, and
 Typeset's stylesheet and content fixtures to `upstream/typeset/`. A JSON snapshot whose shape the
-build cannot read fails the fetch before it is written. `mirror:build` reads only the snapshots (`scripts/mirror/cli.ts`), so a conversion
-change is reviewable without upstream moving underneath it.
+build cannot read fails the fetch before it is written. `mirror:build` reads only the snapshots
+(`scripts/mirror/cli.ts`), so a conversion change is reviewable without upstream moving underneath
+it.
 
 Each style is built whole and on its own: styles differ in their components' classes, not only in
 variables (vega's Button is `rounded-md px-2.5`, luma's `rounded-4xl px-3`).
@@ -22,7 +23,7 @@ variables (vega's Button is `rounded-md px-2.5`, luma's `rounded-4xl px-3`).
 ## Project CSS
 
 The build first rebuilds the CSS entry file `shadcn init` writes for the style and theme
-(`upstream/<style>/index.css`) from the snapshots. That file is the Tailwind input for every
+(`upstream/base-<style>/index.css`) from the snapshots. That file is the Tailwind input for every
 conversion below and styles the A/B harness's upstream page.
 
 ## Components
@@ -41,7 +42,7 @@ For each component, the build:
    a `data-class-size` attribute, for step 3's probe. Imports of other upstream components point at
    this registry's copies, and each upstream `registryDependencies` entry becomes `@bje/<item>`; a
    dependency not listed in `mirror.config.json` fails the build.
-3. Compiles each slot's classes with Tailwind itself against `upstream/<style>/index.css`
+3. Compiles each slot's classes with Tailwind itself against `upstream/base-<style>/index.css`
    (`scripts/mirror/scss.ts`):
    - Rules styling the slot's own element nest under `:where(.<slot>)`, so a consumer's
      `className` wins. Rules styling descendants (`*:w-full`, `& svg`) nest under `.<slot>`.
