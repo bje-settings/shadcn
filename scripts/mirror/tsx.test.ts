@@ -61,6 +61,25 @@ describe('transformComponent', () => {
     expect(cva('flex text-sm', 'text-[#fff]')[1]).not.toHaveProperty('resetsLeading')
   })
 
+  it('marks an element with a size class and no data-slot, for the size probe', () => {
+    const source = `import { cn } from "cn"
+function A({ className }) {
+  return (
+    <>
+      <Icon className={cn("size-4", className)} />
+      <Icon className={cn("size-4 mx-1", className)} extra="x" />
+      <i className="size-2" />
+      <i data-slot="has" className="size-2" />
+      <i className="mx-1" />
+    </>
+  )
+}`
+    const { code, sized } = transformComponent(source, 'a', 'bje')
+    expect(code.match(/data-class-size=""/g)).toHaveLength(3)
+    expect(code).not.toContain('<i data-slot="has" data-class-size')
+    expect(sized).toHaveLength(3)
+  })
+
   it('prefixes a secondary cva, handles no config or defaults, and adds the clsx import', () => {
     const source = `import * as React from "react"
 import { cva } from "class-variance-authority"

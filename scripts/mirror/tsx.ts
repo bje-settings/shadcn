@@ -29,7 +29,7 @@ import type {
 import MagicString from 'magic-string'
 import { childNodes, parseModule, span } from './ast.ts'
 import { camelCase, pascalCase, registryModule } from './names.ts'
-import { MARKER, type Slot } from './scss.ts'
+import { MARKER, NAMED_TEXT_SIZE, SIZE_ATTRIBUTE, SIZE_PROBE, type Slot } from './scss.ts'
 
 // ClassValue types the className of generated cva() replacements, matching
 // cva's own type, which also accepts (and clsx ignores) Base UI's function
@@ -95,6 +95,9 @@ export type TransformedComponent = {
   hooks: Hook[]
   // Raw data-slot values each module class lands on
   dataSlots: Record<string, string[]>
+  // Module classes on an element that has no data-slot and carries the
+  // size-class probe's attribute
+  sized: string[]
   markers: Marker[]
   variantSets: VariantSet[]
   components: RenderedComponent[]
@@ -194,7 +197,6 @@ type Cva = {
   set: VariantSet
 }
 
-const NAMED_TEXT_SIZE = /^text-(xs|sm|base|lg|xl|[2-9]xl)(\/[\w.[\]-]+)?$/
 const ARBITRARY_TEXT_SIZE = /^text-\[\d*\.?\d+(rem|em|px)\]$/
 
 // Whether a variant option's arbitrary font size replaces the base's named
@@ -584,6 +586,23 @@ export function transformComponent(
     slotDataSlots.set(slot, values.add(value))
   }
 
+  // An element without a data-slot whose upstream classes contain `size-` is
+  // what `svg:not([class*="size-"])` skips; the probe finds it by an attribute
+  // here. Only a className written on the element itself (a string, or cn())
+  // is marked: the attribute reaches the DOM through the component's props.
+  const sized = new Set<string>()
+  const marked = new Set<Node>()
+  const markSized = (slot: string, classes: string[], ancestors: Node[]) => {
+    if (!classes.join(' ').includes(SIZE_PROBE) || dataSlot(ancestors) !== undefined) return
+    const attribute = ancestors.findLast((n) => n.type === 'JSXAttribute')
+    const opening = ancestors.findLast((n) => n.type === 'JSXOpeningElement')
+    if (!attribute || !opening || opening.type !== 'JSXOpeningElement') return
+    sized.add(slot)
+    if (marked.has(opening)) return
+    marked.add(opening)
+    out.appendLeft(opening.name.end as number, ` ${SIZE_ATTRIBUTE}=""`)
+  }
+
   // Adds a slot and returns the module class it got. Two elements asking for
   // the same name with different classes (FieldTitle reusing FieldLabel's
   // data-slot) keep them apart: the second takes its owner's name, or a number.
@@ -784,6 +803,9 @@ export function transformComponent(
       const classes = literals.flatMap((arg) => staticClasses(arg) as string[])
       if (classes.length > 0) {
         const slot = addSlot({ name: base(), classes }, ancestors)
+        if (ancestors.at(-1)?.type === 'JSXExpressionContainer') {
+          markSized(slot, classes, ancestors.slice(0, -1))
+        }
         if (keyedPart(ancestors) === undefined) track(ancestors, { slot }, consumer)
         out.overwrite(...span(literals[0] as Node), `styles.${slot}`)
       }
@@ -812,6 +834,7 @@ export function transformComponent(
           )
         }
         const slot = addSlot({ name, classes }, [...ancestors, node])
+        markSized(slot, classes, [...ancestors, node])
         track([...ancestors, node], { slot }, false)
         out.overwrite(...span(value), `{styles.${slot}}`)
         return false
@@ -905,6 +928,7 @@ export function transformComponent(
     slots,
     hooks,
     dataSlots,
+    sized: [...sized],
     markers,
     variantSets: [...cvas.values()].map((cva) => cva.set),
     components: [...components.values()],

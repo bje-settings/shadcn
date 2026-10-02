@@ -6,6 +6,8 @@ const none: SlotOptions = {
   consumerClasses: new Map(),
   markers: new Map(),
   classProbe: () => [],
+  textSized: [],
+  probeRank: () => 0,
   globalClasses: new Set(['dark']),
   withoutCss: new Set(),
   internalDefaults,
@@ -177,9 +179,28 @@ describe('slotToScss', () => {
     const classProbe = (fragment: string) =>
       fragment === 'size-' ? ['[data-slot="spinner"]', '[data-slot="icon"]'] : []
     const { scss } = await convert(["[&_svg:not([class*='size-'])]:size-4"], { classProbe })
-    expect(scss).toContain('  & svg:where(:not([data-slot="icon"], [data-slot="spinner"])) {\n')
-    // A default an icon's own size class overrides: zero specificity.
-    expect(scss).toMatch(/^:where\(\.root\) \{\n {2}& svg/)
+    // The probe stays, so an icon's own class or a consumer's still excludes it, and
+    // the default keeps the class's specificity as upstream's does.
+    expect(scss).toContain(
+      '.root {\n  & svg:not([class*="size-"], [data-slot="icon"], [data-slot="spinner"]) {\n',
+    )
+  })
+
+  it('ranks class probe defaults of the same variant by Tailwind order', async () => {
+    const classes = ["[&_svg:not([class*='size-'])]:size-4"]
+    const { scss } = await convert(classes, {
+      classProbe: () => ['[data-slot="icon"]'],
+      probeRank: (candidate) => (candidate === classes[0] ? 2 : 0),
+    })
+    expect(scss).toContain(
+      '& svg:not([class*="size-"], [data-slot="icon"]):not([class*="size-"]):not([class*="size-"]) {',
+    )
+  })
+
+  it('adds no rank where the probe found nothing and went', async () => {
+    const classes = ["[&_svg:not([class*='size-'])]:size-4"]
+    const { scss } = await convert(classes, { probeRank: () => 2 })
+    expect(scss).toContain('  & svg {\n')
   })
 
   it('drops a class probe that finds nothing, and says so', async () => {

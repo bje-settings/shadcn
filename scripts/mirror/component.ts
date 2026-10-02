@@ -5,7 +5,13 @@ import { consumerClassReasons, type MirrorConfig } from './config.ts'
 import { installTransforms } from './install.ts'
 import { pascalCase } from './names.ts'
 import type { ItemParts } from './parts.ts'
-import { type SlotOptions, slotToScss } from './scss.ts'
+import {
+  NAMED_TEXT_SIZE,
+  SIZE_ATTRIBUTE,
+  SIZE_PROBE,
+  type SlotOptions,
+  slotToScss,
+} from './scss.ts'
 import { generateTest } from './tests.ts'
 import { type TransformedComponent, transformComponent } from './tsx.ts'
 
@@ -155,10 +161,57 @@ export function classProbe(components: PreparedComponent[]): (fragment: string) 
     components.flatMap(({ transformed }) =>
       transformed.slots
         .filter((slot) => slot.classes.join(' ').includes(fragment))
-        .flatMap((slot) =>
-          (transformed.dataSlots[slot.name] ?? []).map((v) => `[data-slot="${v}"]`),
-        ),
+        .flatMap((slot) => [
+          ...(transformed.dataSlots[slot.name] ?? []).map((v) => `[data-slot="${v}"]`),
+          ...(fragment === SIZE_PROBE && transformed.sized.includes(slot.name)
+            ? [`[${SIZE_ATTRIBUTE}]`]
+            : []),
+        ]),
     )
+}
+
+// The data-slot of every mirrored element whose slot sets a named font size
+// and no leading, unless a slot with a leading carries the same data-slot.
+export function textSizedSelectors(components: PreparedComponent[]): string[] {
+  const sized = new Set<string>()
+  const led = new Set<string>()
+  for (const { transformed } of components) {
+    for (const slot of transformed.slots) {
+      const target = slot.classes.some((c) => c.startsWith('leading-'))
+        ? led
+        : slot.classes.some((c) => NAMED_TEXT_SIZE.test(c))
+          ? sized
+          : undefined
+      for (const value of transformed.dataSlots[slot.name] ?? []) target?.add(value)
+    }
+  }
+  return [...sized]
+    .filter((value) => !led.has(value))
+    .sort()
+    .map((value) => `[data-slot="${value}"]`)
+}
+
+// The rank of each class probe default among the others with the same
+// variant, over every mirrored component: Tailwind sorts equal-specificity
+// utilities by candidate, so the greater candidate comes later and wins
+// where two ancestors' defaults reach one icon.
+export function probeRanks(components: PreparedComponent[]): (candidate: string) => number {
+  const groups = new Map<string, Set<string>>()
+  for (const { transformed } of components) {
+    for (const slot of transformed.slots) {
+      for (const candidate of slot.classes) {
+        const cut = candidate.lastIndexOf(':')
+        if (cut < 0 || !candidate.includes('[class*=')) continue
+        const variant = candidate.slice(0, cut)
+        groups.set(variant, (groups.get(variant) ?? new Set()).add(candidate))
+      }
+    }
+  }
+  const ranks = new Map<string, number>()
+  for (const group of groups.values()) {
+    for (const [i, candidate] of [...group].sort().entries()) ranks.set(candidate, i)
+  }
+  return (candidate) => ranks.get(candidate) ?? 0
 }
 
 // What slotToScss reads besides each component's own markers: the same for
@@ -171,6 +224,8 @@ export function sharedSlotOptions(
   return {
     internalDefaults,
     classProbe: classProbe(components),
+    textSized: textSizedSelectors(components),
+    probeRank: probeRanks(components),
     consumerClasses: consumerClassReasons(config),
     globalClasses: new Set(config.globalClasses.flatMap(({ classes }) => classes)),
     withoutCss: new Set(config.classesWithoutCss.flatMap(({ classes }) => classes)),

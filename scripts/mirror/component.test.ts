@@ -6,7 +6,9 @@ import {
   dependenciesOf,
   markerSelectors,
   prepareComponent,
+  probeRanks,
   sharedSlotOptions,
+  textSizedSelectors,
   type UpstreamItem,
 } from './component.ts'
 import { forStyle, parseConfig } from './config.ts'
@@ -259,7 +261,55 @@ export { Spinner, Plain }`,
       ],
     }
     const probe = classProbe([await prepareComponent(upstream, config, cssPath)])
-    expect(probe('size-')).toEqual(['[data-slot="spinner"]'])
+    // Plain has no data-slot: it carries the size attribute instead.
+    expect(probe('size-')).toEqual(['[data-slot="spinner"]', '[data-class-size]'])
     expect(probe('w-')).toEqual([])
+  })
+})
+
+describe('textSizedSelectors', () => {
+  it('lists the data-slots that set a named font size and no leading', async () => {
+    const upstream: UpstreamItem = {
+      name: 'copy',
+      type: 'registry:ui',
+      files: [
+        {
+          path: 'registry/base-vega/ui/copy.tsx',
+          type: 'registry:ui',
+          content: `function A() { return <p data-slot="a" className="text-sm leading-relaxed" /> }
+function B() { return <p data-slot="b" className="text-sm tracking-tight" /> }
+function C() { return <p data-slot="c" className="leading-5" /> }
+function D() { return <p data-slot="d" className="text-sm" /> }
+function E() { return <p data-slot="d" className="leading-6" /> }
+export { A, B, C, D, E }`,
+        },
+      ],
+    }
+    expect(textSizedSelectors([await prepareComponent(upstream, config, cssPath)])).toEqual([
+      '[data-slot="b"]',
+    ])
+  })
+})
+
+describe('probeRanks', () => {
+  it('orders class probe defaults of one variant by candidate, across components', async () => {
+    const item = (name: string, size: string): UpstreamItem => ({
+      name,
+      type: 'registry:ui',
+      files: [
+        {
+          path: `registry/base-vega/ui/${name}.tsx`,
+          type: 'registry:ui',
+          content: `function X() { return <i data-slot="${name}" className="[&_svg:not([class*='size-'])]:${size} flex" /> }\nexport { X }`,
+        },
+      ],
+    })
+    const rank = probeRanks([
+      await prepareComponent(item('one', 'size-4'), config, cssPath),
+      await prepareComponent(item('two', 'size-3.5'), config, cssPath),
+    ])
+    expect(rank("[&_svg:not([class*='size-'])]:size-3.5")).toBe(0)
+    expect(rank("[&_svg:not([class*='size-'])]:size-4")).toBe(1)
+    expect(rank('flex')).toBe(0)
   })
 })
