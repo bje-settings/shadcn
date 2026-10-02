@@ -84,6 +84,8 @@ describe('slotToScss', () => {
     expect((await convert(['text-sm', 'md:leading-5'], { textSized })).scss).not.toContain(
       ':where(:not(',
     )
+    // No element sets a named size of its own: no gate, and no empty :not().
+    expect((await convert(['text-sm', 'leading-relaxed'])).scss).not.toContain(':where(:not(')
   })
 
   it('inherits the line-height for a slot that resets it', async () => {
