@@ -3,7 +3,7 @@
 // with a stated reason, never a lowered threshold.
 import { readFileSync } from 'node:fs'
 import { dirname } from 'node:path'
-import { defineConfig, type TestProjectInlineConfiguration } from 'vitest/config'
+import { configDefaults, defineConfig, type TestProjectInlineConfiguration } from 'vitest/config'
 import { forStyle, parseConfig, shortStyle } from './scripts/mirror/config.ts'
 import { pascalCase } from './scripts/mirror/names.ts'
 
@@ -13,6 +13,7 @@ const mirror = parseConfig(
 // Every style's generated items are tested and covered.
 const styles = mirror.upstream.styles.map((style) => forStyle(mirror, style))
 const path = (dir: string) => new URL(`./${dir}`, import.meta.url).pathname
+const generated = 'scripts/mirror/generated.test.ts'
 
 // Registry items render under jsdom, with CSS modules compiled by Sass and
 // class names kept as written, the way a consumer's bundler would resolve
@@ -29,8 +30,26 @@ export default defineConfig({
     projects: [
       {
         extends: true,
-        test: { name: 'scripts', include: ['scripts/**/*.test.ts'], environment: 'node' },
+        test: {
+          name: 'scripts',
+          include: ['scripts/**/*.test.ts'],
+          exclude: [...configDefaults.exclude, generated],
+          environment: 'node',
+        },
       },
+      // generated.test.ts once per style, so each style's run reports under its
+      // own name.
+      ...mirror.upstream.styles.map(
+        (style): TestProjectInlineConfiguration => ({
+          extends: true,
+          test: {
+            name: `generated/${shortStyle(style)}`,
+            include: [generated],
+            environment: 'node',
+            env: { MIRROR_STYLE: shortStyle(style) },
+          },
+        }),
+      ),
       {
         extends: true,
         test: { ...registry, name: 'registry/lib', include: ['registry/lib/**/*.test.{ts,tsx}'] },

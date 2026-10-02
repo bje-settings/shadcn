@@ -10,7 +10,7 @@ import { dirname, join, relative } from 'node:path'
 import { compile } from 'sass'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { run } from './cli.ts'
-import { forStyle } from './config.ts'
+import { forStyle, namedStyle } from './config.ts'
 import { formatWithBiome } from './format.ts'
 import { parsed, root } from './test-support.ts'
 
@@ -22,9 +22,11 @@ async function files(base: string, dir: string): Promise<string[]> {
     .sort()
 }
 
-// Each style is built and checked on its own, so no hook's time grows with
-// the number of styles.
-describe.each(parsed.upstream.styles)('generated output for %s', (style) => {
+// vitest.config.ts runs this file once per style, naming it in MIRROR_STYLE,
+// so no hook's time grows with the number of styles.
+const style = namedStyle(parsed, process.env.MIRROR_STYLE ?? '', 'MIRROR_STYLE')
+
+describe(`generated output for ${style}`, () => {
   const config = forStyle(parsed, style)
   const snapshots = join(config.snapshotDir, style)
   // The A/B harness inputs are not committed (see .gitignore): pnpm ab

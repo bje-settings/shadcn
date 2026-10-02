@@ -8,7 +8,15 @@ import vitestConfig from '../../vitest.config.ts'
 import { forStyle, shortStyle } from './config.ts'
 import { parsed, root } from './test-support.ts'
 
-type Project = { test?: { name?: string; alias?: Record<string, string>; include?: string[] } }
+type Project = {
+  test?: {
+    name?: string
+    alias?: Record<string, string>
+    include?: string[]
+    exclude?: string[]
+    env?: Record<string, string>
+  }
+}
 const projects = (vitestConfig.test?.projects ?? []) as Project[]
 
 describe.each(parsed.upstream.styles)('vitest project for %s', (style) => {
@@ -24,9 +32,24 @@ describe.each(parsed.upstream.styles)('vitest project for %s', (style) => {
     })
   })
 
+  // CI's leg for the style runs this project: one naming another style, or
+  // none, would check the wrong output or nothing.
+  it("checks the style's generated output in its own project", () => {
+    const generated = projects.find(
+      (project) => project.test?.name === `generated/${shortStyle(style)}`,
+    )
+    expect(generated?.test?.include).toEqual(['scripts/mirror/generated.test.ts'])
+    expect(generated?.test?.env).toEqual({ MIRROR_STYLE: shortStyle(style) })
+  })
+
   it("covers the style's output", () => {
     expect(vitestConfig.test?.coverage?.include).toContain(
       `${dirname(config.registryFile)}/**/*.{ts,tsx}`,
     )
   })
+})
+
+it('runs generated.test.ts only in the per-style projects', () => {
+  const scripts = projects.find((project) => project.test?.name === 'scripts')
+  expect(scripts?.test?.exclude).toContain('scripts/mirror/generated.test.ts')
 })

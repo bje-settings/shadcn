@@ -46,9 +46,8 @@ jobs:
         with:
           path: public/r
 
-  # The vitest legs: one per style (its registry project and its part of
-  # scripts/mirror/generated.test.ts, which rebuilds it), and one for the rest
-  # (scripts and registry/lib).
+  # The vitest legs: one per style (its registry/<style> and generated/<style>
+  # projects), and one for the rest (scripts and registry/lib).
   vitest-legs:
     name: vitest-legs
     runs-on: ubuntu-latest
@@ -86,26 +85,19 @@ jobs:
       - name: Validate lefthook.yml
         if: matrix.leg == 'shared'
         run: pnpm exec lefthook validate
-      # Each run keeps its results and coverage as a blob, with thresholds
-      # off and a one-line coverage summary.
+      # One run per leg keeps its results and coverage as one blob, with
+      # thresholds off and a one-line coverage summary.
       - name: Run the leg's tests
         run: |
-          leg() {
-            pnpm exec vitest run "$@" --coverage --coverage.reporter=text-summary \
-              --coverage.thresholds.lines=0 --coverage.thresholds.functions=0 \
-              --coverage.thresholds.branches=0 --coverage.thresholds.statements=0 \
-              --reporter=default --reporter=blob
-          }
           if [ "$LEG" = shared ]; then
-            leg --project scripts --project registry/lib --exclude scripts/mirror/generated.test.ts \
-              --outputFile.blob=vitest-reports/shared.json
+            projects=(--project scripts --project registry/lib)
           else
-            # generated.test.ts names each style's describe block after it.
-            style=$(jq -er --arg leg "$LEG" '.upstream.styles[] | select(sub("^base-"; "") == $leg)' mirror.config.json)
-            leg --project "registry/$LEG" --outputFile.blob="vitest-reports/$LEG-registry.json"
-            leg --project scripts scripts/mirror/generated.test.ts -t "^generated output for $style " \
-              --outputFile.blob="vitest-reports/$LEG-generated.json"
+            projects=(--project "registry/$LEG" --project "generated/$LEG")
           fi
+          pnpm exec vitest run "${projects[@]}" --coverage --coverage.reporter=text-summary \
+            --coverage.thresholds.lines=0 --coverage.thresholds.functions=0 \
+            --coverage.thresholds.branches=0 --coverage.thresholds.statements=0 \
+            --reporter=default --reporter=blob --outputFile.blob="vitest-reports/$LEG.json"
       - uses: actions/upload-artifact@v7
         with:
           name: vitest-blob-${{ matrix.leg }}
@@ -145,8 +137,11 @@ jobs:
       # vitest thresholds pass over an empty file set, so every leg's code
       # must appear in the report: each style's, registry/lib and scripts.
       - name: Refuse a coverage report that misses a leg
+        # Assigned first: a failed substitution in the for list would not
+        # fail the step.
         run: |
-          for dir in $(jq -r '.upstream.styles[] | sub("^base-"; "") | "registry/\(.)"' mirror.config.json) registry/lib scripts; do
+          styles=$(jq -er '.upstream.styles[] | sub("^base-"; "") | "registry/\(.)"' mirror.config.json)
+          for dir in $styles registry/lib scripts; do
             jq -e --arg dir "/$dir/" '[keys[] | select(contains($dir))] | length > 0' coverage/coverage-summary.json
           done
       - uses: actions/upload-code-coverage@v1
