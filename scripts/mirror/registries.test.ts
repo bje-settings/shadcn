@@ -6,10 +6,10 @@ import { parsed } from './test-support.ts'
 describe('registryBuilds', () => {
   it('builds each style from its catalog into its own directory', () => {
     const styles = parsed.upstream.styles.map(shortStyle)
-    expect(registryBuilds(parsed, 'public/r')).toEqual(
+    expect(registryBuilds(parsed, 'out')).toEqual(
       styles.map((style) => ({
         registry: `registry/${style}/registry.json`,
-        output: `public/r/${style}`,
+        output: `out/${style}`,
       })),
     )
   })
