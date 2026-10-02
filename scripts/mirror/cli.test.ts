@@ -229,6 +229,15 @@ describe('mirror build', BUILDS, () => {
     expect(await read('ab/generated/luma/upstream.css')).toContain(
       '@import "../../../upstream/base-luma/index.css";',
     )
+    // Upstream's imports resolve to the style's own copies.
+    expect(
+      JSON.parse(await read('ab/generated/luma/tsconfig.json')).compilerOptions.paths,
+    ).toMatchObject({
+      '@ab/styles/*': ['../../../registry/luma/styles/*'],
+      '@/registry/bje/ui/*': ['../../../registry/luma/ui/*'],
+      '@/registry/base-luma/ui/*': ['./upstream/*'],
+      '@/registry/base-luma/components/example': ['../../stubs/example.tsx'],
+    })
     expect(await read('registry/luma/ui/Badge/Badge.module.scss')).toContain(':where(.badge) {')
     expect(JSON.parse(await read('registry/luma/tsconfig.json'))).toEqual({
       extends: '../tsconfig.json',
@@ -313,6 +322,23 @@ describe('mirror build', BUILDS, () => {
     )
   })
 
+  it('builds one style alone, named by its short name, and formats all but the harness inputs', async () => {
+    await run(['fetch'], io())
+    logs = []
+    await run(['build', 'luma'], { ...io(), format: (_, content) => `// formatted\n${content}` })
+    expect(logs).toContain('built A/B harness inputs in ab/generated/luma')
+    expect(logs.join('\n')).not.toContain('vega')
+    await expect(read('registry/vega/registry.json')).rejects.toThrow('ENOENT')
+    expect(await read('registry/luma/ui/Badge/Badge.tsx')).toMatch(/^\/\/ formatted\n/)
+    expect(await read('ab/generated/luma/ours.ts')).not.toContain('// formatted')
+  })
+
+  it('refuses a style it does not mirror', async () => {
+    await expect(run(['build', 'nova'], io())).rejects.toThrow(
+      'mirror build: nova is not one of vega, luma',
+    )
+  })
+
   it('asks for a fetch when a snapshot is missing', async () => {
     await expect(run(['build'], io())).rejects.toThrow(
       'no snapshot for base-vega/font-inter; run mirror fetch first',
@@ -362,7 +388,10 @@ describe('mirror build', BUILDS, () => {
 })
 
 describe('usage', () => {
-  it.each([[[]], [['sync']], [['build', 'extra']]])('rejects %j', async (args) => {
-    await expect(run(args, io())).rejects.toThrow('usage: mirror <fetch|build>')
-  })
+  it.each([[[]], [['sync']], [['fetch', 'vega']], [['build', 'vega', 'luma']]])(
+    'rejects %j',
+    async (args) => {
+      await expect(run(args, io())).rejects.toThrow('usage: mirror <fetch|build [style]>')
+    },
+  )
 })

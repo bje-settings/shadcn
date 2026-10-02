@@ -145,8 +145,9 @@ Generated files get Biome's formatting and safe fixes (import order, `import typ
 upstream's code, so `biome.json` turns off the rules upstream's code trips for
 `registry/*/ui/**` (see that override in `biome.json`). Every other rule still applies there.
 `ab/generated/<style>/`, upstream's code verbatim for comparison and the generated harness inputs,
-is not committed: `pnpm ab` and `pnpm ab:serve` rebuild it first (`pnpm mirror:build`), and CI
-does the same. Biome skips it as a gitignored path.
+is not committed: `pnpm ab` and `pnpm ab:serve` rebuild it first (`pnpm mirror:build $AB_STYLE`,
+only that style when it is set), and CI does the same. It is written unformatted, and Biome skips
+it as a gitignored path.
 
 ## Visual A/B
 

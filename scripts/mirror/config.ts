@@ -312,16 +312,22 @@ export function checkConfiguredParts(
   }
 }
 
-// The style an A/B run renders: the one AB_STYLE names by its short name
-// (luma), or the first configured style when it is unset.
-export function harnessStyle(config: MirrorConfig, name: string | undefined): string {
+// The configured style a short name (luma) names; `source` says where the
+// name came from, for the error.
+export function namedStyle(config: MirrorConfig, name: string, source: string): string {
   const { styles } = config.upstream
-  if (name === undefined) return styles[0] as string
   const style = styles.find((style) => shortStyle(style) === name)
   if (style === undefined) {
-    throw new Error(`AB_STYLE: ${name} is not one of ${styles.map(shortStyle).join(', ')}`)
+    throw new Error(`${source}: ${name} is not one of ${styles.map(shortStyle).join(', ')}`)
   }
   return style
+}
+
+// The style an A/B run renders: the one AB_STYLE names, or the first
+// configured style when it is unset.
+export function harnessStyle(config: MirrorConfig, name: string | undefined): string {
+  if (name === undefined) return config.upstream.styles[0] as string
+  return namedStyle(config, name, 'AB_STYLE')
 }
 
 export function upstreamUrl(config: MirrorConfig, name: string): string {
