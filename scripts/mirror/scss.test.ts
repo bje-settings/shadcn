@@ -56,6 +56,17 @@ describe('slotToScss', () => {
     )
   })
 
+  it('drops a rule needing a marker no element carries when its class is listed as without CSS', async () => {
+    const { scss, dropped, unresolved } = await convert(['flex', 'group-hover/card:block'], {
+      withoutCss: new Set(['group-hover/card:block']),
+    })
+    expect(scss).toBe(':where(.root) {\n  display: flex;\n}')
+    expect(dropped).toEqual([
+      'group-hover/card:block matches nothing upstream either: no element carries group/card.',
+    ])
+    expect(unresolved).toEqual([])
+  })
+
   it('drops rules gated on a consumer class', async () => {
     const { scss, dropped } = await convert(['flex', '[.border-b]:pb-4'], {
       consumerClasses: new Map([['border-b', 'consumer class']]),

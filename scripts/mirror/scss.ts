@@ -198,7 +198,8 @@ function classesIn(selector: string): string[] {
 // Why a rule is dropped, if it is: besides the slot's own utilities, it needs
 // a configured consumer class, so it never applies. A group/peer marker no
 // mirrored element carries fails the build: the item carrying it must be
-// mirrored too.
+// mirrored too, unless the rule's own class is listed in classesWithoutCss
+// because upstream's markup never carries the marker either.
 function dropReason(
   selector: string,
   candidates: Set<string>,
@@ -208,6 +209,12 @@ function dropReason(
   const consumer = classes.find((c) => options.consumerClasses.has(c))
   if (consumer) return options.consumerClasses.get(consumer)
   const missing = classes.find((c) => MARKER.test(c) && !options.markers.has(c))
+  const dead = [...candidates].find(
+    (c) => options.withoutCss.has(c) && classesIn(selector).includes(c),
+  )
+  if (missing && dead) {
+    return `${dead} matches nothing upstream either: no element carries ${missing}.`
+  }
   if (missing) {
     throw new Error(
       `selector ${selector} needs a ${missing} marker, which no mirrored element with a data-slot carries`,
