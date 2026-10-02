@@ -29,8 +29,8 @@ optional one included, is ignored.
 its path on the site. Output paths must contain `{style}`, which resolves to the short name.
 
 `theme.font` is the default font: `@<namespace>/globals` imports it and `variables.scss` sets its
-variable. `fonts` takes upstream's font item names without `font-` (`geist`, `heading-geist`), and
-lists every upstream `registry:font` item today, the default one included.
+variable. `fonts` takes upstream's font item names without `font-` (`geist`, `heading-geist`). It
+lists every upstream `registry:font` item, the default one included.
 
 ## Exceptions
 
