@@ -312,7 +312,7 @@ jobs:
             echo run=true >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          if [ "${{ github.event.pull_request.draft }}" = true ]; then
+          if false && [ "${{ github.event.pull_request.draft }}" = true ]; then
             echo "Draft pull request: install check skipped until it is marked ready." >> "$GITHUB_STEP_SUMMARY"
             echo run=false >> "$GITHUB_OUTPUT"
             exit 0
