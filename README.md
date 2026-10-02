@@ -47,8 +47,10 @@ The default font is Inter. To use another, install its item, named after upstrea
 its `styles/fonts/<name>.css` after `variables.scss`. The stylesheet sets one variable
 (`--font-sans`, `--font-heading`, `--font-mono` or `--font-serif`) in the same layer and selector
 as `variables.scss`, so imported before it, the default wins. The item lists the font's package in
-`dependencies`. No component reads `--font-serif`: a serif font applies only where your own CSS
-uses `var(--font-serif)`.
+`dependencies`. A heading font reaches component titles (Card, Dialog, Sheet, ...) and Typeset's
+headings; your own `h1` to `h6` keep `--font-sans` unless your CSS uses `var(--font-heading)`. No
+component reads `--font-serif`: a serif font applies only where your own CSS uses
+`var(--font-serif)`.
 
 `@bje/typeset` installs [shadcn/typeset](https://ui.shadcn.com/docs/typeset) unchanged as
 `styles/typeset.css`: styles for rendered HTML and markdown inside a `.typeset` container. It reads

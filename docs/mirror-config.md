@@ -29,8 +29,9 @@ optional one included, is ignored.
 its path on the site. Output paths must contain `{style}`, which resolves to the short name.
 
 `theme.font` is the default font: `@<namespace>/globals` imports it and `variables.scss` sets its
-variable. `fonts` takes upstream's font item names without `font-` (`geist`, `heading-geist`). It
-lists every upstream `registry:font` item, the default one included.
+variable. `fonts` takes upstream's font item names without `font-` (`geist`, `heading-geist`). This
+repository's config lists all of upstream's `registry:font` items, the default one included. Nothing
+checks that list against upstream, so a font upstream adds is published only once it is added here.
 
 ## Exceptions
 
