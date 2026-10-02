@@ -139,7 +139,11 @@ function resolveClassProbes(
         ? rest.length === 0 && only.value
         : undefined
     })
-    if (!probes.every((probe) => typeof probe === 'string')) return
+    if (!probes.some((probe) => typeof probe === 'string')) return
+    // The guard on class names outside :not() trusts every probe left in one.
+    if (!probes.every((probe) => typeof probe === 'string')) {
+      throw new Error(`${pseudo} mixes class name probes with other selectors`)
+    }
     const selectors = [...new Set(probes.flatMap((probe) => classProbe(probe)))].sort()
     if (selectors.length === 0) {
       for (const probe of probes) unmatched.add(probe)

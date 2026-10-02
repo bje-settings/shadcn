@@ -224,6 +224,14 @@ describe('slotToScss', () => {
     ])
   })
 
+  it('fails on a :not() that mixes a class probe with another selector', async () => {
+    await expect(
+      convert(["[&_svg:not([class*='size-'],[data-x])]:size-4"], {
+        classProbe: () => ['[data-slot="icon"]'],
+      }),
+    ).rejects.toThrow('mixes class name probes with other selectors')
+  })
+
   it('leaves other :not() arguments alone', async () => {
     const { scss } = await convert(['[&_svg:not([data-x])]:size-4', 'not-first:flex'])
     expect(scss).toContain('  & svg:not([data-x]) {')
