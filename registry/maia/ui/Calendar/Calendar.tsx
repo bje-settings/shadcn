@@ -93,6 +93,7 @@ function Calendar({
           if (orientation === 'left') {
             return (
               <ChevronLeftIcon
+                data-class-size=""
                 className={clsx(styles.calendarChevronLeftIcon, className)}
                 {...props}
               />
@@ -102,6 +103,7 @@ function Calendar({
           if (orientation === 'right') {
             return (
               <ChevronRightIcon
+                data-class-size=""
                 className={clsx(styles.calendarChevronRightIcon, className)}
                 {...props}
               />
@@ -110,6 +112,7 @@ function Calendar({
 
           return (
             <ChevronDownIcon
+              data-class-size=""
               className={clsx(styles.calendarChevronDownIcon, className)}
               {...props}
             />
@@ -119,7 +122,9 @@ function Calendar({
         WeekNumber: ({ children, ...props }) => {
           return (
             <td {...props}>
-              <div className={styles.calendarDiv}>{children}</div>
+              <div data-class-size="" className={styles.calendarDiv}>
+                {children}
+              </div>
             </td>
           )
         },
@@ -146,6 +151,7 @@ function CalendarDayButton({
 
   return (
     <Button
+      data-class-size=""
       variant="ghost"
       size="icon"
       data-day={day.date.toLocaleDateString(locale?.code)}

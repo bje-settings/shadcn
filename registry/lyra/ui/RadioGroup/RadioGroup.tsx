@@ -28,7 +28,7 @@ function RadioGroupItem({ className, ...props }: RadioPrimitive.Root.Props) {
         data-slot="radio-group-indicator"
         className={styles.radioGroupIndicator}
       >
-        <span className={styles.radioGroupItemSpan} />
+        <span data-class-size="" className={styles.radioGroupItemSpan} />
       </RadioPrimitive.Indicator>
     </RadioPrimitive.Root>
   )

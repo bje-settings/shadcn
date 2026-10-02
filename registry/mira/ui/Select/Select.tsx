@@ -47,7 +47,9 @@ function SelectTrigger({
     >
       {children}
       <SelectPrimitive.Icon
-        render={<ChevronDownIcon className={styles.selectTriggerChevronDownIcon} />}
+        render={
+          <ChevronDownIcon data-class-size="" className={styles.selectTriggerChevronDownIcon} />
+        }
       />
     </SelectPrimitive.Trigger>
   )

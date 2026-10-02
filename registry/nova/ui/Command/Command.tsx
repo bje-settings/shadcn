@@ -65,7 +65,7 @@ function CommandInput({
           {...props}
         />
         <InputGroupAddon>
-          <SearchIcon className={styles.commandInputSearchIcon} />
+          <SearchIcon data-class-size="" className={styles.commandInputSearchIcon} />
         </InputGroupAddon>
       </InputGroup>
     </div>

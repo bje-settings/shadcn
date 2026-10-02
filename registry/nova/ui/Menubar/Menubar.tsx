@@ -105,7 +105,7 @@ function MenubarCheckboxItem({
       checked={checked}
       {...props}
     >
-      <span className={styles.menubarCheckboxItemSpan}>
+      <span data-class-size="" className={styles.menubarCheckboxItemSpan}>
         <MenuPrimitive.CheckboxItemIndicator>
           <CheckIcon />
         </MenuPrimitive.CheckboxItemIndicator>
@@ -134,7 +134,7 @@ function MenubarRadioItem({
       className={clsx(styles.menubarRadioItem, className)}
       {...props}
     >
-      <span className={styles.menubarRadioItemSpan}>
+      <span data-class-size="" className={styles.menubarRadioItemSpan}>
         <MenuPrimitive.RadioItemIndicator>
           <CheckIcon />
         </MenuPrimitive.RadioItemIndicator>

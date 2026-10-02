@@ -29,7 +29,7 @@ function ComboboxTrigger({ className, children, ...props }: ComboboxPrimitive.Tr
       {...props}
     >
       {children}
-      <ChevronDownIcon className={styles.comboboxTriggerChevronDownIcon} />
+      <ChevronDownIcon data-class-size="" className={styles.comboboxTriggerChevronDownIcon} />
     </ComboboxPrimitive.Trigger>
   )
 }
@@ -131,7 +131,9 @@ function ComboboxItem({ className, children, ...props }: ComboboxPrimitive.Item.
       {...props}
     >
       {children}
-      <ComboboxPrimitive.ItemIndicator render={<span className={styles.comboboxItemSpan} />}>
+      <ComboboxPrimitive.ItemIndicator
+        render={<span data-class-size="" className={styles.comboboxItemSpan} />}
+      >
         <CheckIcon className={styles.comboboxItemCheckIcon} />
       </ComboboxPrimitive.ItemIndicator>
     </ComboboxPrimitive.Item>

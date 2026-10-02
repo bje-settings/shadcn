@@ -75,7 +75,11 @@ function NavigationMenuTrigger({
       {...props}
     >
       {children}{' '}
-      <ChevronDownIcon className={styles.navigationMenuTriggerChevronDownIcon} aria-hidden="true" />
+      <ChevronDownIcon
+        data-class-size=""
+        className={styles.navigationMenuTriggerChevronDownIcon}
+        aria-hidden="true"
+      />
     </NavigationMenuPrimitive.Trigger>
   )
 }
@@ -109,7 +113,10 @@ function NavigationMenuPositioner({
         {...props}
       >
         <NavigationMenuPrimitive.Popup className={styles.navigationMenuPositionerPopup}>
-          <NavigationMenuPrimitive.Viewport className={styles.navigationMenuPositionerViewport} />
+          <NavigationMenuPrimitive.Viewport
+            data-class-size=""
+            className={styles.navigationMenuPositionerViewport}
+          />
         </NavigationMenuPrimitive.Popup>
       </NavigationMenuPrimitive.Positioner>
     </NavigationMenuPrimitive.Portal>

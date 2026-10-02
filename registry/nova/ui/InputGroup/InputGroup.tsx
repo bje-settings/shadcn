@@ -113,7 +113,9 @@ function InputGroupButton({
 }
 
 function InputGroupText({ className, ...props }: React.ComponentProps<'span'>) {
-  return <span className={clsx(styles.inputGroupTextSpan, className)} {...props} />
+  return (
+    <span data-class-size="" className={clsx(styles.inputGroupTextSpan, className)} {...props} />
+  )
 }
 
 function InputGroupInput({ className, ...props }: React.ComponentProps<'input'>) {

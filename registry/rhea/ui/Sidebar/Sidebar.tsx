@@ -561,6 +561,7 @@ function SidebarMenuSkeleton({
     >
       {showIcon && (
         <Skeleton
+          data-class-size=""
           className={styles.sidebarMenuSkeletonSkeleton}
           data-sidebar="menu-skeleton-icon"
         />

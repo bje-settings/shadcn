@@ -29,7 +29,7 @@ function ComboboxTrigger({ className, children, ...props }: ComboboxPrimitive.Tr
       {...props}
     >
       {children}
-      <ChevronDownIcon className={styles.comboboxTriggerChevronDownIcon} />
+      <ChevronDownIcon data-class-size="" className={styles.comboboxTriggerChevronDownIcon} />
     </ComboboxPrimitive.Trigger>
   )
 }
