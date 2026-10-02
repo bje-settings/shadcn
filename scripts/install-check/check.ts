@@ -103,31 +103,71 @@ export function packageOf(specifier: string): string | undefined {
 
 const SPECIFIER = /(?:\bfrom\s*|\bimport\s*\(?\s*|@import\s+)['"]([^'"]+)['"]/g
 
+function specifiers(source: string): string[] {
+  return [...new Set([...source.matchAll(SPECIFIER)].map((match) => match[1] as string))]
+}
+
 export function importedPackages(source: string): string[] {
-  const found = [...source.matchAll(SPECIFIER)].map((match) => packageOf(match[1] as string))
+  const found = specifiers(source).map(packageOf)
   return [...new Set(found.filter((name) => name !== undefined))]
 }
+
+// An import of another item's file, in the registry's own layout:
+// @/registry/bje/ui/Button/Button names ui/Button/Button.
+const REGISTRY_IMPORT = /^@\/registry\/[^/]+\/(.+)$/
 
 // Packages every item may import without declaring them: the scaffold's.
 const PROVIDED = new Set(['react', 'react-dom'])
 
-// Each item's files import only packages it, or an item it depends on through
-// registryDependencies, declares: installing it alone would miss the others.
+// Each item's files import only packages and items it, or an item it depends
+// on through registryDependencies, declares: installing it alone would miss the
+// others.
 export function undeclaredImports(items: Item[], namespace: string): string[] {
   const byName = new Map(items.map((item) => [item.name, item]))
-  const local = (dependency: string) => byName.get(dependency.replace(`@${namespace}/`, ''))
-  const declared = (item: Item, seen: Set<string>): string[] => {
-    seen.add(item.name)
-    return [
-      ...[...item.dependencies, ...item.devDependencies].map((spec) => splitSpec(spec).name),
-      ...item.registryDependencies.flatMap((dependency) => {
-        const other = local(dependency)
-        return other === undefined || seen.has(other.name) ? [] : declared(other, seen)
-      }),
-    ]
+  const prefix = `@${namespace}/`
+  // The CLI resolves a bare name against its default registry, not this one.
+  const local = (dependency: string) =>
+    dependency.startsWith(prefix) ? byName.get(dependency.slice(prefix.length)) : undefined
+  const reach = (item: Item, seen: Map<string, Item>): Map<string, Item> => {
+    seen.set(item.name, item)
+    for (const dependency of item.registryDependencies) {
+      const other = local(dependency)
+      if (other !== undefined && !seen.has(other.name)) reach(other, seen)
+    }
+    return seen
   }
+  const owner = (path: string) =>
+    items.find((item) =>
+      item.files.some((file) =>
+        [file.path, file.path.replace(/\.[^./]+$/, '')].some((shipped) =>
+          shipped.endsWith(`/${path}`),
+        ),
+      ),
+    )
   return items.flatMap((item) => {
-    const names = new Set([...declared(item, new Set()), ...PROVIDED])
+    const reached = reach(item, new Map())
+    const names = new Set([
+      ...PROVIDED,
+      ...[...reached.values()].flatMap((other) =>
+        [...other.dependencies, ...other.devDependencies].map((spec) => splitSpec(spec).name),
+      ),
+    ])
+    const problems = (path: string, specifier: string): string[] => {
+      const shipped = REGISTRY_IMPORT.exec(specifier)?.[1]
+      if (shipped !== undefined) {
+        const other = owner(shipped)
+        if (other === undefined) return [`${path} imports ${specifier}, which no item ships`]
+        return reached.has(other.name)
+          ? []
+          : [
+              `${path} imports ${specifier} from ${other.name}, which no registry dependency reaches`,
+            ]
+      }
+      const pkg = packageOf(specifier)
+      return pkg === undefined || names.has(pkg)
+        ? []
+        : [`${path} imports ${pkg}, which no dependency declares`]
+    }
     return [
       ...item.registryDependencies
         .filter((dependency) => local(dependency) === undefined)
@@ -135,9 +175,11 @@ export function undeclaredImports(items: Item[], namespace: string): string[] {
           (dependency) => `${item.name}: registry dependency ${dependency} is not in the registry`,
         ),
       ...item.files.flatMap((file) =>
-        importedPackages(file.content)
-          .filter((pkg) => !names.has(pkg))
-          .map((pkg) => `${item.name}: ${file.path} imports ${pkg}, which no dependency declares`),
+        [
+          ...new Set(
+            specifiers(file.content).flatMap((specifier) => problems(file.path, specifier)),
+          ),
+        ].map((problem) => `${item.name}: ${problem}`),
       ),
     ]
   })
