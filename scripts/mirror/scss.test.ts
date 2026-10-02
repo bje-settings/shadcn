@@ -6,6 +6,8 @@ const none: SlotOptions = {
   consumerClasses: new Map(),
   markers: new Map(),
   classProbe: () => [],
+  textSized: [],
+  probeRank: () => 0,
   globalClasses: new Set(['dark']),
   withoutCss: new Set(),
   internalDefaults,
@@ -53,6 +55,48 @@ describe('slotToScss', () => {
   it('refuses a rule needing a marker no mirrored element carries', async () => {
     await expect(convert(['flex', 'group-hover/card:block'])).rejects.toThrow(
       'needs a group/card marker, which no mirrored element with a data-slot carries',
+    )
+  })
+
+  it('drops a rule needing a marker no element carries when its class is listed as without CSS', async () => {
+    const { scss, dropped, unresolved } = await convert(['flex', 'group-hover/card:block'], {
+      withoutCss: new Set(['group-hover/card:block']),
+    })
+    expect(scss).toBe(':where(.root) {\n  display: flex;\n}')
+    expect(dropped).toEqual([
+      'group-hover/card:block matches nothing upstream either: no element carries group/card.',
+    ])
+    expect(unresolved).toEqual([])
+  })
+
+  it('fails on a missing marker when only another of the slot classes is without CSS', async () => {
+    await expect(
+      convert(['toaster', 'group-hover/card:block'], { withoutCss: new Set(['toaster']) }),
+    ).rejects.toThrow('needs a group/card marker')
+  })
+
+  it('keeps a named text size slot leading off elements that set their own text size', async () => {
+    const textSized = ['[data-slot="b"]']
+    const { scss } = await convert(['text-sm', 'leading-relaxed'], { textSized })
+    expect(scss).toContain('  &:where(:not([data-slot="b"])) {\n')
+    // No named size of its own, or a leading under a variant: no gate.
+    expect((await convert(['leading-relaxed'], { textSized })).scss).not.toContain(':where(:not(')
+    expect((await convert(['text-sm', 'md:leading-5'], { textSized })).scss).not.toContain(
+      ':where(:not(',
+    )
+    // No element sets a named size of its own: no gate, and no empty :not().
+    expect((await convert(['text-sm', 'leading-relaxed'])).scss).not.toContain(':where(:not(')
+  })
+
+  it('inherits the line-height for a slot that resets it', async () => {
+    const classes = ['flex', 'text-[0.8rem]']
+    const { scss } = slotToScss(
+      await compile(classes),
+      { name: 'root', classes, resetsLeading: true },
+      none,
+    )
+    expect(scss).toBe(
+      ':where(.root) {\n  display: flex;\n  font-size: .8rem;\n  line-height: inherit;\n}',
     )
   })
 
@@ -154,17 +198,56 @@ describe('slotToScss', () => {
     const classProbe = (fragment: string) =>
       fragment === 'size-' ? ['[data-slot="spinner"]', '[data-slot="icon"]'] : []
     const { scss } = await convert(["[&_svg:not([class*='size-'])]:size-4"], { classProbe })
-    expect(scss).toContain('  & svg:where(:not([data-slot="icon"], [data-slot="spinner"])) {\n')
-    // A default an icon's own size class overrides: zero specificity.
-    expect(scss).toMatch(/^:where\(\.root\) \{\n {2}& svg/)
+    // The probe stays, so an icon's own class or a consumer's still excludes it, and
+    // the default keeps the class's specificity as upstream's does.
+    expect(scss).toContain(
+      '.root {\n  & svg:not([class*="size-"], [data-slot="icon"], [data-slot="spinner"]) {\n',
+    )
   })
 
-  it('drops a class probe that finds nothing, and says so', async () => {
+  it('ranks class probe defaults of the same variant by Tailwind order', async () => {
+    const classes = ["[&_svg:not([class*='size-'])]:size-4"]
+    const { scss } = await convert(classes, {
+      classProbe: () => ['[data-slot="icon"]'],
+      probeRank: (candidate) => (candidate === classes[0] ? 2 : 0),
+    })
+    expect(scss).toContain(
+      '& svg:not([class*="size-"], [data-slot="icon"]):not([class*="size-"]):not([class*="size-"]) {',
+    )
+  })
+
+  it('passes whether the slot is a variant option to the rank', async () => {
+    const classes = ["[&_svg:not([class*='size-'])]:size-4"]
+    const seen: boolean[] = []
+    const probeRank = (_: string, variant: boolean) => {
+      seen.push(variant)
+      return 0
+    }
+    const options = { ...none, classProbe: () => ['[data-slot="icon"]'], probeRank }
+    await slotToScss(await compile(classes), { name: 'root', classes, variant: true }, options)
+    await slotToScss(await compile(classes), { name: 'root', classes }, options)
+    expect(seen).toEqual([true, false])
+  })
+
+  it('adds no rank to a selector without a probe', async () => {
+    const { scss } = await convert(['flex'], { probeRank: () => 2 })
+    expect(scss).toBe(':where(.root) {\n  display: flex;\n}')
+  })
+
+  it('keeps a class probe that finds nothing, and says so', async () => {
     const { scss, dropped } = await convert(["[&_svg:not([class*='size-'])]:size-4"])
-    expect(scss).toContain('  & svg {\n')
+    expect(scss).toContain('.root {\n  & svg:not([class*="size-"]) {\n')
     expect(dropped).toEqual([
-      'upstream skips elements whose classes contain "size-", and no mirrored element does: the default applies to every match.',
+      'upstream skips elements whose classes contain "size-", and no mirrored element does: the default skips only an element whose own class does.',
     ])
+  })
+
+  it('fails on a :not() that mixes a class probe with another selector', async () => {
+    await expect(
+      convert(["[&_svg:not([class*='size-'],[data-x])]:size-4"], {
+        classProbe: () => ['[data-slot="icon"]'],
+      }),
+    ).rejects.toThrow('mixes class name probes with other selectors')
   })
 
   it('leaves other :not() arguments alone', async () => {

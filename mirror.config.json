@@ -3,7 +3,16 @@
   "upstream": {
     "url": "https://ui.shadcn.com/r/styles/{style}/{name}.json",
     "colorsUrl": "https://ui.shadcn.com/r/colors/{name}.json",
-    "styles": ["base-vega", "base-luma"]
+    "styles": [
+      "base-vega",
+      "base-luma",
+      "base-nova",
+      "base-maia",
+      "base-lyra",
+      "base-mira",
+      "base-sera",
+      "base-rhea"
+    ]
   },
   "theme": {
     "baseColor": "neutral",
@@ -154,6 +163,10 @@
     {
       "classes": ["toaster"],
       "reason": "Sonner's Toaster: a name for the toaster element, not a Tailwind utility."
+    },
+    {
+      "classes": ["group-has-[>[data-variant=outline]]/button-group:border-border"],
+      "reason": "ButtonGroupText in sera: its rule needs group/button-group, which no ButtonGroup element carries, so it matches nothing upstream either."
     }
   ],
   "testSetup": [

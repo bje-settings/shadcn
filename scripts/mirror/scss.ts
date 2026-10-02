@@ -18,10 +18,23 @@ import selectorParser from 'postcss-selector-parser'
 
 import { internalName, renameInternal } from './internal.ts'
 
+// The class fragment upstream's `svg:not([class*="size-"])` defaults probe
+// for, and the attribute the mirror puts on an element without a data-slot
+// whose classes contain it.
+export const SIZE_PROBE = 'size-'
+export const SIZE_ATTRIBUTE = 'data-class-size'
+
 export type Slot = {
   // camelCase module class name
   name: string
   classes: string[]
+  // A variant option sets an arbitrary font size over the base's named one
+  // (`text-sm`, then `text-[0.8rem]`): tailwind-merge drops the named size
+  // and its line-height, so the element inherits its line-height here.
+  resetsLeading?: boolean
+  // A cva variant option: its classes come after the base's on the element,
+  // so tailwind-merge lets them replace a base class they conflict with.
+  variant?: boolean
 }
 
 export type ScssBlock = {
@@ -49,7 +62,22 @@ export type ScssBlock = {
   external: string[]
 }
 
+// A named font size (`text-sm`, `text-xs/relaxed`): tailwind-merge drops a
+// leading-* class from an element that gets one.
+export const NAMED_TEXT_SIZE = /^text-(xs|sm|base|lg|xl|[2-9]xl)(\/[\w.[\]-]+)?$/
+
 export type SlotOptions = {
+  // Where a class probe default ranks among the others with the same variant
+  // (`[&_svg:not([class*='size-'])]:` in front of size-3.5 or size-4), by
+  // Tailwind's order for equal specificity: later wins; a variant option's
+  // always outranks the base's. Zero for any other class.
+  probeRank: (candidate: string, variant: boolean) => number
+  // Selectors for the mirrored elements that set a named font size and no
+  // leading of their own: the leading-* of a slot that also sets a named font
+  // size (CardDescription's default typography) does not apply to them, as
+  // tailwind-merge drops it when one component renders through another
+  // (`render={<CardDescription />}`) and adds its own text size.
+  textSized: string[]
   // Selectors for the mirrored elements whose upstream classes contain a
   // fragment: what upstream's `[class*="size-"]` probes find here.
   classProbe: (fragment: string) => string[]
@@ -92,10 +120,12 @@ export const MARKER = /^(group|peer)(\/[\w-]+)?$/
 
 // A `:not()` whose every argument probes class names, like upstream's
 // `svg:not([class*="size-"])`: a default for icons that set no size of their
-// own. It becomes `:where(:not())` of the mirrored elements whose upstream
-// classes match, or goes when none do. :where() keeps it from adding
-// specificity, so a consumer's own size class on an icon still wins, as it
-// does upstream where the probe excludes that icon.
+// own. It keeps the probe (an icon's own class, a consumer's Tailwind class)
+// and adds the mirrored elements whose upstream classes match, which here
+// carry a data-slot or a size attribute instead, when any do. The
+// `:not()` counts toward specificity as it does upstream, so the default
+// outranks a descendant rule of another component that styles the icon
+// with fewer selectors.
 function resolveClassProbes(
   root: selectorParser.Root,
   classProbe: SlotOptions['classProbe'],
@@ -109,15 +139,17 @@ function resolveClassProbes(
         ? rest.length === 0 && only.value
         : undefined
     })
-    if (!probes.every((probe) => typeof probe === 'string')) return
+    if (!probes.some((probe) => typeof probe === 'string')) return
+    // The guard on class names outside :not() trusts every probe left in one.
+    if (!probes.every((probe) => typeof probe === 'string')) {
+      throw new Error(`${pseudo} mixes class name probes with other selectors`)
+    }
     const selectors = [...new Set(probes.flatMap((probe) => classProbe(probe)))].sort()
-    if (selectors.length === 0) {
-      for (const probe of probes) unmatched.add(probe)
-      pseudo.remove()
-    } else
-      pseudo.replaceWith(
-        selectorParser().astSync(`:where(:not(${selectors.join(', ')}))`).first.first,
-      )
+    if (selectors.length === 0) for (const probe of probes) unmatched.add(probe)
+    const kept = [...new Set(probes)].map((probe) => `[class*="${probe}"]`)
+    pseudo.replaceWith(
+      selectorParser().astSync(`:not(${[...kept, ...selectors].join(', ')})`).first.first,
+    )
   })
 }
 
@@ -198,7 +230,8 @@ function classesIn(selector: string): string[] {
 // Why a rule is dropped, if it is: besides the slot's own utilities, it needs
 // a configured consumer class, so it never applies. A group/peer marker no
 // mirrored element carries fails the build: the item carrying it must be
-// mirrored too.
+// mirrored too, unless the rule's own class is listed in classesWithoutCss
+// because upstream's markup never carries the marker either.
 function dropReason(
   selector: string,
   candidates: Set<string>,
@@ -208,6 +241,12 @@ function dropReason(
   const consumer = classes.find((c) => options.consumerClasses.has(c))
   if (consumer) return options.consumerClasses.get(consumer)
   const missing = classes.find((c) => MARKER.test(c) && !options.markers.has(c))
+  const dead = [...candidates].find(
+    (c) => options.withoutCss.has(c) && classesIn(selector).includes(c),
+  )
+  if (missing && dead) {
+    return `${dead} matches nothing upstream either: no element carries ${missing}.`
+  }
   if (missing) {
     throw new Error(
       `selector ${selector} needs a ${missing} marker, which no mirrored element with a data-slot carries`,
@@ -319,12 +358,26 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
       return false
     })
     if (kept.length === 0) return
-    // A rule gated on a class probe is a default an element's own class
-    // overrides (an icon's size), so it stays at zero specificity even when it
-    // styles descendants.
+    // A rule gated on a class probe keeps upstream's specificity like any
+    // other descendant rule, and its rank repeats the probe's `:not()`, so of
+    // two defaults reaching one icon the one Tailwind puts later wins.
     const nested = kept.map((raw) => {
-      const selector = nestSelector(raw, candidates, resolved, options, unmatched)
-      return { selector, context: targetsDescendant(selector) && !/\[class\*=/.test(raw) }
+      let selector = nestSelector(raw, candidates, resolved, options, unmatched)
+      if (
+        selector === '&' &&
+        options.textSized.length > 0 &&
+        slot.classes.some((c) => NAMED_TEXT_SIZE.test(c)) &&
+        classesIn(raw).some((c) => candidates.has(c) && c.startsWith('leading-'))
+      ) {
+        selector = `&:where(:not(${options.textSized.join(', ')}))`
+      }
+      const rank = options.probeRank(
+        classesIn(raw).find((c) => candidates.has(c) && /\[class\*=/.test(c)) ?? '',
+        slot.variant === true,
+      )
+      const probe = /\[class\*="[^"]*"\]/.exec(selector)?.[0]
+      if (rank > 0 && probe) selector += `:not(${probe})`.repeat(rank)
+      return { selector, context: targetsDescendant(selector) }
     })
     const selectors = [...new Set(nested.map((n) => n.selector))]
     const decls: string[] = []
@@ -357,7 +410,13 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
     if (internal) for (const n of nested) users.add(defaultTarget(n.selector, slot.name))
     // Any other selector inspecting class names looks for Tailwind classes no
     // element carries here.
-    const probe = selectors.find((selector) => /\[class[~|^$*]?=/.test(selector))
+    const probe = selectors.find((selector) =>
+      /\[class[~|^$*]?=/.test(
+        selector
+          .replace(/:not\((?:\[class\*="[^"]*"\], )+/g, ':not(')
+          .replace(/:not\(\[class\*="[^"]*"\]\)/g, ''),
+      ),
+    )
     if (probe) throw new Error(`${slot.name}: selector ${probe} matches class names outside :not()`)
     const wrappers = wrappersOf(rule, layer)
     for (const [block, inContext] of [
@@ -371,6 +430,7 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
     }
   })
 
+  if (slot.resetsLeading) insert(root, [], ['line-height: inherit'])
   const unresolved = slot.classes.filter((c) => !resolved.has(c))
   const unknown = unresolved.filter((c) => !MARKER.test(c) && !options.withoutCss.has(c))
   if (unknown.length > 0) {
@@ -390,7 +450,7 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
       ...dropped,
       ...[...unmatched].map(
         (probe) =>
-          `upstream skips elements whose classes contain "${probe}", and no mirrored element does: the default applies to every match.`,
+          `upstream skips elements whose classes contain "${probe}", and no mirrored element does: the default skips only an element whose own class does.`,
       ),
     ],
     defaults: Object.fromEntries(

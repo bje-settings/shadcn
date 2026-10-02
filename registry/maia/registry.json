@@ -1,0 +1,1813 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "bje",
+  "homepage": "https://shadcn.bje.co/maia",
+  "items": [
+    {
+      "name": "cn",
+      "type": "registry:lib",
+      "title": "cn",
+      "description": "Joins conditional class names with clsx.",
+      "dependencies": ["clsx"],
+      "files": [
+        {
+          "path": "registry/lib/cn.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Button/Button.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Button/Button.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Button/Button.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "button-group",
+      "type": "registry:ui",
+      "title": "ButtonGroup",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/separator", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/ButtonGroup/ButtonGroup.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/ButtonGroup/ButtonGroup.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/ButtonGroup/ButtonGroup.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "separator",
+      "type": "registry:ui",
+      "title": "Separator",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Separator/Separator.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Separator/Separator.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Separator/Separator.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "badge",
+      "type": "registry:ui",
+      "title": "Badge",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Badge/Badge.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Badge/Badge.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Badge/Badge.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "card",
+      "type": "registry:ui",
+      "title": "Card",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Card/Card.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Card/Card.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Card/Card.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "alert",
+      "type": "registry:ui",
+      "title": "Alert",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Alert/Alert.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Alert/Alert.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Alert/Alert.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "label",
+      "type": "registry:ui",
+      "title": "Label",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Label/Label.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Label/Label.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Label/Label.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "title": "Input",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Input/Input.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Input/Input.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Input/Input.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "textarea",
+      "type": "registry:ui",
+      "title": "Textarea",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Textarea/Textarea.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Textarea/Textarea.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Textarea/Textarea.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "skeleton",
+      "type": "registry:ui",
+      "title": "Skeleton",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Skeleton/Skeleton.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Skeleton/Skeleton.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Skeleton/Skeleton.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "spinner",
+      "type": "registry:ui",
+      "title": "Spinner",
+      "dependencies": ["clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Spinner/Spinner.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Spinner/Spinner.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Spinner/Spinner.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "kbd",
+      "type": "registry:ui",
+      "title": "Kbd",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Kbd/Kbd.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Kbd/Kbd.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Kbd/Kbd.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aspect-ratio",
+      "type": "registry:ui",
+      "title": "AspectRatio",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/AspectRatio/AspectRatio.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/AspectRatio/AspectRatio.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/AspectRatio/AspectRatio.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "table",
+      "type": "registry:ui",
+      "title": "Table",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Table/Table.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Table/Table.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Table/Table.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "breadcrumb",
+      "type": "registry:ui",
+      "title": "Breadcrumb",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Breadcrumb/Breadcrumb.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Breadcrumb/Breadcrumb.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Breadcrumb/Breadcrumb.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "type": "registry:ui",
+      "title": "Empty",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Empty/Empty.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Empty/Empty.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Empty/Empty.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "title": "Checkbox",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Checkbox/Checkbox.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Checkbox/Checkbox.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Checkbox/Checkbox.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Switch/Switch.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Switch/Switch.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Switch/Switch.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "progress",
+      "type": "registry:ui",
+      "title": "Progress",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Progress/Progress.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Progress/Progress.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Progress/Progress.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "slider",
+      "type": "registry:ui",
+      "title": "Slider",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Slider/Slider.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Slider/Slider.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Slider/Slider.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tabs",
+      "type": "registry:ui",
+      "title": "Tabs",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Tabs/Tabs.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Tabs/Tabs.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Tabs/Tabs.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "toggle",
+      "type": "registry:ui",
+      "title": "Toggle",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Toggle/Toggle.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Toggle/Toggle.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Toggle/Toggle.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "toggle-group",
+      "type": "registry:ui",
+      "title": "ToggleGroup",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/toggle", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/ToggleGroup/ToggleGroup.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/ToggleGroup/ToggleGroup.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/ToggleGroup/ToggleGroup.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "title": "RadioGroup",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/RadioGroup/RadioGroup.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/RadioGroup/RadioGroup.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/RadioGroup/RadioGroup.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "avatar",
+      "type": "registry:ui",
+      "title": "Avatar",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Avatar/Avatar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Avatar/Avatar.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Avatar/Avatar.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "collapsible",
+      "type": "registry:ui",
+      "title": "Collapsible",
+      "dependencies": ["@base-ui/react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Collapsible/Collapsible.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Collapsible/Collapsible.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "scroll-area",
+      "type": "registry:ui",
+      "title": "ScrollArea",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/ScrollArea/ScrollArea.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/ScrollArea/ScrollArea.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/ScrollArea/ScrollArea.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "direction",
+      "type": "registry:ui",
+      "title": "Direction",
+      "dependencies": [],
+      "devDependencies": ["@base-ui/react", "@testing-library/dom", "jsdom", "sass", "vitest"],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Direction/Direction.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Direction/Direction.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "native-select",
+      "type": "registry:ui",
+      "title": "NativeSelect",
+      "dependencies": ["clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/NativeSelect/NativeSelect.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/NativeSelect/NativeSelect.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/NativeSelect/NativeSelect.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "accordion",
+      "type": "registry:ui",
+      "title": "Accordion",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Accordion/Accordion.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Accordion/Accordion.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Accordion/Accordion.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input-otp",
+      "type": "registry:ui",
+      "title": "InputOtp",
+      "dependencies": ["clsx", "input-otp", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/InputOtp/InputOtp.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/InputOtp/InputOtp.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/InputOtp/InputOtp.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "field",
+      "type": "registry:ui",
+      "title": "Field",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/label", "@bje/separator", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Field/Field.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Field/Field.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Field/Field.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input-group",
+      "type": "registry:ui",
+      "title": "InputGroup",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/input", "@bje/textarea", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/InputGroup/InputGroup.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/InputGroup/InputGroup.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/InputGroup/InputGroup.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "item",
+      "type": "registry:ui",
+      "title": "Item",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/separator", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Item/Item.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Item/Item.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Item/Item.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "pagination",
+      "type": "registry:ui",
+      "title": "Pagination",
+      "dependencies": ["clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Pagination/Pagination.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Pagination/Pagination.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Pagination/Pagination.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "marker",
+      "type": "registry:ui",
+      "title": "Marker",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Marker/Marker.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Marker/Marker.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Marker/Marker.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "message",
+      "type": "registry:ui",
+      "title": "Message",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Message/Message.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Message/Message.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Message/Message.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "bubble",
+      "type": "registry:ui",
+      "title": "Bubble",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Bubble/Bubble.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Bubble/Bubble.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Bubble/Bubble.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "attachment",
+      "type": "registry:ui",
+      "title": "Attachment",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Attachment/Attachment.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Attachment/Attachment.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Attachment/Attachment.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "dialog",
+      "type": "registry:ui",
+      "title": "Dialog",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Dialog/Dialog.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Dialog/Dialog.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Dialog/Dialog.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "alert-dialog",
+      "type": "registry:ui",
+      "title": "AlertDialog",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/AlertDialog/AlertDialog.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/AlertDialog/AlertDialog.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/AlertDialog/AlertDialog.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sheet",
+      "type": "registry:ui",
+      "title": "Sheet",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Sheet/Sheet.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Sheet/Sheet.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Sheet/Sheet.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "drawer",
+      "type": "registry:ui",
+      "title": "Drawer",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Drawer/Drawer.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Drawer/Drawer.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Drawer/Drawer.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "popover",
+      "type": "registry:ui",
+      "title": "Popover",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Popover/Popover.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Popover/Popover.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Popover/Popover.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tooltip",
+      "type": "registry:ui",
+      "title": "Tooltip",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Tooltip/Tooltip.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Tooltip/Tooltip.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Tooltip/Tooltip.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "hover-card",
+      "type": "registry:ui",
+      "title": "HoverCard",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/HoverCard/HoverCard.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/HoverCard/HoverCard.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/HoverCard/HoverCard.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "dropdown-menu",
+      "type": "registry:ui",
+      "title": "DropdownMenu",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/DropdownMenu/DropdownMenu.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/DropdownMenu/DropdownMenu.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/DropdownMenu/DropdownMenu.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "context-menu",
+      "type": "registry:ui",
+      "title": "ContextMenu",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/ContextMenu/ContextMenu.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/ContextMenu/ContextMenu.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/ContextMenu/ContextMenu.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "menubar",
+      "type": "registry:ui",
+      "title": "Menubar",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/dropdown-menu", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Menubar/Menubar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Menubar/Menubar.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Menubar/Menubar.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "select",
+      "type": "registry:ui",
+      "title": "Select",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@base-ui/react",
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Select/Select.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Select/Select.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Select/Select.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "combobox",
+      "type": "registry:ui",
+      "title": "Combobox",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@base-ui/react",
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/input-group", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Combobox/Combobox.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Combobox/Combobox.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Combobox/Combobox.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "navigation-menu",
+      "type": "registry:ui",
+      "title": "NavigationMenu",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/NavigationMenu/NavigationMenu.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/NavigationMenu/NavigationMenu.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/NavigationMenu/NavigationMenu.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "command",
+      "type": "registry:ui",
+      "title": "Command",
+      "dependencies": ["clsx", "cmdk", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/dialog", "@bje/input-group", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Command/Command.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Command/Command.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Command/Command.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sonner",
+      "type": "registry:ui",
+      "title": "Sonner",
+      "dependencies": ["lucide-react", "next-themes", "sonner"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Sonner/Sonner.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Sonner/Sonner.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Sonner/Sonner.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "toast",
+      "type": "registry:ui",
+      "title": "Toast",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@base-ui/react",
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Toast/Toast.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Toast/Toast.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Toast/Toast.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "resizable",
+      "type": "registry:ui",
+      "title": "Resizable",
+      "dependencies": ["clsx", "react-resizable-panels"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Resizable/Resizable.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Resizable/Resizable.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Resizable/Resizable.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "questionnaire",
+      "type": "registry:ui",
+      "title": "Questionnaire",
+      "dependencies": ["@shadcn/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Questionnaire/Questionnaire.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Questionnaire/Questionnaire.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Questionnaire/Questionnaire.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "message-scroller",
+      "type": "registry:ui",
+      "title": "MessageScroller",
+      "dependencies": ["@shadcn/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/MessageScroller/MessageScroller.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/MessageScroller/MessageScroller.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/MessageScroller/MessageScroller.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "use-mobile",
+      "type": "registry:hook",
+      "title": "UseMobile",
+      "dependencies": [],
+      "devDependencies": ["@testing-library/dom", "@testing-library/react", "jsdom", "vitest"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/maia/hooks/use-mobile.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/maia/hooks/use-mobile.test.tsx",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
+      "name": "sidebar",
+      "type": "registry:ui",
+      "title": "Sidebar",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": [
+        "@bje/button",
+        "@bje/input",
+        "@bje/separator",
+        "@bje/sheet",
+        "@bje/skeleton",
+        "@bje/tooltip",
+        "@bje/use-mobile",
+        "@bje/globals"
+      ],
+      "files": [
+        {
+          "path": "registry/maia/ui/Sidebar/Sidebar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Sidebar/Sidebar.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Sidebar/Sidebar.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "calendar",
+      "type": "registry:ui",
+      "title": "Calendar",
+      "dependencies": ["clsx", "lucide-react", "react-day-picker@latest"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Calendar/Calendar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Calendar/Calendar.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Calendar/Calendar.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "carousel",
+      "type": "registry:ui",
+      "title": "Carousel",
+      "dependencies": ["clsx", "embla-carousel-react", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Carousel/Carousel.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Carousel/Carousel.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Carousel/Carousel.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "chart",
+      "type": "registry:ui",
+      "title": "Chart",
+      "dependencies": ["clsx", "recharts@3.8.0"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "recharts",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/card", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/ui/Chart/Chart.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Chart/Chart.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/maia/ui/Chart/Chart.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "globals",
+      "type": "registry:file",
+      "title": "Globals",
+      "dependencies": ["@fontsource-variable/inter"],
+      "devDependencies": ["sass"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/maia/styles/variables.scss",
+          "type": "registry:file",
+          "target": "@components/styles/variables.scss"
+        },
+        {
+          "path": "registry/maia/styles/base.scss",
+          "type": "registry:file",
+          "target": "@components/styles/base.scss"
+        },
+        {
+          "path": "registry/maia/styles/fonts.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts.css"
+        }
+      ]
+    },
+    {
+      "name": "typeset",
+      "type": "registry:file",
+      "title": "Typeset",
+      "dependencies": [],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/maia/styles/typeset.css",
+          "type": "registry:file",
+          "target": "@components/styles/typeset.css"
+        }
+      ]
+    }
+  ]
+}

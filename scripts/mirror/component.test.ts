@@ -3,10 +3,13 @@ import { describe, expect, it } from 'vitest'
 import {
   buildComponent,
   classProbe,
+  compareCandidates,
   dependenciesOf,
   markerSelectors,
   prepareComponent,
+  probeRanks,
   sharedSlotOptions,
+  textSizedSelectors,
   type UpstreamItem,
 } from './component.ts'
 import { forStyle, parseConfig } from './config.ts'
@@ -259,7 +262,86 @@ export { Spinner, Plain }`,
       ],
     }
     const probe = classProbe([await prepareComponent(upstream, config, cssPath)])
-    expect(probe('size-')).toEqual(['[data-slot="spinner"]'])
+    // Plain has no data-slot: it carries the size attribute instead.
+    expect(probe('size-')).toEqual(['[data-slot="spinner"]', '[data-class-size]'])
     expect(probe('w-')).toEqual([])
+  })
+})
+
+describe('textSizedSelectors', () => {
+  it('lists the data-slots that set a named font size and no leading', async () => {
+    const upstream: UpstreamItem = {
+      name: 'copy',
+      type: 'registry:ui',
+      files: [
+        {
+          path: 'registry/base-vega/ui/copy.tsx',
+          type: 'registry:ui',
+          content: `function A() { return <p data-slot="a" className="text-sm leading-relaxed" /> }
+function B() { return <p data-slot="b" className="text-sm tracking-tight" /> }
+function C() { return <p data-slot="c" className="leading-5" /> }
+function D() { return <p data-slot="d" className="text-sm" /> }
+function E() { return <p data-slot="d" className="leading-6" /> }
+function F() { return <p data-slot="f" className="flex" /> }
+export { A, B, C, D, E, F }`,
+        },
+      ],
+    }
+    expect(textSizedSelectors([await prepareComponent(upstream, config, cssPath)])).toEqual([
+      '[data-slot="b"]',
+    ])
+  })
+})
+
+describe('probeRanks', () => {
+  it('orders class probe defaults of one variant by candidate, across components', async () => {
+    const item = (name: string, size: string): UpstreamItem => ({
+      name,
+      type: 'registry:ui',
+      files: [
+        {
+          path: `registry/base-vega/ui/${name}.tsx`,
+          type: 'registry:ui',
+          content: `function X() { return <i data-slot="${name}" className="[&_svg:not([class*='size-'])]:${size} flex" /> }\nexport { X }`,
+        },
+      ],
+    })
+    const rank = probeRanks([
+      await prepareComponent(item('one', 'size-4'), config, cssPath),
+      await prepareComponent(item('two', 'size-3.5'), config, cssPath),
+      await prepareComponent(item('three', 'size-12'), config, cssPath),
+      // A variant group without a probe does not count.
+      await prepareComponent(
+        item('four', 'size-4 hover:underline hover:flex hover:block hover:grid'),
+        config,
+        cssPath,
+      ),
+    ])
+    expect(rank("[&_svg:not([class*='size-'])]:size-3.5", false)).toBe(0)
+    expect(rank("[&_svg:not([class*='size-'])]:size-4", false)).toBe(1)
+    expect(rank("[&_svg:not([class*='size-'])]:size-12", false)).toBe(2)
+    // A variant option's outranks every base's.
+    expect(rank("[&_svg:not([class*='size-'])]:size-3.5", true)).toBe(3)
+    // So does a candidate with another variant in front.
+    expect(rank("group-data-[a=b]/x:[&_svg:not([class*='size-'])]:size-6", false)).toBe(3)
+    expect(rank("[&_svg:not([class*='size-'])]:size-4", true)).toBe(3)
+    expect(rank('', false)).toBe(0)
+  })
+})
+
+describe('compareCandidates', () => {
+  it('sorts like Tailwind: runs of digits by number', () => {
+    expect(['size-12', 'size-4', 'size-3.5', 'size-3', 'size-04'].sort(compareCandidates)).toEqual([
+      'size-3',
+      'size-3.5',
+      'size-04',
+      'size-4',
+      'size-12',
+    ])
+    expect(['b-1', 'a-2', 'a-1'].sort(compareCandidates)).toEqual(['a-1', 'a-2', 'b-1'])
+    // Equal numbers: the digits as text, then the rest.
+    expect(compareCandidates('size-04', 'size-4')).toBeLessThan(0)
+    expect(compareCandidates('size-4', 'size-04')).toBeGreaterThan(0)
+    expect(compareCandidates('size-3', 'size-3.5')).toBeLessThan(0)
   })
 })

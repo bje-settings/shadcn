@@ -5,7 +5,13 @@ import { consumerClassReasons, type MirrorConfig } from './config.ts'
 import { installTransforms } from './install.ts'
 import { pascalCase } from './names.ts'
 import type { ItemParts } from './parts.ts'
-import { type SlotOptions, slotToScss } from './scss.ts'
+import {
+  NAMED_TEXT_SIZE,
+  SIZE_ATTRIBUTE,
+  SIZE_PROBE,
+  type SlotOptions,
+  slotToScss,
+} from './scss.ts'
 import { generateTest } from './tests.ts'
 import { type TransformedComponent, transformComponent } from './tsx.ts'
 
@@ -155,10 +161,89 @@ export function classProbe(components: PreparedComponent[]): (fragment: string) 
     components.flatMap(({ transformed }) =>
       transformed.slots
         .filter((slot) => slot.classes.join(' ').includes(fragment))
-        .flatMap((slot) =>
-          (transformed.dataSlots[slot.name] ?? []).map((v) => `[data-slot="${v}"]`),
-        ),
+        .flatMap((slot) => [
+          ...(transformed.dataSlots[slot.name] ?? []).map((v) => `[data-slot="${v}"]`),
+          ...(fragment === SIZE_PROBE && transformed.sized.includes(slot.name)
+            ? [`[${SIZE_ATTRIBUTE}]`]
+            : []),
+        ]),
     )
+}
+
+// The data-slot of every mirrored element whose slot sets a named font size
+// and no leading, unless a slot with a leading carries the same data-slot.
+export function textSizedSelectors(components: PreparedComponent[]): string[] {
+  const sized = new Set<string>()
+  const led = new Set<string>()
+  for (const { transformed } of components) {
+    for (const slot of transformed.slots) {
+      const target = slot.classes.some((c) => c.startsWith('leading-'))
+        ? led
+        : slot.classes.some((c) => NAMED_TEXT_SIZE.test(c))
+          ? sized
+          : undefined
+      for (const value of transformed.dataSlots[slot.name] ?? []) target?.add(value)
+    }
+  }
+  return [...sized]
+    .filter((value) => !led.has(value))
+    .sort()
+    .map((value) => `[data-slot="${value}"]`)
+}
+
+// Tailwind's candidate order: a run of digits compares as a number, so
+// size-4 comes before size-12.
+export function compareCandidates(a: string, b: string): number {
+  const digits = /\d+/y
+  for (let i = 0; i < Math.min(a.length, b.length); i++) {
+    digits.lastIndex = i
+    const x = digits.exec(a)?.[0]
+    digits.lastIndex = i
+    const y = digits.exec(b)?.[0]
+    if (x !== undefined && y !== undefined) {
+      const order = Number(x) - Number(y) || (x < y ? -1 : x > y ? 1 : 0)
+      if (order !== 0) return order
+      i += x.length - 1
+    } else if (a[i] !== b[i]) return a.charCodeAt(i) - b.charCodeAt(i)
+  }
+  return a.length - b.length
+}
+
+// The rank of each class probe default among the others with the same
+// variant, over every mirrored component: Tailwind sorts equal-specificity
+// utilities by candidate, so the greater candidate comes later and wins
+// where two ancestors' defaults reach one icon.
+export function probeRanks(
+  components: PreparedComponent[],
+): (candidate: string, variant: boolean) => number {
+  const groups = new Map<string, Set<string>>()
+  for (const { transformed } of components) {
+    for (const slot of transformed.slots) {
+      for (const candidate of slot.classes) {
+        const cut = candidate.lastIndexOf(':')
+        if (cut < 0 || !candidate.includes('[class*=')) continue
+        const variant = candidate.slice(0, cut)
+        groups.set(variant, (groups.get(variant) ?? new Set()).add(candidate))
+      }
+    }
+  }
+  const ranks = new Map<string, number>()
+  let span = 0
+  for (const group of groups.values()) {
+    span = Math.max(span, group.size)
+    for (const [rank, candidate] of [...group].sort(compareCandidates).entries())
+      ranks.set(candidate, rank)
+  }
+  // A variant option, or another variant in front of the probe
+  // (`group-data-[...]/x:`), comes after the plain defaults and replaces
+  // them. Among themselves the order of the stylesheet decides. Upstream a
+  // variant option's default replaces only its own base's (tailwind-merge on
+  // one element), so where another component's base default reaches the same
+  // icon and Tailwind puts it later, upstream keeps that one and this does not.
+  return (candidate, variant) =>
+    variant || (candidate !== '' && !candidate.startsWith('[&'))
+      ? span
+      : (ranks.get(candidate) ?? 0)
 }
 
 // What slotToScss reads besides each component's own markers: the same for
@@ -171,6 +256,8 @@ export function sharedSlotOptions(
   return {
     internalDefaults,
     classProbe: classProbe(components),
+    textSized: textSizedSelectors(components),
+    probeRank: probeRanks(components),
     consumerClasses: consumerClassReasons(config),
     globalClasses: new Set(config.globalClasses.flatMap(({ classes }) => classes)),
     withoutCss: new Set(config.classesWithoutCss.flatMap(({ classes }) => classes)),

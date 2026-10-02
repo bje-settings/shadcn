@@ -43,7 +43,7 @@ function TooltipContent({
           {...props}
         >
           {children}
-          <TooltipPrimitive.Arrow className={styles.tooltipContentArrow} />
+          <TooltipPrimitive.Arrow data-class-size="" className={styles.tooltipContentArrow} />
         </TooltipPrimitive.Popup>
       </TooltipPrimitive.Positioner>
     </TooltipPrimitive.Portal>

@@ -21,11 +21,13 @@ const Toaster = ({ ...props }: ToasterProps) => {
       theme={theme as ToasterProps['theme']}
       className={styles.toasterSonner}
       icons={{
-        success: <CircleCheckIcon className={styles.toasterCircleCheckIcon} />,
-        info: <InfoIcon className={styles.toasterInfoIcon} />,
-        warning: <TriangleAlertIcon className={styles.toasterTriangleAlertIcon} />,
-        error: <OctagonXIcon className={styles.toasterOctagonXIcon} />,
-        loading: <Loader2Icon className={styles.toasterLoader2Icon} />,
+        success: <CircleCheckIcon data-class-size="" className={styles.toasterCircleCheckIcon} />,
+        info: <InfoIcon data-class-size="" className={styles.toasterInfoIcon} />,
+        warning: (
+          <TriangleAlertIcon data-class-size="" className={styles.toasterTriangleAlertIcon} />
+        ),
+        error: <OctagonXIcon data-class-size="" className={styles.toasterOctagonXIcon} />,
+        loading: <Loader2Icon data-class-size="" className={styles.toasterLoader2Icon} />,
       }}
       style={
         {

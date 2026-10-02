@@ -25,10 +25,10 @@ describe('transformComponent', () => {
     const { code, slots } = transformComponent(button, 'button', 'bje')
     expect(slots).toEqual([
       { name: 'button', classes: ['inline-flex', 'h-9'] },
-      { name: 'variantDefault', classes: ['bg-primary'] },
-      { name: 'variantOutline', classes: ['border'] },
-      { name: 'sizeDefault', classes: ['h-9'] },
-      { name: 'sizeIconXs', classes: ['size-6'] },
+      { name: 'variantDefault', classes: ['bg-primary'], variant: true },
+      { name: 'variantOutline', classes: ['border'], variant: true },
+      { name: 'sizeDefault', classes: ['h-9'], variant: true },
+      { name: 'sizeIconXs', classes: ['size-6'], variant: true },
     ])
     expect(code).not.toContain('class-variance-authority')
     expect(code).toContain(
@@ -40,6 +40,50 @@ describe('transformComponent', () => {
     expect(code).toContain('ButtonPrimitive.Props & ButtonVariantProps')
     expect(code).toContain('className={buttonVariants({ variant, size, className })}')
     expect(code).toContain('// Upstream comment')
+  })
+
+  it('flags a variant option whose arbitrary font size replaces the base named one', () => {
+    const cva = (base: string, option: string) =>
+      transformComponent(
+        `import { cva } from "class-variance-authority"\nconst xVariants = cva("${base}", { variants: { size: { sm: "${option}" } } })`,
+        'x',
+        'bje',
+      ).slots
+    expect(cva('flex text-sm', 'h-6 text-[0.8rem]')[1]).toEqual({
+      name: 'sizeSm',
+      classes: ['h-6', 'text-[0.8rem]'],
+      variant: true,
+      resetsLeading: true,
+    })
+    expect(cva('flex text-xs/relaxed', 'text-[10px]')[1]).toHaveProperty('resetsLeading', true)
+    // The option sets its own leading, the base names no size, or the size is no length.
+    expect(cva('flex text-sm', 'text-[0.8rem] leading-5')[1]).not.toHaveProperty('resetsLeading')
+    expect(cva('flex', 'text-[0.8rem]')[1]).not.toHaveProperty('resetsLeading')
+    expect(cva('flex text-sm', 'text-[#fff]')[1]).not.toHaveProperty('resetsLeading')
+  })
+
+  it('marks an element with a size class and no data-slot, for the size probe', () => {
+    const source = `import { cn } from "cn"
+function A({ className }) {
+  return (
+    <>
+      <Icon className={cn("size-4", className)} />
+      <Icon className={cn("size-4 mx-1", className)} extra="x" />
+      <i className="size-2" />
+      <i data-slot="has" className="size-2" />
+      <i className="mx-1" />
+      <b title={cn("size-3", className)} />
+    </>
+  )
+}`
+    const { code, sized } = transformComponent(source, 'a', 'bje')
+    expect(code.match(/data-class-size=""/g)).toHaveLength(3)
+    expect(code).not.toContain('<i data-slot="has" data-class-size')
+    expect(code).not.toContain('<b data-class-size')
+    // The attribute goes right after the tag name, inside the opening tag.
+    expect(code).toContain('<Icon data-class-size="" className=')
+    expect(code).toContain('<i data-class-size="" className=')
+    expect(sized).toHaveLength(3)
   })
 
   it('prefixes a secondary cva, handles no config or defaults, and adds the clsx import', () => {

@@ -4,9 +4,12 @@ import { parsed } from './test-support.ts'
 
 describe('registryBuilds', () => {
   it('builds each style from its catalog into its own directory', () => {
-    expect(registryBuilds(parsed, 'public/r')).toEqual([
-      { registry: 'registry/vega/registry.json', output: 'public/r/vega' },
-      { registry: 'registry/luma/registry.json', output: 'public/r/luma' },
-    ])
+    const styles = ['vega', 'luma', 'nova', 'maia', 'lyra', 'mira', 'sera', 'rhea']
+    expect(registryBuilds(parsed, 'public/r')).toEqual(
+      styles.map((style) => ({
+        registry: `registry/${style}/registry.json`,
+        output: `public/r/${style}`,
+      })),
+    )
   })
 })

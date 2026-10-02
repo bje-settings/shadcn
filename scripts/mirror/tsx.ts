@@ -20,6 +20,7 @@ import type {
   FunctionDeclaration,
   FunctionExpression,
   Identifier,
+  JSXOpeningElement,
   Node,
   ObjectExpression,
   SourceLocation,
@@ -29,7 +30,7 @@ import type {
 import MagicString from 'magic-string'
 import { childNodes, parseModule, span } from './ast.ts'
 import { camelCase, pascalCase, registryModule } from './names.ts'
-import { MARKER, type Slot } from './scss.ts'
+import { MARKER, NAMED_TEXT_SIZE, SIZE_ATTRIBUTE, SIZE_PROBE, type Slot } from './scss.ts'
 
 // ClassValue types the className of generated cva() replacements, matching
 // cva's own type, which also accepts (and clsx ignores) Base UI's function
@@ -95,6 +96,9 @@ export type TransformedComponent = {
   hooks: Hook[]
   // Raw data-slot values each module class lands on
   dataSlots: Record<string, string[]>
+  // Module classes on an element that has no data-slot and carries the
+  // size-class probe's attribute
+  sized: string[]
   markers: Marker[]
   variantSets: VariantSet[]
   components: RenderedComponent[]
@@ -194,6 +198,19 @@ type Cva = {
   set: VariantSet
 }
 
+const ARBITRARY_TEXT_SIZE = /^text-\[\d*\.?\d+(rem|em|px)\]$/
+
+// Whether a variant option's arbitrary font size replaces the base's named
+// one, which tailwind-merge removes with its line-height (unless the option
+// sets its own).
+function resetsLeading(base: string[], option: string[]): boolean {
+  return (
+    base.some((c) => NAMED_TEXT_SIZE.test(c)) &&
+    option.some((c) => ARBITRARY_TEXT_SIZE.test(c)) &&
+    !option.some((c) => c.startsWith('leading-'))
+  )
+}
+
 function convertCva(
   declaration: VariableDeclaration,
   call: CallExpression,
@@ -209,7 +226,8 @@ function convertCva(
   const short = prefix === camelCase(component)
   const typeName = `${pascalCase(prefix)}VariantProps`
   const classesName = `${prefix}VariantClasses`
-  const slots: Slot[] = [{ name: prefix, classes: classList(stringValue(baseArg)) }]
+  const baseClasses = classList(stringValue(baseArg))
+  const slots: Slot[] = [{ name: prefix, classes: baseClasses }]
 
   const config = new Map(configArg ? objectEntries(configArg) : [])
   for (const name of config.keys()) {
@@ -231,7 +249,12 @@ function convertCva(
       const classes = classList(stringValue(value))
       if (classes.length === 0) return { value: option }
       const name = `${short ? group : `${prefix}${pascalCase(group)}`}${pascalCase(option)}`
-      slots.push({ name, classes })
+      slots.push({
+        name,
+        classes,
+        variant: true,
+        ...(resetsLeading(baseClasses, classes) ? { resetsLeading: true } : {}),
+      })
       return { value: option, slot: name }
     })
     const lines = choices.map(({ value, slot }) =>
@@ -565,6 +588,20 @@ export function transformComponent(
     slotDataSlots.set(slot, values.add(value))
   }
 
+  // An element without a data-slot whose upstream classes contain `size-` is
+  // what `svg:not([class*="size-"])` skips; the probe finds it by an attribute
+  // here. Only a className written on the element itself (a string, or cn())
+  // is marked: the attribute reaches the DOM through the component's props.
+  const sized = new Set<string>()
+  const markSized = (slot: string, classes: string[], ancestors: Node[]) => {
+    if (!classes.join(' ').includes(SIZE_PROBE) || dataSlot(ancestors) !== undefined) return
+    const opening = ancestors.findLast(
+      (n): n is JSXOpeningElement => n.type === 'JSXOpeningElement',
+    )
+    sized.add(slot)
+    out.appendLeft(opening?.name.end as number, ` ${SIZE_ATTRIBUTE}=""`)
+  }
+
   // Adds a slot and returns the module class it got. Two elements asking for
   // the same name with different classes (FieldTitle reusing FieldLabel's
   // data-slot) keep them apart: the second takes its owner's name, or a number.
@@ -765,6 +802,14 @@ export function transformComponent(
       const classes = literals.flatMap((arg) => staticClasses(arg) as string[])
       if (classes.length > 0) {
         const slot = addSlot({ name: base(), classes }, ancestors)
+        const attribute = ancestors.at(-2)
+        if (
+          ancestors.at(-1)?.type === 'JSXExpressionContainer' &&
+          attribute?.type === 'JSXAttribute' &&
+          attribute.name.name === 'className'
+        ) {
+          markSized(slot, classes, ancestors.slice(0, -1))
+        }
         if (keyedPart(ancestors) === undefined) track(ancestors, { slot }, consumer)
         out.overwrite(...span(literals[0] as Node), `styles.${slot}`)
       }
@@ -793,6 +838,7 @@ export function transformComponent(
           )
         }
         const slot = addSlot({ name, classes }, [...ancestors, node])
+        markSized(slot, classes, [...ancestors, node])
         track([...ancestors, node], { slot }, false)
         out.overwrite(...span(value), `{styles.${slot}}`)
         return false
@@ -886,6 +932,7 @@ export function transformComponent(
     slots,
     hooks,
     dataSlots,
+    sized: [...sized],
     markers,
     variantSets: [...cvas.values()].map((cva) => cva.set),
     components: [...components.values()],
