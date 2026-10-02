@@ -322,6 +322,26 @@ describe('mirror build', BUILDS, () => {
     )
   })
 
+  it("copies a hook item's upstream source into the harness, outside the module maps", async () => {
+    const source = 'export function useThing() {\n  return 1\n}\n'
+    const configPath = join(root, 'mirror.config.json')
+    const config = JSON.parse(await read('mirror.config.json'))
+    await writeFile(configPath, JSON.stringify({ ...config, components: ['badge', 'use-thing'] }))
+    for (const style of ['base-vega', 'base-luma']) {
+      responses[`https://example.com/${style}/use-thing.json`] = {
+        name: 'use-thing',
+        type: 'registry:hook',
+        files: [
+          { path: `registry/${style}/hooks/use-thing.ts`, type: 'registry:hook', content: source },
+        ],
+      }
+    }
+    await run(['fetch'], io())
+    await run(['build', 'vega'], io())
+    expect(await read('ab/generated/vega/upstream/hooks/use-thing.ts')).toContain(source)
+    expect(await read('ab/generated/vega/ours.ts')).not.toContain('use-thing')
+  })
+
   it('builds one style alone, named by its short name, and formats all but the harness inputs', async () => {
     await run(['fetch'], io())
     logs = []
