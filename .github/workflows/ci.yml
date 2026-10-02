@@ -20,7 +20,8 @@ concurrency:
 # Job names are a contract: the repo ruleset Require CI (23915809) requires
 # build, vitest, types, biome and ab by exact name. A renamed job never reports,
 # and every pull request waits on it forever. Update the ruleset with any rename.
-# deploy is not required: it runs on pushes to main only.
+# deploy is not required: it runs on pushes to main only. ab is a fan-in over
+# one ab-style leg per style, so the required name holds whatever the styles.
 jobs:
   # `shadcn build` validates each style's registry.json and every item against
   # the schema.
@@ -78,14 +79,14 @@ jobs:
       - name: Generate the A/B harness inputs
         run: pnpm mirror:build
       # Scripts resolve like node; registry items (hand-written, then each
-      # style's) and the A/B harness like a bundler.
+      # style's) and the A/B harness, as committed and with each style's
+      # generated inputs, like a bundler.
       - name: Type-check the TypeScript
         run: |
           pnpm exec tsc -p tsconfig.json
-          for project in registry/tsconfig.json registry/*/tsconfig.json; do
+          for project in registry/tsconfig.json registry/*/tsconfig.json ab/tsconfig.json ab/generated/*/tsconfig.json; do
             pnpm exec tsc -p "$project"
           done
-          pnpm exec tsc -p ab/tsconfig.json
 
   biome:
     name: biome
@@ -96,13 +97,36 @@ jobs:
       - name: Lint and format-check with Biome
         run: pnpm exec biome ci . --error-on-warnings
 
-  # Visual A/B: every generated component against upstream shadcn with
-  # Tailwind, pixel for pixel. Uses the Chrome
-  # preinstalled on GitHub's Ubuntu image, so no browser download: both sides
-  # render in the same browser in the same run, so its version does not matter.
-  ab:
-    name: ab
+  # The styles the ab-style legs compare, one each, from mirror.config.json.
+  ab-styles:
+    name: ab-styles
     runs-on: ubuntu-latest
+    outputs:
+      styles: ${{ steps.list.outputs.styles }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: mirror.config.json
+          sparse-checkout-cone-mode: false
+      - name: List the styles
+        id: list
+        run: echo "styles=$(jq -c '[.upstream.styles[] | sub("^base-"; "")]' mirror.config.json)" >> "$GITHUB_OUTPUT"
+
+  # Visual A/B: every generated component of one style against upstream
+  # shadcn with Tailwind, pixel for pixel. Uses the Chrome preinstalled on
+  # GitHub's Ubuntu image, so no browser download: both sides render in the
+  # same browser in the same run, so its version does not matter.
+  ab-style:
+    name: ab-style (${{ matrix.style }})
+    needs: ab-styles
+    runs-on: ubuntu-latest
+    strategy:
+      # One style's failure does not cancel the others' comparisons.
+      fail-fast: false
+      matrix:
+        style: ${{ fromJSON(needs.ab-styles.outputs.styles) }}
+    env:
+      AB_STYLE: ${{ matrix.style }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -110,9 +134,9 @@ jobs:
           fetch-depth: 2
       # A draft pull request skips the comparison until it is marked ready,
       # as does one that changes only files no A/B case renders or builds
-      # from (docs, unit tests, lint and hook config). The job still reports,
-      # as the ruleset requires, and a draft cannot merge. Anything else runs
-      # it, as does every push to main.
+      # from (docs, unit tests, lint and hook config), or only another style's
+      # output and snapshots. The leg still reports, and a draft cannot merge.
+      # Anything else runs it, as does every push to main.
       - name: Decide whether the comparison runs
         id: scope
         run: |
@@ -125,16 +149,14 @@ jobs:
             echo run=false >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          # Styles other than the compare one have no A/B case: their generated
-          # output and snapshots do not reach it either.
-          others=$(jq -r '.upstream.compare as $c | [.upstream.styles[] | select(. != $c) | sub("^base-"; "")] | join("|")' mirror.config.json)
+          others=$(jq -r --arg own "$AB_STYLE" '[.upstream.styles[] | sub("^base-"; "") | select(. != $own)] | join("|")' mirror.config.json)
           relevant=$(git diff --name-only HEAD^1 HEAD | grep -Ev \
             '(\.md$|^\.claude/|\.test\.tsx?$|^lefthook\.yml$|^biome\.json$|^vitest\.config\.ts$)' \
             | { if [ -n "$others" ]; then grep -Ev "^(registry/|upstream/base-)($others)/"; else cat; fi; } || true)
           if [ -n "$relevant" ]; then
             echo run=true >> "$GITHUB_OUTPUT"
           else
-            echo "No change reaches an A/B case: comparison skipped." >> "$GITHUB_STEP_SUMMARY"
+            echo "No change reaches a $AB_STYLE A/B case: comparison skipped." >> "$GITHUB_STEP_SUMMARY"
             echo run=false >> "$GITHUB_OUTPUT"
           fi
       - uses: ./.github/actions/node-pnpm
@@ -151,13 +173,29 @@ jobs:
         if: ${{ !cancelled() && steps.scope.outputs.run == 'true' }}
         uses: actions/upload-artifact@v7
         with:
-          name: ab-report
-          path: ab/report
+          name: ab-report-${{ matrix.style }}
+          path: ab/report/${{ matrix.style }}
           retention-days: 14
 
+  # The required ab check. It runs whatever happened above, so it reports even
+  # when a leg was skipped or never started, and passes only when listing the
+  # styles succeeded and every leg passed or skipped its comparison.
+  ab:
+    name: ab
+    if: always()
+    needs: [ab-styles, ab-style]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every style's comparison to pass
+        env:
+          STYLES: ${{ needs.ab-styles.result }}
+          LEGS: ${{ needs.ab-style.result }}
+        run: |
+          echo "ab-styles: $STYLES, ab-style: $LEGS"
+          [ "$STYLES" = success ] && [ "$LEGS" = success ]
+
   # Publishes the build job's public/r to GitHub Pages at shadcn.bje.co, only
-  # from main and only once every required check passes. The site is public;
-  # the repo stays internal.
+  # from main and only once every required check passes.
   deploy:
     name: deploy
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
