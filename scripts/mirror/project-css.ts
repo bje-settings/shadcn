@@ -56,12 +56,18 @@ function themeSetup(index: StyleIndex, color: BaseColor, font: FontItem): string
     '@custom-variant dark (&:is(.dark *));',
     '',
     '@theme inline {',
-    '  --font-heading: var(--font-sans);',
-    `  ${font.font.variable}: ${font.font.family};`,
     ...Object.keys(color.cssVarsV4.light)
       .filter((name) => name !== 'radius')
       .map((name) => `  --color-${name}: var(--${name});`),
     ...Object.entries(RADIUS).map(([size, value]) => `  --radius-${size}: ${value};`),
+    '}',
+    '',
+    // Not inline, unlike upstream: the generated CSS then reads the fonts
+    // through these variables, so a font item can replace one without a
+    // Tailwind recompile, which is how upstream's CLI applies a font.
+    '@theme {',
+    '  --font-heading: var(--font-sans);',
+    `  ${font.font.variable}: ${font.font.family};`,
     '}',
   ]
 }

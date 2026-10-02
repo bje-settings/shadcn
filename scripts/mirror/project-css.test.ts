@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { layoutCss, projectCss, staticTheme } from './project-css.ts'
+import { compileCandidates } from './tailwind.ts'
 
 const color = {
   cssVarsV4: {
@@ -40,6 +41,17 @@ describe('projectCss', () => {
     expect(css).toContain(
       '@layer base {\n  body {\n    @apply bg-background;\n  }\n  html {\n    @apply font-sans;\n  }\n}',
     )
+  })
+
+  it('keeps the fonts out of @theme inline, so compiled CSS reads them as variables', async () => {
+    const css = projectCss({}, color, font)
+    expect(css).toContain(
+      "@theme {\n  --font-heading: var(--font-sans);\n  --font-sans: 'Inter Variable', sans-serif;\n}",
+    )
+    const compiled = await compileCandidates(css, ['font-sans', 'font-heading'])
+    expect(compiled).toContain('font-family: var(--font-sans);')
+    expect(compiled).toContain('font-family: var(--font-heading);')
+    expect(compiled).not.toContain('font-family: Inter')
   })
 
   it('handles a style with no css', () => {

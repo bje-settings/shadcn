@@ -154,8 +154,8 @@ export { Badge }`
     const [tsx, scss] = result.files
     expect(tsx?.content).toContain('import { CheckIcon } from "lucide-react"')
     expect(tsx?.content).toContain('<CheckIcon />')
-    // font-heading, which Tailwind inlines to the theme's --font-sans.
-    expect(scss?.content).toContain('font-family: var(--font-sans);')
+    // font-heading, read through the theme's --font-heading.
+    expect(scss?.content).toContain('font-family: var(--font-heading);')
     expect(result.item.dependencies).toEqual(['clsx', 'lucide-react'])
   })
 

@@ -2,7 +2,7 @@
 //
 // Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):
 //   --blur-xs --color-black --container-sm --default-transition-duration
-//   --default-transition-timing-function --ease-in-out --font-sans --font-weight-medium
+//   --default-transition-timing-function --ease-in-out --font-heading --font-weight-medium
 //   --foreground --muted-foreground --popover --popover-foreground --spacing --text-base
 //   --text-base--line-height --text-sm --text-sm--line-height
 
@@ -169,7 +169,7 @@
 }
 
 :where(.sheetTitle) {
-  font-family: var(--font-sans);
+  font-family: var(--font-heading);
   font-size: var(--text-base);
   line-height: var(--leading, var(--text-base--line-height));
   --font-weight: var(--font-weight-medium);
