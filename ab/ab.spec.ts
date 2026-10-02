@@ -11,7 +11,7 @@
 import { type Browser, test as base, expect, type Page } from '@playwright/test'
 import pixelmatch from 'pixelmatch'
 import { PNG } from 'pngjs'
-import { type Case, cases } from './cases'
+import { type Case, cases, isOverlay } from './cases'
 import { PORT } from './playwright.config'
 
 type Side = 'upstream' | 'ours'
@@ -189,7 +189,9 @@ const test = base.extend<object, { pages: Pages }>({
 // The element a state applies to: the case's data-slot element, anywhere on
 // the page (a popup portals out of the case), or else the case's first child.
 function target(page: Page, c: Case) {
-  if (c.slot === undefined) return page.locator(`[data-case="${c.id}"] > *`).first()
+  if (c.kind !== 'fixture' || c.slot === undefined) {
+    return page.locator(`[data-case="${c.id}"] > *`).first()
+  }
   return page.locator(`[data-slot="${c.slot}"]`).first()
 }
 
@@ -232,7 +234,7 @@ async function capture(page: Page, c: Case, state: State): Promise<Shot> {
       expect(await element.evaluate((el) => el.matches(':focus-visible'))).toBe(true)
     }
     const options = { animations: 'disabled', caret: 'hide' } as const
-    const shot = c.overlay
+    const shot = isOverlay(c)
       ? await page.screenshot(options)
       : await page.locator(`[data-case="${c.id}"]`).screenshot(options)
     return { file: shot, png: PNG.sync.read(shot) }
@@ -301,7 +303,7 @@ for (const c of cases) {
       test.step(state, async () => {
         if (!(await appliesBoth(render, state))) return
         // An overlay case's popup must have mounted: two blank viewports match.
-        if (render.overlay && render.slot !== undefined) {
+        if (render.kind === 'fixture' && render.overlay && render.slot !== undefined) {
           for (const page of sides) await expect(target(page, render)).toBeAttached()
         }
         const [upstreamShot, oursShot] = await timed(timings.test, 'capture', () =>
@@ -353,7 +355,7 @@ for (const c of cases) {
       expect(reported(), 'errors after the previous case').toEqual([])
       await showBoth(c)
       await compare(c, 'rest')
-      if (c.interactive) {
+      if (c.kind === 'fixture' && c.interactive) {
         for (const state of ['hover', 'focus'] as const) {
           // Each state starts from an untouched render.
           if ((await Promise.all(sides.map(dirty))).includes(true)) await showBoth(c)
@@ -362,14 +364,14 @@ for (const c of cases) {
       }
       // Only form controls honour `disabled`, whichever way they render, so
       // the disabled render is shown only when this one's element takes it.
-      if (c.disabled && (await appliesBoth(c, 'disabled'))) {
+      if (c.kind === 'fixture' && c.disabled && (await appliesBoth(c, 'disabled'))) {
         await showBoth(c.disabled)
         await compare(c.disabled, 'disabled')
       }
     } finally {
       const description = JSON.stringify({
-        overlay: c.overlay,
-        interactive: c.interactive,
+        overlay: isOverlay(c),
+        interactive: c.kind === 'fixture' && c.interactive,
         compared,
         shows,
         ...timings,

@@ -13,9 +13,15 @@ import { pick, type Ui } from './ui'
 // A page's modules: components by item, and example modules by example name.
 export type Side = { ui: Ui; examples: Ui }
 
-export type Case = {
+type Rendered = {
   id: string
   theme: 'light' | 'dark'
+  render: (side: Side) => ReactNode
+}
+
+// A fixture: one exported component and cva() option.
+export type FixtureCase = Rendered & {
+  kind: 'fixture'
   // data-slot of the element a state applies to; else the case's first child
   slot?: string
   // Renders only when the page is narrowed to it and is compared as the
@@ -23,10 +29,17 @@ export type Case = {
   overlay: boolean
   // Also compared hovered and keyboard-focused, on the same render
   interactive: boolean
-  render: (side: Side) => ReactNode
   // The same fixture rendered disabled, compared when its element honours
   // `disabled`
-  disabled?: Case
+  disabled?: FixtureCase
+}
+
+// A docs sub-example or a Typeset content fixture: compared at rest only.
+export type Case = FixtureCase | (Rendered & { kind: 'example' }) | (Rendered & { kind: 'typeset' })
+
+// Whether a case renders only when the page is narrowed to it.
+export function isOverlay(c: Case): boolean {
+  return c.kind === 'fixture' && c.overlay
 }
 
 const THEMES = ['light', 'dark'] as const
@@ -35,8 +48,9 @@ function fixtureCase(
   fixture: (typeof fixtures)[number],
   theme: Case['theme'],
   disabled: boolean,
-): Case {
+): FixtureCase {
   return {
+    kind: 'fixture',
     id: `${fixture.label} ${theme}${disabled ? ' disabled' : ''}`,
     theme,
     slot: fixture.slot,
@@ -77,10 +91,9 @@ export const cases: Case[] = [
   ),
   ...examples.flatMap((example) =>
     THEMES.map((theme) => ({
+      kind: 'example' as const,
       id: `${example.example} ${example.name} ${theme}`,
       theme,
-      overlay: false,
-      interactive: false,
       render: (side: Side) => {
         const Example = pick(side.examples, example.example, example.name)
         return <Example />
@@ -89,10 +102,9 @@ export const cases: Case[] = [
   ),
   ...typeset.flatMap((fixture) =>
     THEMES.map((theme) => ({
+      kind: 'typeset' as const,
       id: `typeset ${fixture.name} ${theme}`,
       theme,
-      overlay: false,
-      interactive: false,
       render: () => (
         <div
           className="typeset"
@@ -106,4 +118,6 @@ export const cases: Case[] = [
 ]
 
 // Every render the gallery can show: each case and its disabled render.
-export const renders: Case[] = cases.flatMap((c) => (c.disabled ? [c, c.disabled] : [c]))
+export const renders: Case[] = cases.flatMap((c) =>
+  c.kind === 'fixture' && c.disabled ? [c, c.disabled] : [c],
+)

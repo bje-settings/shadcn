@@ -9,7 +9,7 @@
 // it fails alone rather than blanking the page.
 
 import { Component, type ReactNode, useEffect, useState } from 'react'
-import { renders, type Side } from './cases'
+import { isOverlay, renders, type Side } from './cases'
 
 class CaseBoundary extends Component<{ children: ReactNode }, { error?: Error }> {
   override state: { error?: Error } = {}
@@ -41,7 +41,7 @@ export function Gallery({ side }: { side: Side }) {
     >
       {renders
         // An overlay case renders only when the page is narrowed to it.
-        .filter((c) => c.theme === theme && (only === null ? !c.overlay : c.id === only))
+        .filter((c) => c.theme === theme && (only === null ? !isOverlay(c) : c.id === only))
         .map((c) => (
           <div
             key={`${c.id} ${mount}`}
