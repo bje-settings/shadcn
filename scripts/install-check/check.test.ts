@@ -95,6 +95,10 @@ describe('parseItem', () => {
   it('refuses a file without content, and a null dependency list', () => {
     const files = [{ path: 'a.ts', type: 'registry:lib' }]
     expect(() => parseItem({ name: 'cn', files }, 'cn.json')).toThrow('files[0].content')
+    const untyped = [{ path: 'a.ts', content: '' }]
+    expect(() => parseItem({ name: 'cn', files: untyped }, 'cn.json')).toThrow('files[0].type')
+    const pathless = [{ type: 'registry:lib', content: '' }]
+    expect(() => parseItem({ name: 'cn', files: pathless }, 'cn.json')).toThrow('files[0].path')
     expect(() => parseItem({ name: 'cn', dependencies: null, files: [] }, 'cn.json')).toThrow(
       'dependencies',
     )
@@ -191,6 +195,8 @@ describe('undeclaredImports', () => {
 
   it('accepts an import declared by the item, the items it reaches, or the scaffold', () => {
     const items = [
+      // Ships Button's path too, and is not reached: another owner is.
+      item({ name: 'copy', files: [file('', 'registry/vega/ui/Button/Button.tsx')] }),
       item({
         name: 'cn',
         dependencies: ['clsx'],
@@ -218,6 +224,8 @@ describe('undeclaredImports', () => {
               "import { Button } from '@/registry/bje/ui/Button/Button'",
               "import { cn } from '@/registry/bje/lib/cn'",
               "import '@/registry/bje/ui/Chart/Chart.module.scss'",
+              "import styles from './Chart.module.scss'",
+              "import { x } from '@/components/ui/x'",
             ].join('\n'),
             'registry/vega/ui/Chart/Chart.tsx',
           ),
@@ -232,7 +240,7 @@ describe('undeclaredImports', () => {
     const items = [
       item({
         name: 'a',
-        registryDependencies: ['@bje/b', '@bje/gone', 'c'],
+        registryDependencies: ['@bje/b', '@bje/gone', 'c', '@other/c'],
         files: [
           file(
             [
@@ -249,13 +257,17 @@ describe('undeclaredImports', () => {
       item({ name: 'b', registryDependencies: ['@bje/a'] }),
       // Not reached from a: a bare name is the CLI's default registry's.
       item({ name: 'c', dependencies: ['y'], files: [file('', 'registry/vega/ui/C/C.tsx')] }),
+      item({ name: 'c2', files: [file('', 'registry/vega/ui/C/C.tsx')] }),
+      // Its path ends in ui/D/D, but not at a directory boundary.
+      item({ name: 'd', files: [file('', 'registry/vega/notui/D/D.tsx')] }),
     ]
     expect(undeclaredImports(items, 'bje')).toEqual([
-      'a: registry dependency @bje/gone is not in the registry',
-      'a: registry dependency c is not in the registry',
+      'a: registry dependency @bje/gone names no @bje/ item',
+      'a: registry dependency c names no @bje/ item',
+      'a: registry dependency @other/c names no @bje/ item',
       'a: f.tsx imports x, which no dependency declares',
       'a: f.tsx imports y, which no dependency declares',
-      'a: f.tsx imports @/registry/bje/ui/C/C from c, which no registry dependency reaches',
+      'a: f.tsx imports @/registry/bje/ui/C/C from c or c2, which no registry dependency reaches',
       'a: f.tsx imports @/registry/bje/ui/D/D, which no item ships',
     ])
   })
@@ -326,6 +338,10 @@ describe('scaffoldFiles', () => {
     expect(compilerOptions.paths).toEqual({ '@/*': ['./src/*'] })
     expect(compilerOptions.strict).toBe(true)
     expect(files['.npmrc']).toBe('registry=https://registry.npmjs.org/\n')
+    expect(files['vite.config.ts']).toContain("test: { environment: 'jsdom' }")
+    expect(files['vite.config.ts']).toContain(
+      "alias: { '@': new URL('./src', import.meta.url).pathname }",
+    )
     // The build compiles every module and stylesheet, and no test.
     expect(files['src/main.ts']).toContain(
       "['./**/*.{ts,tsx,css,scss}', '!./**/*.test.{ts,tsx}', '!./main.ts']",
@@ -485,6 +501,7 @@ describe('run', () => {
       `Installing 2 items of @bje from ${join(dir, 'r')} into ${join(dir, 'p')}`,
       'Installed, type-checked, tested and built 2 items',
     ])
+    await expect(fetch(served as string)).rejects.toThrow()
   })
 
   it('fails before installing when an item imports a package nothing declares', async () => {
@@ -509,11 +526,13 @@ describe('run', () => {
     expect(calls).toHaveLength(3)
   })
 
-  it('fails on a file not written or a package not listed, before type-checking', async () => {
-    await expect(run(io({ skip: 'registry/lib/cn.ts', packages: {} }))).rejects.toThrow(
+  it('fails on a file not written, a package not listed and an import unrewritten, together', async () => {
+    const options = { skip: 'registry/lib/cn.ts', packages: {}, rewrite: false }
+    await expect(run(io(options))).rejects.toThrow(
       [
         'cn: registry/lib/cn.ts was not written to src/lib/cn.ts',
         "cn: clsx is not in the project's package.json",
+        'src/components/ui/Button/Button.tsx still imports from @/registry/',
       ].join('\n'),
     )
     expect(calls).toHaveLength(3)
