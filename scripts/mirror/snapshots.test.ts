@@ -86,17 +86,17 @@ describe('parseFontItem', () => {
     })
   })
 
-  it.each(['font-sans', '--font-sans; --x', '--Font'])(
+  it.each(['font-sans', '--font-sans; --x', '--Font', '--'])(
     'rejects %s as a variable, which is written into CSS as it is',
     (variable) => {
       expect(() => parseFontItem({ font: { ...font, variable }, title: 'Inter' }, 'f')).toThrow(
-        'f: font.variable must be a custom property',
+        'f: font.variable must be a lowercase custom property',
       )
     },
   )
 
-  it.each(["'X'; } body { color: red", 'X {', 'X }', 'X\\3b'])(
-    'rejects %s as a family, which could end the declaration or the rule',
+  it.each(['X; color: red', 'X {', 'X }', 'X\\3b', 'X /*', 'X !important'])(
+    'rejects %s as a family, which could change more than the font',
     (family) => {
       expect(() => parseFontItem({ font: { ...font, family }, title: 'Inter' }, 'f')).toThrow(
         'f: font.family must be a single declaration value',
