@@ -23,8 +23,7 @@ const part: PartTypes = {
   opens: false,
   keepMounted: false,
   required: [],
-  text: true,
-  childrenFunction: false,
+  children: 'text',
   options: {},
 }
 
@@ -140,8 +139,7 @@ export { Chip }`,
               opens: true,
               keepMounted: false,
               required: [],
-              text: true,
-              childrenFunction: false,
+              children: 'text',
               options: {},
             },
           ],
@@ -210,10 +208,7 @@ export { Chip, ChipList }`,
       {
         types: new Map([
           ['Chip', part],
-          [
-            'ChipList',
-            { ...part, className: false, text: false, childrenFunction: true, options: {} },
-          ],
+          ['ChipList', { ...part, className: false, children: 'function', options: {} }],
         ]),
         unrendered: { Chip: 'it waits for an open item.' },
       },

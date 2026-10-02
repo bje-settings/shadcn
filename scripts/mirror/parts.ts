@@ -8,7 +8,7 @@
 
 import { fileURLToPath } from 'node:url'
 import type { JSXElement, Node } from '@babel/types'
-import { Project, ts } from 'ts-morph'
+import { Project, type Type, ts } from 'ts-morph'
 import { childNodes, parseModule } from './ast.ts'
 import type { PreparedComponent } from './component.ts'
 import { pascalCase } from './names.ts'
@@ -44,10 +44,10 @@ export type PartTypes = {
   keepMounted: boolean
   // Props it requires (Progress's value)
   required: string[]
-  // It takes text as children (InputOTP's type rules children out)
-  text: boolean
-  // Its children can only be a function of each item (ComboboxCollection)
-  childrenFunction: boolean
+  // Its children prop: none at all; one that takes text; one that takes no
+  // text but a function of each item (ComboboxCollection); or one that takes
+  // neither (InputOTP's type rules text out)
+  children: 'none' | 'text' | 'nodes' | 'function'
   // The values of each prop typed as a union of string literals
   // (MessageScrollerButton's direction: "start" | "end")
   options: Record<string, string[]>
@@ -90,6 +90,13 @@ export function partTypes(
     }),
   )
   const checker = project.getTypeChecker().compilerObject
+  const childrenKind = (children: Type | undefined): PartTypes['children'] => {
+    if (children === undefined) return 'none'
+    if (checker.isTypeAssignableTo(checker.getStringType(), children.compilerType)) return 'text'
+    // Only a function: Dialog's root also takes one, but takes nodes too.
+    const members = children.isUnion() ? children.getUnionTypes() : [children]
+    return members.some((member) => member.getCallSignatures().length > 0) ? 'function' : 'nodes'
+  }
   return new Map(
     files.map((file, i) => {
       const parts = new Map<string, PartTypes>()
@@ -99,10 +106,6 @@ export function partTypes(
         const type = param.getTypeAtLocation(declaration)
         const properties = type.getApparentProperties()
         const props = new Set(properties.map((p) => p.getName()))
-        const children = type.getProperty('children')?.getTypeAtLocation(declaration)
-        const text =
-          children !== undefined &&
-          checker.isTypeAssignableTo(checker.getStringType(), children.compilerType)
         const options: Record<string, string[]> = {}
         for (const prop of properties) {
           const members = prop.getTypeAtLocation(declaration).getUnionTypes()
@@ -120,14 +123,7 @@ export function partTypes(
             .filter((p) => !p.isOptional())
             .map((p) => p.getName())
             .sort(),
-          text,
-          // Only a function: Dialog's root also takes one, but takes nodes too.
-          childrenFunction:
-            children !== undefined &&
-            !text &&
-            (children.isUnion() ? children.getUnionTypes() : [children]).some(
-              (member) => member.getCallSignatures().length > 0,
-            ),
+          children: childrenKind(type.getProperty('children')?.getTypeAtLocation(declaration)),
           options,
         })
       }
@@ -266,6 +262,9 @@ export function scaffolds(
     return uses
   }
   const sources = [...(example === undefined ? [] : [collect(example)]), collect(transformed.code)]
+  // A component whose types are unknown (not an exported part) is taken to
+  // take text.
+  const takesText = (name: string) => (types.get(name)?.children ?? 'text') === 'text'
   // Where an element is first rendered: in the example if it is there.
   const firstUse = (name: string) =>
     sources.map((uses) => uses.get(name)?.[0]).find((use) => use !== undefined)
@@ -278,7 +277,7 @@ export function scaffolds(
     const use = owner === undefined || seen.has(owner) ? undefined : firstUse(owner)
     if (!use) return path
     const around = extend(use, new Set([...seen, owner as string]))
-    const takesChildren = types.get(owner as string)?.text !== false
+    const takesChildren = takesText(owner as string)
     return [...(takesChildren ? around : around.slice(0, -1)), ...path]
   }
   // Every place a part is rendered: the example's uses, or else the module's.
@@ -367,7 +366,7 @@ export function scaffolds(
         ...(type?.keepMounted ? { keepMounted: true } : {}),
       },
       children:
-        type?.text !== false &&
+        takesText(name) &&
         !CHILDLESS.has(rendered.get(name)?.tag ?? '') &&
         (element ? hasChildren(element) : true),
     }
@@ -382,7 +381,7 @@ export function scaffolds(
       // A part whose children are a function of each item (ComboboxCollection)
       // cannot hold another part's element: those uses are left out, and the
       // first leaves it out of its chain.
-      const holdsElements = (part: Part) => !types.get(part.component)?.childrenFunction
+      const holdsElements = (part: Part) => types.get(part.component)?.children !== 'function'
       const others = rest
         .map((path) => usage(name, path, OMIT))
         .filter((other) => other.ancestors.every(holdsElements))

@@ -594,9 +594,9 @@ export function generateTest(
     const types = parts.types.get(component.name)
     const unrendered = parts.unrendered[component.name]
     if (unrendered !== undefined) return unrenderedTest(subject, unrendered)
-    if (types?.childrenFunction) return functionChildrenTest(subject)
+    if (types?.children === 'function') return functionChildrenTest(subject)
     if (types?.className === false) {
-      return types.text === false ? rendersTest(subject) : childrenTest(subject)
+      return types.children === 'text' ? childrenTest(subject) : rendersTest(subject)
     }
     return componentTests(subject, {
       set: component.variantSet ? sets.get(component.variantSet) : undefined,
