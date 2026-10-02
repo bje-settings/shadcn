@@ -11,8 +11,9 @@ pre-commit:
 
     # Project-wide: a type error caused by a staged file is usually in a file
     # that was not staged. ab/tsconfig.json needs the generated harness inputs
-    # that `pnpm mirror:build` writes and git does not track, so a fresh clone
-    # skips it; CI generates them and checks it.
+    # that `pnpm mirror:build` writes and git does not track (vega's, which its
+    # paths point at), so the hook skips it until ab/generated/vega exists; CI
+    # generates them and checks it.
     types:
       glob: '{*.ts,*.tsx,tsconfig.json}'
       run: |
