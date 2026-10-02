@@ -69,8 +69,9 @@ produces. To change the output, change `scripts/mirror/` or `mirror.config.json`
 
 1. Append upstream's name (`base-<style>`) to `upstream.styles` in `mirror.config.json`. The first
    entry is the A/B default.
-2. Run `pnpm mirror:fetch`, then `pnpm mirror:build <style>`. Fetch refreshes every style: commit
-   other styles' snapshot changes separately, as an upstream update.
+2. Run `pnpm mirror:fetch`, then `pnpm mirror:build <style>`. Fetch refreshes every style and
+   Typeset: discard the other changes, or commit them separately with a full `pnpm mirror:build`,
+   as an upstream update.
 3. Where the build fails on the style's classes, add the smallest exception to `mirror.config.json`,
    with a reason. Exceptions apply to every style.
 4. Add the style to the list in `scripts/mirror/registries.test.ts` and in `README.md`.
@@ -100,7 +101,7 @@ An `ab-style` leg skips its comparison, and still reports success, when:
 
 - the pull request is a draft (it runs once marked ready);
 - the change touches only Markdown, `.claude/`, `*.test.ts(x)` files, `lefthook.yml`,
-  `biome.json` or `vitest.config.ts`;
-- the change touches only other styles' `registry/<style>/` or `upstream/base-<style>/`.
+  `biome.json`, `vitest.config.ts`, and other styles' `registry/<style>/` or
+  `upstream/base-<style>/`.
 
 Every push to `main` runs every leg, then the `deploy` job ([docs/hosting.md](docs/hosting.md)).
