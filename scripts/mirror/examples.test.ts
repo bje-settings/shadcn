@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { prepareExample } from './examples.ts'
+import { KNOWN_DIFFERENCES, prepareExample } from './examples.ts'
 
 const example = `"use client"
 
@@ -115,6 +115,17 @@ function Nav() { return <Link href="#">Home</Link> }`
     const stubbed = prepareExample(source, 'base-vega', 'bje', mirrored, new Set())
     expect(stubbed.kept).toEqual(['Pic', 'Nav'])
     expect(stubbed.skipped).toEqual([])
+  })
+
+  it('skips a sub-example the mirror is known to render differently, with the reason', () => {
+    const source = `import Link from "next/link"
+export default function Page() { return <NavigationMenuBasic /> }
+function NavigationMenuBasic() { return <Link href="#" /> }`
+    const known = prepareExample(source, 'base-vega', 'bje', mirrored, new Set())
+    expect(known.kept).toEqual([])
+    expect(known.skipped).toEqual([
+      { name: 'NavigationMenuBasic', reasons: [KNOWN_DIFFERENCES.get('NavigationMenuBasic')] },
+    ])
   })
 
   const dropped = new Set(['border-b', 'border-t'])
