@@ -346,7 +346,8 @@ describe('mirror build', BUILDS, () => {
     const config = JSON.parse(await read('mirror.config.json'))
     await writeFile(
       join(root, 'mirror.config.json'),
-      JSON.stringify({ ...config, fonts: ['inter', 'heading-geist'] }),
+      // The theme's font is not the first published one: globals still uses it.
+      JSON.stringify({ ...config, fonts: ['heading-geist', 'inter'] }),
     )
     const heading = {
       name: 'font-heading-geist',
@@ -396,11 +397,17 @@ describe('mirror build', BUILDS, () => {
       'badge',
       'globals',
       'typeset',
-      'font-inter',
       'font-heading-geist',
+      'font-inter',
     ])
     expect(registry.items[2].dependencies).toEqual(['@fontsource-variable/inter'])
-    expect(registry.items[5]).toEqual({
+    expect(await read('registry/vega/styles/fonts.css')).toContain(
+      '@import "@fontsource-variable/inter";',
+    )
+    expect(await read('registry/vega/styles/variables.scss')).toContain(
+      '--font-sans: "Inter Variable", sans-serif;',
+    )
+    expect(registry.items[4]).toEqual({
       name: 'font-heading-geist',
       type: 'registry:file',
       title: 'Geist (Heading)',
@@ -415,6 +422,15 @@ describe('mirror build', BUILDS, () => {
         },
       ],
     })
+    // A font with no snapshot fails the build before the old stylesheets go.
+    await writeFile(
+      join(root, 'mirror.config.json'),
+      JSON.stringify({ ...config, fonts: ['heading-geist', 'geist'] }),
+    )
+    await expect(run(['build', 'vega'], io())).rejects.toThrow(
+      'no snapshot for base-vega/font-geist; run mirror fetch first',
+    )
+    expect(await read('registry/vega/styles/fonts/heading-geist.css')).toContain('--font-heading')
   })
 
   it('builds one style alone, named by its short name, and formats all but the harness inputs', async () => {
