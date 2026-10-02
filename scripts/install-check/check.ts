@@ -136,8 +136,8 @@ export function undeclaredImports(items: Item[], namespace: string): string[] {
     }
     return seen
   }
-  const owner = (path: string) =>
-    items.find((item) =>
+  const owners = (path: string) =>
+    items.filter((item) =>
       item.files.some((file) =>
         [file.path, file.path.replace(/\.[^./]+$/, '')].some((shipped) =>
           shipped.endsWith(`/${path}`),
@@ -155,12 +155,12 @@ export function undeclaredImports(items: Item[], namespace: string): string[] {
     const problems = (path: string, specifier: string): string[] => {
       const shipped = REGISTRY_IMPORT.exec(specifier)?.[1]
       if (shipped !== undefined) {
-        const other = owner(shipped)
-        if (other === undefined) return [`${path} imports ${specifier}, which no item ships`]
-        return reached.has(other.name)
+        const found = owners(shipped)
+        if (found.length === 0) return [`${path} imports ${specifier}, which no item ships`]
+        return found.some((other) => reached.has(other.name))
           ? []
           : [
-              `${path} imports ${specifier} from ${other.name}, which no registry dependency reaches`,
+              `${path} imports ${specifier} from ${found.map((other) => other.name).join(' or ')}, which no registry dependency reaches`,
             ]
       }
       const pkg = packageOf(specifier)
@@ -172,7 +172,7 @@ export function undeclaredImports(items: Item[], namespace: string): string[] {
       ...item.registryDependencies
         .filter((dependency) => local(dependency) === undefined)
         .map(
-          (dependency) => `${item.name}: registry dependency ${dependency} is not in the registry`,
+          (dependency) => `${item.name}: registry dependency ${dependency} names no ${prefix} item`,
         ),
       ...item.files.flatMap((file) =>
         [
