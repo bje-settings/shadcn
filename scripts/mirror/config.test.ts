@@ -18,6 +18,7 @@ const valid = {
     styles: ['base-vega', 'base-luma'],
   },
   theme: { baseColor: 'neutral', font: 'inter', iconLibrary: 'lucide' },
+  fonts: ['inter', 'heading-geist'],
   components: ['button', 'icon-button'],
   typeset: {
     stylesheet: 'https://example.com/typeset.css',
@@ -74,8 +75,10 @@ describe('parseConfig', () => {
         testSetup: undefined,
         unrenderedInTests: undefined,
         testProps: undefined,
+        fonts: undefined,
       }),
     )
+    expect(config.fonts).toEqual([])
     expect(config.testProps).toEqual({})
     expect(config.coverageExclusions).toEqual({})
     expect(config.testSetup).toEqual([])
@@ -113,6 +116,17 @@ describe('parseConfig', () => {
       withChange({ theme: { baseColor: 'neutral' } }),
       'theme.font must be',
     ],
+    [
+      'non-array fonts',
+      withChange({ fonts: 'geist' }),
+      'fonts must be an array of kebab-case font names',
+    ],
+    [
+      'a non-kebab font',
+      withChange({ fonts: ['Geist'] }),
+      'fonts must be an array of kebab-case font names',
+    ],
+    ['repeated fonts', withChange({ fonts: ['geist', 'geist'] }), 'fonts must not repeat'],
     ['non-array components', withChange({ components: 'button' }), 'components must be'],
     ['empty components', withChange({ components: [] }), 'components must be'],
     ['non-kebab components', withChange({ components: ['Button'] }), 'components must be'],

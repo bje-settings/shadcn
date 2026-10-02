@@ -18,6 +18,7 @@
 import postcss, { type ChildNode, type Container } from 'postcss'
 
 import { renameInternal } from './internal.ts'
+import type { FontItem } from './project-css.ts'
 
 export type GlobalStylesheets = { variables: string; base: string }
 
@@ -76,4 +77,24 @@ export function globalStylesheets(css: string, header: string): GlobalStylesheet
     // Preflight is Tailwind's code: keep its license notice with it.
     base: file(parts.base, license ? [license.toString()] : []),
   }
+}
+
+// A font item's stylesheet: the font's package, and the theme variable
+// upstream's font item names (--font-sans, --font-heading, ...) set to its
+// family. Same layer and selector as variables.scss, so loaded after it, it wins.
+export function fontStylesheet(font: FontItem, header: string): string {
+  const { dependency, variable, family } = font.font
+  return [
+    header,
+    `/* Import after variables.scss: this replaces its ${variable}. */`,
+    '',
+    `@import ${JSON.stringify(dependency)};`,
+    '',
+    '@layer theme {',
+    '  :root, :host {',
+    `    ${variable}: ${family};`,
+    '  }',
+    '}',
+    '',
+  ].join('\n')
 }
