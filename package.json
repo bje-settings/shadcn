@@ -12,10 +12,10 @@
     "test": "vitest run --coverage",
     "mirror:fetch": "node scripts/mirror/main.ts fetch",
     "mirror:build": "node scripts/mirror/main.ts build",
-    "preab": "pnpm mirror:build",
+    "preab": "pnpm mirror:build $AB_STYLE",
     "ab": "playwright test --config ab/playwright.config.ts",
-    "preab:serve": "pnpm mirror:build",
-    "ab:serve": "vite --config ab/vite.config.ts --port 4400",
+    "preab:serve": "pnpm mirror:build $AB_STYLE",
+    "ab:serve": "vite --config ab/vite.config.ts",
     "ab:timings": "node ab/timings.ts"
   },
   "dependencies": {

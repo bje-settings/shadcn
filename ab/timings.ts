@@ -1,8 +1,10 @@
 // Summarizes where a `pnpm ab` run spent its time, from the JSON report and
 // each case's `timing` annotation, as Markdown (CI appends it to the job
-// summary). A step both sides run at once counts the slower side.
+// summary). A step both sides run at once counts the slower side. Reads the
+// AB_STYLE run's report unless given a path.
 
 import { readFileSync } from 'node:fs'
+import { short } from './style.ts'
 
 type Annotation = { type: string; description?: string }
 type Result = { status: string; duration: number; annotations?: Annotation[] }
@@ -25,7 +27,9 @@ type Timing = {
 
 type Row = { title: string; status: string; duration: number; unsettled: boolean; timing?: Timing }
 
-const report: Report = JSON.parse(readFileSync(process.argv[2] ?? 'ab/results/report.json', 'utf8'))
+const report: Report = JSON.parse(
+  readFileSync(process.argv[2] ?? `ab/results/${short}/report.json`, 'utf8'),
+)
 
 function* specs(suites: Suite[]): Generator<Spec> {
   for (const suite of suites) {

@@ -4,6 +4,7 @@ import {
   colorsUrl,
   consumerClassReasons,
   forStyle,
+  harnessStyle,
   parseConfig,
   shortStyle,
   upstreamUrl,
@@ -15,7 +16,6 @@ const valid = {
     url: 'https://example.com/{style}/{name}.json',
     colorsUrl: 'https://example.com/colors/{name}.json',
     styles: ['base-vega', 'base-luma'],
-    compare: 'base-vega',
   },
   theme: { baseColor: 'neutral', font: 'inter', iconLibrary: 'lucide' },
   components: ['button', 'icon-button'],
@@ -28,7 +28,7 @@ const valid = {
   outputDir: 'registry/{style}/ui',
   hooksDir: 'registry/{style}/hooks',
   globalsDir: 'registry/{style}/styles',
-  harnessDir: 'ab/generated',
+  harnessDir: 'ab/generated/{style}',
   registryFile: 'registry/{style}/registry.json',
   consumerClasses: [{ classes: ['border-b'], reason: 'consumer' }],
   coverageExclusions: { button: 'why' },
@@ -48,10 +48,22 @@ function withChange(change: Record<string, unknown>) {
 describe('parseConfig', () => {
   it('accepts a valid config and builds item URLs', () => {
     const config = parseConfig(valid)
-    // As parsed, the config builds the compare style.
+    // As parsed, the config builds the first style.
     expect(config).toEqual({ ...valid, upstream: { ...valid.upstream, style: 'base-vega' } })
     expect(upstreamUrl(config, 'button')).toBe('https://example.com/base-vega/button.json')
     expect(colorsUrl(config)).toBe('https://example.com/colors/neutral.json')
+  })
+
+  it('ignores a key it does not read, such as upstream.compare', () => {
+    const config = parseConfig(
+      withChange({ upstream: { ...valid.upstream, compare: 'base-nova', styles: ['base-luma'] } }),
+    )
+    expect(config.upstream).toEqual({
+      url: valid.upstream.url,
+      colorsUrl: valid.upstream.colorsUrl,
+      styles: ['base-luma'],
+      style: 'base-luma',
+    })
   })
 
   it('defaults consumerClasses and coverageExclusions to none', () => {
@@ -77,7 +89,7 @@ describe('parseConfig', () => {
     ['a missing upstream', withChange({ upstream: 'x' }), 'upstream must be an object'],
     [
       'a missing url',
-      withChange({ upstream: { styles: ['base-vega'], compare: 'base-vega' } }),
+      withChange({ upstream: { styles: ['base-vega'] } }),
       'upstream.url must be a non-empty string',
     ],
     [
@@ -127,14 +139,14 @@ describe('parseConfig', () => {
       'upstream.styles must not repeat',
     ],
     [
-      'a compare style that is not listed',
-      withChange({ upstream: { ...valid.upstream, compare: 'base-nova' } }),
-      'upstream.compare: base-nova is not in upstream.styles',
-    ],
-    [
       'an output path without {style}',
       withChange({ outputDir: 'registry/ui' }),
       'outputDir must contain {style}',
+    ],
+    [
+      'a harness path without {style}',
+      withChange({ harnessDir: 'ab/generated' }),
+      'harnessDir must contain {style}',
     ],
     [
       'a theme without an icon library',
@@ -209,14 +221,27 @@ describe('parseConfig', () => {
 describe('forStyle', () => {
   it("sets the style and resolves its output paths with the style's short name", () => {
     const luma = forStyle(parseConfig(valid), 'base-luma')
-    expect(luma.upstream).toMatchObject({ style: 'base-luma', compare: 'base-vega' })
+    expect(luma.upstream).toMatchObject({ style: 'base-luma', styles: valid.upstream.styles })
     expect(luma).toMatchObject({
       outputDir: 'registry/luma/ui',
       hooksDir: 'registry/luma/hooks',
       globalsDir: 'registry/luma/styles',
       registryFile: 'registry/luma/registry.json',
-      harnessDir: 'ab/generated',
+      harnessDir: 'ab/generated/luma',
     })
+  })
+})
+
+describe('harnessStyle', () => {
+  const config = parseConfig(valid)
+
+  it('takes a style by its short name, and the first style when none is named', () => {
+    expect(harnessStyle(config, 'luma')).toBe('base-luma')
+    expect(harnessStyle(config, undefined)).toBe('base-vega')
+  })
+
+  it.each(['nova', 'base-luma', ''])('refuses %j, naming the styles it takes', (name) => {
+    expect(() => harnessStyle(config, name)).toThrow(`AB_STYLE: ${name} is not one of vega, luma`)
   })
 })
 

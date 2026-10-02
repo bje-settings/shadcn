@@ -13,8 +13,8 @@ export const root = process.cwd()
 export const parsed = parseConfig(
   JSON.parse(readFileSync(join(root, 'mirror.config.json'), 'utf8')),
 )
-// The compare style's, as `mirror build` resolves it
-export const config = forStyle(parsed, parsed.upstream.compare)
+// The first style's, as `mirror build` resolves it
+export const config = forStyle(parsed, parsed.upstream.style)
 
 export function snapshot<T>(name: string): T {
   const path = join(root, config.snapshotDir, config.upstream.style, `${name}.json`)

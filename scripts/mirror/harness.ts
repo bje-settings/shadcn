@@ -1,11 +1,14 @@
-// Generates the A/B harness inputs (ab/generated), so every case is generated:
+// Generates one style's A/B harness inputs (ab/generated/<style>), so every
+// case is generated:
 // - each component's upstream source verbatim, and maps from item name to the
 //   upstream and mirrored modules;
 // - one fixture per exported component and cva() option;
 // - each docs example trimmed twice (upstream and ours imports), their module
 //   maps and the list of kept sub-examples;
 // - Typeset's content fixtures;
-// - the upstream page's Tailwind entry and the ours page's example layout CSS.
+// - the upstream page's Tailwind entry and the ours page's example layout CSS;
+// - a tsconfig.json resolving the harness's imports to this style, which
+//   Playwright and the type check read.
 
 import { relative } from 'node:path'
 import type { MirrorConfig } from './config.ts'
@@ -152,7 +155,7 @@ export function harnessFiles(
       path: `${dir}/fixtures.ts`,
       content: ts(
         [
-          "import type { Fixture } from '../../scripts/mirror/shapes'",
+          `import type { Fixture } from '${relative(dir, 'scripts/mirror/shapes')}'`,
           '',
           `export const fixtures: Fixture[] = ${JSON.stringify(fixtures, null, 2)}`,
         ].join('\n'),
@@ -179,5 +182,32 @@ export function harnessFiles(
       ].join('\n'),
     },
     { path: `${dir}/examples.css`, content: harness.layoutCss },
+    { path: `${dir}/tsconfig.json`, content: harnessTsconfig(config) },
   ]
+}
+
+// ab/tsconfig.json with its paths pointed at this style: the generated inputs
+// as @ab/generated, ours (registry/<style>) and upstream's own import paths.
+// Its include and exclude still apply, from ab/, so the program is the same
+// harness and this style's generated files, reached through those paths.
+function harnessTsconfig(config: MirrorConfig): string {
+  const dir = config.harnessDir
+  const from = (path: string) => relative(dir, path)
+  const { namespace, upstream } = config
+  const tsconfig = {
+    extends: from('ab/tsconfig.json'),
+    compilerOptions: {
+      paths: {
+        '@ab/generated/*': ['./*'],
+        '@ab/styles/*': [`${from(config.globalsDir)}/*`],
+        [`@/registry/${namespace}/ui/*`]: [`${from(config.outputDir)}/*`],
+        [`@/registry/${namespace}/hooks/*`]: [`${from(config.hooksDir)}/*`],
+        [`@/registry/${upstream.style}/ui/*`]: ['./upstream/*'],
+        [`@/registry/${upstream.style}/hooks/*`]: ['./upstream/hooks/*'],
+        [`@/registry/${upstream.style}/components/example`]: [from('ab/stubs/example.tsx')],
+        '@/app/(create)/components/icon-placeholder': [from('ab/stubs/icon-placeholder.tsx')],
+      },
+    },
+  }
+  return `${JSON.stringify(tsconfig, null, 2)}\n`
 }

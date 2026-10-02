@@ -20,7 +20,8 @@ concurrency:
 # Job names are a contract: the repo ruleset Require CI (23915809) requires
 # build, vitest, types, biome and ab by exact name. A renamed job never reports,
 # and every pull request waits on it forever. Update the ruleset with any rename.
-# deploy is not required: it runs on pushes to main only.
+# deploy is not required: it runs on pushes to main only. vitest and ab are
+# fan-ins over legs per style, so the required names hold whatever the styles.
 jobs:
   # `shadcn build` validates each style's registry.json and every item against
   # the schema.
@@ -45,22 +46,104 @@ jobs:
         with:
           path: public/r
 
+  # The vitest legs: one per style (its registry/<style> and generated/<style>
+  # projects), and one for the rest (scripts and registry/lib).
+  vitest-legs:
+    name: vitest-legs
+    runs-on: ubuntu-latest
+    outputs:
+      legs: ${{ steps.list.outputs.legs }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: mirror.config.json
+          sparse-checkout-cone-mode: false
+      - name: List the legs
+        id: list
+        # Assigned first, so a jq failure fails the step.
+        run: |
+          legs=$(jq -c '[.upstream.styles[] | sub("^base-"; "")] + ["shared"]' mirror.config.json)
+          echo "legs=$legs" >> "$GITHUB_OUTPUT"
+
+  # Each leg runs its vitest projects and keeps its results and coverage as a
+  # blob for the vitest job to merge. Thresholds are off here: one leg covers
+  # only part of the code, and the merged report holds them at 100.
+  vitest-leg:
+    name: vitest-leg (${{ matrix.leg }})
+    needs: vitest-legs
+    runs-on: ubuntu-latest
+    strategy:
+      # One leg's failure does not cancel the others.
+      fail-fast: false
+      matrix:
+        leg: ${{ fromJSON(needs.vitest-legs.outputs.legs) }}
+    env:
+      LEG: ${{ matrix.leg }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-pnpm
+      - name: Validate lefthook.yml
+        if: matrix.leg == 'shared'
+        run: pnpm exec lefthook validate
+      # One run per leg keeps its results and coverage as one blob, with
+      # thresholds off and a one-line coverage summary.
+      - name: Run the leg's tests
+        run: |
+          if [ "$LEG" = shared ]; then
+            projects=(--project scripts --project registry/lib)
+          else
+            projects=(--project "registry/$LEG" --project "generated/$LEG")
+          fi
+          pnpm exec vitest run "${projects[@]}" --coverage --coverage.reporter=text-summary \
+            --coverage.thresholds.lines=0 --coverage.thresholds.functions=0 \
+            --coverage.thresholds.branches=0 --coverage.thresholds.statements=0 \
+            --reporter=default --reporter=blob --outputFile.blob="vitest-reports/$LEG.json"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: vitest-blob-${{ matrix.leg }}
+          path: vitest-reports/
+          if-no-files-found: error
+          retention-days: 1
+
+  # The required vitest check. It runs whatever happened above, so it reports
+  # even when a leg failed or never started, and passes only when every leg
+  # passed and their merged coverage is 100.
   vitest:
     name: vitest
+    if: always()
+    needs: [vitest-legs, vitest-leg]
     runs-on: ubuntu-latest
     permissions:
       contents: read
       code-quality: write
     steps:
+      - name: Require every leg to pass
+        env:
+          LEGS: ${{ needs.vitest-legs.result }}
+          RUNS: ${{ needs.vitest-leg.result }}
+        run: |
+          echo "vitest-legs: $LEGS, vitest-leg: $RUNS"
+          [ "$LEGS" = success ] && [ "$RUNS" = success ]
       - uses: actions/checkout@v7
       - uses: ./.github/actions/node-pnpm
-      - name: Validate lefthook.yml
-        run: pnpm exec lefthook validate
-      - name: Run the vitest suite with coverage at 100
-        run: pnpm test
-      # vitest thresholds pass over an empty file set.
-      - name: Refuse a coverage report that names no file
-        run: jq -e 'del(.total) | length > 0' coverage/coverage-summary.json
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: vitest-blob-*
+          merge-multiple: true
+          path: vitest-reports
+      # Thresholds and reporters come from vitest.config.ts, as in `pnpm test`.
+      - name: Merge the legs' results and enforce coverage at 100
+        run: pnpm exec vitest run --merge-reports=vitest-reports --coverage
+      # vitest thresholds pass over an empty file set, so every leg's code
+      # must appear in the report: each style's, registry/lib and scripts.
+      - name: Refuse a coverage report that misses a leg
+        # Assigned first: a failed substitution in the for list would not
+        # fail the step.
+        run: |
+          styles=$(jq -er '.upstream.styles[] | sub("^base-"; "") | "registry/\(.)"' mirror.config.json)
+          for dir in $styles registry/lib scripts; do
+            jq -e --arg dir "/$dir/" '[keys[] | select(contains($dir))] | length > 0' coverage/coverage-summary.json
+          done
       - uses: actions/upload-code-coverage@v1
         with:
           file: coverage/cobertura-coverage.xml
@@ -78,14 +161,14 @@ jobs:
       - name: Generate the A/B harness inputs
         run: pnpm mirror:build
       # Scripts resolve like node; registry items (hand-written, then each
-      # style's) and the A/B harness like a bundler.
+      # style's) and the A/B harness, as committed and with each style's
+      # generated inputs, like a bundler.
       - name: Type-check the TypeScript
         run: |
           pnpm exec tsc -p tsconfig.json
-          for project in registry/tsconfig.json registry/*/tsconfig.json; do
+          for project in registry/tsconfig.json registry/*/tsconfig.json ab/tsconfig.json ab/generated/*/tsconfig.json; do
             pnpm exec tsc -p "$project"
           done
-          pnpm exec tsc -p ab/tsconfig.json
 
   biome:
     name: biome
@@ -96,13 +179,39 @@ jobs:
       - name: Lint and format-check with Biome
         run: pnpm exec biome ci . --error-on-warnings
 
-  # Visual A/B: every generated component against upstream shadcn with
-  # Tailwind, pixel for pixel. Uses the Chrome
-  # preinstalled on GitHub's Ubuntu image, so no browser download: both sides
-  # render in the same browser in the same run, so its version does not matter.
-  ab:
-    name: ab
+  # The styles the ab-style legs compare, one each, from mirror.config.json.
+  ab-styles:
+    name: ab-styles
     runs-on: ubuntu-latest
+    outputs:
+      styles: ${{ steps.list.outputs.styles }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: mirror.config.json
+          sparse-checkout-cone-mode: false
+      - name: List the styles
+        id: list
+        # Assigned first, so a jq failure fails the step.
+        run: |
+          styles=$(jq -c '[.upstream.styles[] | sub("^base-"; "")]' mirror.config.json)
+          echo "styles=$styles" >> "$GITHUB_OUTPUT"
+
+  # Visual A/B: every generated component of one style against upstream
+  # shadcn with Tailwind, pixel for pixel. Uses the Chrome preinstalled on
+  # GitHub's Ubuntu image, so no browser download: both sides render in the
+  # same browser in the same run, so its version does not matter.
+  ab-style:
+    name: ab-style (${{ matrix.style }})
+    needs: ab-styles
+    runs-on: ubuntu-latest
+    strategy:
+      # One style's failure does not cancel the others' comparisons.
+      fail-fast: false
+      matrix:
+        style: ${{ fromJSON(needs.ab-styles.outputs.styles) }}
+    env:
+      AB_STYLE: ${{ matrix.style }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -110,9 +219,9 @@ jobs:
           fetch-depth: 2
       # A draft pull request skips the comparison until it is marked ready,
       # as does one that changes only files no A/B case renders or builds
-      # from (docs, unit tests, lint and hook config). The job still reports,
-      # as the ruleset requires, and a draft cannot merge. Anything else runs
-      # it, as does every push to main.
+      # from (docs, unit tests, lint and hook config), or only another style's
+      # output and snapshots. The leg still reports, and a draft cannot merge.
+      # Anything else runs it, as does every push to main.
       - name: Decide whether the comparison runs
         id: scope
         run: |
@@ -125,16 +234,22 @@ jobs:
             echo run=false >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          # Styles other than the compare one have no A/B case: their generated
-          # output and snapshots do not reach it either.
-          others=$(jq -r '.upstream.compare as $c | [.upstream.styles[] | select(. != $c) | sub("^base-"; "")] | join("|")' mirror.config.json)
-          relevant=$(git diff --name-only HEAD^1 HEAD | grep -Ev \
-            '(\.md$|^\.claude/|\.test\.tsx?$|^lefthook\.yml$|^biome\.json$|^vitest\.config\.ts$)' \
-            | { if [ -n "$others" ]; then grep -Ev "^(registry/|upstream/base-)($others)/"; else cat; fi; } || true)
+          others=$(jq -r --arg own "$AB_STYLE" '[.upstream.styles[] | sub("^base-"; "") | select(. != $own)] | join("|")' mirror.config.json)
+          # One command per assignment, so a failed diff or grep fails the leg
+          # rather than reading as no change. grep's exit 1 (nothing left) is
+          # the only failure allowed. A rename lists its source too, so a file
+          # moved into one style's output still reaches the others.
+          changed=$(git diff --no-renames --name-only HEAD^1 HEAD)
+          relevant=$(printf '%s\n' "$changed" | grep -Ev \
+            '(^$|\.md$|^\.claude/|\.test\.tsx?$|^lefthook\.yml$|^biome\.json$|^vitest\.config\.ts$)' \
+            || [ $? -eq 1 ])
+          if [ -n "$others" ]; then
+            relevant=$(printf '%s\n' "$relevant" | grep -Ev "^(registry/|upstream/base-)($others)/" || [ $? -eq 1 ])
+          fi
           if [ -n "$relevant" ]; then
             echo run=true >> "$GITHUB_OUTPUT"
           else
-            echo "No change reaches an A/B case: comparison skipped." >> "$GITHUB_STEP_SUMMARY"
+            echo "No change reaches a $AB_STYLE A/B case: comparison skipped." >> "$GITHUB_STEP_SUMMARY"
             echo run=false >> "$GITHUB_OUTPUT"
           fi
       - uses: ./.github/actions/node-pnpm
@@ -151,13 +266,31 @@ jobs:
         if: ${{ !cancelled() && steps.scope.outputs.run == 'true' }}
         uses: actions/upload-artifact@v7
         with:
-          name: ab-report
-          path: ab/report
+          name: ab-report-${{ matrix.style }}
+          path: ab/report/${{ matrix.style }}
+          # A report under another name means the run compared another style.
+          if-no-files-found: error
           retention-days: 14
 
+  # The required ab check. It runs whatever happened above, so it reports even
+  # when a leg was skipped or never started, and passes only when listing the
+  # styles succeeded and every leg passed or skipped its comparison.
+  ab:
+    name: ab
+    if: always()
+    needs: [ab-styles, ab-style]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every style's comparison to pass
+        env:
+          STYLES: ${{ needs.ab-styles.result }}
+          LEGS: ${{ needs.ab-style.result }}
+        run: |
+          echo "ab-styles: $STYLES, ab-style: $LEGS"
+          [ "$STYLES" = success ] && [ "$LEGS" = success ]
+
   # Publishes the build job's public/r to GitHub Pages at shadcn.bje.co, only
-  # from main and only once every required check passes. The site is public;
-  # the repo stays internal.
+  # from main and only once every required check passes.
   deploy:
     name: deploy
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
