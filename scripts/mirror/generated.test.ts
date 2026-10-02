@@ -4,7 +4,7 @@
 // hooks, global stylesheets, the rebuilt project CSS, registry catalog and
 // tsconfig, and proves every generated stylesheet compiles with Sass.
 
-import { cp, mkdtemp, readdir, readFile, rm } from 'node:fs/promises'
+import { cp, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { dirname, join, relative } from 'node:path'
 import { compile } from 'sass'
@@ -14,17 +14,6 @@ import { forStyle } from './config.ts'
 import { formatWithBiome } from './format.ts'
 import { parsed, root } from './test-support.ts'
 
-const styles = parsed.upstream.styles.map((style) => forStyle(parsed, style))
-const snapshotDirs = styles.map((config) => join(config.snapshotDir, config.upstream.style))
-// The A/B harness inputs are not committed (see .gitignore): pnpm ab
-// regenerates them.
-const outputDirs = styles.flatMap((config) => [
-  config.outputDir,
-  config.hooksDir,
-  config.globalsDir,
-])
-let built: string
-
 async function files(base: string, dir: string): Promise<string[]> {
   const entries = await readdir(join(base, dir), { recursive: true, withFileTypes: true })
   return entries
@@ -33,32 +22,40 @@ async function files(base: string, dir: string): Promise<string[]> {
     .sort()
 }
 
-// Builds every style: allow for the whole suite running alongside.
-beforeAll(async () => {
-  built = await mkdtemp(join(tmpdir(), 'mirror-generated-'))
-  for (const path of ['mirror.config.json', 'registry.json']) {
-    await cp(join(root, path), join(built, path))
-  }
-  for (const snapshots of snapshotDirs) {
+// Each style is built and checked on its own, so no hook's time grows with
+// the number of styles.
+describe.each(parsed.upstream.styles)('generated output for %s', (style) => {
+  const config = forStyle(parsed, style)
+  const snapshots = join(config.snapshotDir, style)
+  // The A/B harness inputs are not committed (see .gitignore): pnpm ab
+  // regenerates them.
+  const outputDirs = [config.outputDir, config.hooksDir, config.globalsDir]
+  let built: string
+
+  // Allow for the whole suite running alongside.
+  beforeAll(async () => {
+    built = await mkdtemp(join(tmpdir(), 'mirror-generated-'))
+    const raw = JSON.parse(await readFile(join(root, 'mirror.config.json'), 'utf8'))
+    raw.upstream.styles = [style]
+    await writeFile(join(built, 'mirror.config.json'), JSON.stringify(raw))
+    await cp(join(root, 'registry.json'), join(built, 'registry.json'))
     for (const path of await files(root, snapshots)) {
-      if (path.endsWith('.json')) await cp(join(root, path), join(built, path), { recursive: true })
+      if (path.endsWith('.json')) await cp(join(root, path), join(built, path))
     }
-  }
-  const typeset = join(parsed.snapshotDir, 'typeset')
-  await cp(join(root, typeset), join(built, typeset), { recursive: true })
-  await run(['build'], {
-    root: built,
-    fetch: () => Promise.reject(new Error('build must not fetch')),
-    log: () => {},
-    format: (path, content) => formatWithBiome(root, path, content),
+    const typeset = join(parsed.snapshotDir, 'typeset')
+    await cp(join(root, typeset), join(built, typeset), { recursive: true })
+    await run(['build'], {
+      root: built,
+      fetch: () => Promise.reject(new Error('build must not fetch')),
+      log: () => {},
+      format: (path, content) => formatWithBiome(root, path, content),
+    })
+  }, 180_000)
+
+  afterAll(async () => {
+    await rm(built, { recursive: true, force: true })
   })
-}, 180_000)
 
-afterAll(async () => {
-  await rm(built, { recursive: true, force: true })
-})
-
-describe('generated output', () => {
   it('commits exactly the files the pipeline generates', async () => {
     for (const dir of outputDirs) {
       expect(await files(root, dir), dir).toEqual(await files(built, dir))
@@ -68,11 +65,9 @@ describe('generated output', () => {
   it('matches the pipeline output byte for byte', async () => {
     const paths = [
       'registry.json',
-      ...snapshotDirs.map((snapshots) => join(snapshots, 'index.css')),
-      ...styles.flatMap(({ registryFile }) => [
-        registryFile,
-        join(dirname(registryFile), 'tsconfig.json'),
-      ]),
+      join(snapshots, 'index.css'),
+      config.registryFile,
+      join(dirname(config.registryFile), 'tsconfig.json'),
       ...(await Promise.all(outputDirs.map((dir) => files(built, dir)))).flat(),
     ]
     for (const path of paths) {
