@@ -358,9 +358,9 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
       return false
     })
     if (kept.length === 0) return
-    // A rule gated on a class probe is a default an element's own class
-    // overrides (an icon's size), so it stays at zero specificity even when it
-    // styles descendants.
+    // A rule gated on a class probe keeps upstream's specificity like any
+    // other descendant rule, and its rank repeats the probe's `:not()`, so of
+    // two defaults reaching one icon the one Tailwind puts later wins.
     const nested = kept.map((raw) => {
       let selector = nestSelector(raw, candidates, resolved, options, unmatched)
       if (

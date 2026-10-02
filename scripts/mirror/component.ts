@@ -236,7 +236,10 @@ export function probeRanks(
   }
   // A variant option, or another variant in front of the probe
   // (`group-data-[...]/x:`), comes after the plain defaults and replaces
-  // them. Among themselves the order of the stylesheet decides.
+  // them. Among themselves the order of the stylesheet decides. Upstream a
+  // variant option's default replaces only its own base's (tailwind-merge on
+  // one element), so where another component's base default reaches the same
+  // icon and Tailwind puts it later, upstream keeps that one and this does not.
   return (candidate, variant) =>
     variant || (candidate !== '' && !candidate.startsWith('[&'))
       ? span
