@@ -552,10 +552,8 @@ export function transformComponent(
       record.slot !== undefined &&
       record.slot !== update.slot
     ) {
-      // Two at least: the record's own slot and this one differ.
-      record.branches = [
-        ...new Set([...(record.branches ?? [record.slot]), update.slot]),
-      ] as RenderedComponent['branches']
+      if (record.branches === undefined) record.branches = [record.slot, update.slot]
+      else if (!record.branches.includes(update.slot)) record.branches.push(update.slot)
       return
     }
     if (bound?.element === element) {
