@@ -94,6 +94,8 @@ export default defineConfig({
         // real process, fetch, console and shadcn CLI, and hold no logic.
         'scripts/mirror/main.ts',
         'scripts/mirror/build.ts',
+        // Wires check.ts to the real process, pnpm and a temporary directory.
+        'scripts/install-check/main.ts',
       ],
       // json-summary feeds the CI guard against an empty report; cobertura
       // feeds actions/upload-code-coverage for the enterprise ruleset.
