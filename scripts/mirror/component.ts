@@ -191,6 +191,24 @@ export function textSizedSelectors(components: PreparedComponent[]): string[] {
     .map((value) => `[data-slot="${value}"]`)
 }
 
+// Tailwind's candidate order: a run of digits compares as a number, so
+// size-4 comes before size-12.
+export function compareCandidates(a: string, b: string): number {
+  const digits = /\d+/y
+  for (let i = 0; i < Math.min(a.length, b.length); i++) {
+    digits.lastIndex = i
+    const x = digits.exec(a)?.[0]
+    digits.lastIndex = i
+    const y = digits.exec(b)?.[0]
+    if (x !== undefined && y !== undefined) {
+      const order = Number(x) - Number(y) || (x < y ? -1 : x > y ? 1 : 0)
+      if (order !== 0) return order
+      i += x.length - 1
+    } else if (a[i] !== b[i]) return a.charCodeAt(i) - b.charCodeAt(i)
+  }
+  return a.length - b.length
+}
+
 // The rank of each class probe default among the others with the same
 // variant, over every mirrored component: Tailwind sorts equal-specificity
 // utilities by candidate, so the greater candidate comes later and wins
@@ -213,7 +231,8 @@ export function probeRanks(
   let span = 0
   for (const group of groups.values()) {
     span = Math.max(span, group.size)
-    for (const [rank, candidate] of [...group].sort().entries()) ranks.set(candidate, rank)
+    for (const [rank, candidate] of [...group].sort(compareCandidates).entries())
+      ranks.set(candidate, rank)
   }
   // A variant option, or another variant in front of the probe
   // (`group-data-[...]/x:`), comes after the plain defaults and replaces

@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   buildComponent,
   classProbe,
+  compareCandidates,
   dependenciesOf,
   markerSelectors,
   prepareComponent,
@@ -307,14 +308,33 @@ describe('probeRanks', () => {
     const rank = probeRanks([
       await prepareComponent(item('one', 'size-4'), config, cssPath),
       await prepareComponent(item('two', 'size-3.5'), config, cssPath),
+      await prepareComponent(item('three', 'size-12'), config, cssPath),
     ])
     expect(rank("[&_svg:not([class*='size-'])]:size-3.5", false)).toBe(0)
     expect(rank("[&_svg:not([class*='size-'])]:size-4", false)).toBe(1)
+    expect(rank("[&_svg:not([class*='size-'])]:size-12", false)).toBe(2)
     // A variant option's outranks every base's.
-    expect(rank("[&_svg:not([class*='size-'])]:size-3.5", true)).toBe(2)
+    expect(rank("[&_svg:not([class*='size-'])]:size-3.5", true)).toBe(3)
     // So does a candidate with another variant in front.
-    expect(rank("group-data-[a=b]/x:[&_svg:not([class*='size-'])]:size-6", false)).toBe(2)
-    expect(rank("[&_svg:not([class*='size-'])]:size-4", true)).toBe(2)
+    expect(rank("group-data-[a=b]/x:[&_svg:not([class*='size-'])]:size-6", false)).toBe(3)
+    expect(rank("[&_svg:not([class*='size-'])]:size-4", true)).toBe(3)
     expect(rank('', false)).toBe(0)
+  })
+})
+
+describe('compareCandidates', () => {
+  it('sorts like Tailwind: runs of digits by number', () => {
+    expect(['size-12', 'size-4', 'size-3.5', 'size-3', 'size-04'].sort(compareCandidates)).toEqual([
+      'size-3',
+      'size-3.5',
+      'size-04',
+      'size-4',
+      'size-12',
+    ])
+    expect(['b-1', 'a-2', 'a-1'].sort(compareCandidates)).toEqual(['a-1', 'a-2', 'b-1'])
+    // Equal numbers: the digits as text, then the rest.
+    expect(compareCandidates('size-04', 'size-4')).toBeLessThan(0)
+    expect(compareCandidates('size-4', 'size-04')).toBeGreaterThan(0)
+    expect(compareCandidates('size-3', 'size-3.5')).toBeLessThan(0)
   })
 })
