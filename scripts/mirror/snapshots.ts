@@ -65,11 +65,14 @@ export function parseFontItem(raw: unknown, where: string): FontSnapshot {
   const item = shape.record(raw, 'item')
   const font = shape.record(item.font, 'font')
   const variable = shape.string(font.variable, 'font.variable')
-  if (!/^--[a-z0-9-]+$/.test(variable)) shape.fail('font.variable must be a custom property')
+  if (!/^--[a-z0-9-]+$/.test(variable)) {
+    shape.fail('font.variable must be a lowercase custom property')
+  }
   // Both are written into CSS as they are: a family that could end the
-  // declaration or the rule would change more than the font.
+  // declaration or the rule, open a comment or add !important would change
+  // more than the font.
   const family = shape.string(font.family, 'font.family')
-  if (/[;{}\\]/.test(family)) shape.fail('font.family must be a single declaration value')
+  if (/[;{}\\!]|\/\*/.test(family)) shape.fail('font.family must be a single declaration value')
   return {
     title: shape.string(item.title, 'title'),
     font: {
