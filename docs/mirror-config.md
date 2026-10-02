@@ -14,6 +14,7 @@ optional one included, is ignored.
 | `upstream.colorsUrl` | A base color theme's URL, with `{name}`                                                    |
 | `upstream.styles`    | The styles mirrored, each published as its own registry; the first is the A/B default      |
 | `theme`              | The preset's `baseColor`, `font` and `iconLibrary` (the library `IconPlaceholder` becomes) |
+| `fonts`              | The upstream fonts each style publishes as `@<namespace>/font-<name>`; none when unset     |
 | `components`         | The upstream items to mirror                                                               |
 | `typeset`            | shadcn/typeset's `stylesheet` URL, and the content `fixtures` (from `fixturesUrl`) A/B renders |
 | `snapshotDir`        | Where `mirror:fetch` writes snapshots, one directory per style                             |
@@ -26,6 +27,10 @@ optional one included, is ignored.
 `upstream.styles` takes upstream's names (`base-vega`). Each style goes by its short name, without
 `base-` (`vega`): in `mirror:build <style>`, `AB_STYLE`, the vitest project names and CI legs, and
 its path on the site. Output paths must contain `{style}`, which resolves to the short name.
+
+`theme.font` is the default font: `@<namespace>/globals` imports it and `variables.scss` sets its
+variable. `fonts` takes upstream's font item names without `font-` (`geist`, `heading-geist`), and
+lists every upstream `registry:font` item today, the default one included.
 
 ## Exceptions
 
