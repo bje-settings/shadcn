@@ -1,229 +1,19 @@
 # shadcn
 
-Source for the `@bje` [shadcn registry](https://ui.shadcn.com/docs/registry).
+The `@bje` [shadcn registry](https://ui.shadcn.com/docs/registry): shadcn/ui's Base UI components,
+styled with SCSS modules instead of Tailwind.
 
-## Layout
+## Styles
 
-| Path                       | Purpose                                                                  |
-| -------------------------- | ------------------------------------------------------------------------ |
-| `registry.json`            | Base catalog (`name: "bje"`): the hand-written items every style ships    |
-| `registry/lib/`            | Hand-written items (`cn`)                                                |
-| `registry/<style>/`        | One style's generated output (`vega`, `luma`); do not edit by hand       |
-| `registry/<style>/ui/`     | Components                                                               |
-| `registry/<style>/hooks/`  | Hooks (`use-mobile`)                                                     |
-| `registry/<style>/styles/` | Global stylesheets (`@bje/globals`) and Typeset (`@bje/typeset`)          |
-| `registry/<style>/registry.json` | The style's catalog: the base's items plus its generated ones      |
-| `ab/`                      | Visual A/B harness: upstream (Tailwind) vs ours, screenshot diffs        |
-| `upstream/`                | Upstream snapshots per style (items, examples, theme), Typeset, and the generated `<style>/index.css` |
-| `scripts/mirror`           | The mirror pipeline, and `pnpm build`'s per-style `shadcn build`         |
-| `public/r/<style>/`        | `pnpm build` output, one flat registry per style (gitignored)            |
+Each mirrored Base UI style is its own registry at `https://shadcn.bje.co/<style>/`: `vega`,
+`luma`, `nova`, `maia`, `lyra`, `mira`, `sera` and `rhea`. Styles differ in their components'
+classes, not only in variables, so a project uses one style. Every style uses shadcn's neutral base
+color, the Inter font and lucide icons.
 
-## Development
+## Setup
 
-```bash
-pnpm install        # also installs the lefthook pre-commit hooks
-pnpm mirror:build   # once after cloning: the A/B harness inputs are not committed
-pnpm build          # shadcn build per style: validates each catalog, writes public/r/<style>/
-pnpm test           # vitest with 100% coverage thresholds, every style's components included
-```
-
-## Mirror
-
-Components under `registry/<style>/ui/` are shadcn's own, with Tailwind utilities converted to SCSS
-modules.
-Every upstream `registry:ui` item with content is mirrored, plus the `use-mobile` hook Sidebar needs.
-Upstream's `form` item has no files, so there is nothing to mirror.
-
-`mirror.config.json` sets this registry's namespace, the upstream styles (`upstream.styles`:
-`base-vega`, `base-luma`) and theme (base color, font and icon library), the items to convert,
-Typeset's source and the output paths. Styles differ in their components' classes, not only in
-variables (vega's Button is `rounded-md px-2.5`, luma's `rounded-4xl px-3`), so each style is
-mirrored and published whole. Output paths take `{style}`, the style's short name (`vega` for
-`base-vega`); adding a style is an entry in `upstream.styles`, then `pnpm mirror:fetch` and
-`pnpm mirror:build`. Everything else is shared across styles.
-
-Every style's output is checked to match the pipeline (`scripts/mirror/generated.test.ts`), builds
-with `shadcn build`, type-checks, runs its generated tests under coverage and is compared with
-upstream by the A/B harness. CI runs a `vitest-leg` and an `ab-style` leg per style; the `vitest`
-job merges the legs' coverage and holds it at 100.
-
-The rest records, each with a reason, what the pipeline cannot infer:
-
-| Key                  | For                                                                                 |
-| -------------------- | ----------------------------------------------------------------------------------- |
-| `consumerClasses`    | Tailwind classes upstream styles gate on when a consumer passes them; rules dropped  |
-| `globalClasses`      | Outside classes elements really carry (`dark`, `sr-only`, `rdp-*`, `recharts-*`)     |
-| `classesWithoutCss`  | Upstream classes Tailwind compiles to nothing upstream too                           |
-| `coverageExclusions` | Items whose upstream logic no generated render reaches (interaction, runtime state) |
-| `testSetup`          | Lines a generated test runs first: jsdom stubs (`ResizeObserver`, `matchMedia`, ...) |
-| `testProps`          | Props a part needs that no docs example passes as a literal (a Toast's `toast`)      |
-| `testExpressions`    | Such props as TypeScript expressions, where JSON cannot hold them (a `Date`)         |
-| `unrenderedInTests`  | Parts jsdom renders nothing for; their test checks exactly that                      |
-| `sameRenderInTests`  | Props whose other values render the same in the test's scaffold (Sidebar collapsed) |
-
-Consumers need `sass` to compile the components and global stylesheets; every component item and
-`@bje/globals` lists it in `devDependencies`.
-
-```bash
-pnpm mirror:fetch   # snapshot items, their docs examples, style index, font, base color, Typeset
-pnpm mirror:build   # convert the snapshots; write components, globals, harness inputs, registry.json
-```
-
-`mirror:build` first rebuilds the CSS entry file `shadcn init` writes for the configured style and
-theme (`upstream/<style>/index.css`) from the snapshots. That file is the Tailwind input for every
-conversion below and styles the A/B harness's upstream page.
-
-For each component, the build:
-
-1. Applies the shadcn CLI's own install transforms (`shadcn/utils`), so it converts what
-   `shadcn add` writes into a project: `IconPlaceholder` becomes the configured icon library's
-   icon, `cn-font-heading` becomes `font-heading`, and the menu hooks resolve. Any other `cn-*`
-   style hook is dropped, as the CLI does.
-2. Rewrites the TSX: `cva()` becomes a lookup object plus a same-named function, `cn()` becomes
-   `clsx()`, and class strings become `styles.<slot>` references named from `data-slot` (or Base
-   UI `useRender`'s `state.slot`). An element without a `data-slot` is named from its component
-   and tag (`accordionTriggerHeader`); each branch of a conditional class gets its own slot.
-   Imports of other upstream components point at this registry's copies, and each upstream
-   `registryDependencies` entry becomes `@bje/<item>`; a dependency not listed in
-   `mirror.config.json` fails the build.
-3. Compiles each slot's classes with Tailwind itself against `upstream/<style>/index.css`. Rules
-   styling the slot's own element nest under `:where(.<slot>)`, so a consumer's `className` wins;
-   rules styling descendants (`*:w-full`, `& svg`) nest under `.<slot>` and keep upstream's
-   specificity. Selectors on Tailwind's `group`/`peer` marker classes target the `data-slot` of the
-   mirrored elements that carry the marker, in any component (`group-data-[size=sm]/card:`
-   becomes `&:is(:where([data-slot="card"])[data-size="sm"] *)`); a marker no mirrored element
-   carries fails the build, unless the rule's own class is in `classesWithoutCss` because
-   upstream's markup never carries the marker either. Upstream's `svg:not([class*="size-"])`
-   defaults keep the probe, so an element whose own class name contains `size-` keeps its size,
-   and also skip the mirrored elements whose upstream classes contain it (Spinner, an icon with
-   its own size class), matched by `data-slot` or, on an element without one, a `data-class-size`
-   attribute; a probe that matches none is noted in the header. The defaults start at upstream's
-   specificity and repeat the probe's `:not()` once per rank, so of two base defaults reaching one
-   icon, the one Tailwind puts later wins; a variant option's default outranks every base default.
-   Rules that need a configured consumer class (Card's `[.border-b]:` padding) are dropped and
-   listed in the module's header and the build log; any other outside class fails the build.
-4. Renames Tailwind's internal variables, the ones that compose one property from several
-   utilities (a shadow and a focus ring share one `box-shadow`, animate-in's keyframes read
-   `--enter-*`), by dropping the `tw-` prefix: `--tw-ring-shadow` becomes `--ring-shadow`. A family
-   whose bare names a component already uses is renamed whole (`--tw-translate-*` becomes
-   `--transform-translate-*`, since Drawer and Toast set their own `--translate-x`), and a renamed
-   variable that collides with a theme token or any other variable fails the build
-   (`scripts/mirror/internal.ts`). Upstream registers these globally with `@property`; here each
-   module declares defaults for the ones it uses, on the elements that use them, in
-   `@layer properties`. A layered rule loses to every unlayered one, and every module declares the
-   same constants, so modules never conflict.
-5. Lists in the module's header the custom properties it reads and does not set (global tokens,
-   or set by an enclosing slot or an inline style). Any class Tailwind produces no CSS for, other
-   than `group`/`peer` markers and `classesWithoutCss` entries, fails the build.
-6. Generates `<Name>.test.tsx` covering every exported component: its `data-slot` and classes,
-   every option of every `cva()` group, null groups, literal prop defaults, and consumer
-   `className`, that other values of boolean and union-typed defaults and default children change
-   the render, exported hooks
-   (inside the provider their error names) and re-exported or aliased values. Parts render inside
-   the same item's parts that enclose them in upstream's docs example, or in the module's own
-   composition, with their literal props and triggers, opened where upstream's types take
-   `defaultOpen`; every other way the example renders a part gets a render test too. A part that
-   renders no element (Dialog's root) is tested by its children. It asserts through the
-   `styles` import, so it passes under any CSS module naming. Running it needs Vitest with
-   `environment: 'jsdom'`; the item lists the test's devDependencies.
-
-It also generates the global stylesheets, the `@bje/globals` item every component depends on:
-`variables.scss` (Tailwind's whole default theme, shadcn's light and dark colors, and the
-`@property` registrations of shadcn's own utilities) and `base.scss` (Tailwind's preflight plus
-shadcn's base layer, and the keyframes components animate with). Both are split out of Tailwind's
-own output over every mirrored component's classes. The theme is compiled static
-(`theme(static)`), so `variables.scss` holds every default theme variable, not only the ones
-components read, and no Tailwind internal: a consumer's globals are the tokens components read.
-A third file, `fonts.css`, imports the font package (`@fontsource-variable/inter`). Consumers import
-all three once.
-
-[shadcn/typeset](https://ui.shadcn.com/docs/typeset), the stylesheet for rendered HTML and markdown
-inside a `.typeset` container, is plain CSS already, so it ships as `@bje/typeset` unchanged
-(`registry/<style>/styles/typeset.css`). Upstream imports it after Tailwind, which makes Tailwind emit the
-theme variables it reads (`--color-foreground`, `--font-heading`, ...), so the global stylesheets
-are generated with it included. `mirror.config.json` sets its URL and the builder's content fixtures
-the A/B harness renders.
-
-Unsupported source shapes fail the build with their line and column rather than producing partial
-output.
-
-Generated files get Biome's formatting and safe fixes (import order, `import type`). They keep
-upstream's code, so `biome.json` turns off the rules upstream's code trips for
-`registry/*/ui/**` (see that override in `biome.json`). Every other rule still applies there.
-`ab/generated/<style>/`, upstream's code verbatim for comparison and the generated harness inputs,
-is not committed: `pnpm ab` and `pnpm ab:serve` rebuild it first (`pnpm mirror:build $AB_STYLE`,
-only that style when it is set), and CI does the same. It is written unformatted, and Biome skips
-it as a gitignored path.
-
-## Visual A/B
-
-`ab/` renders every mirrored component twice: upstream's source with Tailwind (`upstream.html`) and
-ours with CSS modules and the global stylesheets (`ours.html`). Playwright screenshots each case on
-both pages and diffs them with pixelmatch. A differing pixel or size, a page or console error, or a
-state (hover, focus, disabled) that applies on one side only fails the case; a state that applies
-on neither side is not compared. Each case is one test, with a step per state it compares.
-
-```bash
-pnpm ab         # run every case; the HTML report in ab/report/<style> has upstream, ours, diff
-pnpm ab:serve   # browse http://localhost:4400 (side by side), /upstream.html, /ours.html
-pnpm ab:timings # where the last run spent its time, per case kind and per step
-```
-
-Each command takes the style from `AB_STYLE` (`AB_STYLE=luma pnpm ab`), the first in
-`upstream.styles` when unset. Each style serves on its own port, 4400 plus its index in
-`upstream.styles`.
-
-Every case is generated:
-
-- **Fixtures:** each exported component that renders an element, per `cva()` option
-  (`ab/generated/<style>/fixtures.ts`), in light and dark, at rest, hovered, keyboard-focused and
-  disabled. Each renders in the same scaffold as its generated test. A fixture inside an opened
-  part (a popup) renders alone on its page and compares the whole viewport.
-- **Typeset:** each of Typeset's content fixtures (docs, chat, changelog, ...) inside `.typeset`,
-  in light and dark.
-- **Examples:** each sub-example of upstream's docs example for a mirrored component
-  (`<item>-example`), in light and dark. A sub-example is used once every component it reaches is
-  mirrored and it passes no consumer class whose styling the mirror drops; `pnpm mirror:build`
-  lists the skipped ones and why. Both pages render the same trimmed example source
-  (`ab/generated/<style>/examples/`), differing only in which components it imports. The ours page
-  styles the examples' own layout classes with unlayered Tailwind utilities
-  (`ab/generated/<style>/examples.css`), so a class an example passes to our component outranks
-  its `:where()` defaults as tailwind-merge makes it win upstream. `ab/stubs/` stands in for the
-  docs-only `Example` wrapper and `IconPlaceholder`.
-
-Each worker opens one page per side and theme and shows its cases one at a time (`showCase()`),
-waiting for fonts, images, animations and a quiet DOM before the screenshot. A fixture is compared
-at rest, hovered and focused on one render, which is shown again only when a state changed its DOM
-(a hover that opened a card), then rendered disabled if its element honours `disabled`. Images the examples
-load from the web are replaced with one local image on both sides. A case that throws renders its
-error in place and fails alone. Each theme renders on its own page with `.dark` on `<html>`, as shadcn apps toggle it, so variables
-that resolve at the root switch too. `?theme=dark` and `?case=<id>` select the theme and narrow a
-page to one case. Playwright uses the installed Chrome
-(`channel: 'chrome'`); CI runs the `ab` job on the runner's Chrome and uploads the report as an
-artifact, with images for the failed comparisons only. A draft pull request skips the comparison
-until it is marked ready, as does one that changes only docs, unit tests or lint and hook config.
-
-## Adding an item
-
-To mirror an upstream component:
-
-1. Add its name to `components` in `mirror.config.json`, along with any component it depends on.
-2. Run `pnpm mirror:fetch`, then `pnpm mirror:build`. The build writes the item into each style's
-   `registry/<style>/registry.json`; do not edit generated items by hand.
-3. Run `pnpm test` and `pnpm ab`.
-
-To add a hand-written item:
-
-1. Add the source under `registry/<type>/`, with a colocated `*.test.ts(x)`.
-2. Declare it in the base `registry.json` with `name`, `type`, `title`, `description`, `files`,
-   and any npm `dependencies` or `registryDependencies`.
-3. Run `pnpm mirror:build` (every style's catalog lists it), then `pnpm build` and `pnpm test`.
-
-## Using the registry
-
-Each style is served as its own registry at `https://shadcn.bje.co/<style>/`: `vega`, `luma`, `nova`, `maia`, `lyra`, `mira`, `sera` and `rhea`.
-They are not listed in the shadcn registry directory, so point `@bje` at one style in the consuming
-project's `components.json`:
+The registries are not listed in the shadcn registry directory, so point `@bje` at one style in
+the project's `components.json`:
 
 ```json
 {
@@ -234,34 +24,38 @@ project's `components.json`:
 ```
 
 Then `pnpm dlx shadcn add @bje/button`. The entry is needed even when installing an item by URL:
-items declare `registryDependencies` as `@bje/<item>`, which resolve only through it. Components
-also need `sass` (see [Mirror](#mirror)).
+items declare `registryDependencies` as `@bje/<item>`, which resolve only through it.
 
-## Hosting
+## Stylesheets
 
-GitHub Pages serves `public/r/` as the site root, so each style's `registry.json` and
-`<item>.json` sit at `/<style>/`; the root serves no items. The site is public; the repo stays
-internal. The CI `deploy` job publishes on every push to `main`, once `build`, `vitest`, `types`,
-`biome` and `ab` pass, then fetches each style's `registry.json` to confirm the site serves it.
+Components and the global stylesheets are SCSS, so the project needs `sass`. Every component item
+and `@bje/globals` lists it in `devDependencies`.
 
-Outside this repo:
+Every component depends on `@bje/globals`, which installs three files into `styles/` under the
+project's `components` alias. Import each once, at the app's entry:
 
-- **DNS:** Cloudflare `CNAME` `shadcn` to `bje-settings.github.io`, DNS only (not proxied), so
-  GitHub can issue and renew the certificate.
-- **Domain verification:** `bje.co` is verified for the `bje-settings` org (a TXT record in
-  Cloudflare), which prevents subdomain takeover.
-- **Pages settings** (not in terraform), applied with the API:
+| File             | Holds                                                                         |
+| ---------------- | ----------------------------------------------------------------------------- |
+| `variables.scss` | Tailwind's default theme and shadcn's light and dark colors, as custom properties |
+| `base.scss`      | Tailwind's preflight, shadcn's base layer and the keyframes components animate with |
+| `fonts.css`      | The font package import (`@fontsource-variable/inter`)                        |
 
-  ```bash
-  gh api -X POST repos/bje-settings/shadcn/pages -f build_type=workflow
-  gh api -X PUT repos/bje-settings/shadcn/pages -f cname=shadcn.bje.co -F public=true
-  gh api -X PUT repos/bje-settings/shadcn/pages -F https_enforced=true  # once the certificate is issued
-  ```
+Dark colors apply under a `.dark` class, which shadcn apps set on `<html>`.
+
+`@bje/typeset` installs [shadcn/typeset](https://ui.shadcn.com/docs/typeset) unchanged as
+`styles/typeset.css`: styles for rendered HTML and markdown inside a `.typeset` container. It reads
+the variables in `@bje/globals`.
+
+## Tests
+
+Each component ships a `<Name>.test.tsx`. It needs Vitest with `environment: 'jsdom'`; the item
+lists the test's `devDependencies`. It asserts through the module's `styles` import, so it passes
+under any CSS module naming.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
 MIT (`LICENSE`). The published JSON inlines shadcn/ui's source, so shadcn's notice is kept.
-
-## Claude Code
-
-`.claude/settings.json` enables the TypeScript LSP plugin and disables auto memory and attribution.

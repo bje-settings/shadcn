@@ -3,8 +3,9 @@
 // component's data-slot, its own module class, the cva() variant groups it
 // applies and its literal prop defaults, rendered in the scaffold its docs
 // example gives it (parts.ts), plus its exported hooks and re-exported values
-// (README, Mirror step 5). Assertions go through the `styles` import, so they
-// hold whatever class names the consumer's CSS module setup produces.
+// (docs/mirror-pipeline.md, Generated tests). Assertions go through the
+// `styles` import, so they hold whatever class names the consumer's CSS module
+// setup produces.
 
 import type { Node } from '@babel/types'
 import { parseModule } from './ast.ts'
