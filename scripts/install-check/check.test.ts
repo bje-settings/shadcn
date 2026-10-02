@@ -527,7 +527,7 @@ describe('run', () => {
     ['vitest', 5],
     ['vite build', 6],
   ])('fails, and stops, when %s fails', async (failing, count) => {
-    await expect(run(io({ failing }))).rejects.toThrow(`${failing}`)
+    await expect(run(io({ failing }))).rejects.toThrow(failing)
     expect(calls).toHaveLength(count)
     // Let any command left running without an await reach the fake.
     await new Promise((done) => setTimeout(done, 10))
