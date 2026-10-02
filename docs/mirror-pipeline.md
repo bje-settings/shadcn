@@ -128,9 +128,9 @@ stylesheet imports the package and sets the variable upstream's font item names 
 selector (`@layer theme`, `:root, :host`), so it wins when loaded after it. No component reads
 `--font-serif`, so a serif font applies only where a consumer's own CSS reads `var(--font-serif)`.
 The build reads every font's snapshot before it writes any of the style's output, so a missing one
-changes nothing, then clears `registry/<style>/styles/fonts/`, so a font removed from `fonts` loses
-its stylesheet. It is not a `registry:font` item: the shadcn CLI installs one by
-writing `css` and `cssVars` into the project's Tailwind CSS entry.
+changes nothing. It then clears `registry/<style>/styles/fonts/`, so a font removed from `fonts`
+loses its stylesheet. It is not a `registry:font` item: the shadcn CLI installs one by writing `css`
+and `cssVars` into the project's Tailwind CSS entry.
 
 ## Typeset
 
