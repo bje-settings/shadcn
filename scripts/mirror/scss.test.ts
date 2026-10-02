@@ -210,17 +210,16 @@ describe('slotToScss', () => {
     expect(seen).toEqual([true, false])
   })
 
-  it('adds no rank where the probe found nothing and went', async () => {
-    const classes = ["[&_svg:not([class*='size-'])]:size-4"]
-    const { scss } = await convert(classes, { probeRank: () => 2 })
-    expect(scss).toContain('  & svg {\n')
+  it('adds no rank to a selector without a probe', async () => {
+    const { scss } = await convert(['flex'], { probeRank: () => 2 })
+    expect(scss).toBe(':where(.root) {\n  display: flex;\n}')
   })
 
-  it('drops a class probe that finds nothing, and says so', async () => {
+  it('keeps a class probe that finds nothing, and says so', async () => {
     const { scss, dropped } = await convert(["[&_svg:not([class*='size-'])]:size-4"])
-    expect(scss).toContain('  & svg {\n')
+    expect(scss).toContain('.root {\n  & svg:not([class*="size-"]) {\n')
     expect(dropped).toEqual([
-      'upstream skips elements whose classes contain "size-", and no mirrored element does: the default applies to every match.',
+      'upstream skips elements whose classes contain "size-", and no mirrored element does: the default skips only an element whose own class does.',
     ])
   })
 

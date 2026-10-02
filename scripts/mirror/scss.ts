@@ -122,7 +122,7 @@ export const MARKER = /^(group|peer)(\/[\w-]+)?$/
 // `svg:not([class*="size-"])`: a default for icons that set no size of their
 // own. It keeps the probe (an icon's own class, a consumer's Tailwind class)
 // and adds the mirrored elements whose upstream classes match, which here
-// carry a data-slot or a size attribute instead; it goes when none do. The
+// carry a data-slot or a size attribute instead, when any do. The
 // `:not()` counts toward specificity as it does upstream, so the default
 // outranks a descendant rule of another component that styles the icon
 // with fewer selectors.
@@ -145,15 +145,11 @@ function resolveClassProbes(
       throw new Error(`${pseudo} mixes class name probes with other selectors`)
     }
     const selectors = [...new Set(probes.flatMap((probe) => classProbe(probe)))].sort()
-    if (selectors.length === 0) {
-      for (const probe of probes) unmatched.add(probe)
-      pseudo.remove()
-    } else
-      pseudo.replaceWith(
-        selectorParser().astSync(
-          `:not(${[...new Set(probes)].map((probe) => `[class*="${probe}"]`).join(', ')}, ${selectors.join(', ')})`,
-        ).first.first,
-      )
+    if (selectors.length === 0) for (const probe of probes) unmatched.add(probe)
+    const kept = [...new Set(probes)].map((probe) => `[class*="${probe}"]`)
+    pseudo.replaceWith(
+      selectorParser().astSync(`:not(${[...kept, ...selectors].join(', ')})`).first.first,
+    )
   })
 }
 
@@ -454,7 +450,7 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
       ...dropped,
       ...[...unmatched].map(
         (probe) =>
-          `upstream skips elements whose classes contain "${probe}", and no mirrored element does: the default applies to every match.`,
+          `upstream skips elements whose classes contain "${probe}", and no mirrored element does: the default skips only an element whose own class does.`,
       ),
     ],
     defaults: Object.fromEntries(
