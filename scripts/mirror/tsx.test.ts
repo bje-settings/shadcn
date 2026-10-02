@@ -71,6 +71,7 @@ function A({ className }) {
       <i className="size-2" />
       <i data-slot="has" className="size-2" />
       <i className="mx-1" />
+      <b data-slot="b" title={cn("size-3", className)} />
     </>
   )
 }`

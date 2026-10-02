@@ -20,6 +20,7 @@ import type {
   FunctionDeclaration,
   FunctionExpression,
   Identifier,
+  JSXOpeningElement,
   Node,
   ObjectExpression,
   SourceLocation,
@@ -591,16 +592,13 @@ export function transformComponent(
   // here. Only a className written on the element itself (a string, or cn())
   // is marked: the attribute reaches the DOM through the component's props.
   const sized = new Set<string>()
-  const marked = new Set<Node>()
   const markSized = (slot: string, classes: string[], ancestors: Node[]) => {
     if (!classes.join(' ').includes(SIZE_PROBE) || dataSlot(ancestors) !== undefined) return
-    const attribute = ancestors.findLast((n) => n.type === 'JSXAttribute')
-    const opening = ancestors.findLast((n) => n.type === 'JSXOpeningElement')
-    if (!attribute || !opening || opening.type !== 'JSXOpeningElement') return
+    const opening = ancestors.findLast(
+      (n): n is JSXOpeningElement => n.type === 'JSXOpeningElement',
+    )
     sized.add(slot)
-    if (marked.has(opening)) return
-    marked.add(opening)
-    out.appendLeft(opening.name.end as number, ` ${SIZE_ATTRIBUTE}=""`)
+    out.appendLeft(opening?.name.end as number, ` ${SIZE_ATTRIBUTE}=""`)
   }
 
   // Adds a slot and returns the module class it got. Two elements asking for
@@ -803,7 +801,12 @@ export function transformComponent(
       const classes = literals.flatMap((arg) => staticClasses(arg) as string[])
       if (classes.length > 0) {
         const slot = addSlot({ name: base(), classes }, ancestors)
-        if (ancestors.at(-1)?.type === 'JSXExpressionContainer') {
+        const attribute = ancestors.at(-2)
+        if (
+          ancestors.at(-1)?.type === 'JSXExpressionContainer' &&
+          attribute?.type === 'JSXAttribute' &&
+          attribute.name.name === 'className'
+        ) {
           markSized(slot, classes, ancestors.slice(0, -1))
         }
         if (keyedPart(ancestors) === undefined) track(ancestors, { slot }, consumer)
