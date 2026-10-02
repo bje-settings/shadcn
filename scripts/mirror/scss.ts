@@ -22,6 +22,10 @@ export type Slot = {
   // camelCase module class name
   name: string
   classes: string[]
+  // A variant option sets an arbitrary font size over the base's named one
+  // (`text-sm`, then `text-[0.8rem]`): tailwind-merge drops the named size
+  // and its line-height, so the element inherits its line-height here.
+  resetsLeading?: boolean
 }
 
 export type ScssBlock = {
@@ -378,6 +382,7 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
     }
   })
 
+  if (slot.resetsLeading) insert(root, [], ['line-height: inherit'])
   const unresolved = slot.classes.filter((c) => !resolved.has(c))
   const unknown = unresolved.filter((c) => !MARKER.test(c) && !options.withoutCss.has(c))
   if (unknown.length > 0) {

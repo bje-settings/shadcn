@@ -67,6 +67,18 @@ describe('slotToScss', () => {
     expect(unresolved).toEqual([])
   })
 
+  it('inherits the line-height for a slot that resets it', async () => {
+    const classes = ['flex', 'text-[0.8rem]']
+    const { scss } = slotToScss(
+      await compile(classes),
+      { name: 'root', classes, resetsLeading: true },
+      none,
+    )
+    expect(scss).toBe(
+      ':where(.root) {\n  display: flex;\n  font-size: .8rem;\n  line-height: inherit;\n}',
+    )
+  })
+
   it('drops rules gated on a consumer class', async () => {
     const { scss, dropped } = await convert(['flex', '[.border-b]:pb-4'], {
       consumerClasses: new Map([['border-b', 'consumer class']]),

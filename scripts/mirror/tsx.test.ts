@@ -42,6 +42,25 @@ describe('transformComponent', () => {
     expect(code).toContain('// Upstream comment')
   })
 
+  it('flags a variant option whose arbitrary font size replaces the base named one', () => {
+    const cva = (base: string, option: string) =>
+      transformComponent(
+        `import { cva } from "class-variance-authority"\nconst xVariants = cva("${base}", { variants: { size: { sm: "${option}" } } })`,
+        'x',
+        'bje',
+      ).slots
+    expect(cva('flex text-sm', 'h-6 text-[0.8rem]')[1]).toEqual({
+      name: 'sizeSm',
+      classes: ['h-6', 'text-[0.8rem]'],
+      resetsLeading: true,
+    })
+    expect(cva('flex text-xs/relaxed', 'text-[10px]')[1]).toHaveProperty('resetsLeading', true)
+    // The option sets its own leading, the base names no size, or the size is no length.
+    expect(cva('flex text-sm', 'text-[0.8rem] leading-5')[1]).not.toHaveProperty('resetsLeading')
+    expect(cva('flex', 'text-[0.8rem]')[1]).not.toHaveProperty('resetsLeading')
+    expect(cva('flex text-sm', 'text-[#fff]')[1]).not.toHaveProperty('resetsLeading')
+  })
+
   it('prefixes a secondary cva, handles no config or defaults, and adds the clsx import', () => {
     const source = `import * as React from "react"
 import { cva } from "class-variance-authority"

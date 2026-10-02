@@ -194,6 +194,20 @@ type Cva = {
   set: VariantSet
 }
 
+const NAMED_TEXT_SIZE = /^text-(xs|sm|base|lg|xl|[2-9]xl)(\/[\w.[\]-]+)?$/
+const ARBITRARY_TEXT_SIZE = /^text-\[\d*\.?\d+(rem|em|px)\]$/
+
+// Whether a variant option's arbitrary font size replaces the base's named
+// one, which tailwind-merge removes with its line-height (unless the option
+// sets its own).
+function resetsLeading(base: string[], option: string[]): boolean {
+  return (
+    base.some((c) => NAMED_TEXT_SIZE.test(c)) &&
+    option.some((c) => ARBITRARY_TEXT_SIZE.test(c)) &&
+    !option.some((c) => c.startsWith('leading-'))
+  )
+}
+
 function convertCva(
   declaration: VariableDeclaration,
   call: CallExpression,
@@ -209,7 +223,8 @@ function convertCva(
   const short = prefix === camelCase(component)
   const typeName = `${pascalCase(prefix)}VariantProps`
   const classesName = `${prefix}VariantClasses`
-  const slots: Slot[] = [{ name: prefix, classes: classList(stringValue(baseArg)) }]
+  const baseClasses = classList(stringValue(baseArg))
+  const slots: Slot[] = [{ name: prefix, classes: baseClasses }]
 
   const config = new Map(configArg ? objectEntries(configArg) : [])
   for (const name of config.keys()) {
@@ -231,7 +246,11 @@ function convertCva(
       const classes = classList(stringValue(value))
       if (classes.length === 0) return { value: option }
       const name = `${short ? group : `${prefix}${pascalCase(group)}`}${pascalCase(option)}`
-      slots.push({ name, classes })
+      slots.push({
+        name,
+        classes,
+        ...(resetsLeading(baseClasses, classes) ? { resetsLeading: true } : {}),
+      })
       return { value: option, slot: name }
     })
     const lines = choices.map(({ value, slot }) =>
