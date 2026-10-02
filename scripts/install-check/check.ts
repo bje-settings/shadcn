@@ -119,9 +119,9 @@ const REGISTRY_IMPORT = /^@\/registry\/[^/]+\/(.+)$/
 // Packages every item may import without declaring them: the scaffold's.
 const PROVIDED = new Set(['react', 'react-dom'])
 
-// Each item's files import only packages and items it, or an item it depends
-// on through registryDependencies, declares: installing it alone would miss the
-// others.
+// Each item's files import only packages and items that it, or an item it
+// reaches through registryDependencies, declares: installing it alone would
+// miss the others.
 export function undeclaredImports(items: Item[], namespace: string): string[] {
   const byName = new Map(items.map((item) => [item.name, item]))
   const prefix = `@${namespace}/`
