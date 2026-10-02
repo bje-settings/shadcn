@@ -15,7 +15,8 @@ pnpm ab:timings # where the last run spent its time, per case kind and per step
 
 Each command takes the style's short name from `AB_STYLE` (`AB_STYLE=luma pnpm ab`), the first in
 `upstream.styles` when unset (`ab/style.ts`). `pnpm ab` and `pnpm ab:serve` first run
-`pnpm mirror:build $AB_STYLE`, which builds only that style's inputs into `ab/generated/<style>/`.
+`pnpm mirror:build $AB_STYLE`: that style's whole build, its harness inputs in
+`ab/generated/<style>/` included, or every style's when `AB_STYLE` is unset.
 Each style serves on its own port, 4400 plus its index in `upstream.styles`, so a server left
 running for one style is never reused for another. Results go to `ab/results/<style>`.
 

@@ -1,8 +1,9 @@
 # mirror.config.json
 
 `mirror.config.json` configures the [mirror pipeline](mirror-pipeline.md). `scripts/mirror/config.ts`
-is the reference: it types every key and validates the file by hand, so a typo fails the run with
-the field's name. Keys it does not read are ignored.
+is the reference: it types every key and validates the file by hand, so a missing required key or
+a malformed value fails the run with the field's name. A key it does not read, a misspelled
+optional one included, is ignored.
 
 ## Sources and output
 
