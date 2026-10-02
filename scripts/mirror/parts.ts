@@ -44,9 +44,10 @@ export type PartTypes = {
   keepMounted: boolean
   // Props it requires (Progress's value)
   required: string[]
-  // Its children prop: none at all; one that takes text; one that takes no
-  // text but a function of each item (ComboboxCollection); or one that takes
-  // neither (InputOTP's type rules text out)
+  // Its children prop: none at all; one that takes text; one that takes
+  // neither text nor a function (InputOTP's type rules text out, and
+  // `children?: undefined` takes nothing); or one that takes no text but a
+  // function of each item (ComboboxCollection)
   children: 'none' | 'text' | 'nodes' | 'function'
   // The values of each prop typed as a union of string literals
   // (MessageScrollerButton's direction: "start" | "end")
@@ -262,8 +263,8 @@ export function scaffolds(
     return uses
   }
   const sources = [...(example === undefined ? [] : [collect(example)]), collect(transformed.code)]
-  // A component whose types are unknown (not an exported part) is taken to
-  // take text.
+  // A component that is not one of the item's parts counts as taking text:
+  // enclosing() leaves its element out either way.
   const takesText = (name: string) => (types.get(name)?.children ?? 'text') === 'text'
   // Where an element is first rendered: in the example if it is there.
   const firstUse = (name: string) =>
