@@ -31,6 +31,18 @@ export const STUBBED = new Set([
   'next/link',
 ])
 
+// Sub-examples that run but differ from upstream for a reason the mirror does
+// not handle yet, by name, with why. NavigationMenuBasic passes
+// navigationMenuTriggerStyle() to NavigationMenuLink: tailwind-merge lets its
+// px-4 override the link's p-2, while the mirror's :where() rules resolve by
+// source order and keep p-2, so the link is 16px narrower.
+export const KNOWN_DIFFERENCES = new Map([
+  [
+    'NavigationMenuBasic',
+    "passes navigationMenuTriggerStyle() to NavigationMenuLink, whose padding tailwind-merge overrides and the mirror's :where() rules do not",
+  ],
+])
+
 export type PreparedExample = {
   upstream: string
   ours: string
@@ -243,6 +255,7 @@ export function prepareExample(
       .filter((token) => dropped.has(token))
     const reasons = [
       ...(missing.length > 0 ? [`needs ${missing.join(', ')}`] : []),
+      ...(KNOWN_DIFFERENCES.has(name) ? [KNOWN_DIFFERENCES.get(name) as string] : []),
       ...[...new Set(passed)].sort().map((c) => `passes ${c}, whose styling the mirror drops`),
     ]
     if (reasons.length > 0) {

@@ -11,6 +11,11 @@
       "passes border-t, whose styling the mirror drops"
     ]
   },
+  "navigation-menu-example": {
+    "NavigationMenuBasic": [
+      "passes navigationMenuTriggerStyle() to NavigationMenuLink, whose padding tailwind-merge overrides and the mirror's :where() rules do not"
+    ]
+  },
   "message-scroller-example": {
     "MessageScrollerDemo": ["needs @/lib/ai, @ai-sdk/react"]
   },
