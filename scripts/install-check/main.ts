@@ -28,8 +28,10 @@ await run({
     new Promise((done, failed) => {
       spawn(command, args, { cwd, env, stdio: 'inherit' })
         .on('error', failed)
-        .on('close', (code) =>
-          code === 0 ? done() : failed(new Error(`${command} ${args.join(' ')} exited ${code}`)),
+        .on('close', (code, signal) =>
+          code === 0
+            ? done()
+            : failed(new Error(`${command} ${args.join(' ')} exited ${code ?? signal}`)),
         )
     }),
   log: (message) => console.log(message),
