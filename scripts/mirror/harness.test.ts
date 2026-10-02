@@ -231,4 +231,40 @@ describe('harnessFiles', () => {
       },
     })
   })
+
+  it('copies a hook item to upstream/hooks, with no fixtures or module map entry', () => {
+    const transformed = transformComponent(
+      'export function useThing() { return 1 }',
+      'use-thing',
+      'bje',
+    )
+    const files = harnessFiles(
+      config,
+      {
+        components: [
+          {
+            name: 'use-thing',
+            upstreamSource: 'export function useThing() { return 1 }',
+            hook: true,
+            transformed,
+            types: new Map(),
+            scaffolds: new Map(),
+          },
+        ],
+        examples: [],
+        layoutCss: '',
+        typeset: [],
+      },
+      '// header',
+    )
+    const byPath = Object.fromEntries(files.map((file) => [file.path, file.content]))
+    expect(byPath['ab/generated/vega/upstream/hooks/use-thing.ts']).toBe(
+      '// header\n\nexport function useThing() { return 1 }',
+    )
+    expect(byPath['ab/generated/vega/upstream.ts']).not.toContain('use-thing')
+    expect(byPath['ab/generated/vega/ours.ts']).not.toContain('use-thing')
+    expect(byPath['ab/generated/vega/fixtures.ts']).toContain(
+      'export const fixtures: Fixture[] = []',
+    )
+  })
 })
