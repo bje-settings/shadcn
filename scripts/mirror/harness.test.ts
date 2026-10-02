@@ -11,7 +11,6 @@ const config = forStyle(
       url: 'https://example.com/{style}/{name}.json',
       colorsUrl: 'https://example.com/colors/{name}.json',
       styles: ['base-vega'],
-      compare: 'base-vega',
     },
     theme: { baseColor: 'neutral', font: 'inter', iconLibrary: 'lucide' },
     components: ['chip-set'],
@@ -24,7 +23,7 @@ const config = forStyle(
     outputDir: 'registry/{style}/ui',
     hooksDir: 'registry/{style}/hooks',
     globalsDir: 'registry/{style}/styles',
-    harnessDir: 'ab/generated',
+    harnessDir: 'ab/generated/{style}',
     registryFile: 'registry/{style}/registry.json',
   }),
   'base-vega',
@@ -152,7 +151,7 @@ describe('fixturesFor', () => {
 })
 
 describe('harnessFiles', () => {
-  it('writes upstream copies, example copies, module maps, case lists and both stylesheets', () => {
+  it('writes upstream copies, example copies, module maps, case lists, both stylesheets and a tsconfig', () => {
     const transformed = transformComponent(chip, 'chip-set', 'bje')
     const files = harnessFiles(
       config,
@@ -179,38 +178,57 @@ describe('harnessFiles', () => {
     )
     const byPath = Object.fromEntries(files.map((file) => [file.path, file.content]))
     expect(Object.keys(byPath)).toEqual([
-      'ab/generated/upstream/chip-set.tsx',
-      'ab/generated/examples/upstream/chip-set-example.tsx',
-      'ab/generated/examples/ours/chip-set-example.tsx',
-      'ab/generated/upstream.ts',
-      'ab/generated/ours.ts',
-      'ab/generated/examples-upstream.ts',
-      'ab/generated/examples-ours.ts',
-      'ab/generated/fixtures.ts',
-      'ab/generated/examples.ts',
-      'ab/generated/typeset.ts',
-      'ab/generated/upstream.css',
-      'ab/generated/examples.css',
+      'ab/generated/vega/upstream/chip-set.tsx',
+      'ab/generated/vega/examples/upstream/chip-set-example.tsx',
+      'ab/generated/vega/examples/ours/chip-set-example.tsx',
+      'ab/generated/vega/upstream.ts',
+      'ab/generated/vega/ours.ts',
+      'ab/generated/vega/examples-upstream.ts',
+      'ab/generated/vega/examples-ours.ts',
+      'ab/generated/vega/fixtures.ts',
+      'ab/generated/vega/examples.ts',
+      'ab/generated/vega/typeset.ts',
+      'ab/generated/vega/upstream.css',
+      'ab/generated/vega/examples.css',
+      'ab/generated/vega/tsconfig.json',
     ])
-    expect(byPath['ab/generated/upstream/chip-set.tsx']).toBe(`// header\n\n${chip}`)
-    expect(byPath['ab/generated/examples/ours/chip-set-example.tsx']).toBe('// header\n\nour')
-    expect(byPath['ab/generated/upstream.ts']).toContain(
+    expect(byPath['ab/generated/vega/upstream/chip-set.tsx']).toBe(`// header\n\n${chip}`)
+    expect(byPath['ab/generated/vega/examples/ours/chip-set-example.tsx']).toBe('// header\n\nour')
+    expect(byPath['ab/generated/vega/upstream.ts']).toContain(
       'import * as chipSet from "./upstream/chip-set"\n\nexport const upstream = {\n  "chip-set": chipSet,\n}',
     )
-    expect(byPath['ab/generated/ours.ts']).toContain(
+    expect(byPath['ab/generated/vega/ours.ts']).toContain(
       'import * as chipSet from "@/registry/bje/ui/ChipSet/ChipSet"',
     )
-    expect(byPath['ab/generated/examples-ours.ts']).toContain(
+    expect(byPath['ab/generated/vega/examples-ours.ts']).toContain(
       'import * as chipSetExample from "./examples/ours/chip-set-example"',
     )
-    expect(byPath['ab/generated/fixtures.ts']).toContain('"label": "Chip tone=soft"')
-    expect(byPath['ab/generated/examples.ts']).toContain(
+    expect(byPath['ab/generated/vega/fixtures.ts']).toContain('"label": "Chip tone=soft"')
+    expect(byPath['ab/generated/vega/fixtures.ts']).toContain(
+      "import type { Fixture } from '../../../scripts/mirror/shapes'",
+    )
+    expect(byPath['ab/generated/vega/examples.ts']).toContain(
       '"example": "chip-set-example",\n    "name": "ChipBasic"',
     )
-    expect(byPath['ab/generated/upstream.css']).toContain(
-      '@import "../../upstream/base-vega/index.css";\n@import "../../upstream/typeset/typeset.css";\n@source "./upstream";\n@source "./examples/upstream";',
+    expect(byPath['ab/generated/vega/upstream.css']).toContain(
+      '@import "../../../upstream/base-vega/index.css";\n@import "../../../upstream/typeset/typeset.css";\n@source "./upstream";\n@source "./examples/upstream";',
     )
-    expect(byPath['ab/generated/typeset.ts']).toContain('"html": "<h1>Docs</h1>"')
-    expect(byPath['ab/generated/examples.css']).toBe('/* layout */')
+    expect(byPath['ab/generated/vega/typeset.ts']).toContain('"html": "<h1>Docs</h1>"')
+    expect(byPath['ab/generated/vega/examples.css']).toBe('/* layout */')
+    expect(JSON.parse(byPath['ab/generated/vega/tsconfig.json'] as string)).toEqual({
+      extends: '../../tsconfig.json',
+      compilerOptions: {
+        paths: {
+          '@ab/generated/*': ['./*'],
+          '@ab/styles/*': ['../../../registry/vega/styles/*'],
+          '@/registry/bje/ui/*': ['../../../registry/vega/ui/*'],
+          '@/registry/bje/hooks/*': ['../../../registry/vega/hooks/*'],
+          '@/registry/base-vega/ui/*': ['./upstream/*'],
+          '@/registry/base-vega/hooks/*': ['./upstream/hooks/*'],
+          '@/registry/base-vega/components/example': ['../../stubs/example.tsx'],
+          '@/app/(create)/components/icon-placeholder': ['../../stubs/icon-placeholder.tsx'],
+        },
+      },
+    })
   })
 })

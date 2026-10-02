@@ -4,10 +4,10 @@
 // Typeset's content fixtures inside `.typeset`, both in light and dark. Both
 // pages render this same list from their own modules and stylesheets.
 
+import { examples } from '@ab/generated/examples'
+import { fixtures } from '@ab/generated/fixtures'
+import { typeset } from '@ab/generated/typeset'
 import type { ReactNode } from 'react'
-import { examples } from './generated/examples'
-import { fixtures } from './generated/fixtures'
-import { typeset } from './generated/typeset'
 import { pick, type Ui } from './ui'
 
 // A page's modules: components by item, and example modules by example name.

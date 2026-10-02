@@ -1,24 +1,31 @@
 {
   // The harness is bundled by Vite, so it resolves like a bundler, with both
-  // sides' registry aliases. The paths must match mirror.config.json
-  // (namespace, upstream.compare, outputDir); ab/vite.config.ts reads them from it.
+  // sides' registry aliases. ab/vite.config.ts sets them per style from
+  // mirror.config.json; these paths fix them to vega for the editor and the
+  // pre-commit type check, since every style's generated code has the same
+  // API. `mirror build` writes each style's own copy as
+  // ab/generated/<style>/tsconfig.json, which CI type-checks.
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "module": "preserve",
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": false,
     "types": ["node", "vite/client"],
     // Upstream's docs examples, compiled here as written, index arrays
     // without checking for undefined.
     "noUncheckedIndexedAccess": false,
     "paths": {
+      "@ab/generated/*": ["./generated/vega/*"],
+      "@ab/styles/*": ["../registry/vega/styles/*"],
       "@/registry/bje/ui/*": ["../registry/vega/ui/*"],
       "@/registry/bje/hooks/*": ["../registry/vega/hooks/*"],
-      "@/registry/base-vega/ui/*": ["./generated/upstream/*"],
-      "@/registry/base-vega/hooks/*": ["./generated/upstream/hooks/*"],
+      "@/registry/base-vega/ui/*": ["./generated/vega/upstream/*"],
+      "@/registry/base-vega/hooks/*": ["./generated/vega/upstream/hooks/*"],
       "@/registry/base-vega/components/example": ["./stubs/example.tsx"],
       "@/app/(create)/components/icon-placeholder": ["./stubs/icon-placeholder.tsx"]
     }
   },
-  "include": ["."]
+  "include": ["."],
+  // Each style's generated inputs are reached through the paths above, so
+  // only that style's are checked against them.
+  "exclude": ["generated"]
 }

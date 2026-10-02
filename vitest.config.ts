@@ -2,17 +2,25 @@
 // Coverage ruleset holds every repository to; relief is exclusion by file name
 // with a stated reason, never a lowered threshold.
 import { readFileSync } from 'node:fs'
-import { defineConfig } from 'vitest/config'
-import { shortStyle } from './scripts/mirror/config.ts'
+import { dirname } from 'node:path'
+import { defineConfig, type TestProjectInlineConfiguration } from 'vitest/config'
+import { forStyle, parseConfig, shortStyle } from './scripts/mirror/config.ts'
 import { pascalCase } from './scripts/mirror/names.ts'
 
-const mirror = JSON.parse(readFileSync(new URL('./mirror.config.json', import.meta.url), 'utf8'))
-// Generated items are tested and covered for the compare style only: every
-// style ships the same generated tests, and running each style's would
-// multiply CI time while the repository is internal. The others rely on the
-// mirror build's own checks.
-const style = shortStyle(mirror.upstream.compare)
-const dir = (key: 'outputDir' | 'hooksDir') => mirror[key].replaceAll('{style}', style)
+const mirror = parseConfig(
+  JSON.parse(readFileSync(new URL('./mirror.config.json', import.meta.url), 'utf8')),
+)
+// Every style's generated items are tested and covered.
+const styles = mirror.upstream.styles.map((style) => forStyle(mirror, style))
+const path = (dir: string) => new URL(`./${dir}`, import.meta.url).pathname
+
+// Registry items render under jsdom, with CSS modules compiled by Sass and
+// class names kept as written, the way a consumer's bundler would resolve
+// `styles.x`.
+const registry = {
+  environment: 'jsdom',
+  css: { include: [/\.module\.scss$/], modules: { classNameStrategy: 'non-scoped' } },
+} satisfies TestProjectInlineConfiguration['test']
 
 export default defineConfig({
   test: {
@@ -25,39 +33,44 @@ export default defineConfig({
       },
       {
         extends: true,
-        test: {
-          name: 'registry',
-          // Cross-component imports, as mapped in registry/tsconfig.json.
-          alias: {
-            [`@/registry/${mirror.namespace}/ui`]: new URL(`./${dir('outputDir')}`, import.meta.url)
-              .pathname,
-            [`@/registry/${mirror.namespace}/hooks`]: new URL(
-              `./${dir('hooksDir')}`,
-              import.meta.url,
-            ).pathname,
-          },
-          include: [`registry/${style}/**/*.test.{ts,tsx}`, 'registry/lib/**/*.test.{ts,tsx}'],
-          environment: 'jsdom',
-          // Compile CSS modules with Sass and keep class names as written, the
-          // way a consumer's bundler would resolve `styles.x`.
-          css: { include: [/\.module\.scss$/], modules: { classNameStrategy: 'non-scoped' } },
-        },
+        test: { ...registry, name: 'registry/lib', include: ['registry/lib/**/*.test.{ts,tsx}'] },
       },
+      ...styles.map(
+        (config): TestProjectInlineConfiguration => ({
+          extends: true,
+          test: {
+            ...registry,
+            name: `registry/${shortStyle(config.upstream.style)}`,
+            // Cross-component imports, as mapped in registry/<style>/tsconfig.json.
+            alias: {
+              [`@/registry/${mirror.namespace}/ui`]: path(config.outputDir),
+              [`@/registry/${mirror.namespace}/hooks`]: path(config.hooksDir),
+            },
+            include: [`${dirname(config.registryFile)}/**/*.test.{ts,tsx}`],
+          },
+        }),
+      ),
     ],
     coverage: {
       provider: 'v8',
       // Named, not discovered: a configuration that finds its own inputs can
       // find zero of them and still report 100%.
       // ab/ is the Playwright A/B harness: exercised by `pnpm ab`, not vitest.
-      include: [`registry/${style}/**/*.{ts,tsx}`, 'registry/lib/**/*.{ts,tsx}', 'scripts/**/*.ts'],
+      include: [
+        ...styles.map((config) => `${dirname(config.registryFile)}/**/*.{ts,tsx}`),
+        'registry/lib/**/*.{ts,tsx}',
+        'scripts/**/*.ts',
+      ],
       exclude: [
         '**/*.test.{ts,tsx}',
         // Mirrored components with upstream logic no generated test reaches;
         // mirror.config.json gives each reason.
-        ...Object.keys(mirror.coverageExclusions ?? {}).flatMap((item) => {
-          const file = pascalCase(item)
-          return [`${dir('outputDir')}/${file}/${file}.tsx`, `${dir('hooksDir')}/${item}.ts`]
-        }),
+        ...styles.flatMap((config) =>
+          Object.keys(config.coverageExclusions).flatMap((item) => {
+            const file = pascalCase(item)
+            return [`${config.outputDir}/${file}/${file}.tsx`, `${config.hooksDir}/${item}.ts`]
+          }),
+        ),
         // The process entry points: they wire cli.ts and registries.ts to the
         // real process, fetch, console and shadcn CLI, and hold no logic.
         'scripts/mirror/main.ts',

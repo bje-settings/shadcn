@@ -25,12 +25,10 @@ export type MirrorConfig = {
     url: string
     // Base color themes, e.g. https://ui.shadcn.com/r/colors/{name}.json
     colorsUrl: string
-    // The styles mirrored, each published as its own registry
+    // The styles mirrored, each published as its own registry, tested and
+    // compared with upstream
     styles: string[]
-    // The style CI checks with the A/B harness and the generated tests. Other
-    // styles rely on the build's own checks while the repository is internal.
-    compare: string
-    // The style this config builds: compare as parsed, each style's own from
+    // The style this config builds: the first as parsed, each style's own from
     // forStyle().
     style: string
   }
@@ -57,7 +55,7 @@ export type MirrorConfig = {
   hooksDir: string
   // Generated global stylesheets (the @<namespace>/globals item)
   globalsDir: string
-  // Generated inputs for the A/B harness
+  // Generated inputs for the A/B harness, one directory per style
   harnessDir: string
   // The style's registry catalog: registry.json's hand-written items plus
   // the generated ones
@@ -136,6 +134,7 @@ export function forStyle(config: MirrorConfig, style: string): MirrorConfig {
     outputDir: resolve(config.outputDir),
     hooksDir: resolve(config.hooksDir),
     globalsDir: resolve(config.globalsDir),
+    harnessDir: resolve(config.harnessDir),
     registryFile: resolve(config.registryFile),
   }
 }
@@ -159,9 +158,6 @@ export function parseConfig(raw: unknown): MirrorConfig {
     shape.fail('upstream.styles must be a non-empty array of kebab-case style names')
   }
   if (new Set(styles).size !== styles.length) shape.fail('upstream.styles must not repeat')
-  const compare = name(upstream, 'compare', 'upstream.')
-  if (!styles.includes(compare))
-    shape.fail(`upstream.compare: ${compare} is not in upstream.styles`)
   const theme = shape.record(raw.theme, 'theme')
 
   const components = raw.components
@@ -247,7 +243,7 @@ export function parseConfig(raw: unknown): MirrorConfig {
 
   return {
     namespace: name(raw, 'namespace', ''),
-    upstream: { url, colorsUrl, styles, compare, style: compare },
+    upstream: { url, colorsUrl, styles, style: styles[0] as string },
     theme: {
       baseColor: name(theme, 'baseColor', 'theme.'),
       font: name(theme, 'font', 'theme.'),
@@ -259,7 +255,7 @@ export function parseConfig(raw: unknown): MirrorConfig {
     outputDir: styled(raw, 'outputDir'),
     hooksDir: styled(raw, 'hooksDir'),
     globalsDir: styled(raw, 'globalsDir'),
-    harnessDir: string(raw, 'harnessDir', ''),
+    harnessDir: styled(raw, 'harnessDir'),
     registryFile: styled(raw, 'registryFile'),
     consumerClasses,
     globalClasses,
@@ -314,6 +310,18 @@ export function checkConfiguredParts(
       }
     }
   }
+}
+
+// The style an A/B run renders: the one AB_STYLE names by its short name
+// (luma), or the first configured style when it is unset.
+export function harnessStyle(config: MirrorConfig, name: string | undefined): string {
+  const { styles } = config.upstream
+  if (name === undefined) return styles[0] as string
+  const style = styles.find((style) => shortStyle(style) === name)
+  if (style === undefined) {
+    throw new Error(`AB_STYLE: ${name} is not one of ${styles.map(shortStyle).join(', ')}`)
+  }
+  return style
 }
 
 export function upstreamUrl(config: MirrorConfig, name: string): string {
