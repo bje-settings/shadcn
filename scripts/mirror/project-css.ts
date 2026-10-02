@@ -43,9 +43,9 @@ function declarations(vars: Record<string, string>): string[] {
   return Object.entries(vars).map(([name, value]) => `  --${name}: ${value};`)
 }
 
-// The style's imports (tw-animate-css, shadcn/tailwind.css), the dark variant
-// and the @theme inline mapping: what both the project CSS and the A/B
-// harness's example layout CSS need.
+// The style's imports (tw-animate-css, shadcn/tailwind.css), the dark variant,
+// the @theme inline mapping and the font variables: what both the project CSS
+// and the A/B harness's example layout CSS need.
 function themeSetup(index: StyleIndex, color: BaseColor, font: FontItem): string[] {
   const imports = Object.fromEntries(
     Object.entries(index.css ?? {}).filter(([key]) => key.startsWith('@import')),
@@ -62,9 +62,10 @@ function themeSetup(index: StyleIndex, color: BaseColor, font: FontItem): string
     ...Object.entries(RADIUS).map(([size, value]) => `  --radius-${size}: ${value};`),
     '}',
     '',
-    // Not inline, unlike upstream: the generated CSS then reads the fonts
-    // through these variables, so a font item can replace one without a
-    // Tailwind recompile, which is how upstream's CLI applies a font.
+    // Not inline, unlike upstream: the generated CSS then reads
+    // var(--font-sans) and var(--font-heading), so a font item's stylesheet
+    // can replace one. Upstream's CLI instead rewrites the variable in the
+    // project's Tailwind entry.
     '@theme {',
     '  --font-heading: var(--font-sans);',
     `  ${font.font.variable}: ${font.font.family};`,
