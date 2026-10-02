@@ -272,15 +272,19 @@ async function buildStyle(io: Io, config: MirrorConfig): Promise<void> {
     for (const name of built.internal) internal.add(name)
     for (const name of built.external) external.add(name)
     items.push(built.item)
-    harness.push({
-      name,
-      hook: component.upstream.type === 'registry:hook',
-      upstreamSource: built.upstreamSource,
-      transformed: built.transformed,
-      types: itemTypes,
-      scaffolds: context.scaffolds,
-      expressionParts: Object.keys(config.testExpressions[name] ?? {}),
-    })
+    harness.push(
+      component.upstream.type === 'registry:hook'
+        ? { kind: 'hook', name, upstreamSource: built.upstreamSource }
+        : {
+            kind: 'ui',
+            name,
+            upstreamSource: built.upstreamSource,
+            transformed: built.transformed,
+            types: itemTypes,
+            scaffolds: context.scaffolds,
+            expressionParts: Object.keys(config.testExpressions[name] ?? {}),
+          },
+    )
     io.log(`built ${name}: ${built.files.map((file) => file.path).join(', ')}`)
     for (const [slot, unresolved] of Object.entries(built.unresolved)) {
       io.log(`  ${slot}: no CSS for ${unresolved.join(' ')}`)

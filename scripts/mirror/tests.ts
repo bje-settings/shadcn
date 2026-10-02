@@ -521,8 +521,9 @@ export type TestInput = ItemParts & {
   unstyled: Set<string>
   // Parts jsdom renders nothing for, with the reason
   unrendered: Record<string, string>
-  // The module's file name, when it is not the PascalCase item (a hook's)
-  module?: string
+  // A hook's module is named as the item; a component's is the PascalCase
+  // item
+  kind: 'hook' | 'ui'
   // Props given as TypeScript expressions, by part
   expressions: Record<string, Record<string, string>>
   // Props whose other values render the same, by `Part.prop`
@@ -535,7 +536,7 @@ export function generateTest(
   parts: TestInput,
 ): string {
   const file = pascalCase(name)
-  const module = parts.module ?? file
+  const module = parts.kind === 'hook' ? name : file
   const exported = exportedNames(transformed.code)
   const components = transformed.components.filter((c) => exported.has(c.name))
   const forwarded = forwardedValues(transformed.code, exported)

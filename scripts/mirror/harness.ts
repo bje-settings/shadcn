@@ -22,23 +22,31 @@ import type { TypesetFixture } from './typeset.ts'
 
 export type { Fixture } from './shapes.ts'
 
-export type HarnessInput = {
+// A hook item: its upstream copy serves upstream components' imports; it has
+// no fixtures or module map entry.
+export type HarnessHook = {
+  kind: 'hook'
   name: string
-  // A hook item: its upstream copy serves upstream components' imports; it
-  // has no fixtures or module map entry
-  hook: boolean
+  upstreamSource: string
+}
+
+export type HarnessComponent = {
+  kind: 'ui'
+  name: string
   upstreamSource: string
   transformed: TransformedComponent
   types: Map<string, PartTypes>
   scaffolds: Map<string, Scaffold>
   // Parts that need props JSON cannot hold (config testExpressions): no
   // fixture renders them; their item's docs examples do
-  expressionParts?: string[]
+  expressionParts: string[]
 }
+
+export type HarnessInput = HarnessHook | HarnessComponent
 
 // One fixture per cva() option of each exported component that renders an
 // element, or one for a component without options.
-export function fixturesFor(input: HarnessInput): Fixture[] {
+export function fixturesFor(input: HarnessComponent): Fixture[] {
   const { name, transformed } = input
   const exported = exportedNames(transformed.code)
   const sets = new Map(transformed.variantSets.map((set) => [set.variable, set]))
@@ -47,7 +55,7 @@ export function fixturesFor(input: HarnessInput): Fixture[] {
       (component) =>
         exported.has(component.name) &&
         input.types.get(component.name)?.className !== false &&
-        !input.expressionParts?.includes(component.name),
+        !input.expressionParts.includes(component.name),
     )
     .flatMap((component) => {
       // A component's variantSet always names a cva() the transform recorded.
@@ -116,7 +124,7 @@ export function harnessFiles(
   const dir = config.harnessDir
   const indexCss = `${config.snapshotDir}/${config.upstream.style}/index.css`
   const typesetCss = `${config.snapshotDir}/typeset/typeset.css`
-  const items = harness.components.filter(({ hook }) => !hook)
+  const items = harness.components.filter((input) => input.kind === 'ui')
   const components = items.map(({ name }) => name)
   const examples = harness.examples.map(({ name }) => name)
   const fixtures = items.flatMap(fixturesFor)
@@ -125,8 +133,8 @@ export function harnessFiles(
   )
   const ts = (content: string) => `${header}\n\n${content}\n`
   return [
-    ...harness.components.map(({ name, upstreamSource, hook }) => ({
-      path: hook ? `${dir}/upstream/hooks/${name}.ts` : `${dir}/upstream/${name}.tsx`,
+    ...harness.components.map(({ name, upstreamSource, kind }) => ({
+      path: kind === 'hook' ? `${dir}/upstream/hooks/${name}.ts` : `${dir}/upstream/${name}.tsx`,
       content: `${header}\n\n${upstreamSource}`,
     })),
     ...harness.examples.flatMap(({ name, prepared }) =>

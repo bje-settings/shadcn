@@ -79,9 +79,10 @@ describe('fixturesFor', () => {
     const base = { item: 'chip', ancestors: [], children: true, overlay: false }
     expect(
       fixturesFor({
+        kind: 'ui',
         name: 'chip',
         upstreamSource: chip,
-        hook: false,
+        expressionParts: [],
         transformed,
         ...parts(transformed),
       }),
@@ -115,9 +116,10 @@ describe('fixturesFor', () => {
       others: [],
     }
     const fixtures = fixturesFor({
+      kind: 'ui',
       name: 'chip',
       upstreamSource: chip,
-      hook: false,
+      expressionParts: [],
       transformed,
       types: new Map([
         [
@@ -158,9 +160,10 @@ describe('harnessFiles', () => {
       {
         components: [
           {
+            kind: 'ui',
             name: 'chip-set',
             upstreamSource: chip,
-            hook: false,
+            expressionParts: [],
             transformed,
             ...parts(transformed),
           },
@@ -233,22 +236,14 @@ describe('harnessFiles', () => {
   })
 
   it('copies a hook item to upstream/hooks, with no fixtures or module map entry', () => {
-    const transformed = transformComponent(
-      'export function useThing() { return 1 }',
-      'use-thing',
-      'bje',
-    )
     const files = harnessFiles(
       config,
       {
         components: [
           {
+            kind: 'hook',
             name: 'use-thing',
             upstreamSource: 'export function useThing() { return 1 }',
-            hook: true,
-            transformed,
-            types: new Map(),
-            scaffolds: new Map(),
           },
         ],
         examples: [],
