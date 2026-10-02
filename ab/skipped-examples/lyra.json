@@ -1,0 +1,22 @@
+{
+  "card-example": {
+    "CardHeaderWithBorder": ["passes border-b, whose styling the mirror drops"],
+    "CardFooterWithBorder": ["passes border-t, whose styling the mirror drops"],
+    "CardHeaderWithBorderSmall": ["passes border-b, whose styling the mirror drops"],
+    "CardFooterWithBorderSmall": ["passes border-t, whose styling the mirror drops"]
+  },
+  "input-group-example": {
+    "InputGroupTextareaExamples": [
+      "passes border-b, whose styling the mirror drops",
+      "passes border-t, whose styling the mirror drops"
+    ]
+  },
+  "message-scroller-example": {
+    "MessageScrollerDemo": ["needs @/lib/ai, @ai-sdk/react"]
+  },
+  "calendar-example": {
+    "CalendarRangeMultipleMonths": ["needs react-day-picker/locale"],
+    "CalendarWithTime": ["passes border-t, whose styling the mirror drops"],
+    "CalendarWithPresets": ["passes border-t, whose styling the mirror drops"]
+  }
+}

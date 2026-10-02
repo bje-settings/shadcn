@@ -24,7 +24,12 @@ import { childNodes, parseModule, span } from './ast.ts'
 import { registryModule } from './names.ts'
 
 // Imports the harness provides stand-ins for (ab/stubs).
-export const STUBBED = new Set(['components/example', '@/app/(create)/components/icon-placeholder'])
+export const STUBBED = new Set([
+  'components/example',
+  '@/app/(create)/components/icon-placeholder',
+  'next/image',
+  'next/link',
+])
 
 export type PreparedExample = {
   upstream: string

@@ -106,6 +106,17 @@ export default function ChipPage() {
     expect(prepared.ours).toContain('export { ChipPage }')
   })
 
+  it('keeps sub-examples that import next/image or next/link, which the harness stubs', () => {
+    const source = `import Image from "next/image"
+import Link from "next/link"
+export default function Page() { return <><Pic /><Nav /></> }
+function Pic() { return <Image src="a.png" alt="" fill /> }
+function Nav() { return <Link href="#">Home</Link> }`
+    const stubbed = prepareExample(source, 'base-vega', 'bje', mirrored, new Set())
+    expect(stubbed.kept).toEqual(['Pic', 'Nav'])
+    expect(stubbed.skipped).toEqual([])
+  })
+
   const dropped = new Set(['border-b', 'border-t'])
   const prepared = prepareExample(example, 'base-vega', 'bje', mirrored, dropped)
 

@@ -85,6 +85,11 @@ async function writeFormatted(io: Io, path: string, content: string): Promise<vo
   await writeText(join(io.root, path), io.format(path, content))
 }
 
+// The sub-examples the A/B harness skips for a style, with why.
+export function skippedExamplesPath(config: MirrorConfig): string {
+  return `ab/skipped-examples/${shortStyle(config.upstream.style)}.json`
+}
+
 function snapshotPath(io: Io, config: MirrorConfig, name: string): string {
   return join(io.root, config.snapshotDir, config.upstream.style, `${name}.json`)
 }
@@ -389,6 +394,7 @@ async function buildStyle(io: Io, config: MirrorConfig): Promise<void> {
     ].map((dependency) => dependency.replace(/(?<=.)@[^@]*$/, '')),
   )
   const examples: HarnessExample[] = []
+  const skippedExamples: Record<string, Record<string, string[]>> = {}
   for (const [name, source] of exampleSources) {
     if (source === undefined) continue
     const example = `${name}-example`
@@ -399,6 +405,7 @@ async function buildStyle(io: Io, config: MirrorConfig): Promise<void> {
     )
     for (const { name: sub, reasons } of prepared.skipped) {
       io.log(`  skipped ${sub}: ${reasons.join('; ')}`)
+      skippedExamples[example] = { ...skippedExamples[example], [sub]: reasons }
     }
   }
 
@@ -416,6 +423,13 @@ async function buildStyle(io: Io, config: MirrorConfig): Promise<void> {
     await writeText(join(io.root, file.path), file.content)
   }
   io.log(`built A/B harness inputs in ${config.harnessDir}`)
+  // Committed, so a skip that appears shows in review and fails
+  // generated.test.ts until it is recorded.
+  await writeFormatted(
+    io,
+    skippedExamplesPath(config),
+    `${JSON.stringify(skippedExamples, null, 2)}\n`,
+  )
 
   // registry.json holds the hand-written items; each style publishes them with
   // its own under its path of the site.

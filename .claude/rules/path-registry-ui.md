@@ -7,6 +7,7 @@ paths:
   - "registry/*/tsconfig.json"
   - "upstream/**"
   - "ab/generated/**"
+  - "ab/skipped-examples/**"
 ---
 
 # Generated Files
