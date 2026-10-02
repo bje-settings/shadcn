@@ -32,6 +32,9 @@ export type Slot = {
   // (`text-sm`, then `text-[0.8rem]`): tailwind-merge drops the named size
   // and its line-height, so the element inherits its line-height here.
   resetsLeading?: boolean
+  // A cva variant option: its classes come after the base's on the element,
+  // so tailwind-merge lets them replace a base class they conflict with.
+  variant?: boolean
 }
 
 export type ScssBlock = {
@@ -66,9 +69,9 @@ export const NAMED_TEXT_SIZE = /^text-(xs|sm|base|lg|xl|[2-9]xl)(\/[\w.[\]-]+)?$
 export type SlotOptions = {
   // Where a class probe default ranks among the others with the same variant
   // (`[&_svg:not([class*='size-'])]:` in front of size-3.5 or size-4), by
-  // Tailwind's order for equal specificity: later wins. Zero for any other
-  // class.
-  probeRank: (candidate: string) => number
+  // Tailwind's order for equal specificity: later wins; a variant option's
+  // always outranks the base's. Zero for any other class.
+  probeRank: (candidate: string, variant: boolean) => number
   // Selectors for the mirrored elements that set a named font size and no
   // leading of their own: the leading-* of a slot that also sets a named font
   // size (CardDescription's default typography) does not apply to them, as
@@ -370,6 +373,7 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
       }
       const rank = options.probeRank(
         classesIn(raw).find((c) => candidates.has(c) && /\[class\*=/.test(c)) ?? '',
+        slot.variant === true,
       )
       const probe = /\[class\*="[^"]*"\]/.exec(selector)?.[0]
       if (rank > 0 && probe) selector += `:not(${probe})`.repeat(rank)

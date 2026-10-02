@@ -252,6 +252,7 @@ function convertCva(
       slots.push({
         name,
         classes,
+        variant: true,
         ...(resetsLeading(baseClasses, classes) ? { resetsLeading: true } : {}),
       })
       return { value: option, slot: name }

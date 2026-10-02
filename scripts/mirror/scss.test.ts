@@ -197,6 +197,19 @@ describe('slotToScss', () => {
     )
   })
 
+  it('passes whether the slot is a variant option to the rank', async () => {
+    const classes = ["[&_svg:not([class*='size-'])]:size-4"]
+    const seen: boolean[] = []
+    const probeRank = (_: string, variant: boolean) => {
+      seen.push(variant)
+      return 0
+    }
+    const options = { ...none, classProbe: () => ['[data-slot="icon"]'], probeRank }
+    await slotToScss(await compile(classes), { name: 'root', classes, variant: true }, options)
+    await slotToScss(await compile(classes), { name: 'root', classes }, options)
+    expect(seen).toEqual([true, false])
+  })
+
   it('adds no rank where the probe found nothing and went', async () => {
     const classes = ["[&_svg:not([class*='size-'])]:size-4"]
     const { scss } = await convert(classes, { probeRank: () => 2 })

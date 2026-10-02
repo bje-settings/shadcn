@@ -308,8 +308,10 @@ describe('probeRanks', () => {
       await prepareComponent(item('one', 'size-4'), config, cssPath),
       await prepareComponent(item('two', 'size-3.5'), config, cssPath),
     ])
-    expect(rank("[&_svg:not([class*='size-'])]:size-3.5")).toBe(0)
-    expect(rank("[&_svg:not([class*='size-'])]:size-4")).toBe(1)
-    expect(rank('flex')).toBe(0)
+    expect(rank("[&_svg:not([class*='size-'])]:size-3.5", false)).toBe(0)
+    expect(rank("[&_svg:not([class*='size-'])]:size-4", false)).toBe(1)
+    // A variant option's outranks every base's.
+    expect(rank("[&_svg:not([class*='size-'])]:size-3.5", true)).toBe(2)
+    expect(rank('flex', false)).toBe(0)
   })
 })

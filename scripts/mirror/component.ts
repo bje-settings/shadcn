@@ -195,7 +195,9 @@ export function textSizedSelectors(components: PreparedComponent[]): string[] {
 // variant, over every mirrored component: Tailwind sorts equal-specificity
 // utilities by candidate, so the greater candidate comes later and wins
 // where two ancestors' defaults reach one icon.
-export function probeRanks(components: PreparedComponent[]): (candidate: string) => number {
+export function probeRanks(
+  components: PreparedComponent[],
+): (candidate: string, variant: boolean) => number {
   const groups = new Map<string, Set<string>>()
   for (const { transformed } of components) {
     for (const slot of transformed.slots) {
@@ -207,11 +209,16 @@ export function probeRanks(components: PreparedComponent[]): (candidate: string)
       }
     }
   }
-  const ranks = new Map<string, number>()
+  const ranks = new Map<string, { rank: number; span: number }>()
   for (const group of groups.values()) {
-    for (const [i, candidate] of [...group].sort().entries()) ranks.set(candidate, i)
+    for (const [rank, candidate] of [...group].sort().entries()) {
+      ranks.set(candidate, { rank, span: group.size })
+    }
   }
-  return (candidate) => ranks.get(candidate) ?? 0
+  return (candidate, variant) => {
+    const found = ranks.get(candidate)
+    return found ? found.rank + (variant ? found.span : 0) : 0
+  }
 }
 
 // What slotToScss reads besides each component's own markers: the same for

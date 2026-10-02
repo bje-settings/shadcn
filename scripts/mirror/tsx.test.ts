@@ -25,10 +25,10 @@ describe('transformComponent', () => {
     const { code, slots } = transformComponent(button, 'button', 'bje')
     expect(slots).toEqual([
       { name: 'button', classes: ['inline-flex', 'h-9'] },
-      { name: 'variantDefault', classes: ['bg-primary'] },
-      { name: 'variantOutline', classes: ['border'] },
-      { name: 'sizeDefault', classes: ['h-9'] },
-      { name: 'sizeIconXs', classes: ['size-6'] },
+      { name: 'variantDefault', classes: ['bg-primary'], variant: true },
+      { name: 'variantOutline', classes: ['border'], variant: true },
+      { name: 'sizeDefault', classes: ['h-9'], variant: true },
+      { name: 'sizeIconXs', classes: ['size-6'], variant: true },
     ])
     expect(code).not.toContain('class-variance-authority')
     expect(code).toContain(
@@ -52,6 +52,7 @@ describe('transformComponent', () => {
     expect(cva('flex text-sm', 'h-6 text-[0.8rem]')[1]).toEqual({
       name: 'sizeSm',
       classes: ['h-6', 'text-[0.8rem]'],
+      variant: true,
       resetsLeading: true,
     })
     expect(cva('flex text-xs/relaxed', 'text-[10px]')[1]).toHaveProperty('resetsLeading', true)
