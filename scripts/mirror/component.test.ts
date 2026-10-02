@@ -312,6 +312,9 @@ describe('probeRanks', () => {
     expect(rank("[&_svg:not([class*='size-'])]:size-4", false)).toBe(1)
     // A variant option's outranks every base's.
     expect(rank("[&_svg:not([class*='size-'])]:size-3.5", true)).toBe(2)
-    expect(rank('flex', false)).toBe(0)
+    // So does a candidate with another variant in front.
+    expect(rank("group-data-[a=b]/x:[&_svg:not([class*='size-'])]:size-6", false)).toBe(2)
+    expect(rank("[&_svg:not([class*='size-'])]:size-4", true)).toBe(2)
+    expect(rank('', false)).toBe(0)
   })
 })

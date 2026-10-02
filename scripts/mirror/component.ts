@@ -209,16 +209,19 @@ export function probeRanks(
       }
     }
   }
-  const ranks = new Map<string, { rank: number; span: number }>()
+  const ranks = new Map<string, number>()
+  let span = 0
   for (const group of groups.values()) {
-    for (const [rank, candidate] of [...group].sort().entries()) {
-      ranks.set(candidate, { rank, span: group.size })
-    }
+    span = Math.max(span, group.size)
+    for (const [rank, candidate] of [...group].sort().entries()) ranks.set(candidate, rank)
   }
-  return (candidate, variant) => {
-    const found = ranks.get(candidate)
-    return found ? found.rank + (variant ? found.span : 0) : 0
-  }
+  // A variant option, or another variant in front of the probe
+  // (`group-data-[...]/x:`), comes after the plain defaults and replaces
+  // them. Among themselves the order of the stylesheet decides.
+  return (candidate, variant) =>
+    variant || (candidate !== '' && !candidate.startsWith('[&'))
+      ? span
+      : (ranks.get(candidate) ?? 0)
 }
 
 // What slotToScss reads besides each component's own markers: the same for
