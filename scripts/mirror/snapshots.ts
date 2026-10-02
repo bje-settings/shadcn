@@ -57,12 +57,17 @@ export function parseBaseColor(raw: unknown, where: string): BaseColor {
   }
 }
 
-export function parseFontItem(raw: unknown, where: string): FontItem {
+// The title names the @<namespace>/font-<name> item.
+export type FontSnapshot = FontItem & { title: string }
+
+export function parseFontItem(raw: unknown, where: string): FontSnapshot {
   const shape: Shape = new Shape(where)
-  const font = shape.record(shape.record(raw, 'item').font, 'font')
+  const item = shape.record(raw, 'item')
+  const font = shape.record(item.font, 'font')
   const variable = shape.string(font.variable, 'font.variable')
   if (!variable.startsWith('--')) shape.fail('font.variable must be a custom property')
   return {
+    title: shape.string(item.title, 'title'),
     font: {
       family: shape.string(font.family, 'font.family'),
       variable,
