@@ -216,7 +216,7 @@ To add a hand-written item:
 
 ## Using the registry
 
-Each style is served as its own registry at `https://shadcn.bje.co/<style>/`: `vega` and `luma`.
+Each style is served as its own registry at `https://shadcn.bje.co/<style>/`: `vega`, `luma`, `nova`, `maia`, `lyra`, `mira`, `sera` and `rhea`.
 They are not listed in the shadcn registry directory, so point `@bje` at one style in the consuming
 project's `components.json`:
 
