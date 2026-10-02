@@ -159,8 +159,9 @@ jobs:
           others=$(jq -r --arg own "$AB_STYLE" '[.upstream.styles[] | sub("^base-"; "") | select(. != $own)] | join("|")' mirror.config.json)
           # One command per assignment, so a failed diff or grep fails the leg
           # rather than reading as no change. grep's exit 1 (nothing left) is
-          # the only failure allowed.
-          changed=$(git diff --name-only HEAD^1 HEAD)
+          # the only failure allowed. A rename lists its source too, so a file
+          # moved into one style's output still reaches the others.
+          changed=$(git diff --no-renames --name-only HEAD^1 HEAD)
           relevant=$(printf '%s\n' "$changed" | grep -Ev \
             '(^$|\.md$|^\.claude/|\.test\.tsx?$|^lefthook\.yml$|^biome\.json$|^vitest\.config\.ts$)' \
             || [ $? -eq 1 ])
