@@ -2,11 +2,13 @@
 // committed snapshots: a hand edit to a generated file, or a pipeline change
 // without `pnpm mirror:build`, fails here. Covers, for every style, components,
 // hooks, global stylesheets, the rebuilt project CSS, registry catalog and
-// tsconfig, and proves every generated stylesheet compiles with Sass.
+// tsconfig, and proves every generated stylesheet compiles with Sass and every
+// font item can replace the default it names.
 
 import { cp, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { dirname, join, relative } from 'node:path'
+import postcss from 'postcss'
 import { compile } from 'sass'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { run } from './cli.ts'
@@ -20,6 +22,20 @@ async function files(base: string, dir: string): Promise<string[]> {
     .filter((entry) => entry.isFile())
     .map((entry) => relative(base, join(entry.parentPath, entry.name)))
     .sort()
+}
+
+// Where each declaration of a variable sits: its enclosing at-rules and rules,
+// and whether it is !important.
+function placements(css: string, variable: string): string[][] {
+  const found: string[][] = []
+  postcss.parse(css).walkDecls(variable, (decl) => {
+    const path: string[] = decl.important ? ['!important'] : []
+    for (let node = decl.parent; node && node.type !== 'root'; node = node.parent) {
+      path.unshift(node.type === 'rule' ? node.selector : `@${node.name} ${node.params}`)
+    }
+    found.push(path)
+  })
+  return found
 }
 
 // vitest.config.ts runs this file once per style, naming it in MIRROR_STYLE,
@@ -76,6 +92,35 @@ describe(`generated output for ${style}`, () => {
       expect(await readFile(join(root, path), 'utf8'), path).toBe(
         await readFile(join(built, path), 'utf8'),
       )
+    }
+  })
+
+  it('publishes no item the shadcn CLI would install into Tailwind', async () => {
+    const { items } = JSON.parse(await readFile(join(root, config.registryFile), 'utf8'))
+    for (const item of items) {
+      expect(item.type, item.name).not.toBe('registry:font')
+      for (const key of ['css', 'cssVars', 'font', 'tailwind']) {
+        expect(item, item.name).not.toHaveProperty(key)
+      }
+    }
+  })
+
+  // The cascade then lets a font stylesheet loaded after variables.scss win:
+  // one declaration of the variable each, in the same layer and selector.
+  it('sets each font item variable where the global stylesheets declare it alone', async () => {
+    const globals = ['variables', 'base'].map(
+      (sheet) => compile(join(root, config.globalsDir, `${sheet}.scss`)).css,
+    )
+    const fonts = (await files(root, join(config.globalsDir, 'fonts'))).filter((path) =>
+      path.endsWith('.css'),
+    )
+    expect(fonts.length).toBe(config.fonts.length)
+    for (const path of fonts) {
+      const css = await readFile(join(root, path), 'utf8')
+      const variable = css.match(/^\s*(--[a-z0-9-]+):/m)?.[1] ?? ''
+      const declared = globals.flatMap((sheet) => placements(sheet, variable))
+      expect(declared, `${path}: ${variable}`).toEqual([['@layer theme', ':root, :host']])
+      expect(placements(css, variable), path).toEqual(declared)
     }
   })
 
