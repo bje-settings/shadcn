@@ -97,10 +97,11 @@ For each component, the build:
    defaults keep the probe, so an element whose own class name contains `size-` keeps its size,
    and also skip the mirrored elements whose upstream classes contain it (Spinner, an icon with
    its own size class), matched by `data-slot` or, on an element without one, a `data-class-size`
-   attribute; a probe that matches none is noted in the header. The defaults keep upstream's
-   specificity, and of two reaching one icon, the one Tailwind puts later wins. Rules that need a
-   configured consumer class (Card's `[.border-b]:` padding) are dropped and listed in the
-   module's header and the build log; any other outside class fails the build.
+   attribute; a probe that matches none is noted in the header. The defaults start at upstream's
+   specificity and repeat the probe's `:not()` once per rank, so of two base defaults reaching one
+   icon, the one Tailwind puts later wins; a variant option's default outranks every base default.
+   Rules that need a configured consumer class (Card's `[.border-b]:` padding) are dropped and
+   listed in the module's header and the build log; any other outside class fails the build.
 4. Renames Tailwind's internal variables, the ones that compose one property from several
    utilities (a shadow and a focus ring share one `box-shadow`, animate-in's keyframes read
    `--enter-*`), by dropping the `tw-` prefix: `--tw-ring-shadow` becomes `--ring-shadow`. A family
