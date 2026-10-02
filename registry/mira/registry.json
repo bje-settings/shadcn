@@ -1,0 +1,1813 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "bje",
+  "homepage": "https://shadcn.bje.co/mira",
+  "items": [
+    {
+      "name": "cn",
+      "type": "registry:lib",
+      "title": "cn",
+      "description": "Joins conditional class names with clsx.",
+      "dependencies": ["clsx"],
+      "files": [
+        {
+          "path": "registry/lib/cn.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Button/Button.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Button/Button.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Button/Button.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "button-group",
+      "type": "registry:ui",
+      "title": "ButtonGroup",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/separator", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/ButtonGroup/ButtonGroup.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/ButtonGroup/ButtonGroup.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/ButtonGroup/ButtonGroup.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "separator",
+      "type": "registry:ui",
+      "title": "Separator",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Separator/Separator.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Separator/Separator.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Separator/Separator.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "badge",
+      "type": "registry:ui",
+      "title": "Badge",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Badge/Badge.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Badge/Badge.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Badge/Badge.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "card",
+      "type": "registry:ui",
+      "title": "Card",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Card/Card.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Card/Card.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Card/Card.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "alert",
+      "type": "registry:ui",
+      "title": "Alert",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Alert/Alert.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Alert/Alert.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Alert/Alert.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "label",
+      "type": "registry:ui",
+      "title": "Label",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Label/Label.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Label/Label.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Label/Label.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "title": "Input",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Input/Input.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Input/Input.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Input/Input.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "textarea",
+      "type": "registry:ui",
+      "title": "Textarea",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Textarea/Textarea.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Textarea/Textarea.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Textarea/Textarea.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "skeleton",
+      "type": "registry:ui",
+      "title": "Skeleton",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Skeleton/Skeleton.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Skeleton/Skeleton.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Skeleton/Skeleton.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "spinner",
+      "type": "registry:ui",
+      "title": "Spinner",
+      "dependencies": ["clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Spinner/Spinner.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Spinner/Spinner.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Spinner/Spinner.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "kbd",
+      "type": "registry:ui",
+      "title": "Kbd",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Kbd/Kbd.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Kbd/Kbd.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Kbd/Kbd.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aspect-ratio",
+      "type": "registry:ui",
+      "title": "AspectRatio",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/AspectRatio/AspectRatio.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/AspectRatio/AspectRatio.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/AspectRatio/AspectRatio.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "table",
+      "type": "registry:ui",
+      "title": "Table",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Table/Table.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Table/Table.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Table/Table.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "breadcrumb",
+      "type": "registry:ui",
+      "title": "Breadcrumb",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Breadcrumb/Breadcrumb.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Breadcrumb/Breadcrumb.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Breadcrumb/Breadcrumb.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "type": "registry:ui",
+      "title": "Empty",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Empty/Empty.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Empty/Empty.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Empty/Empty.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "title": "Checkbox",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Checkbox/Checkbox.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Checkbox/Checkbox.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Checkbox/Checkbox.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Switch/Switch.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Switch/Switch.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Switch/Switch.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "progress",
+      "type": "registry:ui",
+      "title": "Progress",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Progress/Progress.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Progress/Progress.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Progress/Progress.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "slider",
+      "type": "registry:ui",
+      "title": "Slider",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Slider/Slider.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Slider/Slider.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Slider/Slider.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tabs",
+      "type": "registry:ui",
+      "title": "Tabs",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Tabs/Tabs.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Tabs/Tabs.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Tabs/Tabs.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "toggle",
+      "type": "registry:ui",
+      "title": "Toggle",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Toggle/Toggle.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Toggle/Toggle.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Toggle/Toggle.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "toggle-group",
+      "type": "registry:ui",
+      "title": "ToggleGroup",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/toggle", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/ToggleGroup/ToggleGroup.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/ToggleGroup/ToggleGroup.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/ToggleGroup/ToggleGroup.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "title": "RadioGroup",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/RadioGroup/RadioGroup.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/RadioGroup/RadioGroup.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/RadioGroup/RadioGroup.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "avatar",
+      "type": "registry:ui",
+      "title": "Avatar",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Avatar/Avatar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Avatar/Avatar.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Avatar/Avatar.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "collapsible",
+      "type": "registry:ui",
+      "title": "Collapsible",
+      "dependencies": ["@base-ui/react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Collapsible/Collapsible.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Collapsible/Collapsible.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "scroll-area",
+      "type": "registry:ui",
+      "title": "ScrollArea",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/ScrollArea/ScrollArea.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/ScrollArea/ScrollArea.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/ScrollArea/ScrollArea.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "direction",
+      "type": "registry:ui",
+      "title": "Direction",
+      "dependencies": [],
+      "devDependencies": ["@base-ui/react", "@testing-library/dom", "jsdom", "sass", "vitest"],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Direction/Direction.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Direction/Direction.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "native-select",
+      "type": "registry:ui",
+      "title": "NativeSelect",
+      "dependencies": ["clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/NativeSelect/NativeSelect.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/NativeSelect/NativeSelect.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/NativeSelect/NativeSelect.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "accordion",
+      "type": "registry:ui",
+      "title": "Accordion",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Accordion/Accordion.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Accordion/Accordion.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Accordion/Accordion.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input-otp",
+      "type": "registry:ui",
+      "title": "InputOtp",
+      "dependencies": ["clsx", "input-otp", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/InputOtp/InputOtp.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/InputOtp/InputOtp.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/InputOtp/InputOtp.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "field",
+      "type": "registry:ui",
+      "title": "Field",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/label", "@bje/separator", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Field/Field.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Field/Field.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Field/Field.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input-group",
+      "type": "registry:ui",
+      "title": "InputGroup",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/input", "@bje/textarea", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/InputGroup/InputGroup.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/InputGroup/InputGroup.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/InputGroup/InputGroup.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "item",
+      "type": "registry:ui",
+      "title": "Item",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/separator", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Item/Item.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Item/Item.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Item/Item.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "pagination",
+      "type": "registry:ui",
+      "title": "Pagination",
+      "dependencies": ["clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Pagination/Pagination.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Pagination/Pagination.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Pagination/Pagination.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "marker",
+      "type": "registry:ui",
+      "title": "Marker",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Marker/Marker.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Marker/Marker.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Marker/Marker.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "message",
+      "type": "registry:ui",
+      "title": "Message",
+      "dependencies": ["clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Message/Message.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Message/Message.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Message/Message.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "bubble",
+      "type": "registry:ui",
+      "title": "Bubble",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Bubble/Bubble.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Bubble/Bubble.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Bubble/Bubble.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "attachment",
+      "type": "registry:ui",
+      "title": "Attachment",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Attachment/Attachment.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Attachment/Attachment.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Attachment/Attachment.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "dialog",
+      "type": "registry:ui",
+      "title": "Dialog",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Dialog/Dialog.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Dialog/Dialog.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Dialog/Dialog.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "alert-dialog",
+      "type": "registry:ui",
+      "title": "AlertDialog",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/AlertDialog/AlertDialog.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/AlertDialog/AlertDialog.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/AlertDialog/AlertDialog.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sheet",
+      "type": "registry:ui",
+      "title": "Sheet",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Sheet/Sheet.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Sheet/Sheet.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Sheet/Sheet.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "drawer",
+      "type": "registry:ui",
+      "title": "Drawer",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Drawer/Drawer.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Drawer/Drawer.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Drawer/Drawer.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "popover",
+      "type": "registry:ui",
+      "title": "Popover",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Popover/Popover.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Popover/Popover.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Popover/Popover.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tooltip",
+      "type": "registry:ui",
+      "title": "Tooltip",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Tooltip/Tooltip.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Tooltip/Tooltip.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Tooltip/Tooltip.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "hover-card",
+      "type": "registry:ui",
+      "title": "HoverCard",
+      "dependencies": ["@base-ui/react", "clsx"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/HoverCard/HoverCard.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/HoverCard/HoverCard.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/HoverCard/HoverCard.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "dropdown-menu",
+      "type": "registry:ui",
+      "title": "DropdownMenu",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/DropdownMenu/DropdownMenu.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/DropdownMenu/DropdownMenu.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/DropdownMenu/DropdownMenu.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "context-menu",
+      "type": "registry:ui",
+      "title": "ContextMenu",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/ContextMenu/ContextMenu.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/ContextMenu/ContextMenu.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/ContextMenu/ContextMenu.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "menubar",
+      "type": "registry:ui",
+      "title": "Menubar",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/dropdown-menu", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Menubar/Menubar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Menubar/Menubar.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Menubar/Menubar.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "select",
+      "type": "registry:ui",
+      "title": "Select",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@base-ui/react",
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Select/Select.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Select/Select.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Select/Select.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "combobox",
+      "type": "registry:ui",
+      "title": "Combobox",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@base-ui/react",
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/input-group", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Combobox/Combobox.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Combobox/Combobox.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Combobox/Combobox.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "navigation-menu",
+      "type": "registry:ui",
+      "title": "NavigationMenu",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/NavigationMenu/NavigationMenu.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/NavigationMenu/NavigationMenu.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/NavigationMenu/NavigationMenu.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "command",
+      "type": "registry:ui",
+      "title": "Command",
+      "dependencies": ["clsx", "cmdk", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/dialog", "@bje/input-group", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Command/Command.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Command/Command.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Command/Command.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sonner",
+      "type": "registry:ui",
+      "title": "Sonner",
+      "dependencies": ["lucide-react", "next-themes", "sonner"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Sonner/Sonner.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Sonner/Sonner.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Sonner/Sonner.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "toast",
+      "type": "registry:ui",
+      "title": "Toast",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@base-ui/react",
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Toast/Toast.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Toast/Toast.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Toast/Toast.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "resizable",
+      "type": "registry:ui",
+      "title": "Resizable",
+      "dependencies": ["clsx", "react-resizable-panels"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Resizable/Resizable.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Resizable/Resizable.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Resizable/Resizable.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "questionnaire",
+      "type": "registry:ui",
+      "title": "Questionnaire",
+      "dependencies": ["@shadcn/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Questionnaire/Questionnaire.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Questionnaire/Questionnaire.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Questionnaire/Questionnaire.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "message-scroller",
+      "type": "registry:ui",
+      "title": "MessageScroller",
+      "dependencies": ["@shadcn/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/MessageScroller/MessageScroller.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/MessageScroller/MessageScroller.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/MessageScroller/MessageScroller.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "use-mobile",
+      "type": "registry:hook",
+      "title": "UseMobile",
+      "dependencies": [],
+      "devDependencies": ["@testing-library/dom", "@testing-library/react", "jsdom", "vitest"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/mira/hooks/use-mobile.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/mira/hooks/use-mobile.test.tsx",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
+      "name": "sidebar",
+      "type": "registry:ui",
+      "title": "Sidebar",
+      "dependencies": ["@base-ui/react", "clsx", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": [
+        "@bje/button",
+        "@bje/input",
+        "@bje/separator",
+        "@bje/sheet",
+        "@bje/skeleton",
+        "@bje/tooltip",
+        "@bje/use-mobile",
+        "@bje/globals"
+      ],
+      "files": [
+        {
+          "path": "registry/mira/ui/Sidebar/Sidebar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Sidebar/Sidebar.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Sidebar/Sidebar.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "calendar",
+      "type": "registry:ui",
+      "title": "Calendar",
+      "dependencies": ["clsx", "lucide-react", "react-day-picker@latest"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Calendar/Calendar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Calendar/Calendar.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Calendar/Calendar.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "carousel",
+      "type": "registry:ui",
+      "title": "Carousel",
+      "dependencies": ["clsx", "embla-carousel-react", "lucide-react"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Carousel/Carousel.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Carousel/Carousel.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Carousel/Carousel.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "chart",
+      "type": "registry:ui",
+      "title": "Chart",
+      "dependencies": ["clsx", "recharts@3.8.0"],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "recharts",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/card", "@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/ui/Chart/Chart.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Chart/Chart.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/mira/ui/Chart/Chart.test.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "globals",
+      "type": "registry:file",
+      "title": "Globals",
+      "dependencies": ["@fontsource-variable/inter"],
+      "devDependencies": ["sass"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/mira/styles/variables.scss",
+          "type": "registry:file",
+          "target": "@components/styles/variables.scss"
+        },
+        {
+          "path": "registry/mira/styles/base.scss",
+          "type": "registry:file",
+          "target": "@components/styles/base.scss"
+        },
+        {
+          "path": "registry/mira/styles/fonts.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts.css"
+        }
+      ]
+    },
+    {
+      "name": "typeset",
+      "type": "registry:file",
+      "title": "Typeset",
+      "dependencies": [],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/mira/styles/typeset.css",
+          "type": "registry:file",
+          "target": "@components/styles/typeset.css"
+        }
+      ]
+    }
+  ]
+}
