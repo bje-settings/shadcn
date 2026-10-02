@@ -264,6 +264,7 @@
     width: calc(var(--spacing) * 2.5);
     height: calc(var(--spacing) * 2.5);
   }
+  line-height: inherit;
 }
 
 :where(.sizeSm) {
