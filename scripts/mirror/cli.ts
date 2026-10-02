@@ -216,6 +216,12 @@ function styleTsconfig(config: MirrorConfig): string {
 async function buildStyle(io: Io, config: MirrorConfig): Promise<void> {
   const { style } = config.upstream
   const font = await readSnapshot(io, config, `font-${config.theme.font}`, parseFontItem)
+  // Every published font is read before anything is written, so a missing
+  // snapshot leaves the style's output as it was.
+  const fonts = []
+  for (const name of config.fonts) {
+    fonts.push({ name, snapshot: await readSnapshot(io, config, `font-${name}`, parseFontItem) })
+  }
   const index = await readSnapshot(io, config, 'index', parseStyleIndex)
   const colors = await readSnapshot(io, config, `colors-${config.theme.baseColor}`, parseBaseColor)
   const css = projectCss(index, colors, font)
@@ -352,13 +358,8 @@ async function buildStyle(io: Io, config: MirrorConfig): Promise<void> {
 
   // Each published font is an item of its own, so the theme's font in globals
   // stays the default. The directory is all generated: clear it so a font
-  // dropped from the config goes with its stylesheet, but only once every
-  // snapshot has read, so a missing one leaves the old fonts in place.
+  // dropped from the config goes with its stylesheet.
   const fontsDir = `${config.globalsDir}/fonts`
-  const fonts = []
-  for (const name of config.fonts) {
-    fonts.push({ name, snapshot: await readSnapshot(io, config, `font-${name}`, parseFontItem) })
-  }
   await rm(join(io.root, fontsDir), { recursive: true, force: true })
   for (const { name, snapshot } of fonts) {
     const upstream = `font-${name}`

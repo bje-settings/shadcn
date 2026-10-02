@@ -422,15 +422,18 @@ describe('mirror build', BUILDS, () => {
         },
       ],
     })
-    // A font with no snapshot fails the build before the old stylesheets go.
+    // A font with no snapshot fails the build before it writes anything: the
+    // dropped font's stylesheet stays, and a deleted global is not rewritten.
     await writeFile(
       join(root, 'mirror.config.json'),
       JSON.stringify({ ...config, fonts: ['heading-geist', 'geist'] }),
     )
+    await rm(join(root, 'registry/vega/styles/variables.scss'))
     await expect(run(['build', 'vega'], io())).rejects.toThrow(
       'no snapshot for base-vega/font-geist; run mirror fetch first',
     )
-    expect(await read('registry/vega/styles/fonts/heading-geist.css')).toContain('--font-heading')
+    expect(await read('registry/vega/styles/fonts/inter.css')).toContain('--font-sans')
+    await expect(read('registry/vega/styles/variables.scss')).rejects.toThrow('ENOENT')
   })
 
   it('builds one style alone, named by its short name, and formats all but the harness inputs', async () => {
