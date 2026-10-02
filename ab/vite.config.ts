@@ -29,8 +29,10 @@ export default defineConfig({
     },
   },
   // Console output stays in the browser: the A/B spec reads it there, and
-  // forwarding every page's messages to the server slows a parallel run.
-  server: { port, fs: { allow: [repo] }, forwardConsole: false },
+  // forwarding every page's messages to the server slows a parallel run. The
+  // port is the style's, and strict: falling back to the next one would take
+  // another style's.
+  server: { port, strictPort: true, fs: { allow: [repo] }, forwardConsole: false },
   build: {
     rollupOptions: {
       input: {

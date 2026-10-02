@@ -15,7 +15,7 @@
     "preab": "pnpm mirror:build",
     "ab": "playwright test --config ab/playwright.config.ts",
     "preab:serve": "pnpm mirror:build",
-    "ab:serve": "vite --config ab/vite.config.ts --port 4400",
+    "ab:serve": "vite --config ab/vite.config.ts",
     "ab:timings": "node ab/timings.ts"
   },
   "dependencies": {
