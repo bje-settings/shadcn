@@ -1808,6 +1808,786 @@
           "target": "@components/styles/typeset.css"
         }
       ]
+    },
+    {
+      "name": "font-geist",
+      "type": "registry:file",
+      "title": "Geist",
+      "dependencies": ["@fontsource-variable/geist"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/geist.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/geist.css"
+        }
+      ]
+    },
+    {
+      "name": "font-inter",
+      "type": "registry:file",
+      "title": "Inter",
+      "dependencies": ["@fontsource-variable/inter"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/inter.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/inter.css"
+        }
+      ]
+    },
+    {
+      "name": "font-noto-sans",
+      "type": "registry:file",
+      "title": "Noto Sans",
+      "dependencies": ["@fontsource-variable/noto-sans"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/noto-sans.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/noto-sans.css"
+        }
+      ]
+    },
+    {
+      "name": "font-nunito-sans",
+      "type": "registry:file",
+      "title": "Nunito Sans",
+      "dependencies": ["@fontsource-variable/nunito-sans"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/nunito-sans.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/nunito-sans.css"
+        }
+      ]
+    },
+    {
+      "name": "font-figtree",
+      "type": "registry:file",
+      "title": "Figtree",
+      "dependencies": ["@fontsource-variable/figtree"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/figtree.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/figtree.css"
+        }
+      ]
+    },
+    {
+      "name": "font-roboto",
+      "type": "registry:file",
+      "title": "Roboto",
+      "dependencies": ["@fontsource-variable/roboto"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/roboto.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/roboto.css"
+        }
+      ]
+    },
+    {
+      "name": "font-raleway",
+      "type": "registry:file",
+      "title": "Raleway",
+      "dependencies": ["@fontsource-variable/raleway"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/raleway.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/raleway.css"
+        }
+      ]
+    },
+    {
+      "name": "font-dm-sans",
+      "type": "registry:file",
+      "title": "DM Sans",
+      "dependencies": ["@fontsource-variable/dm-sans"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/dm-sans.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/dm-sans.css"
+        }
+      ]
+    },
+    {
+      "name": "font-public-sans",
+      "type": "registry:file",
+      "title": "Public Sans",
+      "dependencies": ["@fontsource-variable/public-sans"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/public-sans.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/public-sans.css"
+        }
+      ]
+    },
+    {
+      "name": "font-outfit",
+      "type": "registry:file",
+      "title": "Outfit",
+      "dependencies": ["@fontsource-variable/outfit"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/outfit.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/outfit.css"
+        }
+      ]
+    },
+    {
+      "name": "font-oxanium",
+      "type": "registry:file",
+      "title": "Oxanium",
+      "dependencies": ["@fontsource-variable/oxanium"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/oxanium.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/oxanium.css"
+        }
+      ]
+    },
+    {
+      "name": "font-manrope",
+      "type": "registry:file",
+      "title": "Manrope",
+      "dependencies": ["@fontsource-variable/manrope"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/manrope.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/manrope.css"
+        }
+      ]
+    },
+    {
+      "name": "font-space-grotesk",
+      "type": "registry:file",
+      "title": "Space Grotesk",
+      "dependencies": ["@fontsource-variable/space-grotesk"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/space-grotesk.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/space-grotesk.css"
+        }
+      ]
+    },
+    {
+      "name": "font-montserrat",
+      "type": "registry:file",
+      "title": "Montserrat",
+      "dependencies": ["@fontsource-variable/montserrat"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/montserrat.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/montserrat.css"
+        }
+      ]
+    },
+    {
+      "name": "font-ibm-plex-sans",
+      "type": "registry:file",
+      "title": "IBM Plex Sans",
+      "dependencies": ["@fontsource-variable/ibm-plex-sans"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/ibm-plex-sans.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/ibm-plex-sans.css"
+        }
+      ]
+    },
+    {
+      "name": "font-source-sans-3",
+      "type": "registry:file",
+      "title": "Source Sans 3",
+      "dependencies": ["@fontsource-variable/source-sans-3"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/source-sans-3.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/source-sans-3.css"
+        }
+      ]
+    },
+    {
+      "name": "font-instrument-sans",
+      "type": "registry:file",
+      "title": "Instrument Sans",
+      "dependencies": ["@fontsource-variable/instrument-sans"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/instrument-sans.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/instrument-sans.css"
+        }
+      ]
+    },
+    {
+      "name": "font-jetbrains-mono",
+      "type": "registry:file",
+      "title": "JetBrains Mono",
+      "dependencies": ["@fontsource-variable/jetbrains-mono"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/jetbrains-mono.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/jetbrains-mono.css"
+        }
+      ]
+    },
+    {
+      "name": "font-geist-mono",
+      "type": "registry:file",
+      "title": "Geist Mono",
+      "dependencies": ["@fontsource-variable/geist-mono"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/geist-mono.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/geist-mono.css"
+        }
+      ]
+    },
+    {
+      "name": "font-noto-serif",
+      "type": "registry:file",
+      "title": "Noto Serif",
+      "dependencies": ["@fontsource-variable/noto-serif"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/noto-serif.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/noto-serif.css"
+        }
+      ]
+    },
+    {
+      "name": "font-roboto-slab",
+      "type": "registry:file",
+      "title": "Roboto Slab",
+      "dependencies": ["@fontsource-variable/roboto-slab"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/roboto-slab.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/roboto-slab.css"
+        }
+      ]
+    },
+    {
+      "name": "font-merriweather",
+      "type": "registry:file",
+      "title": "Merriweather",
+      "dependencies": ["@fontsource-variable/merriweather"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/merriweather.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/merriweather.css"
+        }
+      ]
+    },
+    {
+      "name": "font-lora",
+      "type": "registry:file",
+      "title": "Lora",
+      "dependencies": ["@fontsource-variable/lora"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/lora.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/lora.css"
+        }
+      ]
+    },
+    {
+      "name": "font-playfair-display",
+      "type": "registry:file",
+      "title": "Playfair Display",
+      "dependencies": ["@fontsource-variable/playfair-display"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/playfair-display.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/playfair-display.css"
+        }
+      ]
+    },
+    {
+      "name": "font-eb-garamond",
+      "type": "registry:file",
+      "title": "EB Garamond",
+      "dependencies": ["@fontsource-variable/eb-garamond"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/eb-garamond.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/eb-garamond.css"
+        }
+      ]
+    },
+    {
+      "name": "font-instrument-serif",
+      "type": "registry:file",
+      "title": "Instrument Serif",
+      "dependencies": ["@fontsource/instrument-serif"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/instrument-serif.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/instrument-serif.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-geist",
+      "type": "registry:file",
+      "title": "Geist (Heading)",
+      "dependencies": ["@fontsource-variable/geist"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-geist.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-geist.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-inter",
+      "type": "registry:file",
+      "title": "Inter (Heading)",
+      "dependencies": ["@fontsource-variable/inter"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-inter.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-inter.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-noto-sans",
+      "type": "registry:file",
+      "title": "Noto Sans (Heading)",
+      "dependencies": ["@fontsource-variable/noto-sans"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-noto-sans.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-noto-sans.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-nunito-sans",
+      "type": "registry:file",
+      "title": "Nunito Sans (Heading)",
+      "dependencies": ["@fontsource-variable/nunito-sans"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-nunito-sans.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-nunito-sans.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-figtree",
+      "type": "registry:file",
+      "title": "Figtree (Heading)",
+      "dependencies": ["@fontsource-variable/figtree"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-figtree.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-figtree.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-roboto",
+      "type": "registry:file",
+      "title": "Roboto (Heading)",
+      "dependencies": ["@fontsource-variable/roboto"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-roboto.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-roboto.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-raleway",
+      "type": "registry:file",
+      "title": "Raleway (Heading)",
+      "dependencies": ["@fontsource-variable/raleway"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-raleway.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-raleway.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-dm-sans",
+      "type": "registry:file",
+      "title": "DM Sans (Heading)",
+      "dependencies": ["@fontsource-variable/dm-sans"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-dm-sans.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-dm-sans.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-public-sans",
+      "type": "registry:file",
+      "title": "Public Sans (Heading)",
+      "dependencies": ["@fontsource-variable/public-sans"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-public-sans.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-public-sans.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-outfit",
+      "type": "registry:file",
+      "title": "Outfit (Heading)",
+      "dependencies": ["@fontsource-variable/outfit"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-outfit.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-outfit.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-oxanium",
+      "type": "registry:file",
+      "title": "Oxanium (Heading)",
+      "dependencies": ["@fontsource-variable/oxanium"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-oxanium.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-oxanium.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-manrope",
+      "type": "registry:file",
+      "title": "Manrope (Heading)",
+      "dependencies": ["@fontsource-variable/manrope"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-manrope.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-manrope.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-space-grotesk",
+      "type": "registry:file",
+      "title": "Space Grotesk (Heading)",
+      "dependencies": ["@fontsource-variable/space-grotesk"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-space-grotesk.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-space-grotesk.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-montserrat",
+      "type": "registry:file",
+      "title": "Montserrat (Heading)",
+      "dependencies": ["@fontsource-variable/montserrat"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-montserrat.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-montserrat.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-ibm-plex-sans",
+      "type": "registry:file",
+      "title": "IBM Plex Sans (Heading)",
+      "dependencies": ["@fontsource-variable/ibm-plex-sans"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-ibm-plex-sans.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-ibm-plex-sans.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-source-sans-3",
+      "type": "registry:file",
+      "title": "Source Sans 3 (Heading)",
+      "dependencies": ["@fontsource-variable/source-sans-3"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-source-sans-3.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-source-sans-3.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-instrument-sans",
+      "type": "registry:file",
+      "title": "Instrument Sans (Heading)",
+      "dependencies": ["@fontsource-variable/instrument-sans"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-instrument-sans.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-instrument-sans.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-jetbrains-mono",
+      "type": "registry:file",
+      "title": "JetBrains Mono (Heading)",
+      "dependencies": ["@fontsource-variable/jetbrains-mono"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-jetbrains-mono.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-jetbrains-mono.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-geist-mono",
+      "type": "registry:file",
+      "title": "Geist Mono (Heading)",
+      "dependencies": ["@fontsource-variable/geist-mono"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-geist-mono.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-geist-mono.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-noto-serif",
+      "type": "registry:file",
+      "title": "Noto Serif (Heading)",
+      "dependencies": ["@fontsource-variable/noto-serif"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-noto-serif.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-noto-serif.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-roboto-slab",
+      "type": "registry:file",
+      "title": "Roboto Slab (Heading)",
+      "dependencies": ["@fontsource-variable/roboto-slab"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-roboto-slab.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-roboto-slab.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-merriweather",
+      "type": "registry:file",
+      "title": "Merriweather (Heading)",
+      "dependencies": ["@fontsource-variable/merriweather"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-merriweather.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-merriweather.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-lora",
+      "type": "registry:file",
+      "title": "Lora (Heading)",
+      "dependencies": ["@fontsource-variable/lora"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-lora.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-lora.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-playfair-display",
+      "type": "registry:file",
+      "title": "Playfair Display (Heading)",
+      "dependencies": ["@fontsource-variable/playfair-display"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-playfair-display.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-playfair-display.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-eb-garamond",
+      "type": "registry:file",
+      "title": "EB Garamond (Heading)",
+      "dependencies": ["@fontsource-variable/eb-garamond"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-eb-garamond.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-eb-garamond.css"
+        }
+      ]
+    },
+    {
+      "name": "font-heading-instrument-serif",
+      "type": "registry:file",
+      "title": "Instrument Serif (Heading)",
+      "dependencies": ["@fontsource/instrument-serif"],
+      "devDependencies": [],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/rhea/styles/fonts/heading-instrument-serif.css",
+          "type": "registry:file",
+          "target": "@components/styles/fonts/heading-instrument-serif.css"
+        }
+      ]
     }
   ]
 }
