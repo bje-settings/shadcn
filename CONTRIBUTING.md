@@ -20,7 +20,7 @@ pnpm mirror:build   # once after cloning: the A/B harness inputs are not committ
 ## Commands
 
 ```bash
-pnpm mirror:fetch           # snapshot every style's upstream items, examples, index, font and base color, and Typeset
+pnpm mirror:fetch           # snapshot every style's upstream items, examples, index, fonts and base color, and Typeset
 pnpm mirror:build [style]   # convert the snapshots for every style, or one (vega)
 pnpm build                  # shadcn build per style: validates each catalog, writes public/r/<style>/
 pnpm test                   # vitest over every style, coverage held at 100

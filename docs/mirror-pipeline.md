@@ -12,11 +12,10 @@ pnpm mirror:build [style]   # convert the snapshots, for every style or one
 
 `mirror:fetch` writes, per style, each configured item, its docs example (`<item>-example`) where
 upstream has one, the style's index, each font (`theme.font` and `fonts`) and the base color to
-`upstream/base-<style>/`, and
-Typeset's stylesheet and content fixtures to `upstream/typeset/`. A JSON snapshot whose shape the
-build cannot read fails the fetch before it is written. `mirror:build` reads only the snapshots
-(`scripts/mirror/cli.ts`), so a conversion change is reviewable without upstream moving underneath
-it.
+`upstream/base-<style>/`, and Typeset's stylesheet and content fixtures to `upstream/typeset/`. A
+JSON snapshot whose shape the build cannot read fails the fetch before it is written. `mirror:build`
+reads only the snapshots (`scripts/mirror/cli.ts`), so a conversion change is reviewable without
+upstream moving underneath it.
 
 Each style is built whole and on its own: styles differ in their components' classes, not only in
 variables (vega's Button is `rounded-md px-2.5`, luma's `rounded-4xl px-3`).
@@ -114,7 +113,7 @@ The build also generates the `@bje/globals` item every component depends on:
   `@property` registrations of shadcn's own utilities.
 - `base.scss`: Tailwind's preflight, shadcn's base layer, and the keyframes components animate
   with.
-- `fonts.css`: the font package import (`@fontsource-variable/inter`).
+- `fonts.css`: the default font's (`theme.font`) package import (`@fontsource-variable/inter`).
 
 The first two are split out of Tailwind's own output over every mirrored component's classes. The
 theme is compiled static (`theme(static)`), so `variables.scss` holds every default theme
@@ -126,9 +125,11 @@ Each font in `fonts` becomes a `font-<name>` item: a `registry:file` that ships
 `registry/<style>/styles/fonts/<name>.css` and lists the font's package in `dependencies`. The
 stylesheet imports the package and sets the variable upstream's font item names (`--font-sans`,
 `--font-heading`, `--font-mono` or `--font-serif`) to its family, in `variables.scss`'s layer and
-selector (`@layer theme`, `:root, :host`), so it wins when loaded after it. It is not a
-`registry:font` item: the shadcn CLI installs one by writing `css` and `cssVars` into the
-project's Tailwind CSS entry.
+selector (`@layer theme`, `:root, :host`), so it wins when loaded after it. No component reads
+`--font-serif`, so a serif font applies only where a consumer's own CSS does. The build reads
+every font's snapshot, then clears `registry/<style>/styles/fonts/`, so a font removed from
+`fonts` loses its stylesheet. It is not a `registry:font` item: the shadcn CLI installs one by
+writing `css` and `cssVars` into the project's Tailwind CSS entry.
 
 ## Typeset
 
