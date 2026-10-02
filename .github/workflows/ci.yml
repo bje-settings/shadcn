@@ -59,9 +59,13 @@ jobs:
         run: pnpm exec lefthook validate
       - name: Run the vitest suite with coverage at 100
         run: pnpm test
-      # vitest thresholds pass over an empty file set.
-      - name: Refuse a coverage report that names no file
-        run: jq -e 'del(.total) | length > 0' coverage/coverage-summary.json
+      # vitest thresholds pass over an empty file set, so each style must
+      # appear in the report.
+      - name: Refuse a coverage report that names no file of a style
+        run: |
+          for style in $(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json); do
+            jq -e --arg dir "/registry/$style/" '[keys[] | select(contains($dir))] | length > 0' coverage/coverage-summary.json
+          done
       - uses: actions/upload-code-coverage@v1
         with:
           file: coverage/cobertura-coverage.xml
@@ -110,7 +114,10 @@ jobs:
           sparse-checkout-cone-mode: false
       - name: List the styles
         id: list
-        run: echo "styles=$(jq -c '[.upstream.styles[] | sub("^base-"; "")]' mirror.config.json)" >> "$GITHUB_OUTPUT"
+        # Assigned first, so a jq failure fails the step.
+        run: |
+          styles=$(jq -c '[.upstream.styles[] | sub("^base-"; "")]' mirror.config.json)
+          echo "styles=$styles" >> "$GITHUB_OUTPUT"
 
   # Visual A/B: every generated component of one style against upstream
   # shadcn with Tailwind, pixel for pixel. Uses the Chrome preinstalled on
@@ -150,9 +157,16 @@ jobs:
             exit 0
           fi
           others=$(jq -r --arg own "$AB_STYLE" '[.upstream.styles[] | sub("^base-"; "") | select(. != $own)] | join("|")' mirror.config.json)
-          relevant=$(git diff --name-only HEAD^1 HEAD | grep -Ev \
-            '(\.md$|^\.claude/|\.test\.tsx?$|^lefthook\.yml$|^biome\.json$|^vitest\.config\.ts$)' \
-            | { if [ -n "$others" ]; then grep -Ev "^(registry/|upstream/base-)($others)/"; else cat; fi; } || true)
+          # One command per assignment, so a failed diff or grep fails the leg
+          # rather than reading as no change. grep's exit 1 (nothing left) is
+          # the only failure allowed.
+          changed=$(git diff --name-only HEAD^1 HEAD)
+          relevant=$(printf '%s\n' "$changed" | grep -Ev \
+            '(^$|\.md$|^\.claude/|\.test\.tsx?$|^lefthook\.yml$|^biome\.json$|^vitest\.config\.ts$)' \
+            || [ $? -eq 1 ])
+          if [ -n "$others" ]; then
+            relevant=$(printf '%s\n' "$relevant" | grep -Ev "^(registry/|upstream/base-)($others)/" || [ $? -eq 1 ])
+          fi
           if [ -n "$relevant" ]; then
             echo run=true >> "$GITHUB_OUTPUT"
           else
@@ -175,6 +189,8 @@ jobs:
         with:
           name: ab-report-${{ matrix.style }}
           path: ab/report/${{ matrix.style }}
+          # A report under another name means the run compared another style.
+          if-no-files-found: error
           retention-days: 14
 
   # The required ab check. It runs whatever happened above, so it reports even
