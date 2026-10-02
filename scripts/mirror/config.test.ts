@@ -126,6 +126,11 @@ describe('parseConfig', () => {
       withChange({ fonts: ['Geist'] }),
       'fonts must be an array of kebab-case font names',
     ],
+    [
+      'a non-string font',
+      withChange({ fonts: [1] }),
+      'fonts must be an array of kebab-case font names',
+    ],
     ['repeated fonts', withChange({ fonts: ['geist', 'geist'] }), 'fonts must not repeat'],
     ['non-array components', withChange({ components: 'button' }), 'components must be'],
     ['empty components', withChange({ components: [] }), 'components must be'],
