@@ -24,7 +24,7 @@ Source for the `@bje` [shadcn registry](https://ui.shadcn.com/docs/registry).
 pnpm install        # also installs the lefthook pre-commit hooks
 pnpm mirror:build   # once after cloning: the A/B harness inputs are not committed
 pnpm build          # shadcn build per style: validates each catalog, writes public/r/<style>/
-pnpm test           # vitest with 100% coverage thresholds, the compare style's components included
+pnpm test           # vitest with 100% coverage thresholds, every style's components included
 ```
 
 ## Mirror
@@ -42,10 +42,9 @@ mirrored and published whole. Output paths take `{style}`, the style's short nam
 `base-vega`); adding a style is an entry in `upstream.styles`, then `pnpm mirror:fetch` and
 `pnpm mirror:build`. Everything else is shared across styles.
 
-`upstream.compare` names the style the A/B harness compares and whose generated tests vitest runs
-and covers (`vega`). Every style's output is still checked to match the pipeline
-(`scripts/mirror/generated.test.ts`), builds with `shadcn build` and type-checks; running each
-style's tests and A/B cases in CI waits until the repository is public.
+Every style's output is checked to match the pipeline (`scripts/mirror/generated.test.ts`), builds
+with `shadcn build`, type-checks, runs its generated tests under coverage and is compared with
+upstream by the A/B harness: in CI, one `ab-style` leg per style.
 
 The rest records, each with a reason, what the pipeline cannot infer:
 
@@ -145,9 +144,9 @@ output.
 Generated files get Biome's formatting and safe fixes (import order, `import type`). They keep
 upstream's code, so `biome.json` turns off the rules upstream's code trips for
 `registry/*/ui/**` (see that override in `biome.json`). Every other rule still applies there.
-`ab/generated/`, upstream's code verbatim for comparison and the generated harness inputs, is not
-committed: `pnpm ab` and `pnpm ab:serve` rebuild it first (`pnpm mirror:build`), and CI does the
-same. Biome skips it as a gitignored path.
+`ab/generated/<style>/`, upstream's code verbatim for comparison and the generated harness inputs,
+is not committed: `pnpm ab` and `pnpm ab:serve` rebuild it first (`pnpm mirror:build`), and CI
+does the same. Biome skips it as a gitignored path.
 
 ## Visual A/B
 
@@ -158,27 +157,31 @@ state (hover, focus, disabled) that applies on one side only fails the case; a s
 on neither side is not compared. Each case is one test, with a step per state it compares.
 
 ```bash
-pnpm ab         # run every case; the HTML report in ab/report has upstream, ours and diff images
+pnpm ab         # run every case; the HTML report in ab/report/<style> has upstream, ours, diff
 pnpm ab:serve   # browse http://localhost:4400 (side by side), /upstream.html, /ours.html
 pnpm ab:timings # where the last run spent its time, per case kind and per step
 ```
 
+Each command takes the style from `AB_STYLE` (`AB_STYLE=luma pnpm ab`), the first in
+`upstream.styles` when unset. Each style serves on its own port, 4400 plus its index in
+`upstream.styles`.
+
 Every case is generated:
 
 - **Fixtures:** each exported component that renders an element, per `cva()` option
-  (`ab/generated/fixtures.ts`), in light and dark, at rest, hovered, keyboard-focused and disabled.
-  Each renders in the same scaffold as its generated test. A fixture inside an opened part (a
-  popup) renders alone on its page and compares the whole viewport.
+  (`ab/generated/<style>/fixtures.ts`), in light and dark, at rest, hovered, keyboard-focused and
+  disabled. Each renders in the same scaffold as its generated test. A fixture inside an opened
+  part (a popup) renders alone on its page and compares the whole viewport.
 - **Typeset:** each of Typeset's content fixtures (docs, chat, changelog, ...) inside `.typeset`,
   in light and dark.
 - **Examples:** each sub-example of upstream's docs example for a mirrored component
   (`<item>-example`), in light and dark. A sub-example is used once every component it reaches is
   mirrored and it passes no consumer class whose styling the mirror drops; `pnpm mirror:build`
-  lists the skipped ones and why. Both pages render the
-  same trimmed example source (`ab/generated/examples/`), differing only in which components it
-  imports. The ours page styles the examples' own layout classes with unlayered Tailwind utilities
-  (`ab/generated/examples.css`), so a class an example passes to our component outranks its
-  `:where()` defaults as tailwind-merge makes it win upstream. `ab/stubs/` stands in for the
+  lists the skipped ones and why. Both pages render the same trimmed example source
+  (`ab/generated/<style>/examples/`), differing only in which components it imports. The ours page
+  styles the examples' own layout classes with unlayered Tailwind utilities
+  (`ab/generated/<style>/examples.css`), so a class an example passes to our component outranks
+  its `:where()` defaults as tailwind-merge makes it win upstream. `ab/stubs/` stands in for the
   docs-only `Example` wrapper and `IconPlaceholder`.
 
 Each worker opens one page per side and theme and shows its cases one at a time (`showCase()`),
