@@ -13,10 +13,12 @@ paths:
 # Generated Files
 
 Everything under each style's `registry/<style>/` (`ui/`, `hooks/`, `styles/`, `registry.json`,
-`tsconfig.json`), `ab/generated/<style>/`, `ab/skipped-examples/<style>.json` and
-`upstream/<style>/index.css` is written by `scripts/mirror` from the snapshots in `upstream/`. The root `registry.json` holds only hand-written items. Do not
+`tsconfig.json`), `ab/generated/<style>/` and `upstream/<style>/index.css` is written by
+`scripts/mirror` from the snapshots in `upstream/`. The root `registry.json` holds only hand-written items. Do not
 edit any of it, or the snapshots, by hand: `scripts/mirror/generated.test.ts` fails when a
 committed file differs from what the pipeline produces. `ab/generated/` is not committed; `pnpm ab` regenerates it.
+
+`ab/skipped-examples/<style>.json` is also written by `scripts/mirror` and is committed; `generated.test.ts` fails when it differs.
 
 - To change a component's output, change the pipeline (`scripts/mirror/`) or `mirror.config.json`,
   then run `pnpm mirror:build`.
