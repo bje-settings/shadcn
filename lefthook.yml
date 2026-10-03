@@ -10,10 +10,22 @@ pre-commit:
       run: pnpm exec biome check --staged --error-on-warnings --no-errors-on-unmatched
 
     # Project-wide: a type error caused by a staged file is usually in a file
-    # that was not staged.
+    # that was not staged. ab/tsconfig.json needs the generated harness inputs
+    # that `pnpm mirror:build` writes and git does not track (vega's, which its
+    # paths point at), so the hook skips it until ab/generated/vega exists; CI
+    # generates them and checks it.
     types:
       glob: '{*.ts,*.tsx,tsconfig.json}'
-      run: pnpm exec tsc -p tsconfig.json && for p in registry/tsconfig.json registry/*/tsconfig.json ab/tsconfig.json; do pnpm exec tsc -p "$p" || exit 1; done
+      run: |
+        pnpm exec tsc -p tsconfig.json || exit 1
+        for p in registry/tsconfig.json registry/*/tsconfig.json; do
+          pnpm exec tsc -p "$p" || exit 1
+        done
+        if [ -d ab/generated/vega ]; then
+          pnpm exec tsc -p ab/tsconfig.json || exit 1
+        else
+          echo "skipping ab/tsconfig.json: run 'pnpm mirror:build' to enable this check"
+        fi
 
     vitest-related:
       glob: '*.{ts,tsx}'

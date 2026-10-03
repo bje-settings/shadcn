@@ -14,7 +14,7 @@ Node and pnpm versions are in `package.json` (`engines`, `packageManager`).
 
 ```bash
 pnpm install        # also installs the lefthook pre-commit hooks
-pnpm mirror:build   # once after cloning: the A/B harness inputs are not committed
+pnpm mirror:build   # optional: the A/B harness inputs (not committed), for the editor and the pre-commit type check
 ```
 
 ## Commands

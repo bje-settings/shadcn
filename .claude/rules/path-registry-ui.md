@@ -12,7 +12,7 @@ paths:
 # Generated Files
 
 Everything under each style's `registry/<style>/` (`ui/`, `hooks/`, `styles/`, `registry.json`,
-`tsconfig.json`), `ab/generated/<style>/` and `upstream/<style>/index.css` is written by
+`tsconfig.json`), `ab/generated/<style>/` and `upstream/base-<style>/index.css` is written by
 `scripts/mirror` from the snapshots in `upstream/`. The root `registry.json` holds only hand-written items. Do not
 edit any of it, or the snapshots, by hand: `scripts/mirror/generated.test.ts` fails when a
 committed file differs from what the pipeline produces. `ab/generated/` is not committed; `pnpm ab` regenerates it.

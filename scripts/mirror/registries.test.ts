@@ -1,14 +1,15 @@
 import { describe, expect, it } from 'vitest'
+import { shortStyle } from './config.ts'
 import { registryBuilds } from './registries.ts'
 import { parsed } from './test-support.ts'
 
 describe('registryBuilds', () => {
   it('builds each style from its catalog into its own directory', () => {
-    const styles = ['vega', 'luma', 'nova', 'maia', 'lyra', 'mira', 'sera', 'rhea']
-    expect(registryBuilds(parsed, 'public/r')).toEqual(
+    const styles = parsed.upstream.styles.map(shortStyle)
+    expect(registryBuilds(parsed, 'out')).toEqual(
       styles.map((style) => ({
         registry: `registry/${style}/registry.json`,
-        output: `public/r/${style}`,
+        output: `out/${style}`,
       })),
     )
   })

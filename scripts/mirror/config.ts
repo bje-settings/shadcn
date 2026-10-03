@@ -1,6 +1,7 @@
 // mirror.config.json: which upstream styles and components the mirror
-// converts, and where it writes them. Validated by hand so a typo fails the
-// run with the field name rather than surfacing later as `undefined`.
+// converts, and where it writes them. Validated by hand, so a missing required
+// key or a malformed value fails the run with the field name. A key it does
+// not read, a misspelled optional one included, is ignored.
 
 import { isRecord, KEBAB, Shape } from './parse.ts'
 import type { Literal } from './parts.ts'
