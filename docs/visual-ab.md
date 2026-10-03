@@ -32,13 +32,15 @@ Every case is generated (`scripts/mirror/harness.ts`):
   in light and dark.
 - **Examples:** each sub-example of upstream's docs example for a mirrored component
   (`<item>-example`), in light and dark. A sub-example is used once every component it reaches is
-  mirrored and it passes no consumer class whose styling the mirror drops; `pnpm mirror:build`
-  lists the skipped ones and why. Both pages render the same trimmed example source
-  (`ab/generated/<style>/examples/`), differing only in which components it imports. The ours page
-  styles the examples' own layout classes with unlayered Tailwind utilities
+  mirrored, it passes no consumer class whose styling the mirror drops, and it is not one of the
+  `KNOWN_DIFFERENCES` in `scripts/mirror/examples.ts`; `pnpm mirror:build` lists the skipped ones
+  and why, and records them in `ab/skipped-examples/<style>.json`, which `generated.test.ts` holds
+  to the build, so a new skip fails until it is committed. Both pages render the same trimmed
+  example source (`ab/generated/<style>/examples/`), differing only in which components it
+  imports. The ours page styles the examples' own layout classes with unlayered Tailwind utilities
   (`ab/generated/<style>/examples.css`), so a class an example passes to our component outranks
   its `:where()` defaults as tailwind-merge makes it win upstream. `ab/stubs/` stands in for the
-  docs-only `Example` wrapper and `IconPlaceholder`.
+  docs-only `Example` wrapper, `IconPlaceholder`, `next/image` and `next/link`.
 
 ## How a run compares
 

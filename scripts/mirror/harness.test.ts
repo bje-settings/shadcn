@@ -228,6 +228,8 @@ describe('harnessFiles', () => {
           '@/registry/base-vega/hooks/*': ['./upstream/hooks/*'],
           '@/registry/base-vega/components/example': ['../../stubs/example.tsx'],
           '@/app/(create)/components/icon-placeholder': ['../../stubs/icon-placeholder.tsx'],
+          'next/image': ['../../stubs/next-image.tsx'],
+          'next/link': ['../../stubs/next-link.tsx'],
         },
       },
     })

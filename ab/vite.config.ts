@@ -26,6 +26,8 @@ export default defineConfig({
       // Docs-only imports in upstream's examples, replaced by stand-ins.
       [`@/registry/${upstream.style}/components/example`]: `${ab}stubs/example.tsx`,
       '@/app/(create)/components/icon-placeholder': `${ab}stubs/icon-placeholder.tsx`,
+      'next/image': `${ab}stubs/next-image.tsx`,
+      'next/link': `${ab}stubs/next-link.tsx`,
     },
   },
   // Console output stays in the browser: the A/B spec reads it there, and
