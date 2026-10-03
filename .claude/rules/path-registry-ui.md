@@ -18,6 +18,8 @@ Everything under each style's `registry/<style>/` (`ui/`, `hooks/`, `styles/`, `
 edit any of it, or the snapshots, by hand: `scripts/mirror/generated.test.ts` fails when a
 committed file differs from what the pipeline produces. `ab/generated/` is not committed; `pnpm ab` regenerates it.
 
+`ab/skipped-examples/<style>.json` is also written by `scripts/mirror` and is committed; `generated.test.ts` fails when it differs.
+
 - To change a component's output, change the pipeline (`scripts/mirror/`) or `mirror.config.json`,
   then run `pnpm mirror:build`.
 - To pick up upstream changes, run `pnpm mirror:fetch` then `pnpm mirror:build`.
