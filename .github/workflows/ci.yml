@@ -22,6 +22,7 @@ concurrency:
 # and every pull request waits on it forever. Update the ruleset with any rename.
 # deploy is not required: it runs on pushes to main only. vitest and ab are
 # fan-ins over legs per style, so the required names hold whatever the styles.
+# install is not required either, until it has proven stable (issue #13).
 jobs:
   # `shadcn build` validates each style's registry.json and every item against
   # the schema.
@@ -288,6 +289,58 @@ jobs:
         run: |
           echo "ab-styles: $STYLES, ab-style: $LEGS"
           [ "$STYLES" = success ] && [ "$LEGS" = success ]
+
+  # Consumer installs: every item of the first style in upstream.styles, from
+  # the built public/r, through `shadcn add` into a scratch Vite + React +
+  # TypeScript + Sass project, which is then type-checked, tested and built
+  # (scripts/install-check).
+  install:
+    name: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # The merge commit and its base, to list what a pull request changes.
+          fetch-depth: 2
+      # Skipped, still reporting, as an ab-style leg is: on a draft, or when
+      # the change reaches no item. Unlike there, component tests count: they
+      # ship in the items.
+      - name: Decide whether the check runs
+        id: scope
+        run: |
+          if [ "${{ github.event_name }}" != pull_request ]; then
+            echo run=true >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "${{ github.event.pull_request.draft }}" = true ]; then
+            echo "Draft pull request: install check skipped until it is marked ready." >> "$GITHUB_STEP_SUMMARY"
+            echo run=false >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          others=$(jq -r '[.upstream.styles[1:][] | sub("^base-"; "")] | join("|")' mirror.config.json)
+          # One command per assignment, so a failed diff or grep fails the job
+          # rather than reading as no change.
+          changed=$(git diff --no-renames --name-only HEAD^1 HEAD)
+          relevant=$(printf '%s\n' "$changed" | grep -Ev \
+            '(^$|\.md$|^\.claude/|^ab/|^scripts/.*\.test\.ts$|^lefthook\.yml$|^biome\.json$|^vitest\.config\.ts$)' \
+            || [ $? -eq 1 ])
+          if [ -n "$others" ]; then
+            relevant=$(printf '%s\n' "$relevant" | grep -Ev "^(registry/|upstream/base-)($others)/" || [ $? -eq 1 ])
+          fi
+          if [ -n "$relevant" ]; then
+            echo run=true >> "$GITHUB_OUTPUT"
+          else
+            echo "No change reaches an installed item: install check skipped." >> "$GITHUB_STEP_SUMMARY"
+            echo run=false >> "$GITHUB_OUTPUT"
+          fi
+      - uses: ./.github/actions/node-pnpm
+        if: steps.scope.outputs.run == 'true'
+      - name: Build the registries
+        if: steps.scope.outputs.run == 'true'
+        run: pnpm build
+      - name: Install, type-check, test and build every item
+        if: steps.scope.outputs.run == 'true'
+        run: pnpm install-check
 
   # Publishes the build job's public/r to GitHub Pages at shadcn.bje.co, only
   # from main and only once every required check passes.
