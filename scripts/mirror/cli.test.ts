@@ -36,9 +36,11 @@ const example = (style: string) => ({
       content: [
         `import { Badge } from "@/registry/${style}/ui/badge"`,
         `import { Other } from "@/registry/${style}/ui/other"`,
-        'export default function BadgeExample() { return <><BadgeBasic /><BadgeOther /></> }',
+        `import { Spare } from "@/registry/${style}/ui/spare"`,
+        'export default function BadgeExample() { return <><BadgeBasic /><BadgeOther /><BadgeSpare /></> }',
         'function BadgeBasic() { return <Badge /> }',
         'function BadgeOther() { return <Other /> }',
+        'function BadgeSpare() { return <Spare /> }',
       ].join('\n'),
     },
   ],
@@ -310,13 +312,15 @@ describe('mirror build', BUILDS, () => {
     ]
     expect(logs).toEqual([
       ...built('vega'),
-      'example badge-example: 1 of 2 sub-examples',
+      'example badge-example: 1 of 3 sub-examples',
       '  skipped BadgeOther: needs other',
+      '  skipped BadgeSpare: needs spare',
       'built A/B harness inputs in ab/generated/vega',
       'built registry/vega/registry.json, registry/vega/tsconfig.json',
       ...built('luma'),
-      'example badge-example: 1 of 2 sub-examples',
+      'example badge-example: 1 of 3 sub-examples',
       '  skipped BadgeOther: needs other',
+      '  skipped BadgeSpare: needs spare',
       'built A/B harness inputs in ab/generated/luma',
       'built registry/luma/registry.json, registry/luma/tsconfig.json',
     ])
@@ -325,7 +329,7 @@ describe('mirror build', BUILDS, () => {
     )
     for (const style of ['vega', 'luma']) {
       expect(JSON.parse(await read(`ab/skipped-examples/${style}.json`))).toEqual({
-        'badge-example': { BadgeOther: ['needs other'] },
+        'badge-example': { BadgeOther: ['needs other'], BadgeSpare: ['needs spare'] },
       })
     }
   })
