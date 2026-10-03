@@ -31,11 +31,13 @@ export const STUBBED = new Set([
   'next/link',
 ])
 
-// Sub-examples that run but differ from upstream for a reason the mirror does
-// not handle yet, by name, with why. NavigationMenuBasic passes
-// navigationMenuTriggerStyle() to NavigationMenuLink: tailwind-merge lets its
-// px-4 override the link's p-2, while the mirror's :where() rules resolve by
-// source order and keep p-2, so the link is 16px narrower.
+// Sub-examples that would render but differ from upstream for a reason the
+// mirror does not handle yet, skipped by name in every style, with why.
+// NavigationMenuBasic passes navigationMenuTriggerStyle() to NavigationMenuLink:
+// tailwind-merge lets the trigger's horizontal padding override the link's,
+// while the mirror's :where() rules resolve by source order and keep the
+// link's. In vega (px-4 against p-2) the link is 16px narrower; in rhea the two
+// paddings match.
 export const KNOWN_DIFFERENCES = new Map([
   [
     'NavigationMenuBasic',
