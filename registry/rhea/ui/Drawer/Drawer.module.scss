@@ -4,9 +4,9 @@
 //   --blur-sm --border --color-black --color-popover --default-transition-duration
 //   --default-transition-timing-function --drawer-frontmost-height --drawer-height
 //   --drawer-snap-point-offset --drawer-swipe-movement-x --drawer-swipe-movement-y
-//   --drawer-swipe-progress --drawer-swipe-strength --font-sans --font-weight-medium --foreground
-//   --muted --muted-foreground --nested-drawers --popover --popover-foreground --radius-4xl
-//   --spacing --text-base --text-base--line-height --text-sm --text-sm--line-height
+//   --drawer-swipe-progress --drawer-swipe-strength --font-heading --font-weight-medium
+//   --foreground --muted --muted-foreground --nested-drawers --popover --popover-foreground
+//   --radius-4xl --spacing --text-base --text-base--line-height --text-sm --text-sm--line-height
 //
 // Upstream classes with no CSS output, dropped:
 //   group/drawer-popup
@@ -411,7 +411,7 @@
 }
 
 :where(.drawerTitle) {
-  font-family: var(--font-sans);
+  font-family: var(--font-heading);
   font-size: var(--text-base);
   line-height: var(--leading, var(--text-base--line-height));
   --font-weight: var(--font-weight-medium);

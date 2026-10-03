@@ -79,13 +79,32 @@ describe('parseBaseColor', () => {
 describe('parseFontItem', () => {
   const font = { family: 'Inter', variable: '--font-sans', dependency: '@fontsource/inter' }
 
-  it('reads the family, variable and package', () => {
-    expect(parseFontItem({ font, name: 'font-inter' }, 'f')).toEqual({ font })
+  it('reads the title, family, variable and package', () => {
+    expect(parseFontItem({ font, name: 'font-inter', title: 'Inter' }, 'f')).toEqual({
+      title: 'Inter',
+      font,
+    })
   })
 
-  it('rejects a variable that is not a custom property', () => {
-    expect(() => parseFontItem({ font: { ...font, variable: 'font-sans' } }, 'f')).toThrow(
-      'f: font.variable must be a custom property',
-    )
+  it.each(['font-sans', '--font-sans; --x', '--Font', '--'])(
+    'rejects %s as a variable, which is written into CSS as it is',
+    (variable) => {
+      expect(() => parseFontItem({ font: { ...font, variable }, title: 'Inter' }, 'f')).toThrow(
+        'f: font.variable must be a lowercase custom property',
+      )
+    },
+  )
+
+  it.each(['X; color: red', 'X {', 'X }', 'X\\3b', 'X /*', 'X !important'])(
+    'rejects %s as a family, which could change more than the font',
+    (family) => {
+      expect(() => parseFontItem({ font: { ...font, family }, title: 'Inter' }, 'f')).toThrow(
+        'f: font.family must be a single declaration value',
+      )
+    },
+  )
+
+  it('rejects an item without a title', () => {
+    expect(() => parseFontItem({ font }, 'f')).toThrow('f: title must be a non-empty string')
   })
 })

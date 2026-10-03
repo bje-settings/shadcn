@@ -1,6 +1,9 @@
+import postcss from 'postcss'
 import { describe, expect, it } from 'vitest'
-import { globalStylesheets } from './globals.ts'
-import { compile } from './test-support.ts'
+import { fontStylesheet, globalStylesheets } from './globals.ts'
+import { staticTheme } from './project-css.ts'
+import { compileCandidates } from './tailwind.ts'
+import { compile, input } from './test-support.ts'
 
 describe('globalStylesheets', () => {
   it('splits variables and base layers out of a full compile and drops utilities', async () => {
@@ -46,4 +49,57 @@ describe('globalStylesheets', () => {
   ])('refuses %s', (_, css) => {
     expect(() => globalStylesheets(css, '')).toThrow('globals: no destination for top-level')
   })
+})
+
+describe('fontStylesheet', () => {
+  const geist = {
+    family: "'Geist Variable', sans-serif",
+    variable: '--font-sans',
+    dependency: '@fontsource-variable/geist',
+  }
+
+  it('imports the font package and sets the variable upstream names to its family', () => {
+    expect(fontStylesheet({ font: geist }, '/* h */')).toBe(
+      [
+        '/* h */',
+        '/* Import after variables.scss: this replaces its --font-sans. */',
+        '',
+        '@import "@fontsource-variable/geist";',
+        '',
+        '@layer theme {',
+        '  :root, :host {',
+        "    --font-sans: 'Geist Variable', sans-serif;",
+        '  }',
+        '}',
+        '',
+      ].join('\n'),
+    )
+  })
+
+  // Where a declaration of the variable sits: its enclosing at-rules and rules.
+  const placements = (css: string, variable: string) => {
+    const found: string[][] = []
+    postcss.parse(css).walkDecls(variable, (decl) => {
+      const path: string[] = []
+      for (let node = decl.parent; node && node.type !== 'root'; node = node.parent) {
+        path.unshift(node.type === 'rule' ? node.selector : `@${node.name} ${node.params}`)
+      }
+      found.push(path)
+    })
+    return found
+  }
+
+  // The same layer and selector as the default's declaration: the cascade
+  // then lets whichever stylesheet loads later win.
+  it.each(['--font-sans', '--font-heading', '--font-mono', '--font-serif'])(
+    'declares %s exactly where variables.scss does',
+    async (variable) => {
+      // Components read --font-heading, which emits it; the rest are Tailwind's.
+      const css = await compileCandidates(staticTheme(input), ['font-heading'])
+      const { variables } = globalStylesheets(css, '')
+      const font = fontStylesheet({ font: { ...geist, variable } }, '')
+      expect(placements(variables, variable)).toEqual([['@layer theme', ':root, :host']])
+      expect(placements(font, variable)).toEqual(placements(variables, variable))
+    },
+  )
 })
