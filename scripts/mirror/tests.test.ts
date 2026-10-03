@@ -4,6 +4,7 @@ import { generateTest, type TestInput } from './tests.ts'
 import { transformComponent } from './tsx.ts'
 
 const none: TestInput = {
+  kind: 'ui',
   types: new Map(),
   scaffolds: new Map(),
   setup: [],
@@ -22,8 +23,7 @@ const part: PartTypes = {
   opens: false,
   keepMounted: false,
   required: [],
-  text: true,
-  childrenFunction: false,
+  children: 'text',
   options: {},
 }
 
@@ -139,8 +139,7 @@ export { Chip }`,
               opens: true,
               keepMounted: false,
               required: [],
-              text: true,
-              childrenFunction: false,
+              children: 'text',
               options: {},
             },
           ],
@@ -209,10 +208,7 @@ export { Chip, ChipList }`,
       {
         types: new Map([
           ['Chip', part],
-          [
-            'ChipList',
-            { ...part, className: false, text: false, childrenFunction: true, options: {} },
-          ],
+          ['ChipList', { ...part, className: false, children: 'function', options: {} }],
         ]),
         unrendered: { Chip: 'it waits for an open item.' },
       },
@@ -268,7 +264,17 @@ export { Panel, PanelProvider, usePanel }`)
     const test = generate(`function useThing() { return 1 }
 export { useThing }`)
     expect(test).toContain('import { cleanup, renderHook } from "@testing-library/react"')
+    expect(test).toContain('import { useThing } from "./Chip"')
     expect(test).toContain('const { result } = renderHook(() => useThing())')
+  })
+
+  it("imports a hook item's module by the item's name", () => {
+    const test = generate(
+      `function useThing() { return 1 }
+export { useThing }`,
+      { kind: 'hook' },
+    )
+    expect(test).toContain('import { useThing } from "./chip"')
   })
 
   it("checks only the className of a part whose props land on another item's elementless part", () => {

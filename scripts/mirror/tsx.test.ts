@@ -246,7 +246,13 @@ function Text({ className }) {
     )
     expect(slots).toEqual([{ name: 'textSlot', classes: ['flex'] }])
     expect(components).toEqual([
-      { name: 'Text', dataSlot: 'text-slot', slot: 'textSlot', defaults: [] },
+      {
+        name: 'Text',
+        dataSlot: 'text-slot',
+        slot: 'textSlot',
+        defaults: [],
+        defaultChildren: false,
+      },
     ])
   })
 
@@ -299,11 +305,50 @@ export default function () { return <i data-slot="anon" className="p-4" /> }`
           { prop: 'count', value: '2' },
           { prop: 'open', value: 'false' },
         ],
+        defaultChildren: false,
       },
-      { name: 'Plain', dataSlot: 'plain', tag: 'i', slot: 'plain', defaults: [] },
-      { name: 'Empty', dataSlot: 'empty', tag: 'i', slot: 'empty', defaults: [] },
-      { name: 'Arrow', dataSlot: 'arrow', tag: 'i', slot: 'arrow', defaults: [] },
+      {
+        name: 'Plain',
+        dataSlot: 'plain',
+        tag: 'i',
+        slot: 'plain',
+        defaults: [],
+        defaultChildren: false,
+      },
+      {
+        name: 'Empty',
+        dataSlot: 'empty',
+        tag: 'i',
+        slot: 'empty',
+        defaults: [],
+        defaultChildren: false,
+      },
+      {
+        name: 'Arrow',
+        dataSlot: 'arrow',
+        tag: 'i',
+        slot: 'arrow',
+        defaults: [],
+        defaultChildren: false,
+      },
     ])
+  })
+
+  it('records default children, and the class of each branch whose element shares a data-slot', () => {
+    const source = `import { cn } from "cn"
+function Next({ children }) { return <b data-slot="next" className="p-1">{children ?? "Next"}</b> }
+function Side({ mobile, open }) {
+  if (mobile) return <div data-slot="side" className="p-2" />
+  if (open) return <div data-slot="side" className="p-3" />
+  return <div data-slot="side" className="p-4" />
+}
+export { Next, Side }`
+    const { components } = transformComponent(source, 'x', 'bje')
+    expect(components.find((c) => c.name === 'Next')?.defaultChildren).toBe(true)
+    expect(components.find((c) => c.name === 'Side')).toMatchObject({
+      defaultChildren: false,
+      branches: ['side', 'side2', 'side3'],
+    })
   })
 })
 

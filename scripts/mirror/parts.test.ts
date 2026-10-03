@@ -1,7 +1,7 @@
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { prepareComponent, type UpstreamItem } from './component.ts'
-import { partTypes, scaffolds } from './parts.ts'
+import { type PartTypes, partTypes, scaffolds } from './parts.ts'
 import { config, root } from './test-support.ts'
 import { transformComponent } from './tsx.ts'
 
@@ -29,8 +29,14 @@ function DialogClose(props: React.ComponentProps<typeof Button>) {
 function DialogMeter(props: { value: number; tone?: "soft" | "loud"; className?: string; children?: undefined }) {
   return <div data-slot="dialog-meter" {...props} />
 }
+function DialogDot(props: { className?: string }) {
+  return <i data-slot="dialog-dot" {...props} />
+}
+function DialogList(props: { className?: string; children?: (item: string) => React.ReactNode }) {
+  return <ul data-slot="dialog-list" className={props.className} />
+}
 const helper = 1
-export { Dialog, DialogTitle, DialogClose, DialogMeter, helper }`,
+export { Dialog, DialogTitle, DialogClose, DialogMeter, DialogDot, DialogList, helper }`,
     },
   ],
 }
@@ -59,13 +65,15 @@ export { Button }`,
     const summary = new Map(
       [...(types ?? [])].map(([name, { options: _, ...rest }]) => [name, rest]),
     )
-    const part = { className: true, opens: false, keepMounted: false, required: [], text: true }
+    const part = { className: true, opens: false, keepMounted: false, required: [] }
     expect(summary).toEqual(
       new Map([
-        ['Dialog', { ...part, className: false, opens: true, childrenFunction: false }],
-        ['DialogTitle', { ...part, childrenFunction: false }],
-        ['DialogClose', { ...part, childrenFunction: false }],
-        ['DialogMeter', { ...part, required: ['value'], text: false, childrenFunction: false }],
+        ['Dialog', { ...part, className: false, opens: true, children: 'text' }],
+        ['DialogTitle', { ...part, children: 'text' }],
+        ['DialogClose', { ...part, children: 'text' }],
+        ['DialogMeter', { ...part, required: ['value'], children: 'nodes' }],
+        ['DialogDot', { ...part, children: 'none' }],
+        ['DialogList', { ...part, children: 'function' }],
       ]),
     )
     expect(types?.get('DialogMeter')?.options.tone).toEqual(['soft', 'loud'])
@@ -87,17 +95,16 @@ export { Chips, Chip, ChipInput, ChipMenu, ChipPanel }`,
     'chip',
     'bje',
   )
-  const part = {
+  const part: PartTypes = {
     className: true,
     opens: false,
     keepMounted: false,
     required: [],
-    text: true,
-    childrenFunction: false,
+    children: 'text',
     options: {},
   }
-  const types = new Map([
-    ['Chips', { ...part, text: false, childrenFunction: false, options: {} }],
+  const types = new Map<string, PartTypes>([
+    ['Chips', { ...part, children: 'nodes', options: {} }],
     ['Chip', part],
     ['ChipInput', part],
     [
@@ -107,8 +114,7 @@ export { Chips, Chip, ChipInput, ChipMenu, ChipPanel }`,
         opens: true,
         keepMounted: false,
         required: [],
-        text: true,
-        childrenFunction: false,
+        children: 'text',
         options: {},
       },
     ],
@@ -118,8 +124,7 @@ export { Chips, Chip, ChipInput, ChipMenu, ChipPanel }`,
         ...part,
         keepMounted: true,
         required: [],
-        text: true,
-        childrenFunction: false,
+        children: 'text',
         options: {},
       },
     ],
@@ -200,10 +205,10 @@ export { Chips, Chip, Picker, ChipDay }`,
       'chips',
       'bje',
     )
-    const withPicker = new Map([
+    const withPicker = new Map<string, PartTypes>([
       ['Chips', part],
       ['Chip', part],
-      ['Picker', { ...part, text: false }],
+      ['Picker', { ...part, children: 'nodes' }],
       ['ChipDay', part],
     ])
     const example = 'export default function E() { return <><Chips /><Picker /></> }'
@@ -214,7 +219,7 @@ export { Chips, Chip, Picker, ChipDay }`,
   })
 
   it('renders a part the example never uses on its own, or inside the item root', () => {
-    const withGhost = new Map([...types, ['Ghost', part]])
+    const withGhost = new Map<string, PartTypes>([...types, ['Ghost', part]])
     const alone = scaffolds('other', undefined, withGhost, chip)
     expect(alone.get('Ghost')?.children).toBe(true)
     expect(alone.get('Chip')).toEqual({ ancestors: [], props: {}, children: true, others: [] })

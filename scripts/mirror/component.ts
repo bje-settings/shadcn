@@ -354,7 +354,7 @@ export async function buildComponent(
     setup,
     unstyled,
     unrendered: config.unrenderedInTests[upstream.name] ?? {},
-    ...(hook ? { module: upstream.name } : {}),
+    kind: hook ? 'hook' : 'ui',
     expressions: config.testExpressions[upstream.name] ?? {},
     sameRender: config.sameRenderInTests[upstream.name] ?? {},
   })
