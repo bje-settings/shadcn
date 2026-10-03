@@ -1,10 +1,10 @@
 // The committed output must be exactly what `mirror build` produces from the
 // committed snapshots: a hand edit to a generated file, or a pipeline change
 // without `pnpm mirror:build`, fails here. Covers, for every style, components,
-// hooks, global stylesheets, the rebuilt project CSS, registry catalog and
+// hooks, global stylesheets, the rebuilt project CSS, registry catalog,
 // tsconfig and the list of skipped A/B examples (a new skip fails until the
-// list records it), and proves every generated stylesheet compiles with Sass and every
-// font item can replace the default it names.
+// list records it). It also proves every generated stylesheet compiles with
+// Sass and every font item can replace the default it names.
 
 import { cp, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
