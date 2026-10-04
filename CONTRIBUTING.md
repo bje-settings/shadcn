@@ -104,4 +104,15 @@ An `ab-style` leg skips its comparison, and still reports success, when:
   `biome.json`, `vitest.config.ts`, and other styles' `registry/<style>/` or
   `upstream/base-<style>/`.
 
+The `install` job is not required. It builds the registries, then `pnpm install-check` installs
+every item of the first style in `upstream.styles`, served locally from `public/r/<style>`, with
+`shadcn add` into a scratch Vite + React + TypeScript + Sass project. It fails on an install error,
+a file not at its alias, an import left pointing at `@/registry/`, a package imported that neither
+the item nor an item it reaches through `registryDependencies` declares, an item imported that
+those do not reach, a registry dependency that names no item of the style by its namespace, a
+pinned version not installed, a type error, a failing shipped test, or a failed `vite build`. It
+skips, and still reports success, on a draft, or when the change touches only Markdown, `.claude/`,
+`ab/`, the scripts' tests, `lefthook.yml`, `biome.json`, `vitest.config.ts`, and other styles'
+`registry/<style>/` or `upstream/base-<style>/`.
+
 Every push to `main` runs every leg, then the `deploy` job ([docs/hosting.md](docs/hosting.md)).

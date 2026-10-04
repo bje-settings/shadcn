@@ -16,7 +16,8 @@
     "ab": "playwright test --config ab/playwright.config.ts",
     "preab:serve": "pnpm mirror:build $AB_STYLE",
     "ab:serve": "vite --config ab/vite.config.ts",
-    "ab:timings": "node ab/timings.ts"
+    "ab:timings": "node ab/timings.ts",
+    "install-check": "node scripts/install-check/main.ts"
   },
   "dependencies": {
     "clsx": "2.1.1"
