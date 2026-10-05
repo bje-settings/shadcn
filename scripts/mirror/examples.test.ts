@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { prepareExample } from './examples.ts'
+import { KNOWN_DIFFERENCES, prepareExample } from './examples.ts'
 
 const example = `"use client"
 
@@ -104,6 +104,28 @@ export default function ChipPage() {
     expect(prepared.ours).toContain('\nfunction ChipPage() {')
     expect(prepared.ours).not.toContain('export default')
     expect(prepared.ours).toContain('export { ChipPage }')
+  })
+
+  it('keeps sub-examples that import next/image or next/link, which the harness stubs', () => {
+    const source = `import Image from "next/image"
+import Link from "next/link"
+export default function Page() { return <><Pic /><Nav /></> }
+function Pic() { return <Image src="a.png" alt="" fill /> }
+function Nav() { return <Link href="#">Home</Link> }`
+    const stubbed = prepareExample(source, 'base-vega', 'bje', mirrored, new Set())
+    expect(stubbed.kept).toEqual(['Pic', 'Nav'])
+    expect(stubbed.skipped).toEqual([])
+  })
+
+  it('skips a sub-example the mirror is known to render differently, with the reason', () => {
+    const source = `import Link from "next/link"
+export default function Page() { return <NavigationMenuBasic /> }
+function NavigationMenuBasic() { return <Link href="#" /> }`
+    const known = prepareExample(source, 'base-vega', 'bje', mirrored, new Set())
+    expect(known.kept).toEqual([])
+    expect(known.skipped).toEqual([
+      { name: 'NavigationMenuBasic', reasons: [KNOWN_DIFFERENCES.get('NavigationMenuBasic')] },
+    ])
   })
 
   const dropped = new Set(['border-b', 'border-t'])

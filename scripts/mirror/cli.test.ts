@@ -36,9 +36,11 @@ const example = (style: string) => ({
       content: [
         `import { Badge } from "@/registry/${style}/ui/badge"`,
         `import { Other } from "@/registry/${style}/ui/other"`,
-        'export default function BadgeExample() { return <><BadgeBasic /><BadgeOther /></> }',
+        `import { Spare } from "@/registry/${style}/ui/spare"`,
+        'export default function BadgeExample() { return <><BadgeBasic /><BadgeOther /><BadgeSpare /></> }',
         'function BadgeBasic() { return <Badge /> }',
         'function BadgeOther() { return <Other /> }',
+        'function BadgeSpare() { return <Spare /> }',
       ].join('\n'),
     },
   ],
@@ -191,6 +193,7 @@ describe('mirror fetch', BUILDS, () => {
     )
     await run(['build'], io())
     expect(await read('ab/generated/vega/examples.ts')).toContain('export const examples = []')
+    expect(JSON.parse(await read('ab/skipped-examples/vega.json'))).toEqual({})
   })
 
   it('fails on an HTTP error', async () => {
@@ -237,6 +240,8 @@ describe('mirror build', BUILDS, () => {
       '@/registry/bje/ui/*': ['../../../registry/luma/ui/*'],
       '@/registry/base-luma/ui/*': ['./upstream/*'],
       '@/registry/base-luma/components/example': ['../../stubs/example.tsx'],
+      'next/image': ['../../stubs/next-image.tsx'],
+      'next/link': ['../../stubs/next-link.tsx'],
     })
     expect(await read('registry/luma/ui/Badge/Badge.module.scss')).toContain(':where(.badge) {')
     expect(JSON.parse(await read('registry/luma/tsconfig.json'))).toEqual({
@@ -307,19 +312,26 @@ describe('mirror build', BUILDS, () => {
     ]
     expect(logs).toEqual([
       ...built('vega'),
-      'example badge-example: 1 of 2 sub-examples',
+      'example badge-example: 1 of 3 sub-examples',
       '  skipped BadgeOther: needs other',
+      '  skipped BadgeSpare: needs spare',
       'built A/B harness inputs in ab/generated/vega',
       'built registry/vega/registry.json, registry/vega/tsconfig.json',
       ...built('luma'),
-      'example badge-example: 1 of 2 sub-examples',
+      'example badge-example: 1 of 3 sub-examples',
       '  skipped BadgeOther: needs other',
+      '  skipped BadgeSpare: needs spare',
       'built A/B harness inputs in ab/generated/luma',
       'built registry/luma/registry.json, registry/luma/tsconfig.json',
     ])
     expect(await read('ab/generated/vega/examples/ours/badge-example.tsx')).toContain(
       'import { Badge } from "@/registry/bje/ui/Badge/Badge"',
     )
+    for (const style of ['vega', 'luma']) {
+      expect(JSON.parse(await read(`ab/skipped-examples/${style}.json`))).toEqual({
+        'badge-example': { BadgeOther: ['needs other'], BadgeSpare: ['needs spare'] },
+      })
+    }
   })
 
   it("copies a hook item's upstream source into the harness, outside the module maps", async () => {

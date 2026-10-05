@@ -42,7 +42,8 @@ when matching files are staged. CI is the enforcement boundary.
 ## Generated files
 
 Never edit by hand: each style's `registry/<style>/` (`ui/`, `hooks/`, `styles/`, `registry.json`,
-`tsconfig.json`), the snapshots under `upstream/`, and `ab/generated/`.
+`tsconfig.json`), the snapshots under `upstream/`, `ab/generated/`, and
+`ab/skipped-examples/<style>.json`.
 `scripts/mirror/generated.test.ts` fails when a committed file differs from what the pipeline
 produces. To change the output, change `scripts/mirror/` or `mirror.config.json`, then run
 `pnpm mirror:build`.

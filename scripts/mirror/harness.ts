@@ -214,6 +214,8 @@ function harnessTsconfig(config: MirrorConfig): string {
         [`@/registry/${upstream.style}/hooks/*`]: ['./upstream/hooks/*'],
         [`@/registry/${upstream.style}/components/example`]: [from('ab/stubs/example.tsx')],
         '@/app/(create)/components/icon-placeholder': [from('ab/stubs/icon-placeholder.tsx')],
+        'next/image': [from('ab/stubs/next-image.tsx')],
+        'next/link': [from('ab/stubs/next-link.tsx')],
       },
     },
   }

@@ -24,7 +24,26 @@ import { childNodes, parseModule, span } from './ast.ts'
 import { registryModule } from './names.ts'
 
 // Imports the harness provides stand-ins for (ab/stubs).
-export const STUBBED = new Set(['components/example', '@/app/(create)/components/icon-placeholder'])
+export const STUBBED = new Set([
+  'components/example',
+  '@/app/(create)/components/icon-placeholder',
+  'next/image',
+  'next/link',
+])
+
+// Sub-examples that would render but differ from upstream for a reason the
+// mirror does not handle yet, skipped by name in every style, with why.
+// NavigationMenuBasic passes navigationMenuTriggerStyle() to NavigationMenuLink:
+// tailwind-merge lets the trigger's horizontal padding override the link's,
+// while the mirror's :where() rules resolve by source order and keep the
+// link's. In vega (px-4 against p-2) the link is 16px narrower; in rhea the two
+// paddings match.
+export const KNOWN_DIFFERENCES = new Map([
+  [
+    'NavigationMenuBasic',
+    "passes navigationMenuTriggerStyle() to NavigationMenuLink, whose padding tailwind-merge overrides and the mirror's :where() rules do not",
+  ],
+])
 
 export type PreparedExample = {
   upstream: string
@@ -238,6 +257,7 @@ export function prepareExample(
       .filter((token) => dropped.has(token))
     const reasons = [
       ...(missing.length > 0 ? [`needs ${missing.join(', ')}`] : []),
+      ...(KNOWN_DIFFERENCES.has(name) ? [KNOWN_DIFFERENCES.get(name) as string] : []),
       ...[...new Set(passed)].sort().map((c) => `passes ${c}, whose styling the mirror drops`),
     ]
     if (reasons.length > 0) {
