@@ -2,7 +2,7 @@
 //
 // Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):
 //   --background --default-transition-duration --default-transition-timing-function --destructive
-//   --font-mono --font-sans --font-weight-medium --foreground --input --leading-relaxed
+//   --font-heading --font-mono --font-weight-medium --foreground --input --leading-relaxed
 //   --leading-snug --muted --muted-foreground --primary --primary-foreground --ring --spacing
 //   --text-sm --text-sm--line-height --text-xs --text-xs--line-height
 //
@@ -78,7 +78,7 @@
 }
 
 :where(.questionnaireTitle) {
-  font-family: var(--font-sans);
+  font-family: var(--font-heading);
   font-size: var(--text-sm);
   line-height: var(--leading, var(--text-sm--line-height));
   --font-weight: var(--font-weight-medium);

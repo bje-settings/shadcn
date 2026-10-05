@@ -40,6 +40,10 @@ export type MirrorConfig = {
     // Library the shadcn CLI swaps upstream's IconPlaceholder for, e.g. lucide
     iconLibrary: string
   }
+  // Upstream fonts each style publishes as @<namespace>/font-<name>, named as
+  // upstream names them without the font- prefix (geist, heading-geist). None
+  // when unset.
+  fonts: string[]
   components: string[]
   // shadcn/typeset: the stylesheet (shipped as @<namespace>/typeset) and the
   // content fixtures its builder previews, which the A/B harness renders.
@@ -160,6 +164,11 @@ export function parseConfig(raw: unknown): MirrorConfig {
   }
   if (new Set(styles).size !== styles.length) shape.fail('upstream.styles must not repeat')
   const theme = shape.record(raw.theme, 'theme')
+  const fonts = raw.fonts ?? []
+  if (!Array.isArray(fonts) || !fonts.every((f) => typeof f === 'string' && KEBAB.test(f))) {
+    shape.fail('fonts must be an array of kebab-case font names')
+  }
+  if (new Set(fonts).size !== fonts.length) shape.fail('fonts must not repeat')
 
   const components = raw.components
   if (
@@ -250,6 +259,7 @@ export function parseConfig(raw: unknown): MirrorConfig {
       font: name(theme, 'font', 'theme.'),
       iconLibrary: name(theme, 'iconLibrary', 'theme.'),
     },
+    fonts,
     components,
     typeset: { stylesheet: string(typeset, 'stylesheet', 'typeset.'), fixturesUrl, fixtures },
     snapshotDir: string(raw, 'snapshotDir', ''),

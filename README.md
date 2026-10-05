@@ -8,7 +8,7 @@ styled with SCSS modules instead of Tailwind.
 Each mirrored Base UI style is its own registry at `https://shadcn.bje.co/<style>/`: `vega`,
 `luma`, `nova`, `maia`, `lyra`, `mira`, `sera` and `rhea`. Styles differ in their components'
 classes, not only in variables, so a project uses one style. Every style uses shadcn's neutral base
-color, the Inter font and lucide icons.
+color, the Inter font by default and lucide icons.
 
 ## Setup
 
@@ -38,9 +38,19 @@ project's `components` alias. Import each once, at the app's entry:
 | ---------------- | ----------------------------------------------------------------------------- |
 | `variables.scss` | Tailwind's default theme and shadcn's light and dark colors, as custom properties |
 | `base.scss`      | Tailwind's preflight, shadcn's base layer and the keyframes components animate with |
-| `fonts.css`      | The font package import (`@fontsource-variable/inter`)                        |
+| `fonts.css`      | The default font's package import (`@fontsource-variable/inter`)              |
 
 Dark colors apply under a `.dark` class, which shadcn apps set on `<html>`.
+
+The default font is Inter. To use another, install its item, named after upstream's font
+(`pnpm dlx shadcn add @bje/font-geist`, or `@bje/font-heading-geist` for headings only), and import
+its `styles/fonts/<name>.css` after `variables.scss`. The stylesheet sets one variable
+(`--font-sans`, `--font-heading`, `--font-mono` or `--font-serif`) in the same layer and selector
+as `variables.scss`, so imported before it, the default wins. The item lists the font's package in
+`dependencies`. A heading font reaches component titles (Card, Dialog, Sheet, ...) and Typeset's
+headings; your own `h1` to `h6` keep `--font-sans` unless your CSS uses `var(--font-heading)`. No
+component reads `--font-serif`: a serif font applies only where your own CSS uses
+`var(--font-serif)`.
 
 `@bje/typeset` installs [shadcn/typeset](https://ui.shadcn.com/docs/typeset) unchanged as
 `styles/typeset.css`: styles for rendered HTML and markdown inside a `.typeset` container. It reads
