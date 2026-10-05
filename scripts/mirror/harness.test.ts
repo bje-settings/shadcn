@@ -59,8 +59,7 @@ const parts = (transformed: TransformedComponent) => ({
         opens: false,
         keepMounted: false,
         required: [],
-        text: true,
-        childrenFunction: false,
+        children: 'text',
         options: {},
       },
     ],
@@ -79,9 +78,10 @@ describe('fixturesFor', () => {
     const base = { item: 'chip', ancestors: [], children: true, overlay: false }
     expect(
       fixturesFor({
+        kind: 'ui',
         name: 'chip',
         upstreamSource: chip,
-        hook: false,
+        expressionParts: [],
         transformed,
         ...parts(transformed),
       }),
@@ -115,9 +115,10 @@ describe('fixturesFor', () => {
       others: [],
     }
     const fixtures = fixturesFor({
+      kind: 'ui',
       name: 'chip',
       upstreamSource: chip,
-      hook: false,
+      expressionParts: [],
       transformed,
       types: new Map([
         [
@@ -127,8 +128,7 @@ describe('fixturesFor', () => {
             opens: true,
             keepMounted: false,
             required: [],
-            text: true,
-            childrenFunction: false,
+            children: 'text',
             options: {},
           },
         ],
@@ -158,9 +158,10 @@ describe('harnessFiles', () => {
       {
         components: [
           {
+            kind: 'ui',
             name: 'chip-set',
             upstreamSource: chip,
-            hook: false,
+            expressionParts: [],
             transformed,
             ...parts(transformed),
           },
@@ -230,5 +231,33 @@ describe('harnessFiles', () => {
         },
       },
     })
+  })
+
+  it('copies a hook item to upstream/hooks, with no fixtures or module map entry', () => {
+    const files = harnessFiles(
+      config,
+      {
+        components: [
+          {
+            kind: 'hook',
+            name: 'use-thing',
+            upstreamSource: 'export function useThing() { return 1 }',
+          },
+        ],
+        examples: [],
+        layoutCss: '',
+        typeset: [],
+      },
+      '// header',
+    )
+    const byPath = Object.fromEntries(files.map((file) => [file.path, file.content]))
+    expect(byPath['ab/generated/vega/upstream/hooks/use-thing.ts']).toBe(
+      '// header\n\nexport function useThing() { return 1 }',
+    )
+    expect(byPath['ab/generated/vega/upstream.ts']).not.toContain('use-thing')
+    expect(byPath['ab/generated/vega/ours.ts']).not.toContain('use-thing')
+    expect(byPath['ab/generated/vega/fixtures.ts']).toContain(
+      'export const fixtures: Fixture[] = []',
+    )
   })
 })

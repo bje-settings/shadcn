@@ -72,10 +72,10 @@ export type RenderedComponent = {
   // calls (DrawerContent's useDrawer)
   throwsOutside?: string
   // It renders default content without children (`children ?? "Next"`)
-  defaultChildren?: true
+  defaultChildren: boolean
   // Its own element's class in each of its render branches, when they
   // differ (Sidebar's collapsible, mobile and desktop branches)
-  branches?: string[]
+  branches?: [string, string, ...string[]]
 }
 
 // A hook the module declares, and the error it throws, if it throws one
@@ -552,7 +552,8 @@ export function transformComponent(
       record.slot !== undefined &&
       record.slot !== update.slot
     ) {
-      record.branches = [...new Set([...(record.branches ?? [record.slot]), update.slot])]
+      if (record.branches === undefined) record.branches = [record.slot, update.slot]
+      else if (!record.branches.includes(update.slot)) record.branches.push(update.slot)
       return
     }
     if (bound?.element === element) {
@@ -566,6 +567,7 @@ export function transformComponent(
         ...(slot !== undefined ? { dataSlot: slot } : {}),
         ...(tag ? { tag } : {}),
         defaults: literalDefaults(fn, source),
+        defaultChildren: false,
         ...update,
       })
       elements.set(name, { element, rank })
