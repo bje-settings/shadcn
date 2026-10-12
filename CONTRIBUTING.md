@@ -20,12 +20,13 @@ pnpm mirror:build   # optional: the A/B harness inputs (not committed), for the 
 ## Commands
 
 ```bash
-pnpm mirror:fetch           # snapshot every style's upstream items, examples, index, fonts and base color, and Typeset
+pnpm mirror:fetch           # snapshot every style's upstream items, examples, index, fonts and base color, Typeset and the /create preview cards
+pnpm mirror:fetch preview   # snapshot the /create preview cards alone
 pnpm mirror:build [style]   # convert the snapshots for every style, or one (vega)
-pnpm build                  # shadcn build per style: validates each catalog, writes public/r/<style>/
+pnpm build                  # per style: shadcn build validates the catalog into public/r/<style>/, then mirror:build and Vite add the showcase as its index.html
 pnpm test                   # vitest over every style, coverage held at 100
 pnpm ab                     # compare one style's components with upstream, pixel for pixel
-pnpm ab:serve               # browse one style's A/B pages
+pnpm ab:serve               # browse one style's A/B pages and its showcase (/showcase.html)
 pnpm ab:timings             # where the last A/B run spent its time
 ```
 
@@ -88,17 +89,18 @@ ruleset Require CI requires five checks by job name; renaming a job needs the ru
 
 | Check    | Passes when                                                                                       |
 | -------- | ------------------------------------------------------------------------------------------------- |
-| `build`  | `pnpm build` succeeds and writes a non-empty registry for every style                              |
+| `build`  | `pnpm build` succeeds and writes a non-empty registry and a showcase page for every style          |
 | `vitest` | Every `vitest-leg (<leg>)` passes and their merged coverage is 100, with every leg's files in it   |
 | `types`  | `tsc` passes on the scripts, every registry project, the A/B harness and each style's harness inputs |
 | `biome`  | `biome ci . --error-on-warnings` passes                                                            |
-| `ab`     | Every `ab-style (<style>)` leg passes or skips its comparison                                      |
+| `ab`     | Every `ab-style (<style>)` leg passes or skips its comparison and showcase test                    |
 
 `vitest` and `ab` are fan-ins over one leg per style, so the required names hold whatever the
 styles. `vitest` has one more leg, `shared`, for `scripts/` and `registry/lib/`, which also
 validates `lefthook.yml`. The `vitest` job uploads the merged coverage as `code-coverage/vitest`.
 
-An `ab-style` leg skips its comparison, and still reports success, when:
+An `ab-style` leg runs the style's A/B comparison and its showcase test
+([visual-ab.md](docs/visual-ab.md#cases)). It skips both, and still reports success, when:
 
 - the pull request is a draft (it runs once marked ready);
 - the change touches only Markdown, `.claude/`, `*.test.ts(x)` files, `lefthook.yml`,
@@ -111,7 +113,7 @@ every item of the first style in `upstream.styles`, served locally from `public/
 a file not at its alias, an import left pointing at `@/registry/`, a package imported that neither
 the item nor an item it reaches through `registryDependencies` declares, an item imported that
 those do not reach, a registry dependency that names no item of the style by its namespace, a
-pinned version not installed, a type error, a failing shipped test, or a failed `vite build`. It
+pinned version not installed, a type error, a failing shipped test, or a failed `vite build`. Its build also builds every showcase. It
 skips, and still reports success, on a draft, or when the change touches only Markdown, `.claude/`,
 `ab/`, the scripts' tests, `lefthook.yml`, `biome.json`, `vitest.config.ts`, and other styles'
 `registry/<style>/` or `upstream/base-<style>/`.

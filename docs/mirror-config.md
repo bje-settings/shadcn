@@ -17,6 +17,7 @@ optional one included, is ignored.
 | `fonts`              | The upstream fonts each style publishes as `@<namespace>/font-<name>`; none when unset     |
 | `components`         | The upstream items to mirror                                                               |
 | `typeset`            | shadcn/typeset's `stylesheet` URL, and the content `fixtures` (from `fixturesUrl`) A/B renders |
+| `preview`            | The `/create` preview blocks the showcase renders; none when unset (below)                |
 | `snapshotDir`        | Where `mirror:fetch` writes snapshots, one directory per style                             |
 | `outputDir`          | Components                                                                                 |
 | `hooksDir`           | Mirrored hooks (`use-mobile`)                                                              |
@@ -27,6 +28,11 @@ optional one included, is ignored.
 `upstream.styles` takes upstream's names (`base-vega`). Each style goes by its short name, without
 `base-` (`vega`): in `mirror:build <style>`, `AB_STYLE`, the vitest project names and CI legs, and
 its path on the site. Output paths must contain `{style}`, which resolves to the short name.
+
+`preview.url` is a block file's URL, with `{block}` and `{file}` (`index.tsx`, `cards/<name>.tsx`).
+`preview.blocks` lists the blocks in the order the showcase's switcher numbers them, as `/create`
+does (`preview-02` is 01). `preview.packages` lists modules the cards import beyond the mirrored
+items' packages (`react-qr-code`); a card importing any other is skipped.
 
 `theme.font` is the default font: `@<namespace>/globals` imports it and `variables.scss` sets its
 variable. `fonts` takes upstream's font item names without `font-` (`geist`, `heading-geist`). This

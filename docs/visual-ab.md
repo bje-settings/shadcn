@@ -41,6 +41,11 @@ Every case is generated (`scripts/mirror/harness.ts`):
   (`ab/generated/<style>/examples.css`), so a class an example passes to our component outranks
   its `:where()` defaults as tailwind-merge makes it win upstream. `ab/stubs/` stands in for the
   docs-only `Example` wrapper, `IconPlaceholder`, `next/image` and `next/link`.
+- **Showcase:** one test (`ab/showcase.spec.ts`) opens the style's showcase page
+  (`showcase.html`, ours only), and through its switcher and theme toggle renders each `/create`
+  preview block in light and dark. It fails on a card that renders its error, a page error, or
+  fewer cards than the block's snapshotted index imports less those in
+  `ab/skipped-cards/<style>.json`. Nothing is compared with upstream.
 
 ## How a run compares
 

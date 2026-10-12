@@ -1,11 +1,13 @@
 # Hosting
 
 GitHub Pages serves `public/r/` as the site root at `https://shadcn.bje.co`, so each style's
-`registry.json` and `<item>.json` sit at `/<style>/`; the root serves no items.
+`registry.json` and `<item>.json` sit at `/<style>/`, with the style's showcase page as its
+`index.html` (`https://shadcn.bje.co/vega/`); the root serves nothing.
 
 The CI `deploy` job publishes on every push to `main`, once `build`, `vitest`, `types`, `biome` and
 `ab` pass. It deploys the `build` job's `public/r/` artifact, then fetches each style's
-`registry.json` from the site and fails unless every style serves a non-empty `bje` registry.
+`registry.json` and `/<style>/` from the site, and fails unless every style serves a non-empty
+`bje` registry and a showcase page for that style.
 
 Outside this repository:
 

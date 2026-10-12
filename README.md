@@ -10,6 +10,14 @@ Each mirrored Base UI style is its own registry at `https://shadcn.bje.co/<style
 classes, not only in variables, so a project uses one style. Every style uses shadcn's neutral base
 color, the Inter font by default and lucide icons.
 
+Each style's address also serves a showcase: the cards of shadcn's
+[/create](https://ui.shadcn.com/create) preview, rendered with that style's components and
+stylesheets, in light and dark: [vega](https://shadcn.bje.co/vega/),
+[luma](https://shadcn.bje.co/luma/), [nova](https://shadcn.bje.co/nova/),
+[maia](https://shadcn.bje.co/maia/), [lyra](https://shadcn.bje.co/lyra/),
+[mira](https://shadcn.bje.co/mira/), [sera](https://shadcn.bje.co/sera/) and
+[rhea](https://shadcn.bje.co/rhea/).
+
 ## Setup
 
 The registries are not listed in the shadcn registry directory, so point `@bje` at one style in
