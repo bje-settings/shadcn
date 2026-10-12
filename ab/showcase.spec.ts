@@ -34,12 +34,16 @@ const fontTitle: string = JSON.parse(
 const label = (index: number) => String(index + 1).padStart(2, '0')
 
 // The cards each block should render, in order, from the snapshot, not the
-// generated showcase.
+// generated showcase, and how many copies of each: an index can render a card
+// once per breakpoint (preview's UIElements).
 const expected = (block: string) => {
   const index = readFileSync(`${repo}${config.snapshotDir}/preview/${block}/index.tsx`, 'utf8')
   return previewCards(block, index)
-    .map(({ name }) => name)
-    .filter((name) => !(name in (skipped[block] ?? {})))
+    .filter(({ name }) => !(name in (skipped[block] ?? {})))
+    .map(({ name, component }) => ({
+      name,
+      copies: index.split(new RegExp(`<${component}[\\s/>]`)).length - 1,
+    }))
 }
 
 async function check(page: Page, errors: string[], index: number, theme: 'light' | 'dark') {
@@ -53,13 +57,20 @@ async function check(page: Page, errors: string[], index: number, theme: 'light'
       .locator('[data-case-error]')
       .evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-case-error')))
     expect(failed, 'cards that threw').toEqual([])
-    // An index can render a card twice, one copy per breakpoint (preview's
-    // UIElements): each counts once, where it first appears.
+    // Each card in the order it first appears, and as many copies as the
+    // index renders.
     const cards = await page
       .locator('[data-card]')
-      .evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-card')))
-    const names = expected(block)
+      .evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-card') as string))
+    const want = expected(block)
+    const names = want.map(({ name }) => name)
     expect([...new Set(cards)], 'cards rendered').toEqual(names)
+    const copies = Object.fromEntries(
+      names.map((name) => [name, cards.filter((card) => card === name).length]),
+    )
+    expect(copies, 'copies of each card').toEqual(
+      Object.fromEntries(want.map(({ name, copies }) => [name, copies])),
+    )
     const grid = await page.locator('[data-slot="capture-target"]').evaluate((node) => {
       const { gridTemplateColumns, columnGap } = getComputedStyle(node)
       return { columns: gridTemplateColumns.split(' ').length, columnGap }
