@@ -5,9 +5,8 @@
 // grid is a fixed-width canvas (2400px; from md 3000px, or 2600px in lyra and
 // mira) that scrolls sideways on a narrower screen. The switcher numbers the
 // blocks as /create does; `?preview=02` and `?theme=dark` select a block and
-// the dark theme, and the controls keep them in the URL. The header's heading
-// is the bje logo plus the style's name (visually hidden); beside it, a select
-// opens another style's page with the same block and theme.
+// the dark theme, and the controls keep them in the URL. The header, with its
+// style select, is ./header.tsx.
 import '@ab/styles/fonts.css'
 import '@ab/styles/variables.scss'
 import '@ab/styles/base.scss'

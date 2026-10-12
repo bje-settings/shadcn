@@ -7,7 +7,7 @@ each style's showcase (`ab/site.tsx`).
 
 The CI `deploy` job publishes on every push to `main`, once `build`, `vitest`, `types`, `biome` and
 `ab` pass. It deploys the `build` job's `public/r/` artifact, then fetches each style's
-`registry.json` and `/<style>/` from the site, and `/`, and fails unless every style serves a
+`registry.json` and `/<style>/` from the site, then `/`, and fails unless every style serves a
 non-empty `bje` registry and a showcase page for that style, and the root serves the index page.
 
 Outside this repository:

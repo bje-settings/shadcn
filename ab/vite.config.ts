@@ -25,8 +25,8 @@ const styleName: Plugin = {
 }
 
 // Vite names an HTML output after its source; the site serves the showcase as
-// the style directory's index, and the root page as its own (ab/index.html is
-// the A/B page).
+// the style directory's index, and the root page as the root's (site.html,
+// since ab/index.html is the A/B page).
 const asIndex = (source: string): Plugin => ({
   name: 'as-index',
   apply: 'build',

@@ -1,8 +1,8 @@
 // The site's root page: the shared header, with no style current and no
 // preview switcher, and a card per style the config builds, each linking to
-// the style's showcase. It renders with the first style's components and
-// global stylesheets, as `pnpm build:showcase` builds it. `?theme=dark` selects
-// the dark theme, and the toggle keeps it in the URL.
+// the style's showcase. It renders with the A/B style's components and global
+// stylesheets; `pnpm build:showcase` builds it with the first style's.
+// `?theme=dark` selects the dark theme, and the toggle keeps it in the URL.
 import '@ab/styles/fonts.css'
 import '@ab/styles/variables.scss'
 import '@ab/styles/base.scss'
