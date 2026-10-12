@@ -50,9 +50,9 @@ Every case is generated (`scripts/mirror/harness.ts`):
   them or other than as many times as it renders each, a `style-overview` card that does not name
   the style and the theme's font, or a grid that does not lay the cards out in upstream's seven
   columns with a gap, a column spanning as many tracks as its `col-span` says. It also checks the
-  header's logo and that the style select lists every configured style, with this one chosen, and
-  requests the chosen style's page with the block and theme kept. Nothing is compared with
-  upstream.
+  header: the heading names the style, the logo is 42px by 42px, and the style select sits outside
+  the heading, lists every configured style with this one chosen, and requests the chosen style's
+  page with the block and theme kept. Nothing is compared with upstream.
 
 ## How a run compares
 
