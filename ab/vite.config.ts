@@ -2,7 +2,7 @@
 // index.html (both side by side), and the showcase (showcase.html). Aliases
 // mirror each side's registry imports, for the style ab/style.ts picks.
 // `--mode showcase` builds the showcase alone, as the site's index.html for
-// the style, into the --outDir `pnpm build` passes.
+// the style, into the --outDir `pnpm build:showcase` passes.
 
 import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'

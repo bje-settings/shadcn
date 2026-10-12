@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "node scripts/mirror/build.ts",
+    "build:showcase": "node scripts/mirror/build-showcase.ts",
     "test": "vitest run --coverage",
     "mirror:fetch": "node scripts/mirror/main.ts fetch",
     "mirror:build": "node scripts/mirror/main.ts build",

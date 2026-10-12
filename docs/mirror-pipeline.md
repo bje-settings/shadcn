@@ -171,7 +171,7 @@ CSS is the same unlayered utility sheet as the A/B examples' (`layoutCss`), over
 the `style-<style>:` variant and `/create`'s `cn-font-heading` class. The components and global
 stylesheets the page loads are the registry's own.
 
-`pnpm build` then runs, per style, `pnpm mirror:build <style>` and a Vite build of the page
+`pnpm build:showcase` runs, per style, `pnpm mirror:build <style>` and a Vite build of the page
 (`--mode showcase`, `ab/vite.config.ts`) with a relative base into `public/r/<style>/`, as
 `index.html` beside the registry's JSON.
 

@@ -1,6 +1,7 @@
 // What `pnpm build` runs: `shadcn build` once per style, each style's catalog
 // into its own directory of the site, so each is a flat registry under
-// /<style>/; then each style's showcase page into the same directory.
+// /<style>/. And what `pnpm build:showcase` runs: each style's showcase page
+// into the same directory.
 
 import { relative } from 'node:path'
 import { forStyle, type MirrorConfig, shortStyle } from './config.ts'

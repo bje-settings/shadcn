@@ -25,15 +25,18 @@ concurrency:
 # install is not required either, until it has proven stable (issue #13).
 jobs:
   # `shadcn build` validates each style's registry.json and every item against
-  # the schema; `pnpm build` then builds each style's showcase page beside it.
+  # the schema; `pnpm build:showcase` then builds each style's showcase page
+  # beside it.
   build:
     name: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/node-pnpm
-      - name: Build the registries and showcases
+      - name: Build the registries
         run: pnpm build
+      - name: Build the showcases
+        run: pnpm build:showcase
       - name: Refuse a build that writes no registry for a style
         run: |
           for style in $(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json); do

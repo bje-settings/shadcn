@@ -94,6 +94,7 @@ export default defineConfig({
         // real process, fetch, console and shadcn CLI, and hold no logic.
         'scripts/mirror/main.ts',
         'scripts/mirror/build.ts',
+        'scripts/mirror/build-showcase.ts',
         // Wires check.ts to the real process, pnpm and a temporary directory.
         'scripts/install-check/main.ts',
       ],

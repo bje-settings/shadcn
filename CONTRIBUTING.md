@@ -23,7 +23,8 @@ pnpm mirror:build   # optional: the A/B harness inputs (not committed), for the 
 pnpm mirror:fetch           # snapshot every style's upstream items, examples, index, fonts and base color, Typeset and the /create preview cards
 pnpm mirror:fetch preview   # snapshot the /create preview cards alone
 pnpm mirror:build [style]   # convert the snapshots for every style, or one (vega)
-pnpm build                  # per style: shadcn build validates the catalog into public/r/<style>/, then mirror:build and Vite add the showcase as its index.html
+pnpm build                  # shadcn build per style: validates each catalog, writes public/r/<style>/
+pnpm build:showcase         # per style: mirror:build, then Vite builds the showcase into public/r/<style>/index.html
 pnpm test                   # vitest over every style, coverage held at 100
 pnpm ab                     # compare one style's components with upstream, pixel for pixel
 pnpm ab:serve               # browse one style's A/B pages and its showcase (/showcase.html)
@@ -89,7 +90,7 @@ ruleset Require CI requires five checks by job name; renaming a job needs the ru
 
 | Check    | Passes when                                                                                       |
 | -------- | ------------------------------------------------------------------------------------------------- |
-| `build`  | `pnpm build` succeeds and writes a non-empty registry and a showcase page for every style          |
+| `build`  | `pnpm build` and `pnpm build:showcase` succeed and write a non-empty registry and a showcase page for every style |
 | `vitest` | Every `vitest-leg (<leg>)` passes and their merged coverage is 100, with every leg's files in it   |
 | `types`  | `tsc` passes on the scripts, every registry project, the A/B harness and each style's harness inputs |
 | `biome`  | `biome ci . --error-on-warnings` passes                                                            |
@@ -113,7 +114,7 @@ every item of the first style in `upstream.styles`, served locally from `public/
 a file not at its alias, an import left pointing at `@/registry/`, a package imported that neither
 the item nor an item it reaches through `registryDependencies` declares, an item imported that
 those do not reach, a registry dependency that names no item of the style by its namespace, a
-pinned version not installed, a type error, a failing shipped test, or a failed `vite build`. Its build also builds every showcase. It
+pinned version not installed, a type error, a failing shipped test, or a failed `vite build`. It
 skips, and still reports success, on a draft, or when the change touches only Markdown, `.claude/`,
 `ab/`, the scripts' tests, `lefthook.yml`, `biome.json`, `vitest.config.ts`, and other styles'
 `registry/<style>/` or `upstream/base-<style>/`.
