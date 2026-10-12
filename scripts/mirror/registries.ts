@@ -22,9 +22,9 @@ export type Command = { command: string; args: string[]; env: Record<string, str
 // The A/B harness's Vite root, which Vite resolves --outDir from.
 const VITE_ROOT = 'ab'
 
-// A Vite build of the harness in `mode`, into `output`, for the style AB_STYLE
-// names (the style the Vite config resolves).
-function viteBuild(mode: string, output: string, short: string): Command {
+// A Vite build of one site page, by its mode in ab/vite.config.ts, into
+// `output`, for the style AB_STYLE names (the style the Vite config resolves).
+function viteBuild(mode: 'showcase' | 'site', output: string, short: string): Command {
   return {
     command: 'pnpm',
     args: [
