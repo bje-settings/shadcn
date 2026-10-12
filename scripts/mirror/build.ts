@@ -3,11 +3,14 @@
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { parseConfig } from './config.ts'
-import { registryBuilds } from './registries.ts'
+import { registryBuilds, showcaseBuilds } from './registries.ts'
 
 const config = parseConfig(JSON.parse(readFileSync('mirror.config.json', 'utf8')))
 for (const { registry, output } of registryBuilds(config, 'public/r')) {
   execFileSync('pnpm', ['exec', 'shadcn', 'build', registry, '--output', output], {
     stdio: 'inherit',
   })
+}
+for (const { command, args, env } of showcaseBuilds(config, 'public/r')) {
+  execFileSync(command, args, { stdio: 'inherit', env: { ...process.env, ...env } })
 }

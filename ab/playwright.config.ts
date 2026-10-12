@@ -5,7 +5,7 @@ export const PORT = port
 
 export default defineConfig({
   testDir: '.',
-  testMatch: 'ab.spec.ts',
+  testMatch: ['ab.spec.ts', 'showcase.spec.ts'],
   // The style's generated tsconfig.json resolves @ab/generated to its inputs.
   tsconfig: `${repo}${config.harnessDir}/tsconfig.json`,
   fullyParallel: true,
