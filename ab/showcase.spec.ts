@@ -125,19 +125,21 @@ test(`showcase ${short}`, async ({ page }) => {
   // The header: the bje logo in the primary color.
   const logo = page.locator('h1').getByRole('img', { name: 'bje' })
   await expect(logo.locator('path')).toHaveAttribute('fill', 'var(--primary)')
-  // The heading names the logo and the style; the select sits beside it.
+  // The heading names the logo and the style; no select is inside it, hidden or not.
   await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName(`bje ${short}`)
-  await expect(page.locator('h1').getByRole('combobox')).toHaveCount(0)
+  await expect(page.locator('h1 select')).toHaveCount(0)
   // The logo is 42px by 42px, on a narrow viewport too.
   const box = async () => {
     const box = await logo.boundingBox()
+    expect(box, 'logo is rendered').not.toBeNull()
     return { width: box?.width, height: box?.height }
   }
   expect(await box(), 'logo box').toEqual({ width: 42, height: 42 })
   const viewport = page.viewportSize()
+  expect(viewport, 'the run sets a viewport').not.toBeNull()
   await page.setViewportSize({ width: 375, height: 800 })
   expect(await box(), 'logo box at 375px').toEqual({ width: 42, height: 42 })
-  if (viewport) await page.setViewportSize(viewport)
+  await page.setViewportSize(viewport as { width: number; height: number })
   // The select lists every configured style in order, with this one chosen.
   const styles = config.upstream.styles.map(shortStyle)
   expect(styles, 'the config lists this style and another').toContain(short)
@@ -151,6 +153,13 @@ test(`showcase ${short}`, async ({ page }) => {
     'style options',
   ).toEqual(styles)
   await expect(select).toHaveValue(short)
+  // The select follows the heading, on its row.
+  const heading = await page.locator('h1').boundingBox()
+  const field = await select.boundingBox()
+  expect(heading && field && field.x >= heading.x + heading.width, 'select after heading').toBe(
+    true,
+  )
+  expect(field && heading && field.y < heading.y + heading.height, 'select on its row').toBe(true)
   // Choosing another style requests its page, keeping the block and theme.
   // Under `pnpm ab:serve` there is no page for another style (the sibling
   // directories exist only in the built site), so the navigation is aborted
