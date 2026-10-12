@@ -3,7 +3,8 @@
 // everything it reaches is available, which is mirrored components, the
 // harness's stand-ins for docs-only imports, react and packages mirrored
 // items depend on, and it passes no registry component a consumer class whose
-// upstream styling the mirror drops.
+// upstream styling the mirror drops. A module with no default export (a /create
+// preview card) has its exported PascalCase functions as its sub-examples.
 //
 // The output is two trimmed copies of the example holding only the kept
 // sub-examples, the top-level code they reach and the imports they use, with
@@ -190,11 +191,13 @@ export function prepareExample(
   // The default export's own function, which is the one sub-example when it
   // renders the whole page itself (sidebar-example).
   let whole: { name: string; statement: Statement } | undefined
+  let hasDefault = false
 
   for (const statement of ast.program.body) {
     if (statement.type === 'ImportDeclaration') {
       for (const s of statement.specifiers) imports.set(s.local.name, statement)
     } else if (statement.type === 'ExportDefaultDeclaration') {
+      hasDefault = true
       const listed = references(statement.declaration)
       order = [...listed].filter((name) => /^[A-Z]/.test(name))
       const { declaration } = statement
@@ -224,7 +227,12 @@ export function prepareExample(
     order = [whole.name]
     declarations.set(whole.name, whole.statement)
   }
-  if (order.length === 0) order = exported.filter((name) => /^[A-Z]/.test(name))
+  if (!hasDefault) {
+    order = exported.filter((name) => /^[A-Z]/.test(name))
+    if (order.length === 0) {
+      throw new Error('example: no default export, and no exported sub-example functions')
+    }
+  }
   if (order.length === 0) {
     throw new Error('example: the default export renders no sub-example functions')
   }

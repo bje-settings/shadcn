@@ -132,6 +132,10 @@ export function StyleCard() {
 export function MenuCard() {
   return <Menu />
 }
+
+export function useTone() {
+  return tones[0]
+}
 `
   const withCard = new Set([...mirrored, 'card'])
 
@@ -142,6 +146,8 @@ export function MenuCard() {
     expect(prepared.ours).toContain('\nfunction StyleCard() {')
     expect(prepared.ours).toContain('\nconst tones: Tone[] = ["a"]')
     expect(prepared.ours).not.toContain('MenuCard')
+    // An exported hook is not a sub-example.
+    expect(prepared.ours).not.toContain('useTone')
     expect(prepared.ours).toContain('export { StyleCard }')
   })
 
@@ -256,7 +262,7 @@ export { ChipBasic, ChipOdd }
   })
 
   it.each([
-    ['no default export', 'function A() {}', 'the default export renders no sub-example'],
+    ['no default export', 'function A() {}', 'no default export, and no exported sub-example'],
     [
       'an export list',
       'export default function E() { return <A /> }\nfunction A() {}\nexport { A }',
@@ -265,6 +271,11 @@ export { ChipBasic, ChipOdd }
     [
       'a module that exports no function',
       'export const A = () => <div />\nexport type B = string',
+      'no default export, and no exported sub-example functions',
+    ],
+    [
+      'a default export that renders none of its exported functions',
+      'export default () => <div />\nexport function A() { return <div /> }',
       'the default export renders no sub-example functions',
     ],
     [
