@@ -1,9 +1,12 @@
 // Turns an upstream `<item>-example` (the demo behind shadcn's docs page) into
 // A/B cases: each sub-example the default export renders becomes a case when
 // everything it reaches is available, which is mirrored components, the
-// harness's stand-ins for docs-only imports, react and packages mirrored
-// items depend on, and it passes no registry component a consumer class whose
-// upstream styling the mirror drops.
+// harness's stand-ins for docs-only imports, react and the packages the
+// caller allows (mirrored items' dependencies, and preview.packages for
+// /create preview cards), and it passes no registry component a consumer
+// class whose upstream styling the mirror drops. A module with no default
+// export (a /create preview card) has its exported PascalCase functions as
+// its sub-examples.
 //
 // The output is two trimmed copies of the example holding only the kept
 // sub-examples, the top-level code they reach and the imports they use, with
@@ -12,6 +15,7 @@
 // is upstream's code as written.
 
 import type {
+  Declaration,
   ExportDefaultDeclaration,
   Identifier,
   ImportDeclaration,
@@ -23,12 +27,23 @@ import MagicString from 'magic-string'
 import { childNodes, parseModule, span } from './ast.ts'
 import { registryModule } from './names.ts'
 
+// The /create internals the preview cards read the design system from, and
+// the stub (in ab/stubs) that returns the configured theme for each.
+// ab/tsconfig.json maps the same.
+export const CREATE_STUBS: Record<string, string> = {
+  '@/app/(create)/lib/fonts': 'ab/stubs/fonts.ts',
+  '@/app/(create)/lib/search-params': 'ab/stubs/search-params.ts',
+  '@/app/(app)/create/lib/search-params': 'ab/stubs/search-params.ts',
+  '@/registry/styles': 'ab/stubs/styles.ts',
+}
+
 // Imports the harness provides stand-ins for (ab/stubs).
 export const STUBBED = new Set([
   'components/example',
   '@/app/(create)/components/icon-placeholder',
   'next/image',
   'next/link',
+  ...Object.keys(CREATE_STUBS),
 ])
 
 // Sub-examples that would render but differ from upstream for a reason the
@@ -53,9 +68,13 @@ export type PreparedExample = {
   skipped: { name: string; reasons: string[] }[]
 }
 
-// Names a statement declares at the top level. A top-level function
-// declaration always has a name; only `export default function` may not.
+// Names a statement declares at the top level, exported or not. A top-level
+// function declaration always has a name; only `export default function` may
+// not.
 function declared(statement: Statement): string[] {
+  if (statement.type === 'ExportNamedDeclaration' && statement.declaration) {
+    return declared(statement.declaration)
+  }
   if (
     statement.type === 'FunctionDeclaration' ||
     statement.type === 'TSTypeAliasDeclaration' ||
@@ -168,14 +187,19 @@ export function prepareExample(
   const imports = new Map<string, ImportDeclaration>()
   const declarations = new Map<string, Statement>()
   let order: string[] = []
+  // Exported functions: the sub-examples of a module with no default export
+  // (a /create preview card).
+  const exported: string[] = []
   // The default export's own function, which is the one sub-example when it
   // renders the whole page itself (sidebar-example).
   let whole: { name: string; statement: Statement } | undefined
+  let hasDefault = false
 
   for (const statement of ast.program.body) {
     if (statement.type === 'ImportDeclaration') {
       for (const s of statement.specifiers) imports.set(s.local.name, statement)
     } else if (statement.type === 'ExportDefaultDeclaration') {
+      hasDefault = true
       const listed = references(statement.declaration)
       order = [...listed].filter((name) => /^[A-Z]/.test(name))
       const { declaration } = statement
@@ -192,12 +216,24 @@ export function prepareExample(
         )
       }
       for (const name of names) declarations.set(name, statement)
+      if (
+        statement.type === 'ExportNamedDeclaration' &&
+        statement.declaration?.type === 'FunctionDeclaration'
+      ) {
+        exported.push(...names)
+      }
     }
   }
   order = order.filter((name) => declarations.has(name))
   if (order.length === 0 && whole) {
     order = [whole.name]
     declarations.set(whole.name, whole.statement)
+  }
+  if (!hasDefault) {
+    order = exported.filter((name) => /^[A-Z]/.test(name))
+    if (order.length === 0) {
+      throw new Error('example: no default export, and no exported sub-example functions')
+    }
   }
   if (order.length === 0) {
     throw new Error('example: the default export renders no sub-example functions')
@@ -294,6 +330,10 @@ export function prepareExample(
         out.remove(statement.start as number, declaration.start as number)
       } else if (!declared(statement).some((name) => keep.has(name))) {
         remove(statement)
+      } else if (statement.type === 'ExportNamedDeclaration') {
+        // Exported by name below, if it is a kept sub-example.
+        const { declaration } = statement
+        out.remove(statement.start as number, (declaration as Declaration).start as number)
       }
     }
     out.append(`\nexport { ${kept.join(', ')} }\n`)

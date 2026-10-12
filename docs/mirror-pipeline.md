@@ -12,8 +12,10 @@ pnpm mirror:build [style]   # convert the snapshots, for every style or one
 
 `mirror:fetch` writes, per style, each configured item, its docs example (`<item>-example`) where
 upstream has one, the style's index, each font (`theme.font` and `fonts`) and the base color to
-`upstream/base-<style>/`, and Typeset's stylesheet and content fixtures to `upstream/typeset/`. A
-JSON snapshot whose shape the build cannot read fails the fetch before it is written. `mirror:build`
+`upstream/base-<style>/`, Typeset's stylesheet and content fixtures to `upstream/typeset/`, and the
+`/create` preview blocks to `upstream/preview/` ([Showcase](#showcase)). A JSON snapshot whose
+shape the build cannot read fails the fetch before it is written. `pnpm mirror:fetch preview`
+fetches the preview blocks alone, leaving every other snapshot as it is. `mirror:build`
 reads only the snapshots (`scripts/mirror/cli.ts`), so a conversion change is reviewable without
 upstream moving underneath it.
 
@@ -146,6 +148,33 @@ Last, the build writes the A/B harness inputs to `ab/generated/<style>/`
 ([visual-ab.md](visual-ab.md)), then `registry/<style>/registry.json` (the root `registry.json`'s
 hand-written items followed by the generated ones, with the style's `homepage`) and
 `registry/<style>/tsconfig.json`, which maps cross-component imports to the style's own items.
+
+## Showcase
+
+Each style's site directory serves a showcase page (`ab/showcase.tsx`): the cards of the blocks
+shadcn's `/create` page previews, rendered with the style's components. `mirror:fetch` snapshots,
+once for every style, each block in `preview.blocks`: its `index.tsx`, and every card module that
+index imports from `@/registry/bases/base/blocks/<block>/`, to `upstream/preview/<block>/`. An index
+that imports no card fails the fetch, and nothing is written until every file is fetched.
+
+`mirror:build` prepares each card as it does a docs example: its exported PascalCase functions are
+its sub-examples, the one its block's index renders is the card (a card that is neither kept nor
+skipped fails the build), its imports of upstream's base components
+(`@/registry/bases/base/ui/<item>`) point at this style's, and a card that reaches an unmirrored
+item or passes a consumer class the mirror drops is skipped, with the reason, in
+`ab/skipped-cards/<style>.json`, which `generated.test.ts` holds to the build. Besides mirrored items' packages, cards may import
+`preview.packages`. The `/create` internals the cards read the design system from are stubbed in
+`ab/stubs/` (`CREATE_STUBS` in `scripts/mirror/examples.ts`); they return the style and `theme`.
+
+The build writes the kept cards, a map of each block's cards in the order its index renders them,
+the stubs' design system and the cards' layout CSS to `ab/generated/<style>/showcase*`. The layout
+CSS is the same unlayered utility sheet as the A/B examples' (`layoutCss`), over the cards, plus
+the `style-<style>:` variant and `/create`'s `cn-font-heading` class. The components and global
+stylesheets the page loads are the registry's own.
+
+`pnpm build:showcase` runs, per style, `pnpm mirror:build <style>` and a Vite build of the page
+(`--mode showcase`, `ab/vite.config.ts`) with a relative base into `public/r/<style>/`, as
+`index.html` beside the registry's JSON.
 
 ## Formatting and Biome
 

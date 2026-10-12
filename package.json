@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "node scripts/mirror/build.ts",
+    "build:showcase": "node scripts/mirror/build-showcase.ts",
     "test": "vitest run --coverage",
     "mirror:fetch": "node scripts/mirror/main.ts fetch",
     "mirror:build": "node scripts/mirror/main.ts build",
@@ -58,6 +59,7 @@
     "react": "19.3.0",
     "react-day-picker": "10.0.1",
     "react-dom": "19.3.0",
+    "react-qr-code": "2.2.0",
     "react-resizable-panels": "4.13.3",
     "recharts": "3.8.0",
     "sass": "1.105.0",

@@ -9,7 +9,7 @@ state it compares.
 
 ```bash
 pnpm ab         # run every case; the HTML report in ab/report/<style> has upstream, ours, diff
-pnpm ab:serve   # browse the pages: / (side by side), /upstream.html, /ours.html
+pnpm ab:serve   # browse the pages: / (side by side), /upstream.html, /ours.html, /showcase.html
 pnpm ab:timings # where the last run spent its time, per case kind and per step
 ```
 
@@ -41,6 +41,13 @@ Every case is generated (`scripts/mirror/harness.ts`):
   (`ab/generated/<style>/examples.css`), so a class an example passes to our component outranks
   its `:where()` defaults as tailwind-merge makes it win upstream. `ab/stubs/` stands in for the
   docs-only `Example` wrapper, `IconPlaceholder`, `next/image` and `next/link`.
+- **Showcase:** one test (`ab/showcase.spec.ts`) opens the style's showcase page
+  (`showcase.html`, ours only), and through its switcher and theme toggle renders each `/create`
+  preview block in light and dark, then opens the last block in dark from the URL. It fails on a card that renders its error, a page error, cards
+  other than those the block's snapshotted index imports less those in
+  `ab/skipped-cards/<style>.json` or in another order than the index renders them, or a
+  `style-overview` card that does not name the style and the theme's font. Nothing is compared
+  with upstream.
 
 ## How a run compares
 

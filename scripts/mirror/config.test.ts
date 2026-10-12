@@ -6,6 +6,7 @@ import {
   forStyle,
   harnessStyle,
   parseConfig,
+  previewUrl,
   shortStyle,
   upstreamUrl,
 } from './config.ts'
@@ -24,6 +25,11 @@ const valid = {
     stylesheet: 'https://example.com/typeset.css',
     fixturesUrl: 'https://example.com/fixtures/{name}.ts',
     fixtures: ['docs'],
+  },
+  preview: {
+    url: 'https://example.com/blocks/{block}/{file}',
+    blocks: ['preview-02', 'preview'],
+    packages: ['react-qr-code'],
   },
   snapshotDir: 'upstream',
   outputDir: 'registry/{style}/ui',
@@ -53,6 +59,19 @@ describe('parseConfig', () => {
     expect(config).toEqual({ ...valid, upstream: { ...valid.upstream, style: 'base-vega' } })
     expect(upstreamUrl(config, 'button')).toBe('https://example.com/base-vega/button.json')
     expect(colorsUrl(config)).toBe('https://example.com/colors/neutral.json')
+    expect(previewUrl(config, 'preview', 'cards/invoice.tsx')).toBe(
+      'https://example.com/blocks/preview/cards/invoice.tsx',
+    )
+  })
+
+  it('previews no block when preview is unset, and no extra package when packages is', () => {
+    expect(parseConfig(withChange({ preview: undefined })).preview).toEqual({
+      url: '',
+      blocks: [],
+      packages: [],
+    })
+    const preview = { url: valid.preview.url, blocks: ['preview'] }
+    expect(parseConfig(withChange({ preview })).preview.packages).toEqual([])
   })
 
   it('ignores a key it does not read, such as upstream.compare', () => {
@@ -232,6 +251,42 @@ describe('parseConfig', () => {
       'typeset.fixtures must be',
     ],
     ['a missing outputDir', withChange({ outputDir: '' }), 'outputDir must be'],
+    ['a non-object preview', withChange({ preview: [] }), 'preview must be an object'],
+    [
+      'a preview url without {file}',
+      withChange({ preview: { ...valid.preview, url: 'https://example.com/{block}' } }),
+      'preview.url must contain {block} and {file}',
+    ],
+    [
+      'a preview url without {block}',
+      withChange({ preview: { ...valid.preview, url: 'https://example.com/{file}' } }),
+      'preview.url must contain {block} and {file}',
+    ],
+    [
+      'non-array preview blocks',
+      withChange({ preview: { ...valid.preview, blocks: 'preview' } }),
+      'preview.blocks must be a non-empty array of kebab-case block names',
+    ],
+    [
+      'empty preview blocks',
+      withChange({ preview: { ...valid.preview, blocks: [] } }),
+      'preview.blocks must be a non-empty array of kebab-case block names',
+    ],
+    [
+      'a non-kebab preview block',
+      withChange({ preview: { ...valid.preview, blocks: ['Preview'] } }),
+      'preview.blocks must be a non-empty array of kebab-case block names',
+    ],
+    [
+      'repeated preview blocks',
+      withChange({ preview: { ...valid.preview, blocks: ['preview', 'preview'] } }),
+      'preview.blocks must not repeat',
+    ],
+    [
+      'a non-string preview package',
+      withChange({ preview: { ...valid.preview, packages: [1] } }),
+      'preview.packages[0] must be a non-empty string',
+    ],
   ])('rejects %s', (_, raw, message) => {
     expect(() => parseConfig(raw)).toThrow(message)
   })

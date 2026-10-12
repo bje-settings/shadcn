@@ -52,6 +52,16 @@ export type MirrorConfig = {
     fixturesUrl: string
     fixtures: string[]
   }
+  // The blocks shadcn's /create page previews, fetched once for every style
+  // and rendered on each style's showcase page with its own components.
+  preview: {
+    // A block file's URL, with {block} and {file} (index.tsx, cards/<name>.tsx)
+    url: string
+    // In the order the showcase's switcher numbers them; none when unset
+    blocks: string[]
+    // Modules the cards may import beyond the mirrored items' packages
+    packages: string[]
+  }
   snapshotDir: string
   // Output paths below take {style}, the style's short name (vega for
   // base-vega), until forStyle() resolves them.
@@ -188,6 +198,8 @@ export function parseConfig(raw: unknown): MirrorConfig {
     shape.fail('typeset.fixtures must be an array of kebab-case names')
   }
 
+  const preview = parsePreview(raw.preview)
+
   const consumerClasses = classLists(raw, 'consumerClasses')
   const globalClasses = classLists(raw, 'globalClasses')
   const classesWithoutCss = classLists(raw, 'classesWithoutCss')
@@ -262,6 +274,7 @@ export function parseConfig(raw: unknown): MirrorConfig {
     fonts,
     components,
     typeset: { stylesheet: string(typeset, 'stylesheet', 'typeset.'), fixturesUrl, fixtures },
+    preview,
     snapshotDir: string(raw, 'snapshotDir', ''),
     outputDir: styled(raw, 'outputDir'),
     hooksDir: styled(raw, 'hooksDir'),
@@ -278,6 +291,32 @@ export function parseConfig(raw: unknown): MirrorConfig {
     testProps,
     testExpressions,
   }
+}
+
+// The optional preview key: unset previews no block.
+function parsePreview(raw: unknown): MirrorConfig['preview'] {
+  if (raw === undefined) return { url: '', blocks: [], packages: [] }
+  const preview = shape.record(raw, 'preview')
+  const url = string(preview, 'url', 'preview.')
+  if (!url.includes('{block}') || !url.includes('{file}')) {
+    shape.fail('preview.url must contain {block} and {file}')
+  }
+  const blocks = preview.blocks
+  if (
+    !Array.isArray(blocks) ||
+    blocks.length === 0 ||
+    !blocks.every((block) => typeof block === 'string' && KEBAB.test(block))
+  ) {
+    shape.fail('preview.blocks must be a non-empty array of kebab-case block names')
+  }
+  if (new Set(blocks).size !== blocks.length) shape.fail('preview.blocks must not repeat')
+  const packages = shape.strings(preview.packages ?? [], 'preview.packages')
+  return { url, blocks, packages }
+}
+
+// A preview block file's URL.
+export function previewUrl(config: MirrorConfig, block: string, file: string): string {
+  return config.preview.url.replace('{block}', block).replace('{file}', file)
 }
 
 // An optional array of { classes, reason } entries.

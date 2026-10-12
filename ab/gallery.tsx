@@ -8,21 +8,9 @@
 // A case that throws renders its error in place, marked data-case-error, so
 // it fails alone rather than blanking the page.
 
-import { Component, type ReactNode, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { CaseBoundary } from './case-boundary'
 import { isOverlay, renders, type Side } from './cases'
-
-class CaseBoundary extends Component<{ children: ReactNode }, { error?: Error }> {
-  override state: { error?: Error } = {}
-
-  static getDerivedStateFromError(error: Error) {
-    return { error }
-  }
-
-  override render() {
-    const { error } = this.state
-    return error ? <pre data-case-error={error.message}>{error.message}</pre> : this.props.children
-  }
-}
 
 export function Gallery({ side }: { side: Side }) {
   const params = new URLSearchParams(window.location.search)

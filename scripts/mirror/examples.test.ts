@@ -106,6 +106,69 @@ export default function ChipPage() {
     expect(prepared.ours).toContain('export { ChipPage }')
   })
 
+  // A /create preview card: no default export, its card an exported function,
+  // its components imported from upstream's style-neutral bases/base registry.
+  const card = `"use client"
+
+import * as React from "react"
+import { Card, CardContent } from "@/registry/bases/base/ui/card"
+import { Menu } from "@/registry/bases/base/ui/menu"
+import { FONTS } from "@/app/(create)/lib/fonts"
+import { useDesignSystemSearchParams } from "@/app/(create)/lib/search-params"
+import { useDesignSystemSearchParams as useParams } from "@/app/(app)/create/lib/search-params"
+import { STYLES } from "@/registry/styles"
+
+export type Tone = "a" | "b"
+export const tones: Tone[] = ["a"]
+
+export function StyleCard() {
+  const [params] = useDesignSystemSearchParams()
+  const [same] = useParams()
+  const font = React.useMemo(() => FONTS.find((f) => f.value === params.font), [params.font])
+  const style = STYLES.find((s) => s.name === same.style)
+  return <Card><CardContent>{font?.name} {style?.title} {tones[0]}</CardContent></Card>
+}
+
+export function MenuCard() {
+  return <Menu />
+}
+
+export function useTone() {
+  return tones[0]
+}
+`
+  const withCard = new Set([...mirrored, 'card'])
+
+  it('renders each exported function of a module with no default export', () => {
+    const prepared = prepareExample(card, 'bases/base', 'bje', withCard, new Set())
+    expect(prepared.kept).toEqual(['StyleCard'])
+    expect(prepared.skipped).toEqual([{ name: 'MenuCard', reasons: ['needs menu'] }])
+    expect(prepared.ours).toContain('\nfunction StyleCard() {')
+    expect(prepared.ours).toContain('\nconst tones: Tone[] = ["a"]')
+    expect(prepared.ours).not.toContain('MenuCard')
+    // An exported hook is not a sub-example.
+    expect(prepared.ours).not.toContain('useTone')
+    expect(prepared.ours).toContain('export { StyleCard }')
+  })
+
+  it("points the bases/base registry's imports at ours and keeps the stubbed /create internals", () => {
+    const prepared = prepareExample(card, 'bases/base', 'bje', withCard, new Set())
+    expect(prepared.ours).toContain(
+      'import { Card, CardContent } from "@/registry/bje/ui/Card/Card"',
+    )
+    for (const stubbed of [
+      'import { FONTS } from "@/app/(create)/lib/fonts"',
+      'import { useDesignSystemSearchParams } from "@/app/(create)/lib/search-params"',
+      'import { useDesignSystemSearchParams as useParams } from "@/app/(app)/create/lib/search-params"',
+      'import { STYLES } from "@/registry/styles"',
+    ]) {
+      expect(prepared.ours).toContain(stubbed)
+    }
+    // As a style's example, the same imports reach nothing mirrored.
+    const styled = prepareExample(card, 'base-vega', 'bje', withCard, new Set())
+    expect(styled.kept).toEqual([])
+  })
+
   it('keeps sub-examples that import next/image or next/link, which the harness stubs', () => {
     const source = `import Image from "next/image"
 import Link from "next/link"
@@ -199,11 +262,21 @@ export { ChipBasic, ChipOdd }
   })
 
   it.each([
-    ['no default export', 'function A() {}', 'the default export renders no sub-example'],
+    ['no default export', 'function A() {}', 'no default export, and no exported sub-example'],
     [
-      'an exported sub-example',
-      'export default function E() { return <A /> }\nexport function A() {}',
-      'unsupported top-level ExportNamedDeclaration at line 2',
+      'an export list',
+      'export default function E() { return <A /> }\nfunction A() {}\nexport { A }',
+      'unsupported top-level ExportNamedDeclaration at line 3',
+    ],
+    [
+      'a module that exports no function',
+      'export const A = () => <div />\nexport type B = string',
+      'no default export, and no exported sub-example functions',
+    ],
+    [
+      'a default export that renders none of its exported functions',
+      'export default () => <div />\nexport function A() { return <div /> }',
+      'the default export renders no sub-example functions',
     ],
     [
       'a destructured declaration',

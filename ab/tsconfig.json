@@ -23,7 +23,13 @@
       "@/registry/base-vega/components/example": ["./stubs/example.tsx"],
       "@/app/(create)/components/icon-placeholder": ["./stubs/icon-placeholder.tsx"],
       "next/image": ["./stubs/next-image.tsx"],
-      "next/link": ["./stubs/next-link.tsx"]
+      "next/link": ["./stubs/next-link.tsx"],
+      // The /create internals the showcase's cards import
+      // (CREATE_STUBS in scripts/mirror/examples.ts).
+      "@/app/(create)/lib/fonts": ["./stubs/fonts.ts"],
+      "@/app/(create)/lib/search-params": ["./stubs/search-params.ts"],
+      "@/app/(app)/create/lib/search-params": ["./stubs/search-params.ts"],
+      "@/registry/styles": ["./stubs/styles.ts"]
     }
   },
   "include": ["."],

@@ -151,7 +151,7 @@ describe('fixturesFor', () => {
 })
 
 describe('harnessFiles', () => {
-  it('writes upstream copies, example copies, module maps, case lists, both stylesheets and a tsconfig', () => {
+  it('writes upstream copies, example copies, module maps, case lists, stylesheets, the showcase inputs and a tsconfig', () => {
     const transformed = transformComponent(chip, 'chip-set', 'bje')
     const files = harnessFiles(
       config,
@@ -174,6 +174,7 @@ describe('harnessFiles', () => {
         ],
         layoutCss: '/* layout */',
         typeset: [{ name: 'docs', html: '<h1>Docs</h1>' }],
+        showcase: { cards: [], layoutCss: '/* cards */', fontTitle: 'Inter' },
       },
       '// header',
     )
@@ -191,6 +192,9 @@ describe('harnessFiles', () => {
       'ab/generated/vega/typeset.ts',
       'ab/generated/vega/upstream.css',
       'ab/generated/vega/examples.css',
+      'ab/generated/vega/showcase.ts',
+      'ab/generated/vega/showcase-theme.ts',
+      'ab/generated/vega/showcase.css',
       'ab/generated/vega/tsconfig.json',
     ])
     expect(byPath['ab/generated/vega/upstream/chip-set.tsx']).toBe(`// header\n\n${chip}`)
@@ -230,6 +234,10 @@ describe('harnessFiles', () => {
           '@/app/(create)/components/icon-placeholder': ['../../stubs/icon-placeholder.tsx'],
           'next/image': ['../../stubs/next-image.tsx'],
           'next/link': ['../../stubs/next-link.tsx'],
+          '@/app/(create)/lib/fonts': ['../../stubs/fonts.ts'],
+          '@/app/(create)/lib/search-params': ['../../stubs/search-params.ts'],
+          '@/app/(app)/create/lib/search-params': ['../../stubs/search-params.ts'],
+          '@/registry/styles': ['../../stubs/styles.ts'],
         },
       },
     })
@@ -249,6 +257,7 @@ describe('harnessFiles', () => {
         examples: [],
         layoutCss: '',
         typeset: [],
+        showcase: { cards: [], layoutCss: '', fontTitle: 'Inter' },
       },
       '// header',
     )

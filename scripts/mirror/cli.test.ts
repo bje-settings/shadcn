@@ -315,12 +315,14 @@ describe('mirror build', BUILDS, () => {
       'example badge-example: 1 of 3 sub-examples',
       '  skipped BadgeOther: needs other',
       '  skipped BadgeSpare: needs spare',
+      'showcase: 0 of 0 cards',
       'built A/B harness inputs in ab/generated/vega',
       'built registry/vega/registry.json, registry/vega/tsconfig.json',
       ...built('luma'),
       'example badge-example: 1 of 3 sub-examples',
       '  skipped BadgeOther: needs other',
       '  skipped BadgeSpare: needs spare',
+      'showcase: 0 of 0 cards',
       'built A/B harness inputs in ab/generated/luma',
       'built registry/luma/registry.json, registry/luma/tsconfig.json',
     ])
@@ -465,6 +467,13 @@ describe('mirror build', BUILDS, () => {
     )
   })
 
+  // `preview` selects the fetch's preview blocks, not a style to build.
+  it('refuses to build preview as a style', async () => {
+    await expect(run(['build', 'preview'], io())).rejects.toThrow(
+      'mirror build: preview is not one of vega, luma',
+    )
+  })
+
   it('asks for a fetch when a snapshot is missing', async () => {
     await expect(run(['build'], io())).rejects.toThrow(
       'no snapshot for base-vega/font-inter; run mirror fetch first',
@@ -514,10 +523,153 @@ describe('mirror build', BUILDS, () => {
 })
 
 describe('usage', () => {
-  it.each([[[]], [['sync']], [['fetch', 'vega']], [['build', 'vega', 'luma']]])(
-    'rejects %j',
-    async (args) => {
-      await expect(run(args, io())).rejects.toThrow('usage: mirror <fetch|build [style]>')
-    },
-  )
+  it.each([
+    [[]],
+    [['sync']],
+    [['fetch', 'vega']],
+    [['fetch', 'preview', 'vega']],
+    [['build', 'vega', 'luma']],
+  ])('rejects %j', async (args) => {
+    await expect(run(args, io())).rejects.toThrow('usage: mirror <fetch [preview]|build [style]>')
+  })
+})
+
+describe('preview blocks', BUILDS, () => {
+  const blocks = 'https://example.com/blocks/preview'
+  const cards = '@/registry/bases/base/blocks/preview/cards'
+  const index = [
+    `import { OtherCard } from "${cards}/other-card"`,
+    `import { BadgeCard } from "${cards}/badge-card"`,
+    'export default function PreviewExample() { return <><BadgeCard /><OtherCard /></> }',
+  ].join('\n')
+  const badgeCard = [
+    'import { Badge } from "@/registry/bases/base/ui/badge"',
+    'import QRCode from "react-qr-code"',
+    'import { useDesignSystemSearchParams } from "@/app/(create)/lib/search-params"',
+    'export function BadgeCard() {',
+    '  const [params] = useDesignSystemSearchParams()',
+    '  return <Badge className="gap-2">{params.style}<QRCode value="x" /></Badge>',
+    '}',
+  ].join('\n')
+  const otherCard = [
+    'import { Other } from "@/registry/bases/base/ui/other"',
+    'export function OtherCard() { return <Other /> }',
+  ].join('\n')
+
+  async function configure(preview: Record<string, unknown>) {
+    const config = JSON.parse(await read('mirror.config.json'))
+    await writeFile(join(root, 'mirror.config.json'), JSON.stringify({ ...config, preview }))
+  }
+
+  beforeEach(async () => {
+    await configure({
+      url: 'https://example.com/blocks/{block}/{file}',
+      blocks: ['preview'],
+      packages: ['react-qr-code'],
+    })
+    Object.assign(responses, {
+      [`${blocks}/index.tsx`]: index,
+      [`${blocks}/cards/badge-card.tsx`]: badgeCard,
+      [`${blocks}/cards/other-card.tsx`]: otherCard,
+    })
+  })
+
+  // In the order the index renders them, not imports them.
+  it('snapshots each block and the cards its index imports once, after Typeset', async () => {
+    await run(['fetch'], io())
+    expect(requests.slice(-3)).toEqual([
+      `${blocks}/index.tsx`,
+      `${blocks}/cards/badge-card.tsx`,
+      `${blocks}/cards/other-card.tsx`,
+    ])
+    expect(logs.slice(-4)).toEqual([
+      'fetched typeset/fixtures/docs.ts',
+      'fetched preview/preview/index.tsx',
+      'fetched preview/preview/cards/badge-card.tsx',
+      'fetched preview/preview/cards/other-card.tsx',
+    ])
+    expect(await read('upstream/preview/preview/cards/badge-card.tsx')).toBe(badgeCard)
+  })
+
+  it('fetches the preview blocks alone, replacing what a block no longer has', async () => {
+    await mkdir(join(root, 'upstream/preview/preview-03'), { recursive: true })
+    await writeFile(join(root, 'upstream/preview/preview-03/index.tsx'), 'old')
+    await run(['fetch', 'preview'], io())
+    expect(requests).toEqual([
+      `${blocks}/index.tsx`,
+      `${blocks}/cards/badge-card.tsx`,
+      `${blocks}/cards/other-card.tsx`,
+    ])
+    expect(await read('upstream/preview/preview/index.tsx')).toBe(index)
+    await expect(stat(join(root, 'upstream/preview/preview-03'))).rejects.toThrow('ENOENT')
+    await expect(stat(join(root, 'upstream/base-vega'))).rejects.toThrow('ENOENT')
+    await expect(stat(join(root, 'upstream/typeset'))).rejects.toThrow('ENOENT')
+  })
+
+  it('leaves the snapshots as they were when a card fails to fetch', async () => {
+    await run(['fetch', 'preview'], io())
+    delete responses[`${blocks}/cards/badge-card.tsx`]
+    responses[`${blocks}/cards/other-card.tsx`] = 'changed'
+    await expect(run(['fetch', 'preview'], io())).rejects.toThrow(
+      `GET ${blocks}/cards/badge-card.tsx: 404`,
+    )
+    expect(await read('upstream/preview/preview/cards/other-card.tsx')).toBe(otherCard)
+  })
+
+  it('refuses an index that imports no card, before writing anything', async () => {
+    responses[`${blocks}/index.tsx`] = 'export default function PreviewExample() { return null }'
+    await expect(run(['fetch', 'preview'], io())).rejects.toThrow(
+      'preview preview/index.tsx: imports no card',
+    )
+    await expect(stat(join(root, 'upstream/preview'))).rejects.toThrow('ENOENT')
+  })
+
+  it("prepares each card with the style's components, and records the cards it skips", async () => {
+    await run(['fetch'], io())
+    logs = []
+    await run(['build', 'vega'], io())
+    expect(logs).toContain('showcase: 1 of 2 cards')
+    expect(logs).toContain('  skipped preview/other-card: needs other')
+    const card = await read('ab/generated/vega/showcase/preview/cards/badge-card.tsx')
+    expect(card).toContain('import { Badge } from "@/registry/bje/ui/Badge/Badge"')
+    expect(card).toContain('import QRCode from "react-qr-code"')
+    expect(card).toContain(
+      'import { useDesignSystemSearchParams } from "@/app/(create)/lib/search-params"',
+    )
+    expect(card).toContain('export { BadgeCard }')
+    expect(await read('ab/generated/vega/showcase.ts')).toContain(
+      '{ name: "badge-card", Card: previewBadgeCard.BadgeCard },',
+    )
+    expect(await read('ab/generated/vega/showcase.css')).toContain('@source "./showcase";')
+    // The fonts stub names the theme's font by its font item's title, as /create's list does.
+    expect(await read('ab/generated/vega/showcase-theme.ts')).toContain(
+      'export const fonts = [{"name":"Inter","value":"inter"}]',
+    )
+    expect(JSON.parse(await read('ab/skipped-cards/vega.json'))).toEqual({
+      preview: { 'other-card': ['needs other'] },
+    })
+    expect(
+      JSON.parse(await read('ab/generated/vega/tsconfig.json')).compilerOptions.paths,
+    ).toMatchObject({
+      '@/app/(create)/lib/search-params': ['../../stubs/search-params.ts'],
+      '@/registry/styles': ['../../stubs/styles.ts'],
+    })
+  })
+
+  it('skips a card that imports a package the config does not allow', async () => {
+    await run(['fetch'], io())
+    await configure({ url: 'https://example.com/blocks/{block}/{file}', blocks: ['preview'] })
+    await run(['build', 'vega'], io())
+    expect(JSON.parse(await read('ab/skipped-cards/vega.json'))).toEqual({
+      preview: { 'badge-card': ['needs react-qr-code'], 'other-card': ['needs other'] },
+    })
+  })
+
+  it('asks for a fetch when a preview snapshot is missing', async () => {
+    await run(['fetch'], io())
+    await rm(join(root, 'upstream/preview/preview/cards/badge-card.tsx'))
+    await expect(run(['build', 'vega'], io())).rejects.toThrow(
+      'no snapshot for preview/preview/cards/badge-card.tsx; run mirror fetch first',
+    )
+  })
 })

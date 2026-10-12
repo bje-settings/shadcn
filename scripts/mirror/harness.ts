@@ -7,14 +7,17 @@
 //   maps and the list of kept sub-examples;
 // - Typeset's content fixtures;
 // - the upstream page's Tailwind entry and the ours page's example layout CSS;
+// - the showcase page's preview cards, their module map and layout CSS, and
+//   the design system its /create stubs return;
 // - a tsconfig.json resolving the harness's imports to this style, which
 //   Playwright and the type check read.
 
 import { relative } from 'node:path'
 import type { MirrorConfig } from './config.ts'
-import type { PreparedExample } from './examples.ts'
+import { CREATE_STUBS, type PreparedExample } from './examples.ts'
 import { camelCase, registryModule } from './names.ts'
 import type { PartTypes, Scaffold } from './parts.ts'
+import { type ShowcaseInput, showcaseFiles } from './preview.ts'
 import type { Fixture } from './shapes.ts'
 import { exportedNames } from './tests.ts'
 import type { TransformedComponent, VariantSet } from './tsx.ts'
@@ -118,6 +121,7 @@ export function harnessFiles(
     examples: HarnessExample[]
     layoutCss: string
     typeset: TypesetFixture[]
+    showcase: ShowcaseInput
   },
   header: string,
 ): { path: string; content: string }[] {
@@ -190,6 +194,7 @@ export function harnessFiles(
       ].join('\n'),
     },
     { path: `${dir}/examples.css`, content: harness.layoutCss },
+    ...showcaseFiles(config, harness.showcase, header),
     { path: `${dir}/tsconfig.json`, content: harnessTsconfig(config) },
   ]
 }
@@ -216,6 +221,9 @@ function harnessTsconfig(config: MirrorConfig): string {
         '@/app/(create)/components/icon-placeholder': [from('ab/stubs/icon-placeholder.tsx')],
         'next/image': [from('ab/stubs/next-image.tsx')],
         'next/link': [from('ab/stubs/next-link.tsx')],
+        ...Object.fromEntries(
+          Object.entries(CREATE_STUBS).map(([specifier, stub]) => [specifier, [from(stub)]]),
+        ),
       },
     },
   }
