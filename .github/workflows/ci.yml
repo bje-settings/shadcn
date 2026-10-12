@@ -42,10 +42,15 @@ jobs:
           for style in $(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json); do
             jq -e '.name == "bje" and (.items | length > 0)' "public/r/$style/registry.json"
           done
+      # The styles assigned first, so a jq failure fails the step rather than
+      # checking none. The page loads its assets relative to /<style>/.
       - name: Refuse a build that writes no showcase for a style
         run: |
-          for style in $(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json); do
+          styles=$(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json)
+          [ -n "$styles" ]
+          for style in $styles; do
             grep -qF "<meta name=\"bje-showcase\" content=\"$style\"" "public/r/$style/index.html"
+            grep -qF 'src="./assets/' "public/r/$style/index.html"
           done
       # public/r is the site root; each style is a flat registry and its
       # showcase under /<style>/. The deploy job publishes it once every check
@@ -381,11 +386,13 @@ jobs:
             curl -fsS --retry 5 --retry-delay 10 --retry-all-errors "https://shadcn.bje.co/$style/registry.json" \
               | jq -e '.name == "bje" and (.items | length > 0)'
           done
-      # One command per assignment, so a failed fetch fails the step rather
-      # than reading as a page without the marker.
+      # One command per assignment, so a failed jq or fetch fails the step
+      # rather than checking no style or reading as a page without the marker.
       - name: Refuse a site that serves no showcase for a style
         run: |
-          for style in $(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json); do
+          styles=$(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json)
+          [ -n "$styles" ]
+          for style in $styles; do
             page=$(curl -fsS --retry 5 --retry-delay 10 --retry-all-errors "https://shadcn.bje.co/$style/")
             printf '%s' "$page" | grep -qF "<meta name=\"bje-showcase\" content=\"$style\""
           done
