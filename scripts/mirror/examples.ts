@@ -180,7 +180,8 @@ export function prepareExample(
   namespace: string,
   mirrored: Set<string>,
   // Consumer classes whose upstream styling the mirror drops, by the item
-  // whose module drops it (card: border-b, border-t)
+  // whose module drops it (card: border-b and border-t in vega, border-b
+  // alone in lyra)
   dropped: Map<string, Set<string>>,
   // Packages mirrored items depend on (recharts), which examples may import
   packages: Set<string> = new Set(),
