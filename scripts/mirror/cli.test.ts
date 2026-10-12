@@ -703,6 +703,38 @@ describe('preview blocks', BUILDS, () => {
     })
   })
 
+  it('skips a card that passes a class its component gates on', async () => {
+    const config = JSON.parse(await read('mirror.config.json'))
+    await writeFile(
+      join(root, 'mirror.config.json'),
+      JSON.stringify({
+        ...config,
+        upstream: { ...config.upstream, styles: ['base-vega'] },
+        consumerClasses: [{ classes: ['border-b'], reason: 'pads with a border' }],
+      }),
+    )
+    const content = upstream.files[0]?.content.replace(
+      'cva("group flex")',
+      'cva("group flex [.border-b]:pb-4")',
+    )
+    responses['https://example.com/base-vega/badge.json'] = {
+      ...upstream,
+      files: [{ ...upstream.files[0], content }],
+    }
+    responses[`${blocks}/cards/badge-card.tsx`] = badgeCard.replace(
+      'className="gap-2"',
+      'className="gap-2 border-b"',
+    )
+    await run(['fetch'], io())
+    await run(['build', 'vega'], io())
+    expect(JSON.parse(await read('ab/skipped-cards/vega.json'))).toEqual({
+      preview: {
+        'badge-card': ['passes border-b, whose styling the mirror drops'],
+        'other-card': ['needs other'],
+      },
+    })
+  })
+
   it('skips a card that imports a package the config does not allow', async () => {
     await run(['fetch'], io())
     await configure({ url: 'https://example.com/blocks/{block}/{file}', blocks: ['preview'] })

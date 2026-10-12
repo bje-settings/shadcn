@@ -191,8 +191,12 @@ function NavigationMenuBasic() { return <Link href="#" /> }`
     ])
   })
 
-  // Chip's module drops rules gated on both classes; Button's drops none.
-  const dropped = new Map([['chip', new Set(['border-b', 'border-t'])]])
+  // Chip's module drops rules gated on both classes, Menu's on border-t
+  // (reached through Menu.Item); Button's drops none.
+  const dropped = new Map([
+    ['chip', new Set(['border-b', 'border-t'])],
+    ['menu', new Set(['border-t'])],
+  ])
   const prepared = prepareExample(example, 'base-vega', 'bje', mirrored, dropped)
 
   it('skips a gated class only where it reaches a component whose item gates on it', () => {
@@ -221,7 +225,10 @@ function OnChip() {
       { name: 'ChipIcons', reasons: ['needs lucide-react'] },
       { name: 'ChipHook', reasons: ['needs @/registry/base-vega/hooks/use-thing'] },
       { name: 'ChipBorder', reasons: ['passes border-b, whose styling the mirror drops'] },
-      { name: 'ChipBoth', reasons: ['needs menu'] },
+      {
+        name: 'ChipBoth',
+        reasons: ['needs menu', 'passes border-t, whose styling the mirror drops'],
+      },
     ])
   })
 
