@@ -42,6 +42,8 @@ export type GeneratedComponent = {
   unresolved: Record<string, string[]>
   // Why rules were dropped or loosened, as the module's header lists them
   dropped: string[]
+  // The configured consumer classes the dropped rules gate on (border-b)
+  gated: string[]
   // Every upstream class the component uses, for the global stylesheets.
   classes: string[]
   // Upstream's source and what the transform learned, for the A/B harness.
@@ -303,6 +305,7 @@ export async function buildComponent(
   const unresolved: Record<string, string[]> = {}
   const properties = new Set<string>()
   const dropped = new Set<string>()
+  const gated = new Set<string>()
   // Slots the module exports no class for.
   const unstyled = new Set<string>()
   for (const slot of source.slots) {
@@ -317,6 +320,7 @@ export async function buildComponent(
     if (block.unresolved.length > 0) unresolved[slot.name] = block.unresolved
     for (const property of block.customProperties) properties.add(property)
     for (const reason of block.dropped) dropped.add(reason)
+    for (const c of block.gated) gated.add(c)
   }
 
   const scss = [
@@ -392,6 +396,7 @@ export async function buildComponent(
     files,
     unresolved,
     dropped: [...dropped],
+    gated: [...gated].sort(),
     classes: [...new Set(source.slots.flatMap((slot) => slot.classes))],
     upstreamSource: prepared.installed,
     transformed: source,

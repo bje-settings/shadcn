@@ -336,6 +336,47 @@ describe('mirror build', BUILDS, () => {
     }
   })
 
+  it('skips a consumer class only where the item drops a rule gated on that class', async () => {
+    // border-b and border-t share one reason; Badge gates only on border-b.
+    const config = JSON.parse(await read('mirror.config.json'))
+    await writeFile(
+      join(root, 'mirror.config.json'),
+      JSON.stringify({
+        ...config,
+        upstream: { ...config.upstream, styles: ['base-vega'] },
+        consumerClasses: [{ classes: ['border-b', 'border-t'], reason: 'pads with a border' }],
+      }),
+    )
+    const content = upstream.files[0]?.content.replace(
+      'cva("group flex")',
+      'cva("group flex [.border-b]:pb-4")',
+    )
+    responses['https://example.com/base-vega/badge.json'] = {
+      ...upstream,
+      files: [{ ...upstream.files[0], content }],
+    }
+    responses['https://example.com/base-vega/badge-example.json'] = {
+      ...example('base-vega'),
+      files: [
+        {
+          path: 'registry/base-vega/examples/badge-example.tsx',
+          type: 'registry:example',
+          content: [
+            'import { Badge } from "@/registry/base-vega/ui/badge"',
+            'export default function BadgeExample() { return <><BadgeBottom /><BadgeTop /></> }',
+            'function BadgeBottom() { return <Badge className="border-b" /> }',
+            'function BadgeTop() { return <Badge className="border-t" /> }',
+          ].join('\n'),
+        },
+      ],
+    }
+    await run(['fetch'], io())
+    await run(['build', 'vega'], io())
+    expect(JSON.parse(await read('ab/skipped-examples/vega.json'))).toEqual({
+      'badge-example': { BadgeBottom: ['passes border-b, whose styling the mirror drops'] },
+    })
+  })
+
   it("copies a hook item's upstream source into the harness, outside the module maps", async () => {
     const source = 'export function useThing() {\n  return 1\n}\n'
     const configPath = join(root, 'mirror.config.json')

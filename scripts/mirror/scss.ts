@@ -51,6 +51,8 @@ export type ScssBlock = {
   // Why rules were dropped or loosened here: a consumer class, or a class
   // probe no mirrored element matches.
   dropped: string[]
+  // The configured consumer classes the dropped rules gate on (border-b)
+  gated: string[]
   // Defaults for the internal variables (internal.ts) the block uses, and
   // the elements that use them, for the module's properties layer: the
   // slot's own element, and any pseudo-element or descendant a rule styles.
@@ -238,7 +240,7 @@ function dropReason(
   options: SlotOptions,
 ): string | undefined {
   const classes = classesIn(selector).filter((c) => !candidates.has(c))
-  const consumer = classes.find((c) => options.consumerClasses.has(c))
+  const [consumer] = consumerClassesIn(selector, candidates, options)
   if (consumer) return options.consumerClasses.get(consumer)
   const missing = classes.find((c) => MARKER.test(c) && !options.markers.has(c))
   const dead = [...candidates].find(
@@ -253,6 +255,16 @@ function dropReason(
     )
   }
   return undefined
+}
+
+// The configured consumer classes a selector needs besides the slot's own
+// utilities.
+function consumerClassesIn(
+  selector: string,
+  candidates: Set<string>,
+  options: SlotOptions,
+): string[] {
+  return classesIn(selector).filter((c) => !candidates.has(c) && options.consumerClasses.has(c))
 }
 
 // Whether a nested selector styles another element than the slot's own: a
@@ -329,6 +341,7 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
   const candidates = new Set(slot.classes)
   const resolved = new Set<string>()
   const dropped = new Set<string>()
+  const gated = new Set<string>()
   const unmatched = new Set<string>()
   // The slot's own rules sit at zero specificity, so a consumer's className
   // wins as tailwind-merge makes it win upstream. Rules styling descendants
@@ -354,6 +367,7 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
       const reason = dropReason(selector, candidates, options)
       if (reason === undefined) return true
       dropped.add(reason)
+      for (const c of consumerClassesIn(selector, candidates, options)) gated.add(c)
       for (const c of classesIn(selector)) if (candidates.has(c)) resolved.add(c)
       return false
     })
@@ -453,6 +467,7 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
           `upstream skips elements whose classes contain "${probe}", and no mirrored element does: the default skips only an element whose own class does.`,
       ),
     ],
+    gated: [...gated].sort(),
     defaults: Object.fromEntries(
       [...internalNames].sort().map((name) => {
         const value = options.internalDefaults.get(name)

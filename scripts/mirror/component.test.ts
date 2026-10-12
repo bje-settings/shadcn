@@ -163,6 +163,7 @@ export { Badge }`
     const built = await build(badge(source('flex [.border-b]:pb-4')))
     expect(built.files[1]?.content).toContain('// Dropped rules: consumer class')
     expect(built.dropped).toEqual(['consumer class'])
+    expect(built.gated).toEqual(['border-b'])
   })
 
   it('fails on a group or peer marker no mirrored element carries', async () => {
