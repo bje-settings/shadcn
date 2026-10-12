@@ -1,10 +1,11 @@
 // The showcase renders every preview card the style can render: through its
-// own controls, in both previews and both themes, no card may render its error
-// (data-case-error), the page may report none, and the cards rendered may not
-// fall below those the snapshotted index imports less the committed skip list.
+// own controls, in every preview block and both themes, no card may render its
+// error (data-case-error), the page may report none, and the cards rendered
+// are exactly those the snapshotted index imports less the committed skip list.
 
 import { readFileSync } from 'node:fs'
 import { expect, type Page, test } from '@playwright/test'
+import { pascalCase } from '../scripts/mirror/names.ts'
 import { previewCards } from '../scripts/mirror/preview.ts'
 import { PORT } from './playwright.config'
 import { config, repo, short } from './style.ts'
@@ -19,10 +20,13 @@ const skipped: Record<string, Record<string, string[]>> = JSON.parse(
   readFileSync(`${repo}ab/skipped-cards/${short}.json`, 'utf8'),
 )
 
-// The cards each block should render, from the snapshot, not the generated map.
+// The cards each block should render, in order, from the snapshot, not the
+// generated map.
 const expected = (block: string) => {
   const index = readFileSync(`${repo}${config.snapshotDir}/preview/${block}/index.tsx`, 'utf8')
-  return previewCards(block, index).length - Object.keys(skipped[block] ?? {}).length
+  return previewCards(block, index)
+    .map(({ name }) => name)
+    .filter((name) => !(name in (skipped[block] ?? {})))
 }
 
 async function check(page: Page, errors: string[], index: number, theme: 'light' | 'dark') {
@@ -36,7 +40,18 @@ async function check(page: Page, errors: string[], index: number, theme: 'light'
       .locator('[data-case-error]')
       .evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-case-error')))
     expect(failed, 'cards that threw').toEqual([])
-    expect(await page.locator('[data-card]').count()).toBeGreaterThanOrEqual(expected(block))
+    const cards = await page
+      .locator('[data-card]')
+      .evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-card')))
+    const names = expected(block)
+    expect(cards, 'cards rendered').toEqual(names)
+    // The /create stubs return the style and the theme's font: style-overview
+    // names both ("Vega - Inter").
+    if (names.includes('style-overview')) {
+      await expect(page.locator('[data-card="style-overview"]')).toContainText(
+        new RegExp(`${pascalCase(short)} - \\S`),
+      )
+    }
     expect(errors, 'page errors').toEqual([])
   })
 }
