@@ -1,0 +1,5 @@
+{
+  "preview": {
+    "codespaces-card": ["passes border-b, whose styling the mirror drops"]
+  }
+}

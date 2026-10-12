@@ -2,8 +2,8 @@
 // committed snapshots: a hand edit to a generated file, or a pipeline change
 // without `pnpm mirror:build`, fails here. Covers, for every style, components,
 // hooks, global stylesheets, the rebuilt project CSS, registry catalog,
-// tsconfig and the list of skipped A/B examples (a new skip fails until the
-// list records it). It also proves every generated stylesheet compiles with
+// tsconfig, and the lists of skipped A/B examples and showcase cards (a new
+// skip fails until the list records it). It also proves every generated stylesheet compiles with
 // Sass and every font item can replace the default it names.
 
 import { cp, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
@@ -12,7 +12,7 @@ import { dirname, join, relative } from 'node:path'
 import postcss from 'postcss'
 import { compile } from 'sass'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { run, skippedExamplesPath } from './cli.ts'
+import { run, skippedCardsPath, skippedExamplesPath } from './cli.ts'
 import { forStyle, namedStyle } from './config.ts'
 import { formatWithBiome } from './format.ts'
 import { parsed, root } from './test-support.ts'
@@ -61,8 +61,10 @@ describe(`generated output for ${style}`, () => {
     for (const path of await files(root, snapshots)) {
       if (path.endsWith('.json')) await cp(join(root, path), join(built, path))
     }
-    const typeset = join(parsed.snapshotDir, 'typeset')
-    await cp(join(root, typeset), join(built, typeset), { recursive: true })
+    for (const shared of ['typeset', 'preview']) {
+      const dir = join(parsed.snapshotDir, shared)
+      await cp(join(root, dir), join(built, dir), { recursive: true })
+    }
     await run(['build'], {
       root: built,
       fetch: () => Promise.reject(new Error('build must not fetch')),
@@ -88,6 +90,7 @@ describe(`generated output for ${style}`, () => {
       config.registryFile,
       join(dirname(config.registryFile), 'tsconfig.json'),
       skippedExamplesPath(config),
+      skippedCardsPath(config),
       ...(await Promise.all(outputDirs.map((dir) => files(built, dir)))).flat(),
     ]
     for (const path of paths) {

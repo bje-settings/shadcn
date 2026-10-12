@@ -143,6 +143,11 @@
     "fixturesUrl": "https://raw.githubusercontent.com/shadcn-ui/ui/main/apps/v4/app/(app)/(typeset)/lib/fixtures/{name}.ts",
     "fixtures": ["docs", "chat", "changelog", "notes", "recipe", "elements"]
   },
+  "preview": {
+    "url": "https://raw.githubusercontent.com/shadcn-ui/ui/main/apps/v4/registry/bases/base/blocks/{block}/{file}",
+    "blocks": ["preview-02", "preview"],
+    "packages": ["react-qr-code", "shadcn/icons"]
+  },
   "snapshotDir": "upstream",
   "outputDir": "registry/{style}/ui",
   "hooksDir": "registry/{style}/hooks",

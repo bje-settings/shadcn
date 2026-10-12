@@ -1,10 +1,11 @@
 // `mirror fetch` snapshots, for each configured style, the upstream items, their
 // docs examples, the style index, the theme's font and each published one, the
-// base color, and shadcn/typeset once, into the repo. `mirror build` reads only
-// those snapshots and writes each style's project CSS, components, global
-// stylesheets, typeset, font stylesheets, tsconfig, registry catalog and A/B
-// harness inputs, so a conversion change is reviewable without upstream moving
-// underneath it.
+// base color, and shadcn/typeset and the /create preview blocks once, into the
+// repo; `mirror fetch preview` snapshots the preview blocks alone. `mirror
+// build` reads only those snapshots and writes each style's project CSS,
+// components, global stylesheets, typeset, font stylesheets, tsconfig, registry
+// catalog, A/B harness inputs and showcase inputs, so a conversion change is
+// reviewable without upstream moving underneath it.
 
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { dirname, join, relative } from 'node:path'
@@ -23,6 +24,7 @@ import {
   type MirrorConfig,
   namedStyle,
   parseConfig,
+  previewUrl,
   shortStyle,
   upstreamUrl,
 } from './config.ts'
@@ -32,6 +34,7 @@ import { type HarnessExample, type HarnessInput, harnessFiles } from './harness.
 import { checkCollisions } from './internal.ts'
 import { pascalCase } from './names.ts'
 import { type PartTypes, partTypes, scaffolds } from './parts.ts'
+import { CARD_REGISTRY, previewCards, type ShowcaseCard, skippedCards } from './preview.ts'
 import { layoutCss, projectCss, staticTheme } from './project-css.ts'
 import { parseRegistry, styleRegistry } from './registry.ts'
 import { registrations } from './scss.ts'
@@ -88,6 +91,11 @@ async function writeFormatted(io: Io, path: string, content: string): Promise<vo
 // The sub-examples the A/B harness skips for a style, with why.
 export function skippedExamplesPath(config: MirrorConfig): string {
   return `ab/skipped-examples/${shortStyle(config.upstream.style)}.json`
+}
+
+// The preview cards each style's showcase leaves out, with why.
+export function skippedCardsPath(config: MirrorConfig): string {
+  return `ab/skipped-cards/${shortStyle(config.upstream.style)}.json`
 }
 
 function snapshotPath(io: Io, config: MirrorConfig, name: string): string {
@@ -147,6 +155,12 @@ async function fetchStyle(io: Io, config: MirrorConfig): Promise<void> {
   }
 }
 
+async function fetchText(io: Io, url: string): Promise<string> {
+  const response = await io.fetch(url)
+  if (!response.ok) throw new Error(`GET ${url}: ${response.status}`)
+  return response.text()
+}
+
 // shadcn/typeset is one stylesheet for every style.
 async function fetchTypeset(io: Io, config: MirrorConfig): Promise<void> {
   const typeset: [string, string][] = [
@@ -157,10 +171,32 @@ async function fetchTypeset(io: Io, config: MirrorConfig): Promise<void> {
     ]),
   ]
   for (const [path, url] of typeset) {
-    const response = await io.fetch(url)
-    if (!response.ok) throw new Error(`GET ${url}: ${response.status}`)
-    await writeText(join(io.root, config.snapshotDir, 'typeset', path), await response.text())
+    await writeText(join(io.root, config.snapshotDir, 'typeset', path), await fetchText(io, url))
     io.log(`fetched typeset/${path}`)
+  }
+}
+
+function previewPath(io: Io, config: MirrorConfig, path: string): string {
+  return join(io.root, config.snapshotDir, 'preview', path)
+}
+
+// The preview blocks are the same for every style: each block's index and
+// every card it imports. All are fetched before the directory is replaced, so
+// a failed fetch leaves the snapshots as they were, and a card or block no
+// longer previewed goes.
+async function fetchPreview(io: Io, config: MirrorConfig): Promise<void> {
+  const files: [string, string][] = []
+  for (const block of config.preview.blocks) {
+    const index = await fetchText(io, previewUrl(config, block, 'index.tsx'))
+    files.push([`${block}/index.tsx`, index])
+    for (const { file } of previewCards(block, index)) {
+      files.push([`${block}/${file}`, await fetchText(io, previewUrl(config, block, file))])
+    }
+  }
+  await rm(previewPath(io, config, ''), { recursive: true, force: true })
+  for (const [path, text] of files) {
+    await writeText(previewPath(io, config, path), text)
+    io.log(`fetched preview/${path}`)
   }
 }
 
@@ -198,6 +234,34 @@ async function readExample(io: Io, config: MirrorConfig, name: string) {
 async function readTypeset(io: Io, config: MirrorConfig, path: string): Promise<string> {
   const text = await readOptional(join(io.root, config.snapshotDir, 'typeset', path))
   return text ?? missingSnapshot(`typeset/${path}`)
+}
+
+async function readPreview(io: Io, config: MirrorConfig, path: string): Promise<string> {
+  const text = await readOptional(previewPath(io, config, path))
+  return text ?? missingSnapshot(`preview/${path}`)
+}
+
+// Each preview card prepared like a docs example, with this style's
+// components in place of upstream's base ones. Cards may also import the
+// configured preview packages.
+async function prepareCards(
+  io: Io,
+  config: MirrorConfig,
+  mirrored: Set<string>,
+  dropped: Set<string>,
+  packages: Set<string>,
+): Promise<ShowcaseCard[]> {
+  const allowed = new Set([...packages, ...config.preview.packages])
+  const cards: ShowcaseCard[] = []
+  for (const block of config.preview.blocks) {
+    for (const card of previewCards(block, await readPreview(io, config, `${block}/index.tsx`))) {
+      const source = await readPreview(io, config, `${block}/${card.file}`)
+      const ns = config.namespace
+      const prepared = prepareExample(source, CARD_REGISTRY, ns, mirrored, dropped, allowed)
+      cards.push({ block, card, prepared })
+    }
+  }
+  return cards
 }
 
 // The compilerOptions each style's registry/<style>/tsconfig.json resolves its
@@ -409,6 +473,16 @@ async function buildStyle(io: Io, config: MirrorConfig): Promise<void> {
     }
   }
 
+  const cards = await prepareCards(io, config, mirrored, dropped, packages)
+  const skipped = skippedCards(cards)
+  const skips = Object.values(skipped).flatMap(Object.keys).length
+  io.log(`showcase: ${cards.length - skips} of ${cards.length} cards`)
+  for (const [block, reasons] of Object.entries(skipped)) {
+    for (const [card, why] of Object.entries(reasons)) {
+      io.log(`  skipped ${block}/${card}: ${why.join('; ')}`)
+    }
+  }
+
   const typeset: TypesetFixture[] = []
   for (const name of config.typeset.fixtures) {
     typeset.push(...fixtureHtml(name, await readTypeset(io, config, `fixtures/${name}.ts`)))
@@ -416,7 +490,12 @@ async function buildStyle(io: Io, config: MirrorConfig): Promise<void> {
 
   const harnessHeader = `// Generated by scripts/mirror from shadcn ${style}. Do not edit.`
   const layout = layoutCss(index, colors, font, './examples/ours')
-  const inputs = { components: harness, examples, layoutCss: layout, typeset }
+  const showcase = {
+    cards,
+    layoutCss: layoutCss(index, colors, font, './showcase'),
+    fontTitle: font.title,
+  }
+  const inputs = { components: harness, examples, layoutCss: layout, typeset, showcase }
   // Not formatted: the harness inputs are gitignored, so no review or
   // `biome ci` reads them, and Biome refuses to fix an ignored path that exists.
   for (const file of harnessFiles(config, inputs, harnessHeader)) {
@@ -430,6 +509,7 @@ async function buildStyle(io: Io, config: MirrorConfig): Promise<void> {
     skippedExamplesPath(config),
     `${JSON.stringify(skippedExamples, null, 2)}\n`,
   )
+  await writeFormatted(io, skippedCardsPath(config), `${JSON.stringify(skipped, null, 2)}\n`)
 
   // registry.json holds the hand-written items; each style publishes them with
   // its own under its path of the site.
@@ -444,12 +524,17 @@ async function buildStyle(io: Io, config: MirrorConfig): Promise<void> {
 
 export async function run(args: string[], io: Io): Promise<void> {
   const [command, ...rest] = args
-  if ((command !== 'fetch' && command !== 'build') || rest.length > (command === 'build' ? 1 : 0)) {
-    throw new Error('usage: mirror <fetch|build [style]>')
-  }
-  const config = parseConfig(await readJson(join(io.root, 'mirror.config.json')))
-  // `build <style>` builds that style alone, for an A/B run of one style.
   const [only] = rest
+  const usage =
+    command === 'build'
+      ? rest.length <= 1
+      : command === 'fetch' && (rest.length === 0 || (rest.length === 1 && only === 'preview'))
+  if (!usage) throw new Error('usage: mirror <fetch [preview]|build [style]>')
+  const config = parseConfig(await readJson(join(io.root, 'mirror.config.json')))
+  // `fetch preview` refreshes the preview blocks and leaves every other
+  // snapshot as it is.
+  if (only === 'preview' && command === 'fetch') return fetchPreview(io, config)
+  // `build <style>` builds that style alone, for an A/B run of one style.
   const styles =
     only === undefined ? config.upstream.styles : [namedStyle(config, only, 'mirror build')]
   for (const style of styles) {
@@ -457,5 +542,8 @@ export async function run(args: string[], io: Io): Promise<void> {
     if (command === 'fetch') await fetchStyle(io, styled)
     else await buildStyle(io, styled)
   }
-  if (command === 'fetch') await fetchTypeset(io, config)
+  if (command === 'fetch') {
+    await fetchTypeset(io, config)
+    await fetchPreview(io, config)
+  }
 }

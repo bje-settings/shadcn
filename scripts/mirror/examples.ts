@@ -12,6 +12,7 @@
 // is upstream's code as written.
 
 import type {
+  Declaration,
   ExportDefaultDeclaration,
   Identifier,
   ImportDeclaration,
@@ -23,12 +24,23 @@ import MagicString from 'magic-string'
 import { childNodes, parseModule, span } from './ast.ts'
 import { registryModule } from './names.ts'
 
+// The /create internals the preview cards read the design system from, and
+// the stub (in ab/stubs) that returns the configured theme for each.
+// ab/tsconfig.json maps the same.
+export const CREATE_STUBS: Record<string, string> = {
+  '@/app/(create)/lib/fonts': 'ab/stubs/fonts.ts',
+  '@/app/(create)/lib/search-params': 'ab/stubs/search-params.ts',
+  '@/app/(app)/create/lib/search-params': 'ab/stubs/search-params.ts',
+  '@/registry/styles': 'ab/stubs/styles.ts',
+}
+
 // Imports the harness provides stand-ins for (ab/stubs).
 export const STUBBED = new Set([
   'components/example',
   '@/app/(create)/components/icon-placeholder',
   'next/image',
   'next/link',
+  ...Object.keys(CREATE_STUBS),
 ])
 
 // Sub-examples that would render but differ from upstream for a reason the
@@ -53,9 +65,13 @@ export type PreparedExample = {
   skipped: { name: string; reasons: string[] }[]
 }
 
-// Names a statement declares at the top level. A top-level function
-// declaration always has a name; only `export default function` may not.
+// Names a statement declares at the top level, exported or not. A top-level
+// function declaration always has a name; only `export default function` may
+// not.
 function declared(statement: Statement): string[] {
+  if (statement.type === 'ExportNamedDeclaration' && statement.declaration) {
+    return declared(statement.declaration)
+  }
   if (
     statement.type === 'FunctionDeclaration' ||
     statement.type === 'TSTypeAliasDeclaration' ||
@@ -168,6 +184,9 @@ export function prepareExample(
   const imports = new Map<string, ImportDeclaration>()
   const declarations = new Map<string, Statement>()
   let order: string[] = []
+  // Exported functions: the sub-examples of a module with no default export
+  // (a /create preview card).
+  const exported: string[] = []
   // The default export's own function, which is the one sub-example when it
   // renders the whole page itself (sidebar-example).
   let whole: { name: string; statement: Statement } | undefined
@@ -192,6 +211,12 @@ export function prepareExample(
         )
       }
       for (const name of names) declarations.set(name, statement)
+      if (
+        statement.type === 'ExportNamedDeclaration' &&
+        statement.declaration?.type === 'FunctionDeclaration'
+      ) {
+        exported.push(...names)
+      }
     }
   }
   order = order.filter((name) => declarations.has(name))
@@ -199,6 +224,7 @@ export function prepareExample(
     order = [whole.name]
     declarations.set(whole.name, whole.statement)
   }
+  if (order.length === 0) order = exported.filter((name) => /^[A-Z]/.test(name))
   if (order.length === 0) {
     throw new Error('example: the default export renders no sub-example functions')
   }
@@ -294,6 +320,10 @@ export function prepareExample(
         out.remove(statement.start as number, declaration.start as number)
       } else if (!declared(statement).some((name) => keep.has(name))) {
         remove(statement)
+      } else if (statement.type === 'ExportNamedDeclaration') {
+        // Exported by name below, if it is a kept sub-example.
+        const { declaration } = statement
+        out.remove(statement.start as number, (declaration as Declaration).start as number)
       }
     }
     out.append(`\nexport { ${kept.join(', ')} }\n`)
