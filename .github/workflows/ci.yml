@@ -37,13 +37,16 @@ jobs:
         run: pnpm build
       - name: Build the showcases
         run: pnpm build:showcase
+      # In both checks the styles are assigned first, so a jq failure fails the
+      # step rather than checking none.
       - name: Refuse a build that writes no registry for a style
         run: |
-          for style in $(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json); do
+          styles=$(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json)
+          [ -n "$styles" ]
+          for style in $styles; do
             jq -e '.name == "bje" and (.items | length > 0)' "public/r/$style/registry.json"
           done
-      # The styles assigned first, so a jq failure fails the step rather than
-      # checking none. The page loads its assets relative to /<style>/.
+      # The page loads its assets relative to /<style>/.
       - name: Refuse a build that writes no showcase for a style
         run: |
           styles=$(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json)
@@ -380,14 +383,18 @@ jobs:
         with:
           sparse-checkout: mirror.config.json
           sparse-checkout-cone-mode: false
+      # In both checks the styles are assigned first, so a jq failure fails the
+      # step rather than checking none.
       - name: Refuse a site that serves no registry for a style
         run: |
-          for style in $(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json); do
+          styles=$(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json)
+          [ -n "$styles" ]
+          for style in $styles; do
             curl -fsS --retry 5 --retry-delay 10 --retry-all-errors "https://shadcn.bje.co/$style/registry.json" \
               | jq -e '.name == "bje" and (.items | length > 0)'
           done
-      # One command per assignment, so a failed jq or fetch fails the step
-      # rather than checking no style or reading as a page without the marker.
+      # One command per assignment, so a failed fetch fails the step rather
+      # than reading as a page without the marker.
       - name: Refuse a site that serves no showcase for a style
         run: |
           styles=$(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json)
