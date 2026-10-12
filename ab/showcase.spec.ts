@@ -4,10 +4,13 @@
 // report none, the cards rendered are exactly those the snapshotted index
 // imports less the committed skip list, each as many times as the index
 // renders it, and the grid lays them out in upstream's seven columns with a
-// gap, a column spanning as many tracks as its col-span says.
+// gap, a column spanning as many tracks as its col-span says. The header holds
+// the bje logo, and a select of every style in the config that requests the
+// chosen style's page with the block and theme kept.
 
 import { readFileSync } from 'node:fs'
 import { expect, type Page, test } from '@playwright/test'
+import { shortStyle } from '../scripts/mirror/config.ts'
 import { pascalCase } from '../scripts/mirror/names.ts'
 import { previewCards } from '../scripts/mirror/preview.ts'
 import { PORT } from './playwright.config'
@@ -115,7 +118,36 @@ test(`showcase ${short}`, async ({ page }) => {
       : route.abort(),
   )
   await page.goto(`http://localhost:${PORT}/showcase.html`)
-  await expect(page.locator('h1')).toHaveText(`@bje ${short}`)
+  // The header: the bje logo in the primary color.
+  const logo = page.locator('h1').getByRole('img', { name: 'bje' })
+  await expect(logo.locator('path')).toHaveAttribute('fill', 'var(--primary)')
+  // The select lists every configured style in order, with this one chosen.
+  const styles = config.upstream.styles.map(shortStyle)
+  const select = page.getByRole('combobox', { name: 'Style' })
+  await expect(select.locator('option')).toHaveText(styles)
+  expect(
+    await select
+      .locator('option')
+      .evaluateAll((nodes) => nodes.map((node) => (node as HTMLOptionElement).value)),
+    'style options',
+  ).toEqual(styles)
+  await expect(select).toHaveValue(short)
+  // Choosing another style requests its page, keeping the block and theme.
+  // Under `pnpm ab:serve` that page does not exist, so the request is checked,
+  // not the page.
+  const other = styles[(styles.indexOf(short) + 1) % styles.length] as string
+  const current = new URL(page.url())
+  const requested = page.waitForRequest((request) => request.url().includes(`/${other}/`))
+  await page.route(`**/${other}/**`, (route) => route.abort())
+  await select.selectOption(other)
+  const target = new URL((await requested).url())
+  expect(target.pathname).toBe(new URL(`../${other}/`, current).pathname)
+  expect(target.searchParams.get('preview'), 'preview kept').toBe(
+    current.searchParams.get('preview'),
+  )
+  expect(target.searchParams.get('theme'), 'theme kept').toBe(current.searchParams.get('theme'))
+  // The aborted navigation leaves the showcase page in place.
+  await page.goto(`http://localhost:${PORT}/showcase.html`)
   const preview = (index: number) => page.getByRole('button', { name: label(index), exact: true })
   for (const theme of ['light', 'dark'] as const) {
     for (const index of config.preview.blocks.keys()) {

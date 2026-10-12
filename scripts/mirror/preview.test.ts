@@ -242,6 +242,7 @@ import preview02 from "./showcase/preview-02/index"
 import preview from "./showcase/preview/index"
 
 export const style = "luma"
+export const allStyles = ["vega","luma"]
 
 export const blocks = [
   { name: "preview-02", Index: preview02 },
