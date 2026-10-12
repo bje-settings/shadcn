@@ -3,8 +3,9 @@
 // page. Its header's heading is the bje logo alone, the style select shows no
 // style chosen and lists every style after its prompt, there is no preview
 // switcher, and choosing a style requests that style's page with the theme
-// kept and no block. The site builds the root page with the first style, so
-// only that style's run checks it.
+// kept and no block. The theme applies to the page, and its toggle switches it
+// and keeps it in the URL. The site builds the root page with the first style,
+// so only that style's run checks it.
 
 import { expect, test } from '@playwright/test'
 import { shortStyle } from '../scripts/mirror/config.ts'
@@ -23,6 +24,8 @@ test('site root', async ({ page }) => {
   expect(styles.length, 'the config lists more than one style').toBeGreaterThan(1)
   // Open in the dark theme, so a selection that reset it is caught.
   await page.goto(`http://localhost:${PORT}/site.html?theme=dark`)
+  const dark = () => page.evaluate(() => document.documentElement.classList.contains('dark'))
+  expect(await dark(), '.dark on <html>').toBe(true)
   // A card per style, in the config's order, each a link to its showcase.
   const cards = page.locator('main a')
   await expect(cards).toHaveCount(styles.length)
@@ -49,6 +52,16 @@ test('site root', async ({ page }) => {
     'style options',
   ).toEqual(['', ...styles])
   await expect(select.locator('option').first()).toBeDisabled()
+  // The toggle switches the theme and keeps it in the URL, both ways; the page
+  // ends dark again, so the selection below must keep a non-default theme.
+  for (const [button, theme] of [
+    ['Light', 'light'],
+    ['Dark', 'dark'],
+  ] as const) {
+    await page.getByRole('button', { name: button, exact: true }).click()
+    expect(await dark(), `.dark on <html> in ${theme}`).toBe(theme === 'dark')
+    expect(new URL(page.url()).searchParams.get('theme'), 'theme in the URL').toBe(theme)
+  }
   // Choosing a style requests its page, keeping the theme and adding no block.
   // Under `pnpm ab:serve` there is no style page at /<style>/ (it exists only
   // in the built site), so the navigation is aborted and the request checked.

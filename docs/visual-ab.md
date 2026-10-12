@@ -56,9 +56,10 @@ Every case is generated (`scripts/mirror/harness.ts`):
 - **Root page:** one test (`ab/site.spec.ts`) opens the site's root page (`site.html`) in the dark
   theme. It fails on a page error, cards other than one per configured style in config order, each
   titled with the style's name and linking to `./<style>/`, a heading named other than `bje`, a
-  preview switcher, a style select with a style chosen or other than its "Choose a style" prompt
-  followed by every configured style, or a style choice that requests anything but the style's
-  page with the theme kept and no block. The site builds the root page with the first style in
+  preview switcher, a style select with a style chosen or other than its disabled "Choose a style"
+  prompt followed by every configured style, a theme toggle that does not switch `.dark` on
+  `<html>` and `?theme=` both ways, or a style choice that requests anything but the style's page
+  with the theme kept and no block. The site builds the root page with the first style in
   `upstream.styles`, so the test runs only for that style and skips for the others.
 
 ## How a run compares
