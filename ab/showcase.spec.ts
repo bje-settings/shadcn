@@ -2,8 +2,9 @@
 // own grid: through its own controls and its URL, in every preview block and
 // both themes, no card may render its error (data-case-error), the page may
 // report none, the cards rendered are exactly those the snapshotted index
-// imports less the committed skip list, and the grid lays them out in
-// upstream's seven columns with a gap.
+// imports less the committed skip list, each as many times as the index
+// renders it, and the grid lays them out in upstream's seven columns with a
+// gap, a column spanning as many tracks as its col-span says.
 
 import { readFileSync } from 'node:fs'
 import { expect, type Page, test } from '@playwright/test'
@@ -33,11 +34,14 @@ const fontTitle: string = JSON.parse(
 // 01, 02, ...: the switcher's label for the block at `index`.
 const label = (index: number) => String(index + 1).padStart(2, '0')
 
+const snapshot = (block: string) =>
+  readFileSync(`${repo}${config.snapshotDir}/preview/${block}/index.tsx`, 'utf8')
+
 // The cards each block should render, in order, from the snapshot, not the
 // generated showcase, and how many copies of each: an index can render a card
 // once per breakpoint (preview's UIElements).
 const expected = (block: string) => {
-  const index = readFileSync(`${repo}${config.snapshotDir}/preview/${block}/index.tsx`, 'utf8')
+  const index = snapshot(block)
   return previewCards(block, index)
     .filter(({ name }) => !(name in (skipped[block] ?? {})))
     .map(({ name, component }) => ({
@@ -73,10 +77,18 @@ async function check(page: Page, errors: string[], index: number, theme: 'light'
     )
     const grid = await page.locator('[data-slot="capture-target"]').evaluate((node) => {
       const { gridTemplateColumns, columnGap } = getComputedStyle(node)
-      return { columns: gridTemplateColumns.split(' ').length, columnGap }
+      // The columns that span more than one track (preview-02's SavingsTargets).
+      const spans = [...node.children].flatMap((child) => {
+        const span = /^span (\d+)$/.exec(getComputedStyle(child).gridColumnEnd)
+        return span ? [Number(span[1])] : []
+      })
+      return { columns: gridTemplateColumns.split(' ').length, columnGap, spans }
     })
     expect(grid.columns, "the grid's columns").toBe(7)
     expect(grid.columnGap, "the grid's gap").toMatch(/^[1-9]\d*(\.\d+)?px$/)
+    expect(grid.spans, "the grid's wide columns").toEqual(
+      [...snapshot(block).matchAll(/\bcol-span-(\d+)\b/g)].map((match) => Number(match[1])),
+    )
     // The /create stubs return the style and the theme's font: style-overview
     // names both ("Vega - Inter").
     if (names.includes('style-overview')) {
