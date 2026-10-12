@@ -90,14 +90,14 @@ export default function ChipPage() {
   const items = ["a"]
   return <div>{items.map((item) => <Chip key={item} />)}</div>
 }`
-    const prepared = prepareExample(source, 'base-vega', 'bje', mirrored, new Set())
+    const prepared = prepareExample(source, 'base-vega', 'bje', mirrored, new Map())
     expect(prepared.kept).toEqual(['ChipPage'])
     const withIcons = prepareExample(
       example,
       'base-vega',
       'bje',
       mirrored,
-      new Set(),
+      new Map(),
       new Set(['lucide-react']),
     )
     expect(withIcons.kept).toContain('ChipIcons')
@@ -140,7 +140,7 @@ export function useTone() {
   const withCard = new Set([...mirrored, 'card'])
 
   it('renders each exported function of a module with no default export', () => {
-    const prepared = prepareExample(card, 'bases/base', 'bje', withCard, new Set())
+    const prepared = prepareExample(card, 'bases/base', 'bje', withCard, new Map())
     expect(prepared.kept).toEqual(['StyleCard'])
     expect(prepared.skipped).toEqual([{ name: 'MenuCard', reasons: ['needs menu'] }])
     expect(prepared.ours).toContain('\nfunction StyleCard() {')
@@ -152,7 +152,7 @@ export function useTone() {
   })
 
   it("points the bases/base registry's imports at ours and keeps the stubbed /create internals", () => {
-    const prepared = prepareExample(card, 'bases/base', 'bje', withCard, new Set())
+    const prepared = prepareExample(card, 'bases/base', 'bje', withCard, new Map())
     expect(prepared.ours).toContain(
       'import { Card, CardContent } from "@/registry/bje/ui/Card/Card"',
     )
@@ -165,7 +165,7 @@ export function useTone() {
       expect(prepared.ours).toContain(stubbed)
     }
     // As a style's example, the same imports reach nothing mirrored.
-    const styled = prepareExample(card, 'base-vega', 'bje', withCard, new Set())
+    const styled = prepareExample(card, 'base-vega', 'bje', withCard, new Map())
     expect(styled.kept).toEqual([])
   })
 
@@ -175,7 +175,7 @@ import Link from "next/link"
 export default function Page() { return <><Pic /><Nav /></> }
 function Pic() { return <Image src="a.png" alt="" fill /> }
 function Nav() { return <Link href="#">Home</Link> }`
-    const stubbed = prepareExample(source, 'base-vega', 'bje', mirrored, new Set())
+    const stubbed = prepareExample(source, 'base-vega', 'bje', mirrored, new Map())
     expect(stubbed.kept).toEqual(['Pic', 'Nav'])
     expect(stubbed.skipped).toEqual([])
   })
@@ -184,15 +184,35 @@ function Nav() { return <Link href="#">Home</Link> }`
     const source = `import Link from "next/link"
 export default function Page() { return <NavigationMenuBasic /> }
 function NavigationMenuBasic() { return <Link href="#" /> }`
-    const known = prepareExample(source, 'base-vega', 'bje', mirrored, new Set())
+    const known = prepareExample(source, 'base-vega', 'bje', mirrored, new Map())
     expect(known.kept).toEqual([])
     expect(known.skipped).toEqual([
       { name: 'NavigationMenuBasic', reasons: [KNOWN_DIFFERENCES.get('NavigationMenuBasic')] },
     ])
   })
 
-  const dropped = new Set(['border-b', 'border-t'])
+  // Chip's module drops rules gated on both classes; Button's drops none.
+  const dropped = new Map([['chip', new Set(['border-b', 'border-t'])]])
   const prepared = prepareExample(example, 'base-vega', 'bje', mirrored, dropped)
+
+  it('skips a gated class only where it reaches a component whose item gates on it', () => {
+    const source = `import { Button } from "@/registry/base-vega/ui/button"
+import { Chip } from "@/registry/base-vega/ui/chip"
+export default function Page() {
+  return <><OnButton /><OnChip /></>
+}
+function OnButton() {
+  return <Button className="border-b" />
+}
+function OnChip() {
+  return <Chip className={\`border-t px-2\`} />
+}`
+    const result = prepareExample(source, 'base-vega', 'bje', mirrored, dropped)
+    expect(result.kept).toEqual(['OnButton'])
+    expect(result.skipped).toEqual([
+      { name: 'OnChip', reasons: ['passes border-t, whose styling the mirror drops'] },
+    ])
+  })
 
   it('keeps sub-examples whose reach is available, in the order the page renders them', () => {
     expect(prepared.kept).toEqual(['ChipBasic', 'ChipOdd'])
@@ -201,10 +221,7 @@ function NavigationMenuBasic() { return <Link href="#" /> }`
       { name: 'ChipIcons', reasons: ['needs lucide-react'] },
       { name: 'ChipHook', reasons: ['needs @/registry/base-vega/hooks/use-thing'] },
       { name: 'ChipBorder', reasons: ['passes border-b, whose styling the mirror drops'] },
-      {
-        name: 'ChipBoth',
-        reasons: ['needs menu', 'passes border-t, whose styling the mirror drops'],
-      },
+      { name: 'ChipBoth', reasons: ['needs menu'] },
     ])
   })
 
@@ -294,7 +311,7 @@ export { ChipBasic, ChipOdd }
       'unsupported top-level ExpressionStatement at line 3',
     ],
   ])('rejects %s', (_, source, message) => {
-    expect(() => prepareExample(source, 'base-vega', 'bje', mirrored, new Set())).toThrow(
+    expect(() => prepareExample(source, 'base-vega', 'bje', mirrored, new Map())).toThrow(
       `example: ${message}`,
     )
   })
