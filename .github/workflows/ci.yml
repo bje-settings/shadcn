@@ -25,22 +25,28 @@ concurrency:
 # install is not required either, until it has proven stable (issue #13).
 jobs:
   # `shadcn build` validates each style's registry.json and every item against
-  # the schema.
+  # the schema; `pnpm build` then builds each style's showcase page beside it.
   build:
     name: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/node-pnpm
-      - name: Build the registries
+      - name: Build the registries and showcases
         run: pnpm build
       - name: Refuse a build that writes no registry for a style
         run: |
           for style in $(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json); do
             jq -e '.name == "bje" and (.items | length > 0)' "public/r/$style/registry.json"
           done
-      # public/r is the site root; each style is a flat registry under
-      # /<style>/. The deploy job publishes it once every check passes.
+      - name: Refuse a build that writes no showcase for a style
+        run: |
+          for style in $(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json); do
+            grep -qF "<meta name=\"bje-showcase\" content=\"$style\"" "public/r/$style/index.html"
+          done
+      # public/r is the site root; each style is a flat registry and its
+      # showcase under /<style>/. The deploy job publishes it once every check
+      # passes.
       - name: Upload the registry for GitHub Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v5
@@ -371,4 +377,12 @@ jobs:
           for style in $(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json); do
             curl -fsS --retry 5 --retry-delay 10 --retry-all-errors "https://shadcn.bje.co/$style/registry.json" \
               | jq -e '.name == "bje" and (.items | length > 0)'
+          done
+      # One command per assignment, so a failed fetch fails the step rather
+      # than reading as a page without the marker.
+      - name: Refuse a site that serves no showcase for a style
+        run: |
+          for style in $(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json); do
+            page=$(curl -fsS --retry 5 --retry-delay 10 --retry-all-errors "https://shadcn.bje.co/$style/")
+            printf '%s' "$page" | grep -qF "<meta name=\"bje-showcase\" content=\"$style\""
           done
