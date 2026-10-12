@@ -207,8 +207,6 @@ export function showcaseFiles(
           ),
           '',
           `export const style = ${JSON.stringify(short)}`,
-          // Every style the config builds, for the header's style select.
-          `export const allStyles = ${JSON.stringify(config.upstream.styles.map(shortStyle))}`,
           '',
           'export const blocks = [',
           ...blocks.map(
@@ -216,6 +214,15 @@ export function showcaseFiles(
           ),
           ']',
         ].join('\n'),
+      ),
+    },
+    // Every style the config builds, for the header's style select and the
+    // root page's cards, in a module of its own so the root page imports no
+    // showcase block.
+    {
+      path: `${dir}/styles.ts`,
+      content: ts(
+        `export const allStyles = ${JSON.stringify(config.upstream.styles.map(shortStyle))}`,
       ),
     },
     {

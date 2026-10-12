@@ -199,6 +199,7 @@ describe('showcaseFiles', () => {
       'ab/generated/luma/showcase/preview/index.tsx',
       'ab/generated/luma/showcase/preview/cards.tsx',
       'ab/generated/luma/showcase.ts',
+      'ab/generated/luma/styles.ts',
       'ab/generated/luma/showcase-theme.ts',
       'ab/generated/luma/showcase.css',
     ])
@@ -242,13 +243,20 @@ import preview02 from "./showcase/preview-02/index"
 import preview from "./showcase/preview/index"
 
 export const style = "luma"
-export const allStyles = ["vega","luma"]
 
 export const blocks = [
   { name: "preview-02", Index: preview02 },
   { name: "preview", Index: preview },
 ]
 `)
+  })
+
+  it('lists every style the config builds in a module of its own, not the blocks', () => {
+    expect(byPath['ab/generated/luma/styles.ts']).toBe(`// header
+
+export const allStyles = ["vega","luma"]
+`)
+    expect(byPath['ab/generated/luma/showcase.ts']).not.toContain('allStyles')
   })
 
   it('refuses a block with no index', () => {
