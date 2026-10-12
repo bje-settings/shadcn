@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { forStyle, parseConfig } from './config.ts'
 import type { PreparedExample } from './examples.ts'
-import { previewCards, type ShowcaseCard, showcaseFiles, skippedCards } from './preview.ts'
+import {
+  previewCards,
+  type ShowcaseCard,
+  showcaseFiles,
+  showcaseIndex,
+  skippedCards,
+} from './preview.ts'
 
 const cards = '@/registry/bases/base/blocks/preview/cards'
 
@@ -156,10 +162,30 @@ const config = forStyle(
   'base-luma',
 )
 
+describe('showcaseIndex', () => {
+  it("points the index's card imports at the block's wrappers, and keeps the rest as written", () => {
+    const source = `"use client"\n\nimport * as React from "react"\nimport { Invoice } from "${cards}/invoice"\nimport { UIElements as UI } from "${cards}/ui-elements"\n\nexport default function PreviewExample() {\n  return <div className="grid"><Invoice /><UI /></div>\n}\n`
+    expect(showcaseIndex('preview', source)).toBe(
+      `"use client"\n\nimport * as React from "react"\nimport { Invoice } from "./cards"\nimport { UIElements as UI } from "./cards"\n\nexport default function PreviewExample() {\n  return <div className="grid"><Invoice /><UI /></div>\n}\n`,
+    )
+  })
+
+  it('refuses an index that imports another registry module', () => {
+    expect(() => showcaseIndex('preview', index)).toThrow(
+      'preview preview/index.tsx: imports @/registry/bases/base/ui/button, which is not one of its cards',
+    )
+  })
+})
+
+const indexes = {
+  preview: `import { Invoice } from "${cards}/invoice"\nexport default function PreviewExample() { return <Invoice /> }\n`,
+  'preview-02': `import { Payments } from "@/registry/bases/base/blocks/preview-02/cards/payments"\nexport default function Preview02Example() { return <Payments /> }\n`,
+}
+
 describe('showcaseFiles', () => {
   const files = showcaseFiles(
     config,
-    { cards: showcase, layoutCss: '/* layout */', fontTitle: 'Inter' },
+    { cards: showcase, indexes, layoutCss: '/* layout */', fontTitle: 'Inter' },
     '// header',
   )
   const byPath = Object.fromEntries(files.map((file) => [file.path, file.content]))
@@ -168,6 +194,10 @@ describe('showcaseFiles', () => {
     expect(Object.keys(byPath)).toEqual([
       'ab/generated/luma/showcase/preview/cards/invoice.tsx',
       'ab/generated/luma/showcase/preview-02/cards/payments.tsx',
+      'ab/generated/luma/showcase/preview-02/index.tsx',
+      'ab/generated/luma/showcase/preview-02/cards.tsx',
+      'ab/generated/luma/showcase/preview/index.tsx',
+      'ab/generated/luma/showcase/preview/cards.tsx',
       'ab/generated/luma/showcase.ts',
       'ab/generated/luma/showcase-theme.ts',
       'ab/generated/luma/showcase.css',
@@ -177,23 +207,57 @@ describe('showcaseFiles', () => {
     )
   })
 
-  it('maps each block to its rendered cards, blocks in the order the config lists them', () => {
+  it("writes each block's index with its imports pointed at the block's wrappers", () => {
+    expect(byPath['ab/generated/luma/showcase/preview-02/index.tsx']).toBe(
+      '// header\n\nimport { Payments } from "./cards"\nexport default function Preview02Example() { return <Payments /> }\n',
+    )
+  })
+
+  it('wraps each card the block imports, and renders nothing for a skipped one', () => {
+    expect(byPath['ab/generated/luma/showcase/preview/cards.tsx']).toBe(`// header
+
+import { CaseBoundary } from "../../../../case-boundary"
+import { Invoice as PreparedInvoice } from "./cards/invoice"
+
+export function Invoice() {
+  return (
+    <div data-card="invoice" style={{ display: 'contents' }}>
+      <CaseBoundary>
+        <PreparedInvoice />
+      </CaseBoundary>
+    </div>
+  )
+}
+
+export function ReportBug() {
+  return null
+}
+`)
+  })
+
+  it('lists each block with its index, in the order the config lists them', () => {
     expect(byPath['ab/generated/luma/showcase.ts']).toBe(`// header
 
-import * as previewInvoice from "./showcase/preview/cards/invoice"
-import * as preview02Payments from "./showcase/preview-02/cards/payments"
+import preview02 from "./showcase/preview-02/index"
+import preview from "./showcase/preview/index"
 
 export const style = "luma"
 
 export const blocks = [
-  { name: "preview-02", cards: [
-    { name: "payments", Card: preview02Payments.Payments },
-  ] },
-  { name: "preview", cards: [
-    { name: "invoice", Card: previewInvoice.Invoice },
-  ] },
+  { name: "preview-02", Index: preview02 },
+  { name: "preview", Index: preview },
 ]
 `)
+  })
+
+  it('refuses a block with no index', () => {
+    expect(() =>
+      showcaseFiles(
+        config,
+        { cards: [], indexes: {}, layoutCss: '', fontTitle: 'Inter' },
+        '// header',
+      ),
+    ).toThrow('showcase: no index for preview-02')
   })
 
   it("gives the /create stubs the style and the configured theme, as /create's lists name them", () => {

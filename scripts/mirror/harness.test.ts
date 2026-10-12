@@ -174,7 +174,7 @@ describe('harnessFiles', () => {
         ],
         layoutCss: '/* layout */',
         typeset: [{ name: 'docs', html: '<h1>Docs</h1>' }],
-        showcase: { cards: [], layoutCss: '/* cards */', fontTitle: 'Inter' },
+        showcase: { cards: [], indexes: {}, layoutCss: '/* cards */', fontTitle: 'Inter' },
       },
       '// header',
     )
@@ -257,7 +257,7 @@ describe('harnessFiles', () => {
         examples: [],
         layoutCss: '',
         typeset: [],
-        showcase: { cards: [], layoutCss: '', fontTitle: 'Inter' },
+        showcase: { cards: [], indexes: {}, layoutCss: '', fontTitle: 'Inter' },
       },
       '// header',
     )

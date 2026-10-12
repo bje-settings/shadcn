@@ -336,6 +336,47 @@ describe('mirror build', BUILDS, () => {
     }
   })
 
+  it('skips a consumer class only where the item drops a rule gated on that class', async () => {
+    // border-b and border-t share one reason; Badge gates only on border-b.
+    const config = JSON.parse(await read('mirror.config.json'))
+    await writeFile(
+      join(root, 'mirror.config.json'),
+      JSON.stringify({
+        ...config,
+        upstream: { ...config.upstream, styles: ['base-vega'] },
+        consumerClasses: [{ classes: ['border-b', 'border-t'], reason: 'pads with a border' }],
+      }),
+    )
+    const content = upstream.files[0]?.content.replace(
+      'cva("group flex")',
+      'cva("group flex [.border-b]:pb-4")',
+    )
+    responses['https://example.com/base-vega/badge.json'] = {
+      ...upstream,
+      files: [{ ...upstream.files[0], content }],
+    }
+    responses['https://example.com/base-vega/badge-example.json'] = {
+      ...example('base-vega'),
+      files: [
+        {
+          path: 'registry/base-vega/examples/badge-example.tsx',
+          type: 'registry:example',
+          content: [
+            'import { Badge } from "@/registry/base-vega/ui/badge"',
+            'export default function BadgeExample() { return <><BadgeBottom /><BadgeTop /></> }',
+            'function BadgeBottom() { return <Badge className="border-b" /> }',
+            'function BadgeTop() { return <Badge className="border-t" /> }',
+          ].join('\n'),
+        },
+      ],
+    }
+    await run(['fetch'], io())
+    await run(['build', 'vega'], io())
+    expect(JSON.parse(await read('ab/skipped-examples/vega.json'))).toEqual({
+      'badge-example': { BadgeBottom: ['passes border-b, whose styling the mirror drops'] },
+    })
+  })
+
   it("copies a hook item's upstream source into the harness, outside the module maps", async () => {
     const source = 'export function useThing() {\n  return 1\n}\n'
     const configPath = join(root, 'mirror.config.json')
@@ -638,8 +679,14 @@ describe('preview blocks', BUILDS, () => {
     )
     expect(card).toContain('export { BadgeCard }')
     expect(await read('ab/generated/vega/showcase.ts')).toContain(
-      '{ name: "badge-card", Card: previewBadgeCard.BadgeCard },',
+      '{ name: "preview", Index: preview },',
     )
+    const index = await read('ab/generated/vega/showcase/preview/index.tsx')
+    expect(index).toContain('from "./cards"')
+    expect(index).not.toContain('@/registry/bases/base/blocks/')
+    const wrappers = await read('ab/generated/vega/showcase/preview/cards.tsx')
+    expect(wrappers).toContain('<div data-card="badge-card"')
+    expect(wrappers).toContain('import { CaseBoundary } from "../../../../case-boundary"')
     expect(await read('ab/generated/vega/showcase.css')).toContain('@source "./showcase";')
     // The fonts stub names the theme's font by its font item's title, as /create's list does.
     expect(await read('ab/generated/vega/showcase-theme.ts')).toContain(
@@ -653,6 +700,38 @@ describe('preview blocks', BUILDS, () => {
     ).toMatchObject({
       '@/app/(create)/lib/search-params': ['../../stubs/search-params.ts'],
       '@/registry/styles': ['../../stubs/styles.ts'],
+    })
+  })
+
+  it('skips a card that passes a class its component gates on', async () => {
+    const config = JSON.parse(await read('mirror.config.json'))
+    await writeFile(
+      join(root, 'mirror.config.json'),
+      JSON.stringify({
+        ...config,
+        upstream: { ...config.upstream, styles: ['base-vega'] },
+        consumerClasses: [{ classes: ['border-b'], reason: 'pads with a border' }],
+      }),
+    )
+    const content = upstream.files[0]?.content.replace(
+      'cva("group flex")',
+      'cva("group flex [.border-b]:pb-4")',
+    )
+    responses['https://example.com/base-vega/badge.json'] = {
+      ...upstream,
+      files: [{ ...upstream.files[0], content }],
+    }
+    responses[`${blocks}/cards/badge-card.tsx`] = badgeCard.replace(
+      'className="gap-2"',
+      'className="gap-2 border-b"',
+    )
+    await run(['fetch'], io())
+    await run(['build', 'vega'], io())
+    expect(JSON.parse(await read('ab/skipped-cards/vega.json'))).toEqual({
+      preview: {
+        'badge-card': ['passes border-b, whose styling the mirror drops'],
+        'other-card': ['needs other'],
+      },
     })
   })
 

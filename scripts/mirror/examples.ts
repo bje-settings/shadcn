@@ -4,7 +4,8 @@
 // harness's stand-ins for docs-only imports, react and the packages the
 // caller allows (mirrored items' dependencies, and preview.packages for
 // /create preview cards), and it passes no registry component a consumer
-// class whose upstream styling the mirror drops. A module with no default
+// class its item's upstream styling gates on and the mirror drops (border-b
+// on any Card part, not on a TabsList). A module with no default
 // export (a /create preview card) has its exported PascalCase functions as
 // its sub-examples.
 //
@@ -121,10 +122,10 @@ function stringTokens(node: Node): string[] {
   return tokens
 }
 
-// The class tokens a node passes as className to a registry component (one
-// of `components`, the local names of its registry imports): only there can
-// a consumer class gate that component's upstream styling.
-function componentClassTokens(node: Node, components: Set<string>): string[] {
+// The gated classes a node passes as className to a registry component:
+// `components` maps the local name of each registry import to the consumer
+// classes its item's upstream styling gates on.
+function componentClassTokens(node: Node, components: Map<string, Set<string>>): string[] {
   const tokens: string[] = []
   const visit = (current: Node) => {
     if (current.type === 'JSXOpeningElement') {
@@ -143,7 +144,8 @@ function componentClassTokens(node: Node, components: Set<string>): string[] {
           attribute.name.name === 'className' &&
           attribute.value
         ) {
-          tokens.push(...stringTokens(attribute.value))
+          const gated = components.get(tag) as Set<string>
+          tokens.push(...stringTokens(attribute.value).filter((token) => gated.has(token)))
         }
       }
     }
@@ -177,8 +179,10 @@ export function prepareExample(
   style: string,
   namespace: string,
   mirrored: Set<string>,
-  // Consumer classes whose upstream styling the mirror drops
-  dropped: Set<string>,
+  // Consumer classes whose upstream styling the mirror drops, by the item
+  // whose module drops it (card: border-b and border-t in vega, border-b
+  // alone in lyra)
+  dropped: Map<string, Set<string>>,
   // Packages mirrored items depend on (recharts), which examples may import
   packages: Set<string> = new Set(),
 ): PreparedExample {
@@ -265,11 +269,16 @@ export function prepareExample(
     return mirrored.has(item) ? undefined : item
   }
 
-  // Local names of registry component imports.
-  const registryComponents = new Set(
-    [...imports].flatMap(([name, declaration]) =>
-      declaration.source.value.startsWith(`${registry}ui/`) ? [name] : [],
-    ),
+  // Local names of registry component imports whose item drops rules a
+  // consumer class gates, and those classes.
+  const gatedComponents = new Map(
+    [...imports].flatMap(([name, declaration]) => {
+      const from = declaration.source.value
+      const gated = from.startsWith(`${registry}ui/`)
+        ? dropped.get(from.slice(`${registry}ui/`.length))
+        : undefined
+      return gated === undefined ? [] : [[name, gated] as const]
+    }),
   )
 
   const kept: string[] = []
@@ -289,8 +298,7 @@ export function prepareExample(
     ].sort()
     const passed = [...reached]
       .filter((ref) => declarations.has(ref))
-      .flatMap((ref) => componentClassTokens(declarations.get(ref) as Node, registryComponents))
-      .filter((token) => dropped.has(token))
+      .flatMap((ref) => componentClassTokens(declarations.get(ref) as Node, gatedComponents))
     const reasons = [
       ...(missing.length > 0 ? [`needs ${missing.join(', ')}`] : []),
       ...(KNOWN_DIFFERENCES.has(name) ? [KNOWN_DIFFERENCES.get(name) as string] : []),

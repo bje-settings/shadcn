@@ -161,16 +161,20 @@ that imports no card fails the fetch, and nothing is written until every file is
 its sub-examples, the one its block's index renders is the card (a card that is neither kept nor
 skipped fails the build), its imports of upstream's base components
 (`@/registry/bases/base/ui/<item>`) point at this style's, and a card that reaches an unmirrored
-item or passes a consumer class the mirror drops is skipped, with the reason, in
-`ab/skipped-cards/<style>.json`, which `generated.test.ts` holds to the build. Besides mirrored items' packages, cards may import
-`preview.packages`. The `/create` internals the cards read the design system from are stubbed in
-`ab/stubs/` (`CREATE_STUBS` in `scripts/mirror/examples.ts`); they return the style and `theme`.
+item or passes a component a consumer class that the component's item drops rules gated on is
+skipped, with the reason, in `ab/skipped-cards/<style>.json`, which `generated.test.ts` holds to
+the build. Besides mirrored items' packages, cards may import `preview.packages`. The `/create`
+internals the cards read the design system from are stubbed in `ab/stubs/` (`CREATE_STUBS` in
+`scripts/mirror/examples.ts`); they return the style and `theme`.
 
-The build writes the kept cards, a map of each block's cards in the order its index renders them,
-the stubs' design system and the cards' layout CSS to `ab/generated/<style>/showcase*`. The layout
-CSS is the same unlayered utility sheet as the A/B examples' (`layoutCss`), over the cards, plus
-the `style-<style>:` variant and `/create`'s `cn-font-heading` class. The components and global
-stylesheets the page loads are the registry's own.
+The build writes the kept cards, each block's index, the stubs' design system and the layout CSS to
+`ab/generated/<style>/showcase*`. The page renders each index as upstream wrote it, so the cards sit
+on upstream's grid; the index imports its cards from a generated `cards.tsx` beside it, which wraps
+each one in a `CaseBoundary` inside a `display: contents` element marked `data-card`, and renders
+nothing for a skipped one. The layout CSS is the same unlayered utility sheet as the A/B examples'
+(`layoutCss`), over the cards and the indexes, plus the `style-<style>:` variant and `/create`'s
+`cn-font-heading` class. The components and global stylesheets the page loads are the registry's
+own.
 
 `pnpm build:showcase` runs, per style, `pnpm mirror:build <style>` and a Vite build of the page
 (`--mode showcase`, `ab/vite.config.ts`) with a relative base into `public/r/<style>/`, as

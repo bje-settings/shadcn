@@ -106,6 +106,14 @@ describe('slotToScss', () => {
     })
     expect(scss).toBe(':where(.root) {\n  display: flex;\n}')
     expect(dropped).toEqual(['consumer class'])
+    // Two classes share the reason; the slot's rules gate only on one.
+    const shared = await convert(['flex', '[.border-b]:pb-4'], {
+      consumerClasses: new Map([
+        ['border-b', 'consumer class'],
+        ['border-t', 'consumer class'],
+      ]),
+    })
+    expect(shared.gated).toEqual(['border-b'])
     const own = await convert(['border-b'], {
       consumerClasses: new Map([['border-b', 'consumer class']]),
     })
@@ -269,6 +277,7 @@ describe('slotToScss', () => {
       customProperties: [],
       empty: true,
       dropped: [],
+      gated: [],
       defaults: {},
       defaultSelectors: [],
       internal: [],
