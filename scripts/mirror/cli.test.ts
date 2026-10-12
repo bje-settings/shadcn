@@ -638,8 +638,14 @@ describe('preview blocks', BUILDS, () => {
     )
     expect(card).toContain('export { BadgeCard }')
     expect(await read('ab/generated/vega/showcase.ts')).toContain(
-      '{ name: "badge-card", Card: previewBadgeCard.BadgeCard },',
+      '{ name: "preview", Index: preview },',
     )
+    const index = await read('ab/generated/vega/showcase/preview/index.tsx')
+    expect(index).toContain('from "./cards"')
+    expect(index).not.toContain('@/registry/bases/base/blocks/')
+    const wrappers = await read('ab/generated/vega/showcase/preview/cards.tsx')
+    expect(wrappers).toContain('<div data-card="badge-card"')
+    expect(wrappers).toContain('import { CaseBoundary } from "../../../../case-boundary"')
     expect(await read('ab/generated/vega/showcase.css')).toContain('@source "./showcase";')
     // The fonts stub names the theme's font by its font item's title, as /create's list does.
     expect(await read('ab/generated/vega/showcase-theme.ts')).toContain(

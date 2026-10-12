@@ -1,9 +1,11 @@
-// The showcase: the cards of shadcn's /create preview, rendered with this
-// style's components, CSS modules and global stylesheets, loaded as a consumer
-// would. Only the cards' own layout classes come from the generated utility
-// sheet. The switcher numbers the blocks as /create does; `?preview=02` and
-// `?theme=dark` select a block and the dark theme, and the controls keep them
-// in the URL.
+// The showcase: shadcn's /create preview blocks, each upstream's own grid of
+// cards, rendered with this style's components, CSS modules and global
+// stylesheets, loaded as a consumer would. Only the grid's and the cards' own
+// layout classes come from the generated utility sheet. As on /create, the
+// grid is a fixed-width canvas (2400px, 3000px from md) that scrolls sideways
+// on a narrower screen. The switcher numbers the blocks as /create does;
+// `?preview=02` and `?theme=dark` select a block and the dark theme, and the
+// controls keep them in the URL.
 import '@ab/styles/fonts.css'
 import '@ab/styles/variables.scss'
 import '@ab/styles/base.scss'
@@ -20,7 +22,8 @@ type Theme = 'light' | 'dark'
 // 01, 02, ...: the switcher's label for the block at `index`.
 const label = (index: number) => String(index + 1).padStart(2, '0')
 
-// Fluid between upstream's preview grid gaps: --spacing(4) on small screens, --spacing(10) from md.
+// The header's padding, fluid between the grid's own gaps: --spacing(4) on
+// small screens, --spacing(10) from md.
 const GAP = 'clamp(16px, 3vw, 40px)'
 
 function Showcase() {
@@ -51,7 +54,15 @@ function Showcase() {
       }}
     >
       <header
-        style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12, padding: GAP }}
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          gap: 12,
+          padding: GAP,
+          // The grid pads itself by its own gap.
+          paddingBottom: 0,
+        }}
       >
         <h1 style={{ margin: 0, marginRight: 'auto', fontSize: 16, fontWeight: 600 }}>
           @bje {style}
@@ -79,22 +90,12 @@ function Showcase() {
         </Button>
       </header>
       {block && (
-        <main
-          data-showcase={block.name}
-          style={{ columnWidth: 360, columnGap: GAP, padding: GAP, paddingTop: 0 }}
-        >
-          {block.cards.map(({ name, Card }) => (
-            // flow-root keeps a card's margins inside its column slot.
-            <div
-              key={`${block.name} ${name}`}
-              data-card={name}
-              style={{ breakInside: 'avoid', display: 'flow-root', marginBottom: GAP }}
-            >
-              <CaseBoundary>
-                <Card />
-              </CaseBoundary>
-            </div>
-          ))}
+        // Each card in the index has its own CaseBoundary (data-card); this
+        // one catches the index itself.
+        <main key={block.name} data-showcase={block.name}>
+          <CaseBoundary>
+            <block.Index />
+          </CaseBoundary>
         </main>
       )}
     </div>

@@ -1,8 +1,9 @@
-// The showcase renders every preview card the style can render: through its
-// own controls and its URL, in every preview block and both themes, no card
-// may render its error (data-case-error), the page may report none, and the
-// cards rendered are exactly those the snapshotted index imports less the
-// committed skip list.
+// The showcase renders every preview card the style can render, on upstream's
+// own grid: through its own controls and its URL, in every preview block and
+// both themes, no card may render its error (data-case-error), the page may
+// report none, the cards rendered are exactly those the snapshotted index
+// imports less the committed skip list, and the grid lays them out in
+// upstream's seven columns with its gap.
 
 import { readFileSync } from 'node:fs'
 import { expect, type Page, test } from '@playwright/test'
@@ -52,11 +53,19 @@ async function check(page: Page, errors: string[], index: number, theme: 'light'
       .locator('[data-case-error]')
       .evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-case-error')))
     expect(failed, 'cards that threw').toEqual([])
+    // An index can render a card twice, one copy per breakpoint (preview's
+    // UIElements): each counts once, where it first appears.
     const cards = await page
       .locator('[data-card]')
       .evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-card')))
     const names = expected(block)
-    expect(cards, 'cards rendered').toEqual(names)
+    expect([...new Set(cards)], 'cards rendered').toEqual(names)
+    const grid = await page.locator('[data-slot="capture-target"]').evaluate((node) => {
+      const { gridTemplateColumns, columnGap } = getComputedStyle(node)
+      return { columns: gridTemplateColumns.split(' ').length, columnGap }
+    })
+    expect(grid.columns, "the grid's columns").toBe(7)
+    expect(grid.columnGap, "the grid's gap").toMatch(/^[1-9]\d*(\.\d+)?px$/)
     // The /create stubs return the style and the theme's font: style-overview
     // names both ("Vega - Inter").
     if (names.includes('style-overview')) {

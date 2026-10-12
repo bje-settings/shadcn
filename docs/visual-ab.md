@@ -32,7 +32,7 @@ Every case is generated (`scripts/mirror/harness.ts`):
   in light and dark.
 - **Examples:** each sub-example of upstream's docs example for a mirrored component
   (`<item>-example`), in light and dark. A sub-example is used once every component it reaches is
-  mirrored, it passes no consumer class whose styling the mirror drops, and it is not one of the
+  mirrored, it passes no component a consumer class that its item's dropped rules gate on, and it is not one of the
   `KNOWN_DIFFERENCES` in `scripts/mirror/examples.ts`; `pnpm mirror:build` lists the skipped ones
   and why, and records them in `ab/skipped-examples/<style>.json`, which `generated.test.ts` holds
   to the build, so a new skip fails until it is committed. Both pages render the same trimmed
@@ -45,8 +45,9 @@ Every case is generated (`scripts/mirror/harness.ts`):
   (`showcase.html`, ours only), and through its switcher and theme toggle renders each `/create`
   preview block in light and dark, then opens the last block in dark from the URL. It fails on a card that renders its error, a page error, cards
   other than those the block's snapshotted index imports less those in
-  `ab/skipped-cards/<style>.json` or in another order than the index renders them, or a
-  `style-overview` card that does not name the style and the theme's font. Nothing is compared
+  `ab/skipped-cards/<style>.json` or in another order than the index renders them, a
+  `style-overview` card that does not name the style and the theme's font, or a grid that does not
+  lay the cards out in upstream's seven columns with a gap. Nothing is compared
   with upstream.
 
 ## How a run compares

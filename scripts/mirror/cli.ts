@@ -498,6 +498,13 @@ async function buildStyle(io: Io, config: MirrorConfig): Promise<void> {
   const layout = layoutCss(index, colors, font, './examples/ours')
   const showcase = {
     cards,
+    indexes: Object.fromEntries(
+      await Promise.all(
+        config.preview.blocks.map(
+          async (block) => [block, await readPreview(io, config, `${block}/index.tsx`)] as const,
+        ),
+      ),
+    ),
     layoutCss: layoutCss(index, colors, font, './showcase'),
     fontTitle: font.title,
   }

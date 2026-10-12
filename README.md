@@ -11,7 +11,7 @@ classes, not only in variables, so a project uses one style. Every style uses sh
 color, the Inter font by default and lucide icons.
 
 Each style's address also serves a showcase: the cards of shadcn's
-[/create](https://ui.shadcn.com/create) preview, rendered with that style's components and
+[/create](https://ui.shadcn.com/create) preview, on its grid, rendered with that style's components and
 stylesheets, in light and dark: [vega](https://shadcn.bje.co/vega/),
 [luma](https://shadcn.bje.co/luma/), [nova](https://shadcn.bje.co/nova/),
 [maia](https://shadcn.bje.co/maia/), [lyra](https://shadcn.bje.co/lyra/),

@@ -2,10 +2,13 @@
 // cards, each card a module of its own that imports upstream's base
 // components. `mirror fetch` snapshots each configured block's index and every
 // card it imports; `mirror build` prepares the cards with each style's
-// components for that style's showcase page (ab/showcase.tsx).
+// components, and the showcase page (ab/showcase.tsx) renders each index as
+// upstream wrote it, with those cards.
 
+import { dirname, relative } from 'node:path/posix'
 import type { Node } from '@babel/types'
-import { childNodes, parseModule } from './ast.ts'
+import MagicString from 'magic-string'
+import { childNodes, parseModule, span } from './ast.ts'
 import { type MirrorConfig, shortStyle } from './config.ts'
 import type { PreparedExample } from './examples.ts'
 import { camelCase, pascalCase } from './names.ts'
@@ -65,6 +68,8 @@ export type ShowcaseCard = { block: string; card: PreviewCard; prepared: Prepare
 
 export type ShowcaseInput = {
   cards: ShowcaseCard[]
+  // Each block's snapshotted index, by block
+  indexes: Record<string, string>
   // The cards' layout CSS (layoutCss over ./showcase)
   layoutCss: string
   // The theme font's title (Inter), as /create's font list names it
@@ -95,9 +100,61 @@ export function skippedCards(cards: ShowcaseCard[]): Record<string, Record<strin
   return skipped
 }
 
-// The showcase page's generated inputs: each kept card (our copy), a map of
-// every block's cards in render order, the design system the /create stubs
-// return, and the cards' layout CSS.
+// A block's index as the showcase renders it: upstream's grid as written,
+// its cards imported from the block's ./cards wrappers. An index importing any
+// other registry module fails, rather than reaching upstream's components.
+export function showcaseIndex(block: string, index: string): string {
+  const prefix = `@/registry/${CARD_REGISTRY}/blocks/${block}/`
+  const out = new MagicString(index)
+  for (const statement of parseModule(index).program.body) {
+    if (statement.type !== 'ImportDeclaration') continue
+    const from = statement.source.value
+    if (from.startsWith(prefix)) {
+      out.overwrite(...span(statement.source), '"./cards"')
+    } else if (from.startsWith('@/registry/')) {
+      throw new Error(`preview ${block}/index.tsx: imports ${from}, which is not one of its cards`)
+    }
+  }
+  return out.toString()
+}
+
+// A block's ./cards module: each card the index imports, under the name it
+// imports it by, marked with its name (data-card) and wrapped in a
+// CaseBoundary, so a card that throws fails alone. display: contents keeps
+// the card itself the child of upstream's column. A card the style skips
+// renders nothing.
+function cardWrappers(path: string, cards: ShowcaseCard[]): string {
+  const boundary = relative(dirname(path), 'ab/case-boundary')
+  return [
+    `import { CaseBoundary } from ${JSON.stringify(boundary)}`,
+    ...cards
+      .filter(kept)
+      .map(
+        ({ card }) =>
+          `import { ${card.component} as Prepared${card.component} } from ${JSON.stringify(`./${card.file.replace(/\.tsx$/, '')}`)}`,
+      ),
+    ...cards.map((c) => {
+      const { component, name } = c.card
+      const body = kept(c)
+        ? [
+            '  return (',
+            `    <div data-card=${JSON.stringify(name)} style={{ display: 'contents' }}>`,
+            '      <CaseBoundary>',
+            `        <Prepared${component} />`,
+            '      </CaseBoundary>',
+            '    </div>',
+            '  )',
+          ]
+        : ['  return null']
+      return ['', `export function ${component}() {`, ...body, '}'].join('\n')
+    }),
+  ].join('\n')
+}
+
+// The showcase page's generated inputs: each kept card (our copy), each
+// block's index and card wrappers, the blocks in the config's order, the
+// design system the /create stubs return, and the layout CSS of the cards and
+// the indexes.
 export function showcaseFiles(
   config: MirrorConfig,
   showcase: ShowcaseInput,
@@ -106,17 +163,14 @@ export function showcaseFiles(
   const dir = config.harnessDir
   const short = shortStyle(config.upstream.style)
   const cards = showcase.cards.filter(kept)
-  const id = ({ block, card }: ShowcaseCard) => camelCase(`${block}-${card.name}`)
   const ts = (content: string) => `${header}\n\n${content}\n`
-  const blocks = config.preview.blocks.map((block) => [
-    `  { name: ${JSON.stringify(block)}, cards: [`,
-    ...cards
-      .filter((c) => c.block === block)
-      .map(
-        (c) => `    { name: ${JSON.stringify(c.card.name)}, Card: ${id(c)}.${c.card.component} },`,
-      ),
-    '  ] },',
-  ])
+  const { blocks } = config.preview
+  const index = (block: string) => {
+    const source = showcase.indexes[block]
+    if (source === undefined) throw new Error(`showcase: no index for ${block}`)
+    return showcaseIndex(block, source)
+  }
+  const wrappers = (block: string) => `${dir}/showcase/${block}/cards.tsx`
   const { theme } = config
   const designSystem = {
     style: short,
@@ -131,19 +185,33 @@ export function showcaseFiles(
       path: `${dir}/showcase/${block}/${card.file}`,
       content: `${header}\n\n${prepared.ours}`,
     })),
+    ...blocks.flatMap((block) => [
+      { path: `${dir}/showcase/${block}/index.tsx`, content: `${header}\n\n${index(block)}` },
+      {
+        path: wrappers(block),
+        content: ts(
+          cardWrappers(
+            wrappers(block),
+            showcase.cards.filter((c) => c.block === block),
+          ),
+        ),
+      },
+    ]),
     {
       path: `${dir}/showcase.ts`,
       content: ts(
         [
-          ...cards.map(
-            (c) =>
-              `import * as ${id(c)} from ${JSON.stringify(`./showcase/${c.block}/${c.card.file.replace(/\.tsx$/, '')}`)}`,
+          ...blocks.map(
+            (block) =>
+              `import ${camelCase(block)} from ${JSON.stringify(`./showcase/${block}/index`)}`,
           ),
           '',
           `export const style = ${JSON.stringify(short)}`,
           '',
           'export const blocks = [',
-          ...blocks.flat(),
+          ...blocks.map(
+            (block) => `  { name: ${JSON.stringify(block)}, Index: ${camelCase(block)} },`,
+          ),
           ']',
         ].join('\n'),
       ),
