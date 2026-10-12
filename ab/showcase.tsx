@@ -5,9 +5,9 @@
 // grid is a fixed-width canvas (2400px; from md 3000px, or 2600px in lyra and
 // mira) that scrolls sideways on a narrower screen. The switcher numbers the
 // blocks as /create does; `?preview=02` and `?theme=dark` select a block and
-// the dark theme, and the controls keep them in the URL. The header carries the
-// bje logo and names the style through a select that opens another style's
-// page with the same block and theme.
+// the dark theme, and the controls keep them in the URL. The header's heading
+// is the bje logo plus the style's name (visually hidden); beside it, a select
+// opens another style's page with the same block and theme.
 import '@ab/styles/fonts.css'
 import '@ab/styles/variables.scss'
 import '@ab/styles/base.scss'
@@ -75,27 +75,45 @@ function Showcase() {
           paddingBottom: 0,
         }}
       >
-        <h1
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            margin: 0,
-            marginRight: 'auto',
-            fontSize: 16,
-            fontWeight: 600,
-          }}
-        >
-          <svg
-            role="img"
-            aria-label="bje"
-            viewBox="0 0 400 400"
-            width={16}
-            height={16}
-            style={{ flex: 'none' }}
+        {/* The heading and the select are the left group; its margin pushes the preview switcher right. */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginRight: 'auto' }}>
+          <h1
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              margin: 0,
+              fontSize: 16,
+              fontWeight: 600,
+            }}
           >
-            <path fill="var(--primary)" d={LOGO} />
-          </svg>
+            <svg
+              role="img"
+              aria-label="bje"
+              viewBox="0 0 400 400"
+              width={42}
+              height={42}
+              style={{ flex: 'none' }}
+            >
+              <path fill="var(--primary)" d={LOGO} />
+            </svg>
+            {/* The select shows the style, so the name is hidden from sight but names the heading. */}
+            <span
+              style={{
+                position: 'absolute',
+                width: 1,
+                height: 1,
+                overflow: 'hidden',
+                clip: 'rect(0, 0, 0, 0)',
+                whiteSpace: 'nowrap',
+                margin: -1,
+                border: 0,
+                padding: 0,
+              }}
+            >
+              {style}
+            </span>
+          </h1>
           <NativeSelect
             aria-label="Style"
             size="sm"
@@ -115,7 +133,7 @@ function Showcase() {
               </NativeSelectOption>
             ))}
           </NativeSelect>
-        </h1>
+        </div>
         <nav aria-label="Preview" style={{ display: 'flex', gap: 4 }}>
           {blocks.map(({ name }, index) => (
             <Button
