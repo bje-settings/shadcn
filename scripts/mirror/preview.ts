@@ -76,12 +76,21 @@ function kept({ card, prepared }: ShowcaseCard): boolean {
   return prepared.kept.includes(card.component)
 }
 
-// Why each card the showcase leaves out is left out, by block and card.
+// Why each card the showcase leaves out is left out, by block and card. A card
+// whose function preparation neither kept nor skipped (one it did not take
+// for a sub-example) fails, rather than leaving the page with no record.
 export function skippedCards(cards: ShowcaseCard[]): Record<string, Record<string, string[]>> {
   const skipped: Record<string, Record<string, string[]>> = {}
-  for (const { block, card, prepared } of cards) {
+  for (const showcaseCard of cards) {
+    if (kept(showcaseCard)) continue
+    const { block, card, prepared } = showcaseCard
     const reasons = prepared.skipped.find(({ name }) => name === card.component)?.reasons
-    if (reasons) skipped[block] = { ...skipped[block], [card.name]: reasons }
+    if (reasons === undefined) {
+      throw new Error(
+        `showcase ${block}/${card.name}: ${card.component} is not one of its sub-examples (${[...prepared.kept, ...prepared.skipped.map(({ name }) => name)].join(', ')})`,
+      )
+    }
+    skipped[block] = { ...skipped[block], [card.name]: reasons }
   }
   return skipped
 }

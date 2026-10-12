@@ -115,6 +115,19 @@ describe('skippedCards', () => {
   it('records nothing when every card renders', () => {
     expect(skippedCards([showcase[0] as ShowcaseCard])).toEqual({})
   })
+
+  // An `export const` card, say: preparation takes another export instead.
+  it('refuses a card whose function preparation neither kept nor skipped', () => {
+    const lost = card(
+      'preview',
+      'invoice',
+      'Invoice',
+      prepared(['Helper'], [{ name: 'Other', reasons: ['x'] }]),
+    )
+    expect(() => skippedCards([lost])).toThrow(
+      'showcase preview/invoice: Invoice is not one of its sub-examples (Helper, Other)',
+    )
+  })
 })
 
 const config = forStyle(
