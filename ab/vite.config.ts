@@ -15,8 +15,8 @@ const ab = fileURLToPath(new URL('.', import.meta.url))
 const { namespace, upstream } = config
 const generated = `${repo}${config.harnessDir}`
 
-// The showcase names its style in its title and in the marker the deploy
-// check looks for.
+// The showcase names its style in its title and in the marker CI's build and
+// deploy checks look for.
 const styleName: Plugin = {
   name: 'showcase-style',
   transformIndexHtml: (html) => html.replaceAll('{style}', short),

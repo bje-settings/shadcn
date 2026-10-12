@@ -9,7 +9,7 @@ state it compares.
 
 ```bash
 pnpm ab         # run every case; the HTML report in ab/report/<style> has upstream, ours, diff
-pnpm ab:serve   # browse the pages: / (side by side), /upstream.html, /ours.html
+pnpm ab:serve   # browse the pages: / (side by side), /upstream.html, /ours.html, /showcase.html
 pnpm ab:timings # where the last run spent its time, per case kind and per step
 ```
 

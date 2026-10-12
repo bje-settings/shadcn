@@ -44,8 +44,8 @@ when matching files are staged. CI is the enforcement boundary.
 ## Generated files
 
 Never edit by hand: each style's `registry/<style>/` (`ui/`, `hooks/`, `styles/`, `registry.json`,
-`tsconfig.json`), the snapshots under `upstream/`, `ab/generated/`, and
-`ab/skipped-examples/<style>.json`.
+`tsconfig.json`), the snapshots under `upstream/`, `ab/generated/`,
+`ab/skipped-examples/<style>.json` and `ab/skipped-cards/<style>.json`.
 `scripts/mirror/generated.test.ts` fails when a committed file differs from what the pipeline
 produces. To change the output, change `scripts/mirror/` or `mirror.config.json`, then run
 `pnpm mirror:build`.
@@ -72,12 +72,12 @@ produces. To change the output, change `scripts/mirror/` or `mirror.config.json`
 
 1. Append upstream's name (`base-<style>`) to `upstream.styles` in `mirror.config.json`. The first
    entry is the A/B default.
-2. Run `pnpm mirror:fetch`, then `pnpm mirror:build <style>`. Fetch refreshes every style and
-   Typeset: discard the other changes, or commit them separately with a full `pnpm mirror:build`,
-   as an upstream update.
+2. Run `pnpm mirror:fetch`, then `pnpm mirror:build <style>`. Fetch refreshes every style, Typeset
+   and the `/create` preview blocks: discard the other changes, or commit them separately with a
+   full `pnpm mirror:build`, as an upstream update.
 3. Where the build fails on the style's classes, add the smallest exception to `mirror.config.json`,
    with a reason. Exceptions apply to every style.
-4. Add the style to the list in `scripts/mirror/registries.test.ts` and in `README.md`.
+4. Add the style to both lists in `README.md`: the styles, and their showcase links.
 5. Run the style's two vitest projects and `AB_STYLE=<style> pnpm ab`.
 
 Everything else reads `upstream.styles`: the vitest projects, the A/B port, `pnpm build`, CI's

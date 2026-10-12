@@ -122,6 +122,7 @@ export function showcaseFiles(
     style: short,
     baseColor: theme.baseColor,
     font: theme.font,
+    // The theme has no heading font: variables.scss sets --font-heading to the sans font.
     fontHeading: theme.font,
     iconLibrary: theme.iconLibrary,
   }

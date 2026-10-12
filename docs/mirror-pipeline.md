@@ -157,11 +157,12 @@ once for every style, each block in `preview.blocks`: its `index.tsx`, and every
 index imports from `@/registry/bases/base/blocks/<block>/`, to `upstream/preview/<block>/`. An index
 that imports no card fails the fetch, and nothing is written until every file is fetched.
 
-`mirror:build` prepares each card as it does a docs example: the card's exported function is the
-one sub-example, its imports of upstream's base components (`@/registry/bases/base/ui/<item>`)
-point at this style's, and a card that reaches an unmirrored item or passes a consumer class the
-mirror drops is skipped, with the reason, in `ab/skipped-cards/<style>.json`, which
-`generated.test.ts` holds to the build. Besides mirrored items' packages, cards may import
+`mirror:build` prepares each card as it does a docs example: its exported PascalCase functions are
+its sub-examples, the one its block's index renders is the card (a card that is neither kept nor
+skipped fails the build), its imports of upstream's base components
+(`@/registry/bases/base/ui/<item>`) point at this style's, and a card that reaches an unmirrored
+item or passes a consumer class the mirror drops is skipped, with the reason, in
+`ab/skipped-cards/<style>.json`, which `generated.test.ts` holds to the build. Besides mirrored items' packages, cards may import
 `preview.packages`. The `/create` internals the cards read the design system from are stubbed in
 `ab/stubs/` (`CREATE_STUBS` in `scripts/mirror/examples.ts`); they return the style and `theme`.
 

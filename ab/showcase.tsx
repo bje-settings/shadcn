@@ -20,7 +20,7 @@ type Theme = 'light' | 'dark'
 // 01, 02, ...: the switcher's label for the block at `index`.
 const label = (index: number) => String(index + 1).padStart(2, '0')
 
-// Upstream's preview grid spacing: --spacing(4) on small screens, --spacing(10) from md.
+// Fluid between upstream's preview grid gaps: --spacing(4) on small screens, --spacing(10) from md.
 const GAP = 'clamp(16px, 3vw, 40px)'
 
 function Showcase() {
