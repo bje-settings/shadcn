@@ -101,7 +101,8 @@ function Showcase() {
             size="sm"
             value={style}
             onChange={(event) => {
-              // Site directories are short names, siblings of this page's.
+              // On the site each style's page is `<short>/`, a sibling of this one (the
+              // trailing slash makes `../` resolve to it).
               const next = new URL(`../${event.target.value}/`, window.location.href)
               next.searchParams.set('preview', label(shown))
               next.searchParams.set('theme', theme)

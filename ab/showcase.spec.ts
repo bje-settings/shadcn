@@ -117,12 +117,17 @@ test(`showcase ${short}`, async ({ page }) => {
       ? route.fulfill({ body: PIXEL, contentType: 'image/png' })
       : route.abort(),
   )
-  await page.goto(`http://localhost:${PORT}/showcase.html`)
+  // Open on the last block in the dark theme, so a selection that kept the
+  // defaults instead of the page's state is caught.
+  const last = config.preview.blocks.length - 1
+  await page.goto(`http://localhost:${PORT}/showcase.html?preview=${label(last)}&theme=dark`)
   // The header: the bje logo in the primary color.
   const logo = page.locator('h1').getByRole('img', { name: 'bje' })
   await expect(logo.locator('path')).toHaveAttribute('fill', 'var(--primary)')
   // The select lists every configured style in order, with this one chosen.
   const styles = config.upstream.styles.map(shortStyle)
+  expect(styles, 'the config lists this style and another').toContain(short)
+  expect(styles.length).toBeGreaterThan(1)
   const select = page.getByRole('combobox', { name: 'Style' })
   await expect(select.locator('option')).toHaveText(styles)
   expect(
@@ -133,20 +138,26 @@ test(`showcase ${short}`, async ({ page }) => {
   ).toEqual(styles)
   await expect(select).toHaveValue(short)
   // Choosing another style requests its page, keeping the block and theme.
-  // Under `pnpm ab:serve` that page does not exist, so the request is checked,
-  // not the page.
+  // Under `pnpm ab:serve` there is no page for another style (the sibling
+  // directories exist only in the built site), so the navigation is aborted
+  // and the request is checked, not the page.
   const other = styles[(styles.indexOf(short) + 1) % styles.length] as string
   const current = new URL(page.url())
-  const requested = page.waitForRequest((request) => request.url().includes(`/${other}/`))
   await page.route(`**/${other}/**`, (route) => route.abort())
-  await select.selectOption(other)
-  const target = new URL((await requested).url())
+  const [request] = await Promise.all([
+    page.waitForRequest(
+      (request) =>
+        request.isNavigationRequest() &&
+        request.frame() === page.mainFrame() &&
+        request.url().includes(`/${other}/`),
+    ),
+    select.selectOption(other),
+  ])
+  const target = new URL(request.url())
   expect(target.pathname).toBe(new URL(`../${other}/`, current).pathname)
-  expect(target.searchParams.get('preview'), 'preview kept').toBe(
-    current.searchParams.get('preview'),
-  )
-  expect(target.searchParams.get('theme'), 'theme kept').toBe(current.searchParams.get('theme'))
-  // The aborted navigation leaves the showcase page in place.
+  expect(target.searchParams.get('preview'), 'preview kept').toBe(label(last))
+  expect(target.searchParams.get('theme'), 'theme kept').toBe('dark')
+  // Reload for a clean page and URL.
   await page.goto(`http://localhost:${PORT}/showcase.html`)
   const preview = (index: number) => page.getByRole('button', { name: label(index), exact: true })
   for (const theme of ['light', 'dark'] as const) {
@@ -157,7 +168,6 @@ test(`showcase ${short}`, async ({ page }) => {
     await page.getByRole('button', { name: theme === 'light' ? 'Dark' : 'Light' }).click()
   }
   // ?preview= and ?theme= open a block and the dark theme directly.
-  const last = config.preview.blocks.length - 1
   await page.goto(`http://localhost:${PORT}/showcase.html?preview=${label(last)}&theme=dark`)
   await check(page, errors, last, 'dark')
 })
