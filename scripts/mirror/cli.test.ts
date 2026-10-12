@@ -467,6 +467,13 @@ describe('mirror build', BUILDS, () => {
     )
   })
 
+  // `preview` selects the fetch's preview blocks, not a style to build.
+  it('refuses to build preview as a style', async () => {
+    await expect(run(['build', 'preview'], io())).rejects.toThrow(
+      'mirror build: preview is not one of vega, luma',
+    )
+  })
+
   it('asks for a fetch when a snapshot is missing', async () => {
     await expect(run(['build'], io())).rejects.toThrow(
       'no snapshot for base-vega/font-inter; run mirror fetch first',
