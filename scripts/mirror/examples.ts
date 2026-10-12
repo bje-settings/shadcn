@@ -5,7 +5,7 @@
 // caller allows (mirrored items' dependencies, and preview.packages for
 // /create preview cards), and it passes no registry component a consumer
 // class its item's upstream styling gates on and the mirror drops (border-b
-// on a CardHeader, not on a TabsList). A module with no default
+// on any Card part, not on a TabsList). A module with no default
 // export (a /create preview card) has its exported PascalCase functions as
 // its sub-examples.
 //

@@ -3,7 +3,7 @@
 // both themes, no card may render its error (data-case-error), the page may
 // report none, the cards rendered are exactly those the snapshotted index
 // imports less the committed skip list, and the grid lays them out in
-// upstream's seven columns with its gap.
+// upstream's seven columns with a gap.
 
 import { readFileSync } from 'node:fs'
 import { expect, type Page, test } from '@playwright/test'
@@ -34,7 +34,7 @@ const fontTitle: string = JSON.parse(
 const label = (index: number) => String(index + 1).padStart(2, '0')
 
 // The cards each block should render, in order, from the snapshot, not the
-// generated map.
+// generated showcase.
 const expected = (block: string) => {
   const index = readFileSync(`${repo}${config.snapshotDir}/preview/${block}/index.tsx`, 'utf8')
   return previewCards(block, index)

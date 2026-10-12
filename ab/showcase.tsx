@@ -2,8 +2,8 @@
 // cards, rendered with this style's components, CSS modules and global
 // stylesheets, loaded as a consumer would. Only the grid's and the cards' own
 // layout classes come from the generated utility sheet. As on /create, the
-// grid is a fixed-width canvas (2400px, 3000px from md) that scrolls sideways
-// on a narrower screen. The switcher numbers the blocks as /create does;
+// grid is a fixed-width canvas (2400px; from md 3000px, or 2600px in lyra and
+// mira) that scrolls sideways on a narrower screen. The switcher numbers the blocks as /create does;
 // `?preview=02` and `?theme=dark` select a block and the dark theme, and the
 // controls keep them in the URL.
 import '@ab/styles/fonts.css'
@@ -23,7 +23,8 @@ type Theme = 'light' | 'dark'
 const label = (index: number) => String(index + 1).padStart(2, '0')
 
 // The header's padding, fluid between the grid's own gaps: --spacing(4) on
-// small screens, --spacing(10) from md.
+// small screens, --spacing(10) from md. It approximates them: the grid's gap
+// steps at md rather than scaling, and is --spacing(6) from md in lyra and mira.
 const GAP = 'clamp(16px, 3vw, 40px)'
 
 function Showcase() {
