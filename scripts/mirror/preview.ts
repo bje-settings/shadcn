@@ -152,9 +152,9 @@ function cardWrappers(path: string, cards: ShowcaseCard[]): string {
 }
 
 // The showcase page's generated inputs: each kept card (our copy), each
-// block's index and card wrappers, the blocks in the config's order, the
-// design system the /create stubs return, and the layout CSS of the cards and
-// the indexes.
+// block's index and card wrappers, the blocks in the config's order, every
+// style the config builds, the design system the /create stubs return, and
+// the layout CSS of the cards and the indexes.
 export function showcaseFiles(
   config: MirrorConfig,
   showcase: ShowcaseInput,
@@ -207,6 +207,8 @@ export function showcaseFiles(
           ),
           '',
           `export const style = ${JSON.stringify(short)}`,
+          // Every style the config builds, for the header's style select.
+          `export const allStyles = ${JSON.stringify(config.upstream.styles.map(shortStyle))}`,
           '',
           'export const blocks = [',
           ...blocks.map(

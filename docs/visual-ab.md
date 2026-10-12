@@ -49,8 +49,10 @@ Every case is generated (`scripts/mirror/harness.ts`):
   imports less those in `ab/skipped-cards/<style>.json`, in another order than the index renders
   them or other than as many times as it renders each, a `style-overview` card that does not name
   the style and the theme's font, or a grid that does not lay the cards out in upstream's seven
-  columns with a gap, a column spanning as many tracks as its `col-span` says. Nothing is compared
-  with upstream.
+  columns with a gap, a column spanning as many tracks as its `col-span` says. It also checks the
+  header's logo and that the style select lists every configured style, with this one chosen, and
+  requests the chosen style's page with the block and theme kept. Nothing is compared with
+  upstream.
 
 ## How a run compares
 
