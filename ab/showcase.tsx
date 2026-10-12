@@ -25,6 +25,8 @@ const label = (index: number) => String(index + 1).padStart(2, '0')
 // The header's padding, fluid between the grid's own gaps: --spacing(4) on
 // small screens, --spacing(10) from md. It approximates them: the grid's gap
 // steps at md rather than scaling, and is --spacing(6) from md in lyra and mira.
+// Upstream's 3xl step (--spacing(12)) does not apply here: the theme defines no
+// 3xl breakpoint.
 const GAP = 'clamp(16px, 3vw, 40px)'
 
 function Showcase() {

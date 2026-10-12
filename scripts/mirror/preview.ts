@@ -70,7 +70,7 @@ export type ShowcaseInput = {
   cards: ShowcaseCard[]
   // Each block's snapshotted index, by block
   indexes: Record<string, string>
-  // The cards' layout CSS (layoutCss over ./showcase)
+  // The cards' and the indexes' layout CSS (layoutCss over ./showcase)
   layoutCss: string
   // The theme font's title (Inter), as /create's font list names it
   fontTitle: string

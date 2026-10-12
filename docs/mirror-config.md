@@ -57,6 +57,7 @@ exports the part.
 | `unrenderedInTests`  | Parts jsdom renders nothing for; their test checks exactly that                      |
 | `sameRenderInTests`  | Props whose other values render the same in the test's scaffold (Sidebar collapsed) |
 
-`consumerClasses` also makes the A/B harness skip the docs examples that pass those classes.
+`consumerClasses` also makes the A/B harness skip the docs examples and `/create` preview cards
+that pass one of those classes to a component whose item drops rules gated on it.
 `coverageExclusions` leaves the item's component or hook file out of coverage in every style
 (`vitest.config.ts`).

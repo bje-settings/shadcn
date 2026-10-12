@@ -32,10 +32,11 @@ Every case is generated (`scripts/mirror/harness.ts`):
   in light and dark.
 - **Examples:** each sub-example of upstream's docs example for a mirrored component
   (`<item>-example`), in light and dark. A sub-example is used once every component it reaches is
-  mirrored, it passes no component a consumer class that its item's dropped rules gate on, and it is not one of the
-  `KNOWN_DIFFERENCES` in `scripts/mirror/examples.ts`; `pnpm mirror:build` lists the skipped ones
-  and why, and records them in `ab/skipped-examples/<style>.json`, which `generated.test.ts` holds
-  to the build, so a new skip fails until it is committed. Both pages render the same trimmed
+  mirrored, it passes no component a consumer class that the component's item drops rules gated on
+  (`border-b` on a Card part), and it is not one of the `KNOWN_DIFFERENCES` in
+  `scripts/mirror/examples.ts`; `pnpm mirror:build` lists the skipped ones and why, and records
+  them in `ab/skipped-examples/<style>.json`, which `generated.test.ts` holds to the build, so a
+  new skip fails until it is committed. Both pages render the same trimmed
   example source (`ab/generated/<style>/examples/`), differing only in which components it
   imports. The ours page styles the examples' own layout classes with unlayered Tailwind utilities
   (`ab/generated/<style>/examples.css`), so a class an example passes to our component outranks
@@ -43,11 +44,12 @@ Every case is generated (`scripts/mirror/harness.ts`):
   docs-only `Example` wrapper, `IconPlaceholder`, `next/image` and `next/link`.
 - **Showcase:** one test (`ab/showcase.spec.ts`) opens the style's showcase page
   (`showcase.html`, ours only), and through its switcher and theme toggle renders each `/create`
-  preview block in light and dark, then opens the last block in dark from the URL. It fails on a card that renders its error, a page error, cards
-  other than those the block's snapshotted index imports less those in
-  `ab/skipped-cards/<style>.json` or in another order than the index renders them, a
-  `style-overview` card that does not name the style and the theme's font, or a grid that does not
-  lay the cards out in upstream's seven columns with a gap. Nothing is compared
+  preview block in light and dark, then opens the last block in dark from the URL. It fails on a
+  card that renders its error, a page error, cards other than those the block's snapshotted index
+  imports less those in `ab/skipped-cards/<style>.json`, in another order than the index renders
+  them or other than as many times as it renders each, a `style-overview` card that does not name
+  the style and the theme's font, or a grid that does not lay the cards out in upstream's seven
+  columns with a gap, a column spanning as many tracks as its `col-span` says. Nothing is compared
   with upstream.
 
 ## How a run compares
