@@ -24,10 +24,10 @@ pnpm mirror:fetch           # snapshot every style's upstream items, examples, i
 pnpm mirror:fetch preview   # snapshot the /create preview cards alone
 pnpm mirror:build [style]   # convert the snapshots for every style, or one (vega)
 pnpm build                  # shadcn build per style: validates each catalog, writes public/r/<style>/
-pnpm build:showcase         # per style: mirror:build, then Vite builds the showcase into public/r/<style>/index.html
+pnpm build:showcase         # per style: mirror:build, then Vite builds the showcase into public/r/<style>/index.html; then the root page into public/r/index.html
 pnpm test                   # vitest over every style, coverage held at 100
 pnpm ab                     # compare one style's components with upstream, pixel for pixel
-pnpm ab:serve               # browse one style's A/B pages and its showcase (/showcase.html)
+pnpm ab:serve               # browse one style's A/B pages, its showcase (/showcase.html) and the root page (/site.html)
 pnpm ab:timings             # where the last A/B run spent its time
 ```
 
@@ -90,7 +90,7 @@ ruleset Require CI requires five checks by job name; renaming a job needs the ru
 
 | Check    | Passes when                                                                                       |
 | -------- | ------------------------------------------------------------------------------------------------- |
-| `build`  | `pnpm build` and `pnpm build:showcase` succeed and write a non-empty registry and a showcase page for every style |
+| `build`  | `pnpm build` and `pnpm build:showcase` succeed and write a non-empty registry and a showcase page for every style, and the root page |
 | `vitest` | Every `vitest-leg (<leg>)` passes and their merged coverage is 100, with every leg's files in it   |
 | `types`  | `tsc` passes on the scripts, every registry project, the A/B harness and each style's harness inputs |
 | `biome`  | `biome ci . --error-on-warnings` passes                                                            |
@@ -100,8 +100,9 @@ ruleset Require CI requires five checks by job name; renaming a job needs the ru
 styles. `vitest` has one more leg, `shared`, for `scripts/` and `registry/lib/`, which also
 validates `lefthook.yml`. The `vitest` job uploads the merged coverage as `code-coverage/vitest`.
 
-An `ab-style` leg runs the style's A/B comparison and its showcase test
-([visual-ab.md](docs/visual-ab.md#cases)). It skips both, and still reports success, when:
+An `ab-style` leg runs the style's A/B comparison and its showcase test, and the first style's leg
+the root page test ([visual-ab.md](docs/visual-ab.md#cases)). It skips them, and still reports
+success, when:
 
 - the pull request is a draft (it runs once marked ready);
 - the change touches only Markdown, `.claude/`, `*.test.ts(x)` files, `lefthook.yml`,

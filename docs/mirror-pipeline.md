@@ -168,7 +168,8 @@ internals the cards read the design system from are stubbed in `ab/stubs/` (`CRE
 `scripts/mirror/examples.ts`); they return the style and `theme`.
 
 The build writes the kept cards, each block's index, the stubs' design system and the layout CSS to
-`ab/generated/<style>/showcase*`. The page renders each index as upstream wrote it, so the cards sit
+`ab/generated/<style>/showcase*`, and the configured styles, for the header's style select, to
+`ab/generated/<style>/styles.ts`. The page renders each index as upstream wrote it, so the cards sit
 on upstream's grid; the index imports its cards from a generated `cards.tsx` beside it, which wraps
 each one in a `CaseBoundary` inside a `display: contents` element marked `data-card`, and renders
 nothing for a skipped one. The layout CSS is the same unlayered utility sheet as the A/B examples'
@@ -178,7 +179,8 @@ own.
 
 `pnpm build:showcase` runs, per style, `pnpm mirror:build <style>` and a Vite build of the page
 (`--mode showcase`, `ab/vite.config.ts`) with a relative base into `public/r/<style>/`, as
-`index.html` beside the registry's JSON.
+`index.html` beside the registry's JSON. Then it builds the site's root page (`ab/site.tsx`,
+`--mode site`) with the first style's inputs into `public/r/`, as its `index.html`.
 
 ## Formatting and Biome
 
