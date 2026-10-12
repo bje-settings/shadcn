@@ -80,8 +80,8 @@ produces. To change the output, change `scripts/mirror/` or `mirror.config.json`
 4. Add the style to both lists in `README.md`: the styles, and their showcase links.
 5. Run the style's two vitest projects and `AB_STYLE=<style> pnpm ab`.
 
-Everything else reads `upstream.styles`: the vitest projects, the A/B port, `pnpm build`, CI's
-per-style legs and the deploy check.
+Everything else reads `upstream.styles`: the vitest projects, the A/B port, `pnpm build`,
+`pnpm build:showcase`, CI's per-style legs, and the build and deploy checks.
 
 ## CI
 

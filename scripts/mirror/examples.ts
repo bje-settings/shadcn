@@ -1,10 +1,12 @@
 // Turns an upstream `<item>-example` (the demo behind shadcn's docs page) into
 // A/B cases: each sub-example the default export renders becomes a case when
 // everything it reaches is available, which is mirrored components, the
-// harness's stand-ins for docs-only imports, react and packages mirrored
-// items depend on, and it passes no registry component a consumer class whose
-// upstream styling the mirror drops. A module with no default export (a /create
-// preview card) has its exported PascalCase functions as its sub-examples.
+// harness's stand-ins for docs-only imports, react and the packages the
+// caller allows (mirrored items' dependencies, and preview.packages for
+// /create preview cards), and it passes no registry component a consumer
+// class whose upstream styling the mirror drops. A module with no default
+// export (a /create preview card) has its exported PascalCase functions as
+// its sub-examples.
 //
 // The output is two trimmed copies of the example holding only the kept
 // sub-examples, the top-level code they reach and the imports they use, with

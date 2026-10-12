@@ -91,7 +91,7 @@ export default defineConfig({
           }),
         ),
         // The process entry points: they wire cli.ts and registries.ts to the
-        // real process, fetch, console and shadcn CLI, and hold no logic.
+        // real process, fetch, console, shadcn CLI and pnpm, and hold no logic.
         'scripts/mirror/main.ts',
         'scripts/mirror/build.ts',
         'scripts/mirror/build-showcase.ts',
