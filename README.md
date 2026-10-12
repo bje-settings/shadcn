@@ -16,7 +16,8 @@ components and stylesheets, in light and dark: [vega](https://shadcn.bje.co/vega
 [luma](https://shadcn.bje.co/luma/), [nova](https://shadcn.bje.co/nova/),
 [maia](https://shadcn.bje.co/maia/), [lyra](https://shadcn.bje.co/lyra/),
 [mira](https://shadcn.bje.co/mira/), [sera](https://shadcn.bje.co/sera/) and
-[rhea](https://shadcn.bje.co/rhea/).
+[rhea](https://shadcn.bje.co/rhea/). [shadcn.bje.co](https://shadcn.bje.co/) links to every
+style's showcase.
 
 ## Setup
 

@@ -1,8 +1,10 @@
 // Serves the A/B pages: upstream.html (Tailwind), ours.html (SCSS modules) and
-// index.html (both side by side), and the showcase (showcase.html). Aliases
-// mirror each side's registry imports, for the style ab/style.ts picks.
-// `--mode showcase` builds the showcase alone, as the site's index.html for
-// the style, into the --outDir `pnpm build:showcase` passes.
+// index.html (both side by side), the showcase (showcase.html) and the site's
+// root page (site.html). Aliases mirror each side's registry imports, for the
+// style ab/style.ts picks. `--mode showcase` builds the showcase alone, as the
+// site's index.html for the style, and `--mode site` the root page alone, as
+// the site's own index.html, each into the --outDir `pnpm build:showcase`
+// passes.
 
 import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
@@ -23,29 +25,36 @@ const styleName: Plugin = {
 }
 
 // Vite names an HTML output after its source; the site serves the showcase as
-// the style directory's index.
-const showcaseIndex: Plugin = {
-  name: 'showcase-index',
+// the style directory's index, and the root page as the root's (site.html,
+// since ab/index.html is the A/B page).
+const asIndex = (source: string): Plugin => ({
+  name: 'as-index',
   apply: 'build',
   // After Vite's own HTML plugin has emitted the page.
   enforce: 'post',
   generateBundle(_, bundle) {
-    const page = bundle['showcase.html']
+    const page = bundle[source]
     if (page === undefined) {
-      throw new Error(`showcase-index: no showcase.html in ${Object.keys(bundle).join(', ')}`)
+      throw new Error(`as-index: no ${source} in ${Object.keys(bundle).join(', ')}`)
     }
     page.fileName = 'index.html'
   },
-}
+})
+
+// The page a site build emits, by mode.
+const sitePages = new Map([
+  ['showcase', 'showcase.html'],
+  ['site', 'site.html'],
+])
 
 export default defineConfig(({ mode }) => {
-  const showcase = mode === 'showcase'
+  const page = sitePages.get(mode)
   return {
     root: ab,
-    // Relative in the showcase build, so the page loads its assets under the
-    // style's path on the site (/vega/).
-    base: showcase ? './' : '/',
-    plugins: [react(), tailwindcss(), styleName, ...(showcase ? [showcaseIndex] : [])],
+    // Relative in a site build, so the page loads its assets under its path
+    // on the site (/vega/, or /).
+    base: page ? './' : '/',
+    plugins: [react(), tailwindcss(), styleName, ...(page ? [asIndex(page)] : [])],
     resolve: {
       alias: {
         '@ab/generated': generated,
@@ -71,15 +80,19 @@ export default defineConfig(({ mode }) => {
     // another style's.
     server: { port, strictPort: true, fs: { allow: [repo] }, forwardConsole: false },
     build: {
-      // The showcase's out dir already holds the style's registry JSON.
-      ...(showcase ? { emptyOutDir: false } : {}),
+      // A site build's out dir already holds the registries: the style's JSON,
+      // or, at the root, every style's directory.
+      ...(page ? { emptyOutDir: false } : {}),
       rollupOptions: {
-        input: {
-          ...(showcase
-            ? {}
-            : { index: `${ab}index.html`, upstream: `${ab}upstream.html`, ours: `${ab}ours.html` }),
-          showcase: `${ab}showcase.html`,
-        },
+        input: page
+          ? { [page.replace('.html', '')]: `${ab}${page}` }
+          : {
+              index: `${ab}index.html`,
+              upstream: `${ab}upstream.html`,
+              ours: `${ab}ours.html`,
+              showcase: `${ab}showcase.html`,
+              site: `${ab}site.html`,
+            },
       },
     },
   }

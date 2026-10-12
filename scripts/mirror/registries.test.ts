@@ -16,10 +16,11 @@ describe('registryBuilds', () => {
 })
 
 describe('showcaseBuilds', () => {
-  it("generates each style's inputs, then builds its showcase into its directory", () => {
+  it("generates each style's inputs, builds its showcase into its directory, then the root page", () => {
     const styles = parsed.upstream.styles.map(shortStyle)
-    expect(showcaseBuilds(parsed, 'public/r')).toEqual(
-      styles.flatMap((style) => [
+    expect(styles.length, 'the config lists more than one style').toBeGreaterThan(1)
+    expect(showcaseBuilds(parsed, 'public/r')).toEqual([
+      ...styles.flatMap((style) => [
         { command: 'pnpm', args: ['mirror:build', style], env: { AB_STYLE: style } },
         {
           command: 'pnpm',
@@ -31,6 +32,15 @@ describe('showcaseBuilds', () => {
           env: { AB_STYLE: style },
         },
       ]),
-    )
+      // After every style, with the first style's inputs, into the site root.
+      {
+        command: 'pnpm',
+        args: [
+          ...['exec', 'vite', 'build', '--config', 'ab/vite.config.ts', '--mode', 'site'],
+          ...['--outDir', '../public/r'],
+        ],
+        env: { AB_STYLE: styles[0] },
+      },
+    ])
   })
 })

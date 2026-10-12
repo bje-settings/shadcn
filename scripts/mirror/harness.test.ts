@@ -193,6 +193,7 @@ describe('harnessFiles', () => {
       'ab/generated/vega/upstream.css',
       'ab/generated/vega/examples.css',
       'ab/generated/vega/showcase.ts',
+      'ab/generated/vega/styles.ts',
       'ab/generated/vega/showcase-theme.ts',
       'ab/generated/vega/showcase.css',
       'ab/generated/vega/tsconfig.json',

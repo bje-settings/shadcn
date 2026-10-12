@@ -26,7 +26,7 @@ concurrency:
 jobs:
   # `shadcn build` validates each style's registry.json and every item against
   # the schema; `pnpm build:showcase` then builds each style's showcase page
-  # beside it.
+  # beside it, and the site's root page.
   build:
     name: build
     runs-on: ubuntu-latest
@@ -55,9 +55,14 @@ jobs:
             grep -qF "<meta name=\"bje-showcase\" content=\"$style\"" "public/r/$style/index.html"
             grep -qF 'src="./assets/' "public/r/$style/index.html"
           done
-      # public/r is the site root; each style is a flat registry and its
-      # showcase under /<style>/. The deploy job publishes it once every check
-      # passes.
+      # The root page loads its assets relative to /.
+      - name: Refuse a build that writes no root page
+        run: |
+          grep -qF '<meta name="bje-site" content="index"' public/r/index.html
+          grep -qF 'src="./assets/' public/r/index.html
+      # public/r is the site root, with the root page at /; each style is a
+      # flat registry and its showcase under /<style>/. The deploy job
+      # publishes it once every check passes.
       - name: Upload the registry for GitHub Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v5
@@ -403,3 +408,8 @@ jobs:
             page=$(curl -fsS --retry 5 --retry-delay 10 --retry-all-errors "https://shadcn.bje.co/$style/")
             printf '%s' "$page" | grep -qF "<meta name=\"bje-showcase\" content=\"$style\""
           done
+      # One command per assignment here too.
+      - name: Refuse a site that serves no root page
+        run: |
+          page=$(curl -fsS --retry 5 --retry-delay 10 --retry-all-errors "https://shadcn.bje.co/")
+          printf '%s' "$page" | grep -qF '<meta name="bje-site" content="index"'
