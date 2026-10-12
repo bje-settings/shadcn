@@ -43,7 +43,7 @@ Every case is generated (`scripts/mirror/harness.ts`):
   docs-only `Example` wrapper, `IconPlaceholder`, `next/image` and `next/link`.
 - **Showcase:** one test (`ab/showcase.spec.ts`) opens the style's showcase page
   (`showcase.html`, ours only), and through its switcher and theme toggle renders each `/create`
-  preview block in light and dark. It fails on a card that renders its error, a page error, cards
+  preview block in light and dark, then opens the last block in dark from the URL. It fails on a card that renders its error, a page error, cards
   other than those the block's snapshotted index imports less those in
   `ab/skipped-cards/<style>.json` or in another order than the index renders them, or a
   `style-overview` card that does not name the style and the theme's font. Nothing is compared

@@ -1,7 +1,8 @@
 // The showcase renders every preview card the style can render: through its
-// own controls, in every preview block and both themes, no card may render its
-// error (data-case-error), the page may report none, and the cards rendered
-// are exactly those the snapshotted index imports less the committed skip list.
+// own controls and its URL, in every preview block and both themes, no card
+// may render its error (data-case-error), the page may report none, and the
+// cards rendered are exactly those the snapshotted index imports less the
+// committed skip list.
 
 import { readFileSync } from 'node:fs'
 import { expect, type Page, test } from '@playwright/test'
@@ -20,6 +21,17 @@ const skipped: Record<string, Record<string, string[]>> = JSON.parse(
   readFileSync(`${repo}ab/skipped-cards/${short}.json`, 'utf8'),
 )
 
+// The theme font's title, as its snapshotted font item names it (Inter).
+const fontTitle: string = JSON.parse(
+  readFileSync(
+    `${repo}${config.snapshotDir}/${config.upstream.style}/font-${config.theme.font}.json`,
+    'utf8',
+  ),
+).title
+
+// 01, 02, ...: the switcher's label for the block at `index`.
+const label = (index: number) => String(index + 1).padStart(2, '0')
+
 // The cards each block should render, in order, from the snapshot, not the
 // generated map.
 const expected = (block: string) => {
@@ -31,7 +43,7 @@ const expected = (block: string) => {
 
 async function check(page: Page, errors: string[], index: number, theme: 'light' | 'dark') {
   const block = config.preview.blocks[index] as string
-  await test.step(`${String(index + 1).padStart(2, '0')} (${block}) ${theme}`, async () => {
+  await test.step(`${label(index)} (${block}) ${theme}`, async () => {
     await expect(page.locator('main')).toHaveAttribute('data-showcase', block)
     const dark = await page.evaluate(() => document.documentElement.classList.contains('dark'))
     expect(dark, '.dark on <html>').toBe(theme === 'dark')
@@ -49,7 +61,7 @@ async function check(page: Page, errors: string[], index: number, theme: 'light'
     // names both ("Vega - Inter").
     if (names.includes('style-overview')) {
       await expect(page.locator('[data-card="style-overview"]')).toContainText(
-        new RegExp(`${pascalCase(short)} - \\S`),
+        `${pascalCase(short)} - ${fontTitle}`,
       )
     }
     expect(errors, 'page errors').toEqual([])
@@ -72,8 +84,7 @@ test(`showcase ${short}`, async ({ page }) => {
   )
   await page.goto(`http://localhost:${PORT}/showcase.html`)
   await expect(page.locator('h1')).toHaveText(`@bje ${short}`)
-  const preview = (index: number) =>
-    page.getByRole('button', { name: String(index + 1).padStart(2, '0'), exact: true })
+  const preview = (index: number) => page.getByRole('button', { name: label(index), exact: true })
   for (const theme of ['light', 'dark'] as const) {
     for (const index of config.preview.blocks.keys()) {
       await preview(index).click()
@@ -81,4 +92,8 @@ test(`showcase ${short}`, async ({ page }) => {
     }
     await page.getByRole('button', { name: theme === 'light' ? 'Dark' : 'Light' }).click()
   }
+  // ?preview= and ?theme= open a block and the dark theme directly.
+  const last = config.preview.blocks.length - 1
+  await page.goto(`http://localhost:${PORT}/showcase.html?preview=${label(last)}&theme=dark`)
+  await check(page, errors, last, 'dark')
 })

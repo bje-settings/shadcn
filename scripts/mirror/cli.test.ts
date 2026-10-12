@@ -641,6 +641,10 @@ describe('preview blocks', BUILDS, () => {
       '{ name: "badge-card", Card: previewBadgeCard.BadgeCard },',
     )
     expect(await read('ab/generated/vega/showcase.css')).toContain('@source "./showcase";')
+    // The fonts stub names the theme's font by its font item's title, as /create's list does.
+    expect(await read('ab/generated/vega/showcase-theme.ts')).toContain(
+      'export const fonts = [{"name":"Inter","value":"inter"}]',
+    )
     expect(JSON.parse(await read('ab/skipped-cards/vega.json'))).toEqual({
       preview: { 'other-card': ['needs other'] },
     })
