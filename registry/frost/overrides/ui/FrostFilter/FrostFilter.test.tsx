@@ -9,6 +9,7 @@ import {
   startSurfaces,
 } from './FrostFilter'
 import styles from './FrostFilter.module.scss'
+import { surfaceMaps } from './maps'
 
 const brands = (...names: string[]) =>
   ({ userAgentData: { brands: names.map((brand) => ({ brand })) } }) as unknown as Navigator
@@ -221,6 +222,85 @@ describe('startSurfaces', () => {
     expect(frames).toHaveBeenCalledTimes(1)
     await frame()
     expect(ownFilters()).toHaveLength(2)
+    stop()
+  })
+
+  it('caps the corner radius at half the shorter side', () => {
+    const images: Uint8ClampedArray[] = []
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockImplementation(
+      () =>
+        ({
+          createImageData: (w: number, h: number) => ({ data: new Uint8ClampedArray(w * h * 4) }),
+          putImageData: (image: ImageData) => images.push(image.data as Uint8ClampedArray),
+        }) as unknown as CanvasRenderingContext2D,
+    )
+    // A pill: maia's button radius outruns its height.
+    surface(120, 36, `url(#${FROST_FILTER_ID})`, '999px')
+    const stop = startSurfaces()
+    expect(images[0]).toEqual(surfaceMaps(120, 36, 18, 16).displacement)
+    stop()
+  })
+
+  it('builds a surface the frost CSS reaches by an attribute, and one with the frostSurface class', async () => {
+    const stop = startSurfaces()
+    const popover = surface(200, 100, 'none')
+    await frame()
+    expect(ownFilters()).toHaveLength(0)
+    computed.set(popover, { 'backdrop-filter': `url(#${FROST_FILTER_ID})` })
+    popover.setAttribute('data-open', '')
+    await frame()
+    expect(popover.style.getPropertyValue('backdrop-filter')).toContain('url(#bje-frost-filter-0)')
+    const own = surface(200, 100)
+    own.removeAttribute('data-slot')
+    own.className = frostSurface as string
+    await frame()
+    expect(own.style.getPropertyValue('backdrop-filter')).toContain('url(#bje-frost-filter-1)')
+    stop()
+  })
+
+  it('drops a surface the frost CSS no longer reaches, and puts it back to its CSS', async () => {
+    const button = surface(200, 100)
+    const stop = startSurfaces()
+    expect(ownFilters()).toHaveLength(1)
+    // A variant without frost: its CSS, read without the inline filter, has none.
+    computed.set(button, { 'backdrop-filter': 'none' })
+    button.className = 'ghost'
+    await frame()
+    expect(ownFilters()).toHaveLength(0)
+    expect(button.style.getPropertyValue('backdrop-filter')).toBe('')
+    expect(resizers[0]?.observed.has(button)).toBe(false)
+    stop()
+  })
+
+  it('reads the CSS without its own inline filter, and keeps a surface that is still frost', async () => {
+    const popover = surface(200, 100)
+    const stop = startSurfaces()
+    const reads: string[] = []
+    vi.mocked(window.getComputedStyle).mockImplementation(
+      (element) =>
+        ({
+          ...computed.get(element),
+          getPropertyValue: (name: string) => {
+            if (element === popover) reads.push(popover.style.getPropertyValue('backdrop-filter'))
+            return computed.get(element)?.[name] ?? ''
+          },
+        }) as unknown as CSSStyleDeclaration,
+    )
+    popover.className = 'open'
+    await frame()
+    expect(reads).toEqual([''])
+    expect(popover.style.getPropertyValue('backdrop-filter')).toBe(
+      `url(#${FROST_FILTER_ID}) url(#${FROST_FILTER_ID}-0) var(--frost-saturate)`,
+    )
+    stop()
+  })
+
+  it('takes its filter off a surface that leaves the page', async () => {
+    const popover = surface(200, 100)
+    const stop = startSurfaces()
+    popover.remove()
+    await frame()
+    expect(popover.style.getPropertyValue('backdrop-filter')).toBe('')
     stop()
   })
 

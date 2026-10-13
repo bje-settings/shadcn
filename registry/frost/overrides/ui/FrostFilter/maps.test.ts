@@ -6,7 +6,7 @@ import {
   IOR,
   LIGHT,
   profile,
-  RIM_EM,
+  RIM_REM,
   SHIFT_REM,
   SPECULAR,
   surfaceMaps,
@@ -20,10 +20,10 @@ const pixel = (map: Uint8ClampedArray, w: number, x: number, y: number) => [
 
 describe('the constants', () => {
   it('are the approved design', () => {
-    expect({ BEZEL, THICKNESS, IOR, SPECULAR, RIM_EM, SHIFT_REM, LIGHT }).toEqual({
+    expect({ BEZEL, THICKNESS, IOR, SPECULAR, RIM_REM, SHIFT_REM, LIGHT }).toEqual({
       BEZEL: 36,
       THICKNESS: 60,
-      RIM_EM: 0.25,
+      RIM_REM: 0.25,
       IOR: 1.5,
       SPECULAR: 0.35,
       SHIFT_REM: 1.5,
@@ -96,7 +96,7 @@ describe('surfaceMaps', () => {
     expect(alpha(w - 1, 40)).toBeGreaterThan(0)
     expect(alpha(50, 0)).toBe(0)
     expect(alpha(0, 40)).toBe(0)
-    // Past the rim light's width (0.25em), still in the bezel.
+    // Past the rim light's width (0.25rem), still in the bezel.
     expect(alpha(50, h - 10)).toBe(0)
   })
 

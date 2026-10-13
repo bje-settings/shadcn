@@ -12,9 +12,9 @@ export const THICKNESS = 60
 // The light: the rim light falls on the edges whose outward normal points
 // away from this vector, the bottom-right ones.
 export const LIGHT = { x: -0.6, y: -0.8 }
-// The rim light's peak opacity, and its width in em.
+// The rim light's peak opacity, and its width in rem.
 export const SPECULAR = 0.35
-export const RIM_EM = 0.25
+export const RIM_REM = 0.25
 // The largest shift, at the rim, in rem: the profile sets only how the shift
 // fades inward.
 export const SHIFT_REM = 1.5
@@ -69,11 +69,11 @@ export type Maps = {
   rim: Uint8ClampedArray
 }
 
-// A w by h surface's maps, with corner radius r and font size em, in px.
-export function surfaceMaps(w: number, h: number, r: number, em: number): Maps {
+// A w by h surface's maps, with corner radius r and root font size rem, in px.
+export function surfaceMaps(w: number, h: number, r: number, rem: number): Maps {
   // A surface thinner than two bezels gets a bezel that fits it.
   const bezel = Math.max(2, Math.min(BEZEL, Math.min(w, h) / 2 - 1))
-  const rim = Math.min(RIM_EM * em, bezel)
+  const rim = Math.min(RIM_REM * rem, bezel)
   const displacement = new Uint8ClampedArray(w * h * 4)
   const light = new Uint8ClampedArray(w * h * 4)
   for (let y = 0; y < h; y++) {
