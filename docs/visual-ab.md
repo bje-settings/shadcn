@@ -18,7 +18,7 @@ Each command takes the style's name from `AB_STYLE` (`AB_STYLE=luma pnpm ab`), t
 `pnpm mirror:build $AB_STYLE`: that style's whole build, its harness inputs in
 `ab/generated/<style>/` included, or every style's when `AB_STYLE` is unset.
 Each style serves on its own port, 4400 plus its index in every built style, upstream styles first
-and derived ones after (glass serves on 4408), so a server left running for one style is never
+and derived ones after (frost serves on 4408), so a server left running for one style is never
 reused for another. Results go to `ab/results/<style>`.
 
 ## Cases
@@ -81,7 +81,7 @@ the same browser in the same run, so its version does not affect the comparison.
 
 Each upstream style runs as its own `ab-style (<style>)` leg behind the required `ab` check, on the
 runner's Chrome. A derived style has no leg: it has no upstream to compare with, so its showcase
-test runs locally, with `AB_STYLE=glass pnpm ab showcase.spec.ts`. A leg appends
+test runs locally, with `AB_STYLE=frost pnpm ab showcase.spec.ts`. A leg appends
 `pnpm ab:timings` to its job summary and uploads its report as the `ab-report-<style>` artifact,
 with images for the failed comparisons only. When a leg skips its comparison is in
 [CONTRIBUTING.md](../CONTRIBUTING.md#ci).

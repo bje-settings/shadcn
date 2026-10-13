@@ -1,5 +1,5 @@
 // The style one A/B run renders, from AB_STYLE (a built style's name: vega,
-// luma, glass), or the first in mirror.config.json's upstream.styles. Its
+// luma, frost), or the first in mirror.config.json's upstream.styles. Its
 // generated inputs, report and server port are its own, so one style's run
 // never reads or overwrites another's.
 

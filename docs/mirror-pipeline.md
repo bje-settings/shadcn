@@ -25,9 +25,9 @@ variables (vega's Button is `rounded-md px-2.5`, luma's `rounded-4xl px-3`).
 ## Derived styles
 
 A derived style (`derived` in [mirror-config.md](mirror-config.md)) builds from its base's
-snapshots into its own paths: `glass` reads `upstream/base-maia/` and writes `registry/glass/`,
-`ab/generated/glass/` and its own skip lists, and publishes as `glass`. Its global stylesheets'
-header names both (`from shadcn base-maia as glass`). `mirror:fetch` skips derived styles.
+snapshots into its own paths: `frost` reads `upstream/base-maia/` and writes `registry/frost/`,
+`ab/generated/frost/` and its own skip lists, and publishes as `frost`. Its global stylesheets'
+header names both (`from shadcn base-maia as frost`). `mirror:fetch` skips derived styles.
 `mirror:build` with no style builds them after the upstream styles.
 
 ## Project CSS

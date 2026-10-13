@@ -21,7 +21,7 @@ const valid = {
     colorsUrl: 'https://example.com/colors/{name}.json',
     styles: ['base-vega', 'base-luma'],
   },
-  derived: [{ name: 'glass', base: 'base-luma' }],
+  derived: [{ name: 'frost', base: 'base-luma' }],
   theme: { baseColor: 'neutral', font: 'inter', iconLibrary: 'lucide' },
   fonts: ['inter', 'heading-geist'],
   components: ['button', 'icon-button'],
@@ -189,17 +189,17 @@ describe('parseConfig', () => {
     ['a non-array derived', withChange({ derived: {} }), 'derived must be an array'],
     [
       'a non-object derived entry',
-      withChange({ derived: ['glass'] }),
+      withChange({ derived: ['frost'] }),
       'derived[0] must be an object',
     ],
     [
       'a non-kebab derived name',
-      withChange({ derived: [{ name: 'Glass', base: 'base-luma' }] }),
+      withChange({ derived: [{ name: 'Frost', base: 'base-luma' }] }),
       'derived[0].name must be kebab-case',
     ],
     [
       'a non-string derived base',
-      withChange({ derived: [{ name: 'glass', base: 1 }] }),
+      withChange({ derived: [{ name: 'frost', base: 1 }] }),
       'derived[0].base must be a non-empty string',
     ],
     [
@@ -214,7 +214,7 @@ describe('parseConfig', () => {
     ],
     [
       'a derived base not in upstream.styles',
-      withChange({ derived: [{ name: 'glass', base: 'base-maia' }] }),
+      withChange({ derived: [{ name: 'frost', base: 'base-maia' }] }),
       'derived[0].base base-maia is not one of upstream.styles',
     ],
     [
@@ -226,11 +226,11 @@ describe('parseConfig', () => {
       'a repeated derived name',
       withChange({
         derived: [
-          { name: 'glass', base: 'base-luma' },
-          { name: 'glass', base: 'base-vega' },
+          { name: 'frost', base: 'base-luma' },
+          { name: 'frost', base: 'base-vega' },
         ],
       }),
-      'derived[1].name glass repeats a derived name',
+      'derived[1].name frost repeats a derived name',
     ],
     [
       'an output path without {style}',
@@ -353,7 +353,7 @@ describe('builtStyles', () => {
     expect(builtStyles(parseConfig(valid))).toEqual([
       { name: 'vega', base: 'base-vega' },
       { name: 'luma', base: 'base-luma' },
-      { name: 'glass', base: 'base-luma' },
+      { name: 'frost', base: 'base-luma' },
     ])
   })
 })
@@ -383,17 +383,17 @@ describe('forStyle', () => {
 
   it("resolves a derived style's output paths with its own name, and reads its base", () => {
     const config = parseConfig(valid)
-    const glass = forStyle(config, { name: 'glass', base: 'base-luma' })
-    expect(glass.upstream).toMatchObject({ style: 'base-luma', styles: valid.upstream.styles })
-    expect(glass).toMatchObject({
-      styleName: 'glass',
-      outputDir: 'registry/glass/ui',
-      hooksDir: 'registry/glass/hooks',
-      globalsDir: 'registry/glass/styles',
-      registryFile: 'registry/glass/registry.json',
-      harnessDir: 'ab/generated/glass',
+    const frost = forStyle(config, { name: 'frost', base: 'base-luma' })
+    expect(frost.upstream).toMatchObject({ style: 'base-luma', styles: valid.upstream.styles })
+    expect(frost).toMatchObject({
+      styleName: 'frost',
+      outputDir: 'registry/frost/ui',
+      hooksDir: 'registry/frost/hooks',
+      globalsDir: 'registry/frost/styles',
+      registryFile: 'registry/frost/registry.json',
+      harnessDir: 'ab/generated/frost',
     })
-    expect(upstreamUrl(glass, 'button')).toBe('https://example.com/base-luma/button.json')
+    expect(upstreamUrl(frost, 'button')).toBe('https://example.com/base-luma/button.json')
   })
 })
 
@@ -402,13 +402,13 @@ describe('harnessStyle', () => {
 
   it('takes a style by its name, and the first upstream style when none is named', () => {
     expect(harnessStyle(config, 'luma')).toEqual({ name: 'luma', base: 'base-luma' })
-    expect(harnessStyle(config, 'glass')).toEqual({ name: 'glass', base: 'base-luma' })
+    expect(harnessStyle(config, 'frost')).toEqual({ name: 'frost', base: 'base-luma' })
     expect(harnessStyle(config, undefined)).toEqual({ name: 'vega', base: 'base-vega' })
   })
 
   it.each(['nova', 'base-luma', ''])('refuses %j, naming the styles it takes', (name) => {
     expect(() => harnessStyle(config, name)).toThrow(
-      `AB_STYLE: ${name} is not one of vega, luma, glass`,
+      `AB_STYLE: ${name} is not one of vega, luma, frost`,
     )
   })
 })
@@ -423,7 +423,7 @@ describe('harnessPort', () => {
 
   it('refuses a style that is not built, rather than serve it on 4399', () => {
     expect(() => harnessPort(parseConfig(valid), { name: 'nova', base: 'base-vega' })).toThrow(
-      'harnessPort: nova is not one of vega, luma, glass',
+      'harnessPort: nova is not one of vega, luma, frost',
     )
   })
 })

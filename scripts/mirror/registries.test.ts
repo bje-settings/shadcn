@@ -6,7 +6,7 @@ import { parsed } from './test-support.ts'
 describe('registryBuilds', () => {
   it('builds each style from its catalog into its own directory', () => {
     const styles = builtStyles(parsed).map((style) => style.name)
-    expect(styles.at(-1), 'a derived style comes last').toBe('glass')
+    expect(styles.at(-1), 'a derived style comes last').toBe('frost')
     expect(registryBuilds(parsed, 'out')).toEqual(
       styles.map((style) => ({
         registry: `registry/${style}/registry.json`,
@@ -19,7 +19,7 @@ describe('registryBuilds', () => {
 describe('showcaseBuilds', () => {
   it("generates each style's inputs, builds its showcase into its directory, then the root page", () => {
     const styles = builtStyles(parsed).map((style) => style.name)
-    expect(styles.at(-1), 'a derived style comes last').toBe('glass')
+    expect(styles.at(-1), 'a derived style comes last').toBe('frost')
     expect(styles.length, 'the config lists more than one style').toBeGreaterThan(1)
     expect(showcaseBuilds(parsed, 'public/r')).toEqual([
       ...styles.flatMap((style) => [

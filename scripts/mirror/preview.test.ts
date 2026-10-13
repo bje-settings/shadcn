@@ -143,7 +143,7 @@ const parsed = parseConfig({
     colorsUrl: 'https://example.com/colors/{name}.json',
     styles: ['base-vega', 'base-luma'],
   },
-  derived: [{ name: 'glass', base: 'base-luma' }],
+  derived: [{ name: 'frost', base: 'base-luma' }],
   theme: { baseColor: 'neutral', font: 'inter', iconLibrary: 'lucide' },
   components: ['card'],
   typeset: {
@@ -253,22 +253,22 @@ export const blocks = [
   it('lists every style the config builds in a module of its own, not the blocks', () => {
     expect(byPath['ab/generated/luma/styles.ts']).toBe(`// header
 
-export const allStyles = ["vega","luma","glass"]
+export const allStyles = ["vega","luma","frost"]
 `)
     expect(byPath['ab/generated/luma/showcase.ts']).not.toContain('allStyles')
   })
 
   it("writes a derived style's inputs under its own name", () => {
-    const glass = showcaseFiles(
-      forStyle(parsed, { name: 'glass', base: 'base-luma' }),
+    const frost = showcaseFiles(
+      forStyle(parsed, { name: 'frost', base: 'base-luma' }),
       { cards: showcase, indexes, layoutCss: '/* layout */', fontTitle: 'Inter' },
       '// header',
     )
-    expect(glass.every((file) => file.path.startsWith('ab/generated/glass/'))).toBe(true)
-    const byPath = Object.fromEntries(glass.map((file) => [file.path, file.content]))
-    expect(byPath['ab/generated/glass/showcase.ts']).toContain('export const style = "glass"')
-    expect(byPath['ab/generated/glass/showcase-theme.ts']).toContain(
-      'export const styles = [{"name":"glass","title":"Glass"}]',
+    expect(frost.every((file) => file.path.startsWith('ab/generated/frost/'))).toBe(true)
+    const byPath = Object.fromEntries(frost.map((file) => [file.path, file.content]))
+    expect(byPath['ab/generated/frost/showcase.ts']).toContain('export const style = "frost"')
+    expect(byPath['ab/generated/frost/showcase-theme.ts']).toContain(
+      'export const styles = [{"name":"frost","title":"Frost"}]',
     )
   })
 

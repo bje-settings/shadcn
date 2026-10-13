@@ -20,7 +20,7 @@ export type ClassList = {
 
 // A style the mirror builds and publishes: an upstream style, which goes by its
 // short name (vega for base-vega), or a derived one, which builds from an
-// upstream style's snapshots under a name of its own (glass from base-maia).
+// upstream style's snapshots under a name of its own (frost from base-maia).
 export type BuiltStyle = {
   // The short name its output paths and published registry go by
   name: string
@@ -421,7 +421,7 @@ export function checkConfiguredParts(
   }
 }
 
-// The built style a name (luma, glass) names; `source` says where the name
+// The built style a name (luma, frost) names; `source` says where the name
 // came from, for the error.
 export function namedStyle(config: MirrorConfig, name: string, source: string): BuiltStyle {
   const styles = builtStyles(config)

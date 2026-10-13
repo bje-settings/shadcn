@@ -14,7 +14,7 @@
       "base-rhea"
     ]
   },
-  "derived": [{ "name": "glass", "base": "base-maia" }],
+  "derived": [{ "name": "frost", "base": "base-maia" }],
   "theme": {
     "baseColor": "neutral",
     "font": "inter",
