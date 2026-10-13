@@ -69,6 +69,9 @@ produces. To change the output, change `scripts/mirror/` or `mirror.config.json`
    any npm `dependencies` or `registryDependencies`.
 3. Run `pnpm mirror:build` (every style's catalog lists it), then `pnpm build` and `pnpm test`.
 
+An item for one derived style alone (frost's `frost-filter`) is not one of these: it lives in that
+style's `overrides/` ([Adding a derived style](#adding-a-derived-style)).
+
 ## Adding a style
 
 1. Append upstream's name (`base-<style>`) to `upstream.styles` in `mirror.config.json`. The first
@@ -89,8 +92,13 @@ Everything else reads `upstream.styles` and `derived`: the vitest projects, the 
 
 1. Append `{ "name": "<style>", "base": "base-<upstream>" }` to `derived` in `mirror.config.json`.
 2. Run `pnpm mirror:build <style>`. It reads the base's snapshots; there is nothing to fetch.
-3. Add the style to both lists in `README.md`.
-4. Run the style's two vitest projects and `AB_STYLE=<style> pnpm ab showcase.spec.ts`.
+3. Put the style's own changes in `registry/<style>/overrides/`: stylesheets appended to the
+   generated ones at the same path, and `overrides.json` for the items it adds and the
+   dependencies they bring ([docs/mirror-pipeline.md](docs/mirror-pipeline.md#overrides)). Run
+   `pnpm mirror:build <style>` again; never edit the generated files.
+4. Add the style to both lists in `README.md`.
+5. Run the style's two vitest projects and `AB_STYLE=<style> pnpm ab showcase.spec.ts`, plus
+   `frost.spec.ts` when the style ships a frost filter.
 
 ## CI
 
@@ -103,12 +111,12 @@ ruleset Require CI requires five checks by job name; renaming a job needs the ru
 | `vitest` | Every `vitest-leg (<leg>)` passes and their merged coverage is 100, with every leg's files in it   |
 | `types`  | `tsc` passes on the scripts, every registry project, the A/B harness and each style's harness inputs |
 | `biome`  | `biome ci . --error-on-warnings` passes                                                            |
-| `ab`     | Every `ab-style (<style>)` leg passes or skips its comparison and showcase test                    |
+| `ab`     | Every `ab-style (<style>)` leg passes or skips its comparison and showcase test, and so does `frost` |
 
-`vitest` and `ab` are fan-ins over one leg per style (for `ab`, per upstream style), so the
-required names hold whatever the styles. `vitest` has one more leg, `shared`, for `scripts/` and
-`registry/lib/`, which also validates `lefthook.yml`. The `vitest` job uploads the merged coverage
-as `code-coverage/vitest`.
+`vitest` and `ab` are fan-ins over one leg per style (for `ab`, per upstream style, plus the
+`frost` job), so the required names hold whatever the styles. `vitest` has one more leg,
+`shared`, for `scripts/` and `registry/lib/`, which also validates `lefthook.yml`. The `vitest`
+job uploads the merged coverage as `code-coverage/vitest`.
 
 An `ab-style` leg runs the style's A/B comparison and its showcase test, and the first style's leg
 the root page test ([visual-ab.md](docs/visual-ab.md#cases)). It skips them, and still reports
@@ -118,6 +126,12 @@ success, when:
 - the change touches only Markdown, `.claude/`, `*.test.ts(x)` files, `lefthook.yml`,
   `biome.json`, `vitest.config.ts`, and other styles' `registry/<style>/` (every derived style's
   included) or `upstream/base-<style>/`.
+
+The `frost` job runs `frost.spec.ts` in Chrome, Firefox and WebKit, and frost's showcase test
+([visual-ab.md](docs/visual-ab.md#ci)). It skips them, and still reports success, on a draft, or
+when the change touches nothing under `registry/frost/`, frost's base's and the shared snapshots
+(`upstream/base-maia/`, `upstream/preview/`, `upstream/typeset/`), `ab/`, `scripts/mirror/` or
+`.github/`, nor `mirror.config.json`, `package.json` or `pnpm-lock.yaml`.
 
 The `install` job is not required. It builds the registries, then `pnpm install-check` installs
 every item of the first style in `upstream.styles`, served locally from `public/r/<style>`, with

@@ -28,7 +28,7 @@
         "sass",
         "vitest"
       ],
-      "registryDependencies": ["@bje/globals"],
+      "registryDependencies": ["@bje/globals", "@bje/frost-filter"],
       "files": [
         {
           "path": "registry/frost/ui/Button/Button.tsx",
@@ -140,7 +140,7 @@
         "sass",
         "vitest"
       ],
-      "registryDependencies": ["@bje/globals"],
+      "registryDependencies": ["@bje/globals", "@bje/frost-filter"],
       "files": [
         {
           "path": "registry/frost/ui/Card/Card.tsx",
@@ -224,7 +224,7 @@
         "sass",
         "vitest"
       ],
-      "registryDependencies": ["@bje/globals"],
+      "registryDependencies": ["@bje/globals", "@bje/frost-filter"],
       "files": [
         {
           "path": "registry/frost/ui/Input/Input.tsx",
@@ -252,7 +252,7 @@
         "sass",
         "vitest"
       ],
-      "registryDependencies": ["@bje/globals"],
+      "registryDependencies": ["@bje/globals", "@bje/frost-filter"],
       "files": [
         {
           "path": "registry/frost/ui/Textarea/Textarea.tsx",
@@ -616,7 +616,7 @@
         "sass",
         "vitest"
       ],
-      "registryDependencies": ["@bje/globals"],
+      "registryDependencies": ["@bje/globals", "@bje/frost-filter"],
       "files": [
         {
           "path": "registry/frost/ui/Toggle/Toggle.tsx",
@@ -798,7 +798,7 @@
         "sass",
         "vitest"
       ],
-      "registryDependencies": ["@bje/globals"],
+      "registryDependencies": ["@bje/globals", "@bje/frost-filter"],
       "files": [
         {
           "path": "registry/frost/ui/NativeSelect/NativeSelect.tsx",
@@ -1106,7 +1106,7 @@
         "sass",
         "vitest"
       ],
-      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "registryDependencies": ["@bje/button", "@bje/globals", "@bje/frost-filter"],
       "files": [
         {
           "path": "registry/frost/ui/Dialog/Dialog.tsx",
@@ -1134,7 +1134,7 @@
         "sass",
         "vitest"
       ],
-      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "registryDependencies": ["@bje/button", "@bje/globals", "@bje/frost-filter"],
       "files": [
         {
           "path": "registry/frost/ui/AlertDialog/AlertDialog.tsx",
@@ -1162,7 +1162,7 @@
         "sass",
         "vitest"
       ],
-      "registryDependencies": ["@bje/button", "@bje/globals"],
+      "registryDependencies": ["@bje/button", "@bje/globals", "@bje/frost-filter"],
       "files": [
         {
           "path": "registry/frost/ui/Sheet/Sheet.tsx",
@@ -1190,7 +1190,7 @@
         "sass",
         "vitest"
       ],
-      "registryDependencies": ["@bje/globals"],
+      "registryDependencies": ["@bje/globals", "@bje/frost-filter"],
       "files": [
         {
           "path": "registry/frost/ui/Drawer/Drawer.tsx",
@@ -1218,7 +1218,7 @@
         "sass",
         "vitest"
       ],
-      "registryDependencies": ["@bje/globals"],
+      "registryDependencies": ["@bje/globals", "@bje/frost-filter"],
       "files": [
         {
           "path": "registry/frost/ui/Popover/Popover.tsx",
@@ -1246,7 +1246,7 @@
         "sass",
         "vitest"
       ],
-      "registryDependencies": ["@bje/globals"],
+      "registryDependencies": ["@bje/globals", "@bje/frost-filter"],
       "files": [
         {
           "path": "registry/frost/ui/Tooltip/Tooltip.tsx",
@@ -1274,7 +1274,7 @@
         "sass",
         "vitest"
       ],
-      "registryDependencies": ["@bje/globals"],
+      "registryDependencies": ["@bje/globals", "@bje/frost-filter"],
       "files": [
         {
           "path": "registry/frost/ui/HoverCard/HoverCard.tsx",
@@ -1302,7 +1302,7 @@
         "sass",
         "vitest"
       ],
-      "registryDependencies": ["@bje/globals"],
+      "registryDependencies": ["@bje/globals", "@bje/frost-filter"],
       "files": [
         {
           "path": "registry/frost/ui/DropdownMenu/DropdownMenu.tsx",
@@ -1330,7 +1330,7 @@
         "sass",
         "vitest"
       ],
-      "registryDependencies": ["@bje/globals"],
+      "registryDependencies": ["@bje/globals", "@bje/frost-filter"],
       "files": [
         {
           "path": "registry/frost/ui/ContextMenu/ContextMenu.tsx",
@@ -1358,7 +1358,7 @@
         "sass",
         "vitest"
       ],
-      "registryDependencies": ["@bje/dropdown-menu", "@bje/globals"],
+      "registryDependencies": ["@bje/dropdown-menu", "@bje/globals", "@bje/frost-filter"],
       "files": [
         {
           "path": "registry/frost/ui/Menubar/Menubar.tsx",
@@ -1387,7 +1387,7 @@
         "sass",
         "vitest"
       ],
-      "registryDependencies": ["@bje/globals"],
+      "registryDependencies": ["@bje/globals", "@bje/frost-filter"],
       "files": [
         {
           "path": "registry/frost/ui/Select/Select.tsx",
@@ -1416,7 +1416,12 @@
         "sass",
         "vitest"
       ],
-      "registryDependencies": ["@bje/button", "@bje/input-group", "@bje/globals"],
+      "registryDependencies": [
+        "@bje/button",
+        "@bje/input-group",
+        "@bje/globals",
+        "@bje/frost-filter"
+      ],
       "files": [
         {
           "path": "registry/frost/ui/Combobox/Combobox.tsx",
@@ -2586,6 +2591,42 @@
           "path": "registry/frost/styles/fonts/heading-instrument-serif.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-instrument-serif.css"
+        }
+      ]
+    },
+    {
+      "name": "frost-filter",
+      "type": "registry:ui",
+      "title": "Frost Filter",
+      "dependencies": [],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        {
+          "path": "registry/frost/ui/FrostFilter/FrostFilter.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/frost/ui/FrostFilter/FrostFilter.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/frost/ui/FrostFilter/maps.ts",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/frost/ui/FrostFilter/FrostFilter.test.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/frost/ui/FrostFilter/maps.test.ts",
+          "type": "registry:ui"
         }
       ]
     }

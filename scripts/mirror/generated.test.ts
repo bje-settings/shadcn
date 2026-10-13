@@ -15,6 +15,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { run, skippedCardsPath, skippedExamplesPath } from './cli.ts'
 import { forStyle, namedStyle } from './config.ts'
 import { formatWithBiome } from './format.ts'
+import { listFiles, overridesDir } from './overrides.ts'
 import { parsed, root } from './test-support.ts'
 
 async function files(base: string, dir: string): Promise<string[]> {
@@ -62,6 +63,11 @@ describe(`generated output for ${style.name}`, () => {
     for (const shared of ['typeset', 'preview']) {
       const dir = join(parsed.snapshotDir, shared)
       await cp(join(root, dir), join(built, dir), { recursive: true })
+    }
+    // A derived style's hand-written overrides, which the build layers on.
+    const overrides = overridesDir(config)
+    if ((await listFiles(root, overrides)) !== undefined) {
+      await cp(join(root, overrides), join(built, overrides), { recursive: true })
     }
     // The style alone, from its base's snapshots, the only ones copied.
     await run(['build', style.name], {

@@ -63,6 +63,21 @@ Every case is generated (`scripts/mirror/harness.ts`):
   with the theme kept and no block. The site builds the root page with the first style in
   `upstream.styles`, so the test runs only for that style and skips for the others.
 
+- **Frost:** for a style that ships a frost filter (its overrides hold `FrostFilter`), one test
+  per case and theme (`ab/frost.spec.ts`) opens each item `overrides.json` makes depend on
+  `frost-filter` on its fixtures' page (`ours.html?case=PopoverContent light`): the floating
+  surfaces, Card, and the page-level controls. Both pages mount `<FrostFilter />` once, as a
+  consumer does. It fails, from computed style, when in Chromium the surface's `backdrop-filter`
+  is not the shared filter, then its own, then the saturation
+  (`url(#bje-frost-filter) url(#bje-frost-filter-<n>) saturate(1.7)`), its own filter is not on
+  the page, or `<html>` lacks `data-frost-refraction`; when in Firefox or WebKit it has no `blur(`
+  or any `url(`; when its background is not translucent (alpha 0 or 1); when it has no inset
+  shadow along its edge; or when the page holds other than one shared filter. It also fails when a
+  button, input or select trigger inside a card on the showcase has a backdrop filter. A surface
+  `overrides.json` adds without a case here fails too, and so does a tooltip arrow without its
+  `clip-path`. Every other style skips it. The frost showcase shows a photo behind its page in
+  each theme (`ab/backgrounds/`, credited in `CREDITS.md`), with the blocks' own fills cleared.
+
 ## How a run compares
 
 Each worker opens one page per side and theme and shows its cases one at a time (`showCase()`),
@@ -75,13 +90,19 @@ renders its error in place and fails alone.
 Each theme renders on its own page with `.dark` on `<html>`, as shadcn apps toggle it, so variables
 that resolve at the root switch too. `?theme=dark` and `?case=<id>` select the theme and narrow a
 page to one case. Playwright uses the installed Chrome (`channel: 'chrome'`): both sides render in
-the same browser in the same run, so its version does not affect the comparison.
+the same browser in the same run, so its version does not affect the comparison. For a style that
+ships a frost filter, `ab/playwright.config.ts` adds Firefox and WebKit projects that run
+`frost.spec.ts` alone (`pnpm exec playwright install firefox webkit` downloads them). Their
+headless builds report `backdrop-filter` but paint no backdrop blur, so the spec reads computed
+style, not pixels.
 
 ## CI
 
 Each upstream style runs as its own `ab-style (<style>)` leg behind the required `ab` check, on the
-runner's Chrome. A derived style has no leg: it has no upstream to compare with, so its showcase
-test runs locally, with `AB_STYLE=frost pnpm ab showcase.spec.ts`. A leg appends
+runner's Chrome. A derived style has no leg: it has no upstream to compare with. Frost has its own
+`frost` job behind the same check instead: it installs Firefox and WebKit, then runs
+`AB_STYLE=frost pnpm ab frost.spec.ts` in all three browsers and `AB_STYLE=frost pnpm ab
+showcase.spec.ts`, and uploads its report as `ab-report-frost` when either fails. A leg appends
 `pnpm ab:timings` to its job summary and uploads its report as the `ab-report-<style>` artifact,
 with images for the failed comparisons only. When a leg skips its comparison is in
 [CONTRIBUTING.md](../CONTRIBUTING.md#ci).

@@ -6,7 +6,9 @@
 // mira) that scrolls sideways on a narrower screen. The switcher numbers the
 // blocks as /create does; `?preview=02` and `?theme=dark` select a block and
 // the dark theme, and the controls keep them in the URL. The header, with its
-// style select, is ./header.tsx.
+// style select, is ./header.tsx. A style that ships a frost filter (./frost.ts)
+// mounts it once, at the root, and shows a photo behind the page in each
+// theme (./backgrounds/), so its surfaces have something to refract.
 import '@ab/styles/fonts.css'
 import '@ab/styles/variables.scss'
 import '@ab/styles/base.scss'
@@ -15,7 +17,10 @@ import '@ab/generated/showcase.css'
 import { blocks, style } from '@ab/generated/showcase'
 import { useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
+import dark from './backgrounds/dark.jpg'
+import light from './backgrounds/light.jpg'
 import { CaseBoundary } from './case-boundary'
+import { frost } from './frost'
 import { Header, label, type Theme } from './header'
 
 function Showcase() {
@@ -41,10 +46,26 @@ function Showcase() {
       className={`style-${style}`}
       style={{
         minHeight: '100vh',
-        background: theme === 'dark' ? 'var(--background)' : 'var(--muted)',
+        backgroundColor: theme === 'dark' ? 'var(--background)' : 'var(--muted)',
+        // Fixed to the viewport, so the surfaces refract it as the page
+        // scrolls under them. Credits in ./backgrounds/CREDITS.md.
+        ...(frost && {
+          backgroundImage: `url(${theme === 'dark' ? dark : light})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+        }),
         color: 'var(--foreground)',
       }}
     >
+      {frost && (
+        <>
+          <frost.FrostFilter />
+          {/* The blocks' own wrappers paint bg-muted over the page: clear
+              them, so the photo shows between the cards. */}
+          <style>{`main[data-showcase] > div, main[data-showcase] [data-slot="capture-target"] { background: transparent !important; }`}</style>
+        </>
+      )}
       <Header
         style={style}
         preview={{ blocks, shown, setShown }}

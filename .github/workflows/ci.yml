@@ -21,8 +21,8 @@ concurrency:
 # build, vitest, types, biome and ab by exact name. A renamed job never reports,
 # and every pull request waits on it forever. Update the ruleset with any rename.
 # deploy is not required: it runs on pushes to main only. vitest and ab are
-# fan-ins over legs per style (for ab, per upstream style), so the required
-# names hold whatever the styles.
+# fan-ins over legs per style (for ab, per upstream style, plus the frost
+# job), so the required names hold whatever the styles.
 # install is not required either, until it has proven stable (issue #13).
 jobs:
   # `shadcn build` validates each style's registry.json and every item against
@@ -299,22 +299,88 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  # Frost's look, which no ab-style leg checks: frost has no upstream to
+  # compare with. frost.spec.ts checks each frost surface in Chrome, Firefox
+  # and WebKit (the refraction, and the blur fallback), and frost's showcase
+  # spec runs as an upstream style's does in its leg. Firefox and WebKit are
+  # downloaded here alone. Skipped, still reporting, as an ab-style leg is: on
+  # a draft, or when the change reaches nothing frost builds from or renders.
+  frost:
+    name: frost
+    runs-on: ubuntu-latest
+    env:
+      AB_STYLE: frost
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # The merge commit and its base, to list what a pull request changes.
+          fetch-depth: 2
+      - name: Decide whether the checks run
+        id: scope
+        run: |
+          if [ "${{ github.event_name }}" != pull_request ]; then
+            echo run=true >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "${{ github.event.pull_request.draft }}" = true ]; then
+            echo "Draft pull request: frost checks skipped until it is marked ready." >> "$GITHUB_STEP_SUMMARY"
+            echo run=false >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # The upstream snapshots frost builds from: its base's, and the
+          # preview and Typeset ones every style shares.
+          base=$(jq -er --arg own "$AB_STYLE" '.derived[] | select(.name == $own) | .base' mirror.config.json)
+          # One command per assignment, so a failed diff or grep fails the job
+          # rather than reading as no change.
+          changed=$(git diff --no-renames --name-only HEAD^1 HEAD)
+          relevant=$(printf '%s\n' "$changed" | grep -E \
+            "^(registry/$AB_STYLE/|upstream/($base|preview|typeset)/|ab/|scripts/mirror/|mirror\.config\.json$|package\.json$|pnpm-lock\.yaml$|\.github/)" \
+            || [ $? -eq 1 ])
+          if [ -n "$relevant" ]; then
+            echo run=true >> "$GITHUB_OUTPUT"
+          else
+            echo "No change reaches $AB_STYLE: frost checks skipped." >> "$GITHUB_STEP_SUMMARY"
+            echo run=false >> "$GITHUB_OUTPUT"
+          fi
+      - uses: ./.github/actions/node-pnpm
+        if: steps.scope.outputs.run == 'true'
+      - name: Install Firefox and WebKit
+        if: steps.scope.outputs.run == 'true'
+        run: pnpm exec playwright install --with-deps firefox webkit
+      # `pnpm ab` generates the harness inputs first (preab).
+      - name: Check the frost surfaces in Chrome, Firefox and WebKit
+        if: steps.scope.outputs.run == 'true'
+        run: pnpm ab frost.spec.ts
+      - name: Check the frost showcase
+        if: steps.scope.outputs.run == 'true'
+        run: pnpm ab showcase.spec.ts
+      - name: Upload the frost report
+        if: ${{ failure() && steps.scope.outputs.run == 'true' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: ab-report-frost
+          path: ab/report/frost
+          retention-days: 14
+
   # The required ab check. It runs whatever happened above, so it reports even
-  # when a leg was skipped or never started, and passes only when listing the
-  # styles succeeded and every leg passed or skipped its comparison.
+  # when a leg or frost was skipped or never started, and passes only when
+  # listing the styles succeeded, every leg passed or skipped its comparison,
+  # and frost passed or skipped its checks. frost joins it so that its checks
+  # are required without a new name in the ruleset.
   ab:
     name: ab
     if: always()
-    needs: [ab-styles, ab-style]
+    needs: [ab-styles, ab-style, frost]
     runs-on: ubuntu-latest
     steps:
-      - name: Require every style's comparison to pass
+      - name: Require every style's comparison and the frost checks to pass
         env:
           STYLES: ${{ needs.ab-styles.result }}
           LEGS: ${{ needs.ab-style.result }}
+          FROST: ${{ needs.frost.result }}
         run: |
-          echo "ab-styles: $STYLES, ab-style: $LEGS"
-          [ "$STYLES" = success ] && [ "$LEGS" = success ]
+          echo "ab-styles: $STYLES, ab-style: $LEGS, frost: $FROST"
+          [ "$STYLES" = success ] && [ "$LEGS" = success ] && [ "$FROST" = success ]
 
   # Consumer installs: every item of the first style in upstream.styles, from
   # the built public/r, through `shadcn add` into a scratch Vite + React +
