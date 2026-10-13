@@ -10,7 +10,7 @@
 // Card on the showcase) keeps maia's look. The tooltip's arrow is clipped to
 // its outer half.
 
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { expect, type Locator, type Page, test } from '@playwright/test'
 import { FROST, OVERRIDES, PORT } from './playwright.config'
 
@@ -100,6 +100,27 @@ async function expectFrost(page: Page, surface: Locator, browserName: string) {
 
 test('every frost surface has a case', () => {
   expect(surfaces()).toEqual(Object.keys(SURFACES).sort())
+})
+
+// The page-level controls: their frost stops inside any frost surface.
+const CONTROLS = ['select-trigger', 'button', 'native-select', 'input', 'textarea', 'toggle']
+
+// Every control override's :not(:is(...) *) list is one list, and it names
+// each frost surface's slot, so no control frosts over another surface.
+test('every control skips every frost surface', () => {
+  const lists = new Set<string>()
+  for (const entry of readdirSync(`${OVERRIDES}/ui`, { recursive: true, encoding: 'utf8' })) {
+    if (!entry.endsWith('.module.scss')) continue
+    const scss = readFileSync(`${OVERRIDES}/ui/${entry}`, 'utf8')
+    for (const [, list] of scss.matchAll(/:not\(:is\(([^)]*)\) \*\)/g)) lists.add(list as string)
+  }
+  expect(lists.size).toBe(1)
+  const slots = [...lists][0]?.match(/data-slot="([a-z-]+)"/g) ?? []
+  const surfaceSlots = Object.values(SURFACES)
+    .flat()
+    .map(({ slot }) => `data-slot="${slot}"`)
+    .filter((slot) => !CONTROLS.some((control) => slot === `data-slot="${control}"`))
+  for (const slot of surfaceSlots) expect(slots).toContain(slot)
 })
 
 // The tooltip's arrow shows only its half outside the tooltip, clipped on the
