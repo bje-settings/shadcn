@@ -347,13 +347,6 @@
   @supports (color: color-mix(in lab, red, red)) {
     background-color: color-mix(in oklab, var(--card) var(--frost-opacity), transparent);
   }
-  // maia gives this control no dark fill. This rule, (0,1,0), outranks its
-  // hover and expanded fills in dark, which rank the same and come earlier.
-  &:is(:global(.dark) *) {
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--card) var(--frost-opacity), transparent);
-    }
-  }
 }
 
 :where(:root[data-frost-refraction] .variantSecondary:not(:is([data-slot="card"], [data-slot="popover-content"], [data-slot="dropdown-menu-content"], [data-slot="dropdown-menu-sub-content"], [data-slot="menubar-content"], [data-slot="menubar-sub-content"], [data-slot="context-menu-content"], [data-slot="context-menu-sub-content"], [data-slot="select-content"], [data-slot="combobox-content"], [data-slot="dialog-content"], [data-slot="alert-dialog-content"], [data-slot="sheet-content"], [data-slot="drawer-popup"], [data-slot="hover-card-content"], [data-slot="tooltip-content"]) *)) {
@@ -370,13 +363,6 @@
   backdrop-filter: var(--frost-blur) var(--frost-saturate);
   @supports (color: color-mix(in lab, red, red)) {
     background-color: color-mix(in oklab, var(--card) var(--frost-opacity), transparent);
-  }
-  // maia gives this control no dark fill. This rule, (0,1,0), outranks its
-  // hover and expanded fills in dark, which rank the same and come earlier.
-  &:is(:global(.dark) *) {
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--card) var(--frost-opacity), transparent);
-    }
   }
 }
 
