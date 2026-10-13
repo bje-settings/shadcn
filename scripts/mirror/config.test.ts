@@ -420,6 +420,12 @@ describe('harnessPort', () => {
       4400, 4401, 4402,
     ])
   })
+
+  it('refuses a style that is not built, rather than serve it on 4399', () => {
+    expect(() => harnessPort(parseConfig(valid), { name: 'nova', base: 'base-vega' })).toThrow(
+      'harnessPort: nova is not one of vega, luma, glass',
+    )
+  })
 })
 
 describe('shortStyle', () => {

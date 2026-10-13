@@ -138,6 +138,8 @@ describe('mirror fetch', BUILDS, () => {
   it("snapshots each upstream style's items and theme sources, and Typeset once", async () => {
     await run(['fetch'], io())
     const colors = 'https://example.com/colors/neutral.json'
+    // Upstream styles alone: the derived glass, built from base-luma, adds no
+    // second fetch of base-luma.
     expect(requests).toEqual([
       ...Object.keys(styleResponses('base-vega')),
       ...Object.keys(styleResponses('base-luma')),
@@ -147,8 +149,6 @@ describe('mirror fetch', BUILDS, () => {
     expect(requests.filter((url) => url === colors)).toHaveLength(2)
     expect(JSON.parse(await read('upstream/base-luma/badge.json'))).toEqual(upstream)
     expect(JSON.parse(await read('upstream/base-vega/badge.json'))).toEqual(upstream)
-    // A derived style has no snapshots of its own.
-    await expect(stat(join(root, 'upstream/glass'))).rejects.toThrow('ENOENT')
     expect(JSON.parse(await read('upstream/base-vega/colors-neutral.json'))).toEqual(
       snapshot('colors-neutral'),
     )

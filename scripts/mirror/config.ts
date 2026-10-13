@@ -435,14 +435,18 @@ export function namedStyle(config: MirrorConfig, name: string, source: string): 
 // The style an A/B run renders: the one AB_STYLE names, or the first upstream
 // style when it is unset, so a derived style is never the default.
 export function harnessStyle(config: MirrorConfig, name: string | undefined): BuiltStyle {
-  if (name === undefined) return builtStyles(config)[0] as BuiltStyle
+  if (name === undefined) return upstreamStyles(config)[0] as BuiltStyle
   return namedStyle(config, name, 'AB_STYLE')
 }
 
 // The port an A/B run serves a style on: 4400 plus its index in every built
 // style, so a server left running for one style is never reused for another.
+// A style not built has no port of its own, so it is refused.
 export function harnessPort(config: MirrorConfig, style: BuiltStyle): number {
-  return 4400 + builtStyles(config).findIndex(({ name }) => name === style.name)
+  const names = builtStyles(config).map(({ name }) => name)
+  const index = names.indexOf(style.name)
+  if (index === -1) throw new Error(`harnessPort: ${style.name} is not one of ${names.join(', ')}`)
+  return 4400 + index
 }
 
 export function upstreamUrl(config: MirrorConfig, name: string): string {
