@@ -169,7 +169,8 @@ export type RuleSelector = {
 
 // The one nested rule an override may hold, directly inside a :where() rule:
 // maia's own dark rules are scoped this way, (0,1,0), so a page-level
-// control's dark tint can only win at the same rank (ruling 17).
+// control's dark tint can only win at the same rank (ruling 17). frost's
+// NativeSelect needs it: maia gives that control a dark fill so scoped.
 export const DARK_RULE = '&:is(:global(.dark) *)'
 
 // The at-rules a style rule may sit in and keep its own selector.
