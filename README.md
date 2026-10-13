@@ -71,7 +71,8 @@ the variables in `@bje/globals`.
 `frost` is maia with a liquid glass surface on Popover, DropdownMenu, Menubar, ContextMenu, Select
 and Combobox content, Dialog, AlertDialog, Sheet, Drawer, HoverCard, Tooltip and Card. Button
 (default, secondary and outline), NativeSelect, Input, Textarea, the Select trigger and the
-outline Toggle get it too, with the card's tint, where no other frost surface holds them. Each of
+outline Toggle get it too, where no other frost surface holds them: the default Button keeps its
+primary tint, and the others take the card's. Each of
 those items depends on `@bje/frost-filter`. Mount its `<FrostFilter />` once, at the app's root:
 
 ```tsx
