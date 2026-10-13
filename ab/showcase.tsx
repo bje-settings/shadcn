@@ -6,7 +6,8 @@
 // mira) that scrolls sideways on a narrower screen. The switcher numbers the
 // blocks as /create does; `?preview=02` and `?theme=dark` select a block and
 // the dark theme, and the controls keep them in the URL. The header, with its
-// style select, is ./header.tsx.
+// style select, is ./header.tsx. A style that ships a frost filter (./frost.ts)
+// mounts it once, at the root, and gives the header its frost surface.
 import '@ab/styles/fonts.css'
 import '@ab/styles/variables.scss'
 import '@ab/styles/base.scss'
@@ -16,6 +17,7 @@ import { blocks, style } from '@ab/generated/showcase'
 import { useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { CaseBoundary } from './case-boundary'
+import { frost } from './frost'
 import { Header, label, type Theme } from './header'
 
 function Showcase() {
@@ -45,8 +47,10 @@ function Showcase() {
         color: 'var(--foreground)',
       }}
     >
+      {frost && <frost.FrostFilter />}
       <Header
         style={style}
+        surface={frost?.frostSurface}
         preview={{ blocks, shown, setShown }}
         theme={theme}
         setTheme={setTheme}

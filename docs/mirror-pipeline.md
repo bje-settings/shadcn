@@ -30,6 +30,37 @@ snapshots into its own paths: `frost` reads `upstream/base-maia/` and writes `re
 header names both (`from shadcn base-maia as frost`). `mirror:fetch` skips derived styles.
 `mirror:build` with no style builds them after the upstream styles.
 
+### Overrides
+
+A derived style's hand-written changes live in `registry/<style>/overrides/`, laid out like the
+style's own directory. The build never writes there. After it builds the style, it layers them on
+(`scripts/mirror/overrides.ts`):
+
+- A stylesheet (`.scss`) at the path of a generated one is appended to it:
+  `overrides/ui/Popover/Popover.module.scss` to `ui/Popover/Popover.module.scss`. The generated
+  file's header gains a line naming the override, and the appended part starts with one. A module
+  override reaches the generated classes by name (`:where(.popoverContent)`), so `styles.<slot>`
+  keeps working.
+- `overrides/overrides.json` declares the items the style adds (`items`, as in a catalog, with
+  file paths relative to `overrides/`) and the `registryDependencies` each item, generated or
+  added, gains (`{ "popover": ["frost-filter"] }`). The build copies an added item's files into
+  the style's directory, clearing their directories first, and publishes it after the generated
+  items.
+
+The build fails on an override with no generated file at its path that no item lists, an override
+of anything but a stylesheet, and a module override that names a class the generated module lacks
+or has a rule outside `:where()`, at the top level or in an at-rule, or nested in another rule
+(either would outrank a consumer's `className`). It fails on an added item with a type the catalog
+lacks, a `registry:file` without a `target`, a name a generated or another added item has, a file
+another item lists or `overrides/` lacks, or a directory that holds a generated item; on any output
+written into `overrides/`; and on a dependency for or on an item the style neither generates nor
+adds. A derived style without `overrides/` is its base's output under its own name. An upstream
+style never reads the directory.
+
+Frost's overrides hold its look: `@bje/frost-filter` (`<FrostFilter />`, an SVG refraction built
+from `feTurbulence` and `feDisplacementMap`), the frost tokens (`--frost-*`, appended to
+`variables.scss`), and the surface of each floating component and Card.
+
 ## Project CSS
 
 The build first rebuilds the CSS entry file `shadcn init` writes for the style and theme

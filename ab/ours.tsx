@@ -10,8 +10,14 @@ import '@ab/generated/examples.css'
 import { oursExamples } from '@ab/generated/examples-ours'
 import { ours } from '@ab/generated/ours'
 import { createRoot } from 'react-dom/client'
+import { frost } from './frost'
 import { Gallery } from './gallery'
 
+// A style's frost filter, where it ships one, mounted once as a consumer does:
+// frost's surfaces are checked here in every engine (frost.spec.ts).
 createRoot(document.getElementById('root') as HTMLElement).render(
-  <Gallery side={{ ui: ours, examples: oursExamples }} />,
+  <>
+    {frost && <frost.FrostFilter />}
+    <Gallery side={{ ui: ours, examples: oursExamples }} />
+  </>,
 )

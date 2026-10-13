@@ -23,7 +23,9 @@ export type UpstreamItem = {
   files: { path: string; type: string; content?: string }[]
 }
 
-type ItemType = 'registry:ui' | 'registry:hook' | 'registry:file'
+export const ITEM_TYPES = ['registry:ui', 'registry:hook', 'registry:file'] as const
+
+export type ItemType = (typeof ITEM_TYPES)[number]
 
 export type RegistryItem = {
   name: string

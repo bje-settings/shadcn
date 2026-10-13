@@ -2,7 +2,8 @@
 // logo, plus the style's name (visually hidden) on a style's page; beside it, a
 // select opens a style's page with the theme kept, and the shown block when the
 // page has a preview switcher. No style is current on the root page, so its
-// select shows a disabled "Choose a style" instead.
+// select shows a disabled "Choose a style" instead. A style with a frost
+// surface gives the header that surface's class.
 import { allStyles } from '@ab/generated/styles'
 import { Button } from '@/registry/bje/ui/Button/Button'
 import { NativeSelect, NativeSelectOption } from '@/registry/bje/ui/NativeSelect/NativeSelect'
@@ -34,12 +35,15 @@ export type Preview = {
 
 export function Header({
   style,
+  surface,
   preview,
   theme,
   setTheme,
 }: {
   // The page's style; none on the root page.
   style?: string
+  // The style's frost surface class (./frost.ts); none for other styles.
+  surface?: string
   // The page's preview switcher; none on the root page.
   preview?: Preview
   theme: Theme
@@ -47,6 +51,7 @@ export function Header({
 }) {
   return (
     <header
+      className={surface}
       style={{
         display: 'flex',
         flexWrap: 'wrap',

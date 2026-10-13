@@ -1,0 +1,38 @@
+{
+  "items": [
+    {
+      "name": "frost-filter",
+      "type": "registry:ui",
+      "title": "Frost Filter",
+      "dependencies": [],
+      "devDependencies": [
+        "@testing-library/dom",
+        "@testing-library/react",
+        "jsdom",
+        "sass",
+        "vitest"
+      ],
+      "registryDependencies": ["@bje/globals"],
+      "files": [
+        { "path": "ui/FrostFilter/FrostFilter.tsx", "type": "registry:ui" },
+        { "path": "ui/FrostFilter/FrostFilter.module.scss", "type": "registry:ui" },
+        { "path": "ui/FrostFilter/FrostFilter.test.tsx", "type": "registry:ui" }
+      ]
+    }
+  ],
+  "registryDependencies": {
+    "popover": ["frost-filter"],
+    "dropdown-menu": ["frost-filter"],
+    "menubar": ["frost-filter"],
+    "context-menu": ["frost-filter"],
+    "select": ["frost-filter"],
+    "combobox": ["frost-filter"],
+    "dialog": ["frost-filter"],
+    "alert-dialog": ["frost-filter"],
+    "sheet": ["frost-filter"],
+    "drawer": ["frost-filter"],
+    "hover-card": ["frost-filter"],
+    "tooltip": ["frost-filter"],
+    "card": ["frost-filter"]
+  }
+}

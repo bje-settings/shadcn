@@ -1,0 +1,17 @@
+// The frost surface's tokens, light then dark. Every frost surface reads
+// them: a translucent background, a highlight along its top edge, and a blur
+// that the refraction (FrostFilter) replaces where it renders.
+:root {
+  // How much of a surface's own background shows; the backdrop is the rest.
+  --frost-opacity: 62%;
+  --frost-edge: color-mix(in oklab, white 55%, transparent);
+  // Where the refraction does not render (Firefox, Safari, plain HTTP, or no
+  // FrostFilter mounted): frosted glass.
+  --frost-blur: blur(14px);
+  --frost-saturate: saturate(170%);
+}
+
+.dark {
+  --frost-opacity: 48%;
+  --frost-edge: color-mix(in oklab, white 14%, transparent);
+}
