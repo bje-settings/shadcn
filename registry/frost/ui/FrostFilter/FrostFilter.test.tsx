@@ -211,6 +211,19 @@ describe('startSurfaces', () => {
     stop()
   })
 
+  it('scans once for changes that arrive apart within one frame', async () => {
+    const stop = startSurfaces()
+    const frames = vi.spyOn(window, 'requestAnimationFrame')
+    surface(200, 100)
+    await Promise.resolve()
+    surface(120, 60)
+    await Promise.resolve()
+    expect(frames).toHaveBeenCalledTimes(1)
+    await frame()
+    expect(ownFilters()).toHaveLength(2)
+    stop()
+  })
+
   it('stops observing, cancels a pending scan, and puts every surface back on cleanup', async () => {
     const popover = surface(200, 100)
     const stop = startSurfaces()
