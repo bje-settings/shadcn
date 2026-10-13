@@ -561,15 +561,25 @@
 // that the refraction (FrostFilter) replaces where it renders.
 :root {
   // How much of a surface's own background shows; the backdrop is the rest.
-  --frost-opacity: 62%;
-  --frost-edge: color-mix(in oklab, white 55%, transparent);
+  --frost-opacity: 85%;
+  --frost-edge: color-mix(in oklab, white 36%, transparent);
   // Where the refraction does not render (Firefox, Safari, plain HTTP, or no
   // FrostFilter mounted): frosted glass.
   --frost-blur: blur(14px);
   --frost-saturate: saturate(170%);
+  // Translucent lines, so the backdrop shows through a border as it does
+  // through the surface: maia's light --border and --input are opaque.
+  --border: color-mix(in oklab, var(--foreground) 6%, transparent);
+  --input: color-mix(in oklab, var(--foreground) 6%, transparent);
+  --frost-ring: color-mix(in oklab, var(--foreground) 6%, transparent);
 }
 
 .dark {
-  --frost-opacity: 48%;
+  --frost-opacity: 85%;
   --frost-edge: color-mix(in oklab, white 14%, transparent);
+  // maia's dark values, restated: the :root block above comes later in the
+  // stylesheet than maia's .dark.
+  --border: oklch(100% 0 0 / 0.1);
+  --input: oklch(100% 0 0 / 0.15);
+  --frost-ring: color-mix(in oklab, var(--foreground) 10%, transparent);
 }
