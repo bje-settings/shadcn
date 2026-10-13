@@ -2,6 +2,8 @@
 // refraction in its place where FrostFilter finds it renders (Chromium).
 :where(.card) {
   --inset-shadow: inset 0 1px 0 0 var(--frost-edge);
+  // maia's ring is the foreground at 10%; frost's light ring is fainter.
+  --ring-color: var(--frost-ring);
   -webkit-backdrop-filter: var(--frost-blur) var(--frost-saturate);
   backdrop-filter: var(--frost-blur) var(--frost-saturate);
   @supports (color: color-mix(in lab, red, red)) {

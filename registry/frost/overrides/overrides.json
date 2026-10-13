@@ -14,9 +14,26 @@
       ],
       "registryDependencies": ["@bje/globals"],
       "files": [
-        { "path": "ui/FrostFilter/FrostFilter.tsx", "type": "registry:ui" },
-        { "path": "ui/FrostFilter/FrostFilter.module.scss", "type": "registry:ui" },
-        { "path": "ui/FrostFilter/FrostFilter.test.tsx", "type": "registry:ui" }
+        {
+          "path": "ui/FrostFilter/FrostFilter.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "ui/FrostFilter/FrostFilter.module.scss",
+          "type": "registry:ui"
+        },
+        {
+          "path": "ui/FrostFilter/maps.ts",
+          "type": "registry:ui"
+        },
+        {
+          "path": "ui/FrostFilter/FrostFilter.test.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "ui/FrostFilter/maps.test.ts",
+          "type": "registry:ui"
+        }
       ]
     }
   ],
@@ -33,6 +50,11 @@
     "drawer": ["frost-filter"],
     "hover-card": ["frost-filter"],
     "tooltip": ["frost-filter"],
-    "card": ["frost-filter"]
+    "card": ["frost-filter"],
+    "button": ["frost-filter"],
+    "native-select": ["frost-filter"],
+    "input": ["frost-filter"],
+    "textarea": ["frost-filter"],
+    "toggle": ["frost-filter"]
   }
 }
