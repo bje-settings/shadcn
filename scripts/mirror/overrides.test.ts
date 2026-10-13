@@ -597,7 +597,7 @@ describe('layerOverrides', () => {
 
 describe("layerOverrides, an added item's own dependencies", () => {
   it('refuses one that is not an item of the style, or not in its namespace', async () => {
-    for (const dependency of ['@bje/glob', 'card', '@other/card']) {
+    for (const dependency of ['@bje/glob', 'card', '@abc/card', '@other/card']) {
       await expect(
         layerOverrides(
           overrides(
