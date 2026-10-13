@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "bje",
-  "homepage": "https://shadcn.bje.co/glass",
+  "homepage": "https://shadcn.bje.co/frost",
   "items": [
     {
       "name": "cn",
@@ -31,15 +31,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Button/Button.tsx",
+          "path": "registry/frost/ui/Button/Button.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Button/Button.module.scss",
+          "path": "registry/frost/ui/Button/Button.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Button/Button.test.tsx",
+          "path": "registry/frost/ui/Button/Button.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -59,15 +59,15 @@
       "registryDependencies": ["@bje/separator", "@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/ButtonGroup/ButtonGroup.tsx",
+          "path": "registry/frost/ui/ButtonGroup/ButtonGroup.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/ButtonGroup/ButtonGroup.module.scss",
+          "path": "registry/frost/ui/ButtonGroup/ButtonGroup.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/ButtonGroup/ButtonGroup.test.tsx",
+          "path": "registry/frost/ui/ButtonGroup/ButtonGroup.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -87,15 +87,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Separator/Separator.tsx",
+          "path": "registry/frost/ui/Separator/Separator.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Separator/Separator.module.scss",
+          "path": "registry/frost/ui/Separator/Separator.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Separator/Separator.test.tsx",
+          "path": "registry/frost/ui/Separator/Separator.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -115,15 +115,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Badge/Badge.tsx",
+          "path": "registry/frost/ui/Badge/Badge.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Badge/Badge.module.scss",
+          "path": "registry/frost/ui/Badge/Badge.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Badge/Badge.test.tsx",
+          "path": "registry/frost/ui/Badge/Badge.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -143,15 +143,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Card/Card.tsx",
+          "path": "registry/frost/ui/Card/Card.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Card/Card.module.scss",
+          "path": "registry/frost/ui/Card/Card.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Card/Card.test.tsx",
+          "path": "registry/frost/ui/Card/Card.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -171,15 +171,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Alert/Alert.tsx",
+          "path": "registry/frost/ui/Alert/Alert.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Alert/Alert.module.scss",
+          "path": "registry/frost/ui/Alert/Alert.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Alert/Alert.test.tsx",
+          "path": "registry/frost/ui/Alert/Alert.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -199,15 +199,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Label/Label.tsx",
+          "path": "registry/frost/ui/Label/Label.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Label/Label.module.scss",
+          "path": "registry/frost/ui/Label/Label.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Label/Label.test.tsx",
+          "path": "registry/frost/ui/Label/Label.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -227,15 +227,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Input/Input.tsx",
+          "path": "registry/frost/ui/Input/Input.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Input/Input.module.scss",
+          "path": "registry/frost/ui/Input/Input.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Input/Input.test.tsx",
+          "path": "registry/frost/ui/Input/Input.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -255,15 +255,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Textarea/Textarea.tsx",
+          "path": "registry/frost/ui/Textarea/Textarea.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Textarea/Textarea.module.scss",
+          "path": "registry/frost/ui/Textarea/Textarea.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Textarea/Textarea.test.tsx",
+          "path": "registry/frost/ui/Textarea/Textarea.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -283,15 +283,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Skeleton/Skeleton.tsx",
+          "path": "registry/frost/ui/Skeleton/Skeleton.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Skeleton/Skeleton.module.scss",
+          "path": "registry/frost/ui/Skeleton/Skeleton.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Skeleton/Skeleton.test.tsx",
+          "path": "registry/frost/ui/Skeleton/Skeleton.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -311,15 +311,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Spinner/Spinner.tsx",
+          "path": "registry/frost/ui/Spinner/Spinner.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Spinner/Spinner.module.scss",
+          "path": "registry/frost/ui/Spinner/Spinner.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Spinner/Spinner.test.tsx",
+          "path": "registry/frost/ui/Spinner/Spinner.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -339,15 +339,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Kbd/Kbd.tsx",
+          "path": "registry/frost/ui/Kbd/Kbd.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Kbd/Kbd.module.scss",
+          "path": "registry/frost/ui/Kbd/Kbd.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Kbd/Kbd.test.tsx",
+          "path": "registry/frost/ui/Kbd/Kbd.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -367,15 +367,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/AspectRatio/AspectRatio.tsx",
+          "path": "registry/frost/ui/AspectRatio/AspectRatio.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/AspectRatio/AspectRatio.module.scss",
+          "path": "registry/frost/ui/AspectRatio/AspectRatio.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/AspectRatio/AspectRatio.test.tsx",
+          "path": "registry/frost/ui/AspectRatio/AspectRatio.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -395,15 +395,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Table/Table.tsx",
+          "path": "registry/frost/ui/Table/Table.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Table/Table.module.scss",
+          "path": "registry/frost/ui/Table/Table.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Table/Table.test.tsx",
+          "path": "registry/frost/ui/Table/Table.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -423,15 +423,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Breadcrumb/Breadcrumb.tsx",
+          "path": "registry/frost/ui/Breadcrumb/Breadcrumb.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Breadcrumb/Breadcrumb.module.scss",
+          "path": "registry/frost/ui/Breadcrumb/Breadcrumb.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Breadcrumb/Breadcrumb.test.tsx",
+          "path": "registry/frost/ui/Breadcrumb/Breadcrumb.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -451,15 +451,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Empty/Empty.tsx",
+          "path": "registry/frost/ui/Empty/Empty.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Empty/Empty.module.scss",
+          "path": "registry/frost/ui/Empty/Empty.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Empty/Empty.test.tsx",
+          "path": "registry/frost/ui/Empty/Empty.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -479,15 +479,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Checkbox/Checkbox.tsx",
+          "path": "registry/frost/ui/Checkbox/Checkbox.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Checkbox/Checkbox.module.scss",
+          "path": "registry/frost/ui/Checkbox/Checkbox.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Checkbox/Checkbox.test.tsx",
+          "path": "registry/frost/ui/Checkbox/Checkbox.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -507,15 +507,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Switch/Switch.tsx",
+          "path": "registry/frost/ui/Switch/Switch.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Switch/Switch.module.scss",
+          "path": "registry/frost/ui/Switch/Switch.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Switch/Switch.test.tsx",
+          "path": "registry/frost/ui/Switch/Switch.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -535,15 +535,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Progress/Progress.tsx",
+          "path": "registry/frost/ui/Progress/Progress.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Progress/Progress.module.scss",
+          "path": "registry/frost/ui/Progress/Progress.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Progress/Progress.test.tsx",
+          "path": "registry/frost/ui/Progress/Progress.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -563,15 +563,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Slider/Slider.tsx",
+          "path": "registry/frost/ui/Slider/Slider.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Slider/Slider.module.scss",
+          "path": "registry/frost/ui/Slider/Slider.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Slider/Slider.test.tsx",
+          "path": "registry/frost/ui/Slider/Slider.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -591,15 +591,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Tabs/Tabs.tsx",
+          "path": "registry/frost/ui/Tabs/Tabs.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Tabs/Tabs.module.scss",
+          "path": "registry/frost/ui/Tabs/Tabs.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Tabs/Tabs.test.tsx",
+          "path": "registry/frost/ui/Tabs/Tabs.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -619,15 +619,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Toggle/Toggle.tsx",
+          "path": "registry/frost/ui/Toggle/Toggle.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Toggle/Toggle.module.scss",
+          "path": "registry/frost/ui/Toggle/Toggle.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Toggle/Toggle.test.tsx",
+          "path": "registry/frost/ui/Toggle/Toggle.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -647,15 +647,15 @@
       "registryDependencies": ["@bje/toggle", "@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/ToggleGroup/ToggleGroup.tsx",
+          "path": "registry/frost/ui/ToggleGroup/ToggleGroup.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/ToggleGroup/ToggleGroup.module.scss",
+          "path": "registry/frost/ui/ToggleGroup/ToggleGroup.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/ToggleGroup/ToggleGroup.test.tsx",
+          "path": "registry/frost/ui/ToggleGroup/ToggleGroup.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -675,15 +675,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/RadioGroup/RadioGroup.tsx",
+          "path": "registry/frost/ui/RadioGroup/RadioGroup.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/RadioGroup/RadioGroup.module.scss",
+          "path": "registry/frost/ui/RadioGroup/RadioGroup.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/RadioGroup/RadioGroup.test.tsx",
+          "path": "registry/frost/ui/RadioGroup/RadioGroup.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -703,15 +703,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Avatar/Avatar.tsx",
+          "path": "registry/frost/ui/Avatar/Avatar.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Avatar/Avatar.module.scss",
+          "path": "registry/frost/ui/Avatar/Avatar.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Avatar/Avatar.test.tsx",
+          "path": "registry/frost/ui/Avatar/Avatar.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -731,11 +731,11 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Collapsible/Collapsible.tsx",
+          "path": "registry/frost/ui/Collapsible/Collapsible.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Collapsible/Collapsible.test.tsx",
+          "path": "registry/frost/ui/Collapsible/Collapsible.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -755,15 +755,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/ScrollArea/ScrollArea.tsx",
+          "path": "registry/frost/ui/ScrollArea/ScrollArea.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/ScrollArea/ScrollArea.module.scss",
+          "path": "registry/frost/ui/ScrollArea/ScrollArea.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/ScrollArea/ScrollArea.test.tsx",
+          "path": "registry/frost/ui/ScrollArea/ScrollArea.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -777,11 +777,11 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Direction/Direction.tsx",
+          "path": "registry/frost/ui/Direction/Direction.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Direction/Direction.test.tsx",
+          "path": "registry/frost/ui/Direction/Direction.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -801,15 +801,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/NativeSelect/NativeSelect.tsx",
+          "path": "registry/frost/ui/NativeSelect/NativeSelect.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/NativeSelect/NativeSelect.module.scss",
+          "path": "registry/frost/ui/NativeSelect/NativeSelect.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/NativeSelect/NativeSelect.test.tsx",
+          "path": "registry/frost/ui/NativeSelect/NativeSelect.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -829,15 +829,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Accordion/Accordion.tsx",
+          "path": "registry/frost/ui/Accordion/Accordion.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Accordion/Accordion.module.scss",
+          "path": "registry/frost/ui/Accordion/Accordion.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Accordion/Accordion.test.tsx",
+          "path": "registry/frost/ui/Accordion/Accordion.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -857,15 +857,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/InputOtp/InputOtp.tsx",
+          "path": "registry/frost/ui/InputOtp/InputOtp.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/InputOtp/InputOtp.module.scss",
+          "path": "registry/frost/ui/InputOtp/InputOtp.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/InputOtp/InputOtp.test.tsx",
+          "path": "registry/frost/ui/InputOtp/InputOtp.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -885,15 +885,15 @@
       "registryDependencies": ["@bje/label", "@bje/separator", "@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Field/Field.tsx",
+          "path": "registry/frost/ui/Field/Field.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Field/Field.module.scss",
+          "path": "registry/frost/ui/Field/Field.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Field/Field.test.tsx",
+          "path": "registry/frost/ui/Field/Field.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -913,15 +913,15 @@
       "registryDependencies": ["@bje/button", "@bje/input", "@bje/textarea", "@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/InputGroup/InputGroup.tsx",
+          "path": "registry/frost/ui/InputGroup/InputGroup.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/InputGroup/InputGroup.module.scss",
+          "path": "registry/frost/ui/InputGroup/InputGroup.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/InputGroup/InputGroup.test.tsx",
+          "path": "registry/frost/ui/InputGroup/InputGroup.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -941,15 +941,15 @@
       "registryDependencies": ["@bje/separator", "@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Item/Item.tsx",
+          "path": "registry/frost/ui/Item/Item.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Item/Item.module.scss",
+          "path": "registry/frost/ui/Item/Item.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Item/Item.test.tsx",
+          "path": "registry/frost/ui/Item/Item.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -969,15 +969,15 @@
       "registryDependencies": ["@bje/button", "@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Pagination/Pagination.tsx",
+          "path": "registry/frost/ui/Pagination/Pagination.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Pagination/Pagination.module.scss",
+          "path": "registry/frost/ui/Pagination/Pagination.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Pagination/Pagination.test.tsx",
+          "path": "registry/frost/ui/Pagination/Pagination.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -997,15 +997,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Marker/Marker.tsx",
+          "path": "registry/frost/ui/Marker/Marker.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Marker/Marker.module.scss",
+          "path": "registry/frost/ui/Marker/Marker.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Marker/Marker.test.tsx",
+          "path": "registry/frost/ui/Marker/Marker.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1025,15 +1025,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Message/Message.tsx",
+          "path": "registry/frost/ui/Message/Message.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Message/Message.module.scss",
+          "path": "registry/frost/ui/Message/Message.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Message/Message.test.tsx",
+          "path": "registry/frost/ui/Message/Message.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1053,15 +1053,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Bubble/Bubble.tsx",
+          "path": "registry/frost/ui/Bubble/Bubble.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Bubble/Bubble.module.scss",
+          "path": "registry/frost/ui/Bubble/Bubble.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Bubble/Bubble.test.tsx",
+          "path": "registry/frost/ui/Bubble/Bubble.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1081,15 +1081,15 @@
       "registryDependencies": ["@bje/button", "@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Attachment/Attachment.tsx",
+          "path": "registry/frost/ui/Attachment/Attachment.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Attachment/Attachment.module.scss",
+          "path": "registry/frost/ui/Attachment/Attachment.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Attachment/Attachment.test.tsx",
+          "path": "registry/frost/ui/Attachment/Attachment.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1109,15 +1109,15 @@
       "registryDependencies": ["@bje/button", "@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Dialog/Dialog.tsx",
+          "path": "registry/frost/ui/Dialog/Dialog.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Dialog/Dialog.module.scss",
+          "path": "registry/frost/ui/Dialog/Dialog.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Dialog/Dialog.test.tsx",
+          "path": "registry/frost/ui/Dialog/Dialog.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1137,15 +1137,15 @@
       "registryDependencies": ["@bje/button", "@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/AlertDialog/AlertDialog.tsx",
+          "path": "registry/frost/ui/AlertDialog/AlertDialog.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/AlertDialog/AlertDialog.module.scss",
+          "path": "registry/frost/ui/AlertDialog/AlertDialog.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/AlertDialog/AlertDialog.test.tsx",
+          "path": "registry/frost/ui/AlertDialog/AlertDialog.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1165,15 +1165,15 @@
       "registryDependencies": ["@bje/button", "@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Sheet/Sheet.tsx",
+          "path": "registry/frost/ui/Sheet/Sheet.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Sheet/Sheet.module.scss",
+          "path": "registry/frost/ui/Sheet/Sheet.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Sheet/Sheet.test.tsx",
+          "path": "registry/frost/ui/Sheet/Sheet.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1193,15 +1193,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Drawer/Drawer.tsx",
+          "path": "registry/frost/ui/Drawer/Drawer.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Drawer/Drawer.module.scss",
+          "path": "registry/frost/ui/Drawer/Drawer.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Drawer/Drawer.test.tsx",
+          "path": "registry/frost/ui/Drawer/Drawer.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1221,15 +1221,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Popover/Popover.tsx",
+          "path": "registry/frost/ui/Popover/Popover.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Popover/Popover.module.scss",
+          "path": "registry/frost/ui/Popover/Popover.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Popover/Popover.test.tsx",
+          "path": "registry/frost/ui/Popover/Popover.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1249,15 +1249,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Tooltip/Tooltip.tsx",
+          "path": "registry/frost/ui/Tooltip/Tooltip.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Tooltip/Tooltip.module.scss",
+          "path": "registry/frost/ui/Tooltip/Tooltip.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Tooltip/Tooltip.test.tsx",
+          "path": "registry/frost/ui/Tooltip/Tooltip.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1277,15 +1277,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/HoverCard/HoverCard.tsx",
+          "path": "registry/frost/ui/HoverCard/HoverCard.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/HoverCard/HoverCard.module.scss",
+          "path": "registry/frost/ui/HoverCard/HoverCard.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/HoverCard/HoverCard.test.tsx",
+          "path": "registry/frost/ui/HoverCard/HoverCard.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1305,15 +1305,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/DropdownMenu/DropdownMenu.tsx",
+          "path": "registry/frost/ui/DropdownMenu/DropdownMenu.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/DropdownMenu/DropdownMenu.module.scss",
+          "path": "registry/frost/ui/DropdownMenu/DropdownMenu.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/DropdownMenu/DropdownMenu.test.tsx",
+          "path": "registry/frost/ui/DropdownMenu/DropdownMenu.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1333,15 +1333,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/ContextMenu/ContextMenu.tsx",
+          "path": "registry/frost/ui/ContextMenu/ContextMenu.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/ContextMenu/ContextMenu.module.scss",
+          "path": "registry/frost/ui/ContextMenu/ContextMenu.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/ContextMenu/ContextMenu.test.tsx",
+          "path": "registry/frost/ui/ContextMenu/ContextMenu.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1361,15 +1361,15 @@
       "registryDependencies": ["@bje/dropdown-menu", "@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Menubar/Menubar.tsx",
+          "path": "registry/frost/ui/Menubar/Menubar.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Menubar/Menubar.module.scss",
+          "path": "registry/frost/ui/Menubar/Menubar.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Menubar/Menubar.test.tsx",
+          "path": "registry/frost/ui/Menubar/Menubar.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1390,15 +1390,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Select/Select.tsx",
+          "path": "registry/frost/ui/Select/Select.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Select/Select.module.scss",
+          "path": "registry/frost/ui/Select/Select.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Select/Select.test.tsx",
+          "path": "registry/frost/ui/Select/Select.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1419,15 +1419,15 @@
       "registryDependencies": ["@bje/button", "@bje/input-group", "@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Combobox/Combobox.tsx",
+          "path": "registry/frost/ui/Combobox/Combobox.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Combobox/Combobox.module.scss",
+          "path": "registry/frost/ui/Combobox/Combobox.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Combobox/Combobox.test.tsx",
+          "path": "registry/frost/ui/Combobox/Combobox.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1447,15 +1447,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/NavigationMenu/NavigationMenu.tsx",
+          "path": "registry/frost/ui/NavigationMenu/NavigationMenu.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/NavigationMenu/NavigationMenu.module.scss",
+          "path": "registry/frost/ui/NavigationMenu/NavigationMenu.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/NavigationMenu/NavigationMenu.test.tsx",
+          "path": "registry/frost/ui/NavigationMenu/NavigationMenu.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1475,15 +1475,15 @@
       "registryDependencies": ["@bje/dialog", "@bje/input-group", "@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Command/Command.tsx",
+          "path": "registry/frost/ui/Command/Command.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Command/Command.module.scss",
+          "path": "registry/frost/ui/Command/Command.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Command/Command.test.tsx",
+          "path": "registry/frost/ui/Command/Command.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1503,15 +1503,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Sonner/Sonner.tsx",
+          "path": "registry/frost/ui/Sonner/Sonner.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Sonner/Sonner.module.scss",
+          "path": "registry/frost/ui/Sonner/Sonner.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Sonner/Sonner.test.tsx",
+          "path": "registry/frost/ui/Sonner/Sonner.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1532,15 +1532,15 @@
       "registryDependencies": ["@bje/button", "@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Toast/Toast.tsx",
+          "path": "registry/frost/ui/Toast/Toast.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Toast/Toast.module.scss",
+          "path": "registry/frost/ui/Toast/Toast.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Toast/Toast.test.tsx",
+          "path": "registry/frost/ui/Toast/Toast.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1560,15 +1560,15 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Resizable/Resizable.tsx",
+          "path": "registry/frost/ui/Resizable/Resizable.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Resizable/Resizable.module.scss",
+          "path": "registry/frost/ui/Resizable/Resizable.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Resizable/Resizable.test.tsx",
+          "path": "registry/frost/ui/Resizable/Resizable.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1588,15 +1588,15 @@
       "registryDependencies": ["@bje/button", "@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Questionnaire/Questionnaire.tsx",
+          "path": "registry/frost/ui/Questionnaire/Questionnaire.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Questionnaire/Questionnaire.module.scss",
+          "path": "registry/frost/ui/Questionnaire/Questionnaire.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Questionnaire/Questionnaire.test.tsx",
+          "path": "registry/frost/ui/Questionnaire/Questionnaire.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1616,15 +1616,15 @@
       "registryDependencies": ["@bje/button", "@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/MessageScroller/MessageScroller.tsx",
+          "path": "registry/frost/ui/MessageScroller/MessageScroller.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/MessageScroller/MessageScroller.module.scss",
+          "path": "registry/frost/ui/MessageScroller/MessageScroller.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/MessageScroller/MessageScroller.test.tsx",
+          "path": "registry/frost/ui/MessageScroller/MessageScroller.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1638,11 +1638,11 @@
       "registryDependencies": [],
       "files": [
         {
-          "path": "registry/glass/hooks/use-mobile.ts",
+          "path": "registry/frost/hooks/use-mobile.ts",
           "type": "registry:hook"
         },
         {
-          "path": "registry/glass/hooks/use-mobile.test.tsx",
+          "path": "registry/frost/hooks/use-mobile.test.tsx",
           "type": "registry:hook"
         }
       ]
@@ -1671,15 +1671,15 @@
       ],
       "files": [
         {
-          "path": "registry/glass/ui/Sidebar/Sidebar.tsx",
+          "path": "registry/frost/ui/Sidebar/Sidebar.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Sidebar/Sidebar.module.scss",
+          "path": "registry/frost/ui/Sidebar/Sidebar.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Sidebar/Sidebar.test.tsx",
+          "path": "registry/frost/ui/Sidebar/Sidebar.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1699,15 +1699,15 @@
       "registryDependencies": ["@bje/button", "@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Calendar/Calendar.tsx",
+          "path": "registry/frost/ui/Calendar/Calendar.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Calendar/Calendar.module.scss",
+          "path": "registry/frost/ui/Calendar/Calendar.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Calendar/Calendar.test.tsx",
+          "path": "registry/frost/ui/Calendar/Calendar.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1727,15 +1727,15 @@
       "registryDependencies": ["@bje/button", "@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Carousel/Carousel.tsx",
+          "path": "registry/frost/ui/Carousel/Carousel.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Carousel/Carousel.module.scss",
+          "path": "registry/frost/ui/Carousel/Carousel.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Carousel/Carousel.test.tsx",
+          "path": "registry/frost/ui/Carousel/Carousel.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1756,15 +1756,15 @@
       "registryDependencies": ["@bje/card", "@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/ui/Chart/Chart.tsx",
+          "path": "registry/frost/ui/Chart/Chart.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Chart/Chart.module.scss",
+          "path": "registry/frost/ui/Chart/Chart.module.scss",
           "type": "registry:ui"
         },
         {
-          "path": "registry/glass/ui/Chart/Chart.test.tsx",
+          "path": "registry/frost/ui/Chart/Chart.test.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1778,17 +1778,17 @@
       "registryDependencies": [],
       "files": [
         {
-          "path": "registry/glass/styles/variables.scss",
+          "path": "registry/frost/styles/variables.scss",
           "type": "registry:file",
           "target": "@components/styles/variables.scss"
         },
         {
-          "path": "registry/glass/styles/base.scss",
+          "path": "registry/frost/styles/base.scss",
           "type": "registry:file",
           "target": "@components/styles/base.scss"
         },
         {
-          "path": "registry/glass/styles/fonts.css",
+          "path": "registry/frost/styles/fonts.css",
           "type": "registry:file",
           "target": "@components/styles/fonts.css"
         }
@@ -1803,7 +1803,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/typeset.css",
+          "path": "registry/frost/styles/typeset.css",
           "type": "registry:file",
           "target": "@components/styles/typeset.css"
         }
@@ -1818,7 +1818,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/geist.css",
+          "path": "registry/frost/styles/fonts/geist.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/geist.css"
         }
@@ -1833,7 +1833,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/inter.css",
+          "path": "registry/frost/styles/fonts/inter.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/inter.css"
         }
@@ -1848,7 +1848,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/noto-sans.css",
+          "path": "registry/frost/styles/fonts/noto-sans.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/noto-sans.css"
         }
@@ -1863,7 +1863,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/nunito-sans.css",
+          "path": "registry/frost/styles/fonts/nunito-sans.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/nunito-sans.css"
         }
@@ -1878,7 +1878,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/figtree.css",
+          "path": "registry/frost/styles/fonts/figtree.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/figtree.css"
         }
@@ -1893,7 +1893,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/roboto.css",
+          "path": "registry/frost/styles/fonts/roboto.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/roboto.css"
         }
@@ -1908,7 +1908,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/raleway.css",
+          "path": "registry/frost/styles/fonts/raleway.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/raleway.css"
         }
@@ -1923,7 +1923,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/dm-sans.css",
+          "path": "registry/frost/styles/fonts/dm-sans.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/dm-sans.css"
         }
@@ -1938,7 +1938,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/public-sans.css",
+          "path": "registry/frost/styles/fonts/public-sans.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/public-sans.css"
         }
@@ -1953,7 +1953,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/outfit.css",
+          "path": "registry/frost/styles/fonts/outfit.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/outfit.css"
         }
@@ -1968,7 +1968,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/oxanium.css",
+          "path": "registry/frost/styles/fonts/oxanium.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/oxanium.css"
         }
@@ -1983,7 +1983,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/manrope.css",
+          "path": "registry/frost/styles/fonts/manrope.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/manrope.css"
         }
@@ -1998,7 +1998,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/space-grotesk.css",
+          "path": "registry/frost/styles/fonts/space-grotesk.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/space-grotesk.css"
         }
@@ -2013,7 +2013,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/montserrat.css",
+          "path": "registry/frost/styles/fonts/montserrat.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/montserrat.css"
         }
@@ -2028,7 +2028,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/ibm-plex-sans.css",
+          "path": "registry/frost/styles/fonts/ibm-plex-sans.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/ibm-plex-sans.css"
         }
@@ -2043,7 +2043,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/source-sans-3.css",
+          "path": "registry/frost/styles/fonts/source-sans-3.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/source-sans-3.css"
         }
@@ -2058,7 +2058,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/instrument-sans.css",
+          "path": "registry/frost/styles/fonts/instrument-sans.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/instrument-sans.css"
         }
@@ -2073,7 +2073,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/jetbrains-mono.css",
+          "path": "registry/frost/styles/fonts/jetbrains-mono.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/jetbrains-mono.css"
         }
@@ -2088,7 +2088,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/geist-mono.css",
+          "path": "registry/frost/styles/fonts/geist-mono.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/geist-mono.css"
         }
@@ -2103,7 +2103,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/noto-serif.css",
+          "path": "registry/frost/styles/fonts/noto-serif.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/noto-serif.css"
         }
@@ -2118,7 +2118,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/roboto-slab.css",
+          "path": "registry/frost/styles/fonts/roboto-slab.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/roboto-slab.css"
         }
@@ -2133,7 +2133,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/merriweather.css",
+          "path": "registry/frost/styles/fonts/merriweather.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/merriweather.css"
         }
@@ -2148,7 +2148,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/lora.css",
+          "path": "registry/frost/styles/fonts/lora.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/lora.css"
         }
@@ -2163,7 +2163,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/playfair-display.css",
+          "path": "registry/frost/styles/fonts/playfair-display.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/playfair-display.css"
         }
@@ -2178,7 +2178,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/eb-garamond.css",
+          "path": "registry/frost/styles/fonts/eb-garamond.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/eb-garamond.css"
         }
@@ -2193,7 +2193,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/instrument-serif.css",
+          "path": "registry/frost/styles/fonts/instrument-serif.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/instrument-serif.css"
         }
@@ -2208,7 +2208,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-geist.css",
+          "path": "registry/frost/styles/fonts/heading-geist.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-geist.css"
         }
@@ -2223,7 +2223,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-inter.css",
+          "path": "registry/frost/styles/fonts/heading-inter.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-inter.css"
         }
@@ -2238,7 +2238,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-noto-sans.css",
+          "path": "registry/frost/styles/fonts/heading-noto-sans.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-noto-sans.css"
         }
@@ -2253,7 +2253,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-nunito-sans.css",
+          "path": "registry/frost/styles/fonts/heading-nunito-sans.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-nunito-sans.css"
         }
@@ -2268,7 +2268,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-figtree.css",
+          "path": "registry/frost/styles/fonts/heading-figtree.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-figtree.css"
         }
@@ -2283,7 +2283,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-roboto.css",
+          "path": "registry/frost/styles/fonts/heading-roboto.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-roboto.css"
         }
@@ -2298,7 +2298,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-raleway.css",
+          "path": "registry/frost/styles/fonts/heading-raleway.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-raleway.css"
         }
@@ -2313,7 +2313,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-dm-sans.css",
+          "path": "registry/frost/styles/fonts/heading-dm-sans.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-dm-sans.css"
         }
@@ -2328,7 +2328,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-public-sans.css",
+          "path": "registry/frost/styles/fonts/heading-public-sans.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-public-sans.css"
         }
@@ -2343,7 +2343,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-outfit.css",
+          "path": "registry/frost/styles/fonts/heading-outfit.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-outfit.css"
         }
@@ -2358,7 +2358,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-oxanium.css",
+          "path": "registry/frost/styles/fonts/heading-oxanium.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-oxanium.css"
         }
@@ -2373,7 +2373,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-manrope.css",
+          "path": "registry/frost/styles/fonts/heading-manrope.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-manrope.css"
         }
@@ -2388,7 +2388,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-space-grotesk.css",
+          "path": "registry/frost/styles/fonts/heading-space-grotesk.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-space-grotesk.css"
         }
@@ -2403,7 +2403,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-montserrat.css",
+          "path": "registry/frost/styles/fonts/heading-montserrat.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-montserrat.css"
         }
@@ -2418,7 +2418,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-ibm-plex-sans.css",
+          "path": "registry/frost/styles/fonts/heading-ibm-plex-sans.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-ibm-plex-sans.css"
         }
@@ -2433,7 +2433,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-source-sans-3.css",
+          "path": "registry/frost/styles/fonts/heading-source-sans-3.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-source-sans-3.css"
         }
@@ -2448,7 +2448,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-instrument-sans.css",
+          "path": "registry/frost/styles/fonts/heading-instrument-sans.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-instrument-sans.css"
         }
@@ -2463,7 +2463,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-jetbrains-mono.css",
+          "path": "registry/frost/styles/fonts/heading-jetbrains-mono.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-jetbrains-mono.css"
         }
@@ -2478,7 +2478,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-geist-mono.css",
+          "path": "registry/frost/styles/fonts/heading-geist-mono.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-geist-mono.css"
         }
@@ -2493,7 +2493,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-noto-serif.css",
+          "path": "registry/frost/styles/fonts/heading-noto-serif.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-noto-serif.css"
         }
@@ -2508,7 +2508,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-roboto-slab.css",
+          "path": "registry/frost/styles/fonts/heading-roboto-slab.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-roboto-slab.css"
         }
@@ -2523,7 +2523,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-merriweather.css",
+          "path": "registry/frost/styles/fonts/heading-merriweather.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-merriweather.css"
         }
@@ -2538,7 +2538,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-lora.css",
+          "path": "registry/frost/styles/fonts/heading-lora.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-lora.css"
         }
@@ -2553,7 +2553,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-playfair-display.css",
+          "path": "registry/frost/styles/fonts/heading-playfair-display.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-playfair-display.css"
         }
@@ -2568,7 +2568,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-eb-garamond.css",
+          "path": "registry/frost/styles/fonts/heading-eb-garamond.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-eb-garamond.css"
         }
@@ -2583,7 +2583,7 @@
       "registryDependencies": ["@bje/globals"],
       "files": [
         {
-          "path": "registry/glass/styles/fonts/heading-instrument-serif.css",
+          "path": "registry/frost/styles/fonts/heading-instrument-serif.css",
           "type": "registry:file",
           "target": "@components/styles/fonts/heading-instrument-serif.css"
         }
