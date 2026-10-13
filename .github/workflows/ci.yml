@@ -21,7 +21,8 @@ concurrency:
 # build, vitest, types, biome and ab by exact name. A renamed job never reports,
 # and every pull request waits on it forever. Update the ruleset with any rename.
 # deploy is not required: it runs on pushes to main only. vitest and ab are
-# fan-ins over legs per style, so the required names hold whatever the styles.
+# fan-ins over legs per style (for ab, per upstream style), so the required
+# names hold whatever the styles.
 # install is not required either, until it has proven stable (issue #13).
 jobs:
   # `shadcn build` validates each style's registry.json and every item against

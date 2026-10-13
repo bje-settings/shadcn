@@ -19,7 +19,7 @@ optional one included, is ignored.
 | `components`         | The upstream items to mirror                                                               |
 | `typeset`            | shadcn/typeset's `stylesheet` URL, and the content `fixtures` (from `fixturesUrl`) A/B renders |
 | `preview`            | The `/create` preview blocks the showcase renders; none when unset (below)                |
-| `snapshotDir`        | Where `mirror:fetch` writes snapshots, one directory per style                             |
+| `snapshotDir`        | Where `mirror:fetch` writes snapshots, one directory per upstream style                    |
 | `outputDir`          | Components                                                                                 |
 | `hooksDir`           | Mirrored hooks (`use-mobile`)                                                              |
 | `globalsDir`         | The global stylesheets and Typeset                                                         |

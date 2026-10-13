@@ -58,7 +58,8 @@ produces. To change the output, change `scripts/mirror/` or `mirror.config.json`
    `registry/<style>/registry.json`.
 3. Where the build or a generated test fails on something the pipeline cannot infer, record it in
    `mirror.config.json` with a reason ([docs/mirror-config.md](docs/mirror-config.md)).
-4. Run `pnpm test`, and `pnpm ab` for each style.
+4. Run `pnpm test`, `AB_STYLE=<style> pnpm ab` for each upstream style, and
+   `AB_STYLE=<style> pnpm ab showcase.spec.ts` for each derived one.
 
 ## Adding a hand-written item
 
