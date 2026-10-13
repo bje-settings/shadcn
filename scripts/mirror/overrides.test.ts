@@ -40,7 +40,7 @@ const addedItem = {
   title: 'Frost Filter',
   dependencies: [],
   devDependencies: [],
-  registryDependencies: ['@bje/globals'],
+  registryDependencies: ['@bje/card'],
   files: [{ path: 'ui/FrostFilter/FrostFilter.tsx', type: 'registry:ui' }],
 }
 
@@ -183,6 +183,8 @@ describe('ruleSelectors', () => {
       '@keyframes spin { from { rotate: 0deg; } to { rotate: 1turn; } }',
       '@-webkit-keyframes spin { 50% { rotate: 0deg; } }',
       '.e > .f { color: red; }',
+      '@container (width > 1px) { :where(.g) { color: red; } }',
+      '@at-root .h:hover { color: red; }',
     ].join('\n')
     expect(ruleSelectors(scss)).toEqual([
       { selector: ':where(.a)', nested: false, direct: false },
@@ -191,6 +193,8 @@ describe('ruleSelectors', () => {
       { selector: '&[data-x]', nested: true, direct: true },
       { selector: '.inMedia', nested: false, direct: false },
       { selector: '.e > .f', nested: false, direct: false },
+      { selector: ':where(.g)', nested: false, direct: false },
+      { selector: '@at-root .h:hover', nested: false, direct: false },
     ])
   })
 })
@@ -245,7 +249,7 @@ describe('layerOverrides', () => {
     expect(layered.items.map((item) => [item.name, item.registryDependencies])).toEqual([
       ['popover', ['@bje/globals', '@bje/frost-filter', '@bje/card']],
       ['card', ['@bje/globals', '@bje/popover']],
-      ['frost-filter', ['@bje/globals']],
+      ['frost-filter', ['@bje/card']],
     ])
     expect(layered.items[2]?.files).toEqual([
       { path: 'registry/frost/ui/FrostFilter/FrostFilter.tsx', type: 'registry:ui' },
@@ -334,6 +338,23 @@ describe('layerOverrides', () => {
     )
   })
 
+  it('refuses a block at-rule that emits rules unseen, such as @at-root', async () => {
+    await expect(
+      layerOverrides(
+        overrides({
+          'ui/FrostFilter/FrostFilter.tsx': '',
+          'ui/Popover/Popover.module.scss':
+            ':where(.popoverContent) { @at-root .popoverContent:hover { color: blue; } }',
+        }),
+        config,
+        items,
+        written({ 'registry/frost/ui/Popover/Popover.module.scss': POPOVER }),
+      ),
+    ).rejects.toThrow(
+      'registry/frost/overrides/ui/Popover/Popover.module.scss: @at-root .popoverContent:hover is nested in a rule; write it as its own :where()',
+    )
+  })
+
   it('refuses a module rule nested in another, which compiles to a longer selector', async () => {
     await expect(
       layerOverrides(
@@ -381,6 +402,15 @@ describe('layerOverrides', () => {
       [`:where(.popoverContent) { ${DARK_RULE} { ${DARK_RULE} { color: red; } } }`, DARK_RULE],
       [`:where(.popoverContent) { ${DARK_RULE} { &:hover { color: red; } } }`, '&:hover'],
       [':where(.popoverContent) { &:is([data-dark] *) { color: red; } }', '&:is([data-dark] *)'],
+      [`:where(.popoverContent) { ${DARK_RULE}:hover { color: red; } }`, `${DARK_RULE}:hover`],
+      [
+        `:where(.popoverContent) { ${DARK_RULE} .popoverContent { color: red; } }`,
+        `${DARK_RULE} .popoverContent`,
+      ],
+      [
+        ':where(.popoverContent) { &:is(:global(.dark) *, :global(.x) *) { color: red; } }',
+        '&:is(:global(.dark) *, :global(.x) *)',
+      ],
     ]) {
       await expect(
         layerOverrides(
@@ -565,6 +595,26 @@ describe('layerOverrides', () => {
   })
 })
 
+describe("layerOverrides, an added item's own dependencies", () => {
+  it('refuses one that is not an item of the style, or not in its namespace', async () => {
+    for (const dependency of ['@bje/glob', 'card', '@other/card']) {
+      await expect(
+        layerOverrides(
+          overrides(
+            { 'ui/FrostFilter/FrostFilter.tsx': '' },
+            manifest({ items: [{ ...addedItem, registryDependencies: [dependency] }] }),
+          ),
+          config,
+          items,
+          written({}),
+        ),
+      ).rejects.toThrow(
+        `${WHERE}: items[0].registryDependencies[0] ${dependency} is not @bje/<an item of frost>`,
+      )
+    }
+  })
+})
+
 describe('reading the directory', () => {
   let root: string
 
@@ -592,6 +642,15 @@ describe('reading the directory', () => {
     expect(read?.dir).toBe('registry/frost/overrides')
     expect(read?.manifest.items.map((item) => item.name)).toEqual(['frost-filter'])
     expect([...(read?.files ?? [])]).toEqual([['ui/FrostFilter/FrostFilter.tsx', 'export {}\n']])
+  })
+
+  it('leaves out hidden files and directories', async () => {
+    await put('registry/frost/overrides/ui/.DS_Store', '')
+    await put('registry/frost/overrides/.cache/x.scss', '')
+    await put('registry/frost/overrides/styles/variables.scss', ':root {}')
+    expect(await listFiles(root, 'registry/frost/overrides')).toEqual([
+      join('styles', 'variables.scss'),
+    ])
   })
 
   it('adds nothing without a manifest', async () => {

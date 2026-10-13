@@ -40,12 +40,14 @@ export function overridesDir(config: MirrorConfig): string {
 }
 
 // Every file under the directory, sorted, or undefined when it does not exist.
+// Hidden files and directories (a .DS_Store, an editor's) are not overrides.
 export async function listFiles(root: string, dir: string): Promise<string[] | undefined> {
   try {
     const entries = await readdir(join(root, dir), { recursive: true, withFileTypes: true })
     return entries
       .filter((entry) => entry.isFile())
       .map((entry) => relative(join(root, dir), join(entry.parentPath, entry.name)))
+      .filter((path) => !path.split(sep).some((part) => part.startsWith('.')))
       .sort()
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') return undefined
@@ -170,10 +172,15 @@ export type RuleSelector = {
 // control's dark tint can only win at the same rank (ruling 17).
 export const DARK_RULE = '&:is(:global(.dark) *)'
 
+// The at-rules a style rule may sit in and keep its own selector.
+const CONDITIONS = /^@(media|supports|container)\b/
+
 // The selectors of a stylesheet's style rules, outside comments, each split
-// at its commas: at the top level, inside at-rules (@media, @supports) at any
-// depth, and nested in other rules. A @keyframes block's steps are not
-// selectors, and are left out.
+// at its commas: at the top level, inside at-rules (@media, @supports,
+// @container) at any depth, and nested in other rules. A @keyframes block's
+// steps are not selectors, and are left out. Any other block at-rule (@at-root,
+// @include) emits rules whose selectors this cannot see, so its prelude is
+// listed as a selector, which no check accepts.
 export function ruleSelectors(scss: string): RuleSelector[] {
   const code = scss.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '')
   const selectors: RuleSelector[] = []
@@ -183,8 +190,10 @@ export function ruleSelectors(scss: string): RuleSelector[] {
     const char = code[i]
     if (char === '{') {
       const prelude = code.slice(start, i).trim()
-      if (prelude.startsWith('@')) {
-        blocks.push(/^@(-[a-z]+-)?keyframes\b/.test(prelude) ? 'keyframes' : 'at')
+      if (prelude.startsWith('@') && /^@(-[a-z]+-)?keyframes\b/.test(prelude)) {
+        blocks.push('keyframes')
+      } else if (CONDITIONS.test(prelude)) {
+        blocks.push('at')
       } else {
         if (!blocks.includes('keyframes')) {
           const nested = blocks.includes('rule')
@@ -352,6 +361,18 @@ export async function layerOverrides(
     registryDependencies: [...item.registryDependencies],
   }))
   const byName = new Map(catalog.map((item) => [item.name, item]))
+  // An added item's own dependencies are published as written: each must
+  // name an item of this style, in its namespace.
+  const prefix = `@${config.namespace}/`
+  manifest.items.forEach((item, i) => {
+    item.registryDependencies.forEach((dependency, j) => {
+      if (!dependency.startsWith(prefix) || !byName.has(dependency.slice(prefix.length))) {
+        shape.fail(
+          `items[${i}].registryDependencies[${j}] ${dependency} is not ${prefix}<an item of ${config.styleName}>`,
+        )
+      }
+    })
+  })
   for (const [name, dependencies] of Object.entries(manifest.registryDependencies)) {
     const item = byName.get(name)
     if (item === undefined) {
