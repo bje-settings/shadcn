@@ -51,15 +51,16 @@ The build fails on an override with no generated file at its path that no item l
 of anything but a stylesheet, and a module override that names a class the generated module lacks
 or has a rule outside `:where()`, at the top level or in an at-rule, or nested in another rule
 (either would outrank a consumer's `className`), or a block at-rule other than `@media`,
-`@supports`, `@container` and `@keyframes` (`@at-root` emits rules the check cannot see). The one nested rule allowed is
-`&:is(:global(.dark) *)`, directly inside a `:where()` rule: maia scopes its own dark rules that
-way, so an override's dark value can only win at the same rank. It fails on an added item with a type the catalog
-lacks, a `registry:file` without a `target`, a name a generated or another added item has, a file
-another item lists or `overrides/` lacks, a directory that holds a generated item, or a
-`registryDependencies` entry that is not `@<namespace>/` and an item of the style; on any output
-written into `overrides/`; and on a dependency for or on an item the style neither generates nor
-adds. Hidden files (`.DS_Store`) in `overrides/` are left out. A derived style without `overrides/` is its base's output under its own name. An upstream
-style never reads the directory.
+`@supports`, `@container` and `@keyframes` (`@at-root` emits rules the check cannot see). The one
+nested rule allowed is `&:is(:global(.dark) *)`, directly inside a `:where()` rule: maia scopes
+its own dark rules that way, so an override's dark value can only win at the same rank. It fails
+on an added item with a type the catalog lacks, a `registry:file` without a `target`, a name a
+generated or another added item has, a file another item lists or `overrides/` lacks, a directory
+that holds a generated item, or a `registryDependencies` entry that is not `@<namespace>/` and an
+item of the style; on any output written into `overrides/`; and on a dependency for or on an item
+the style neither generates nor adds. Hidden files (`.DS_Store`) in `overrides/` are left out. A
+derived style without `overrides/` is its base's output under its own name. An upstream style
+never reads the directory.
 
 Frost's overrides hold its look: `@bje/frost-filter` (`<FrostFilter />`, the shared SVG
 refraction built from `feTurbulence` and `feDisplacementMap`, and in Chromium a filter per surface
