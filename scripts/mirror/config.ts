@@ -155,13 +155,16 @@ export function shortStyle(style: string): string {
   return style.replace(/^base-/, '')
 }
 
+// The upstream styles, each its own base, in config order: the styles
+// `mirror fetch` snapshots.
+export function upstreamStyles(config: MirrorConfig): BuiltStyle[] {
+  return config.upstream.styles.map((style) => ({ name: shortStyle(style), base: style }))
+}
+
 // Every style the mirror builds, upstream styles first, then derived ones,
 // each in config order.
 export function builtStyles(config: MirrorConfig): BuiltStyle[] {
-  return [
-    ...config.upstream.styles.map((style) => ({ name: shortStyle(style), base: style })),
-    ...config.derived,
-  ]
+  return [...upstreamStyles(config), ...config.derived]
 }
 
 // The config one style builds with: its base as the upstream style, and its
@@ -322,6 +325,10 @@ export function parseConfig(raw: unknown): MirrorConfig {
   }
 }
 
+// Names a derived style cannot take: registry/lib is the shared library, and
+// shared is CI's vitest leg for it and scripts/.
+const RESERVED_NAMES = new Set(['lib', 'shared'])
+
 // The optional derived key: each entry builds from one of upstream.styles
 // under a name no other style goes by.
 function parseDerived(raw: unknown, styles: string[]): BuiltStyle[] {
@@ -338,6 +345,7 @@ function parseDerived(raw: unknown, styles: string[]): BuiltStyle[] {
     if (upstreamNames.has(derivedName)) {
       shape.fail(`${path}.name ${derivedName} is an upstream style's short name`)
     }
+    if (RESERVED_NAMES.has(derivedName)) shape.fail(`${path}.name ${derivedName} is reserved`)
     if (names.has(derivedName)) shape.fail(`${path}.name ${derivedName} repeats a derived name`)
     names.add(derivedName)
     return { name: derivedName, base }
@@ -429,6 +437,12 @@ export function namedStyle(config: MirrorConfig, name: string, source: string): 
 export function harnessStyle(config: MirrorConfig, name: string | undefined): BuiltStyle {
   if (name === undefined) return builtStyles(config)[0] as BuiltStyle
   return namedStyle(config, name, 'AB_STYLE')
+}
+
+// The port an A/B run serves a style on: 4400 plus its index in every built
+// style, so a server left running for one style is never reused for another.
+export function harnessPort(config: MirrorConfig, style: BuiltStyle): number {
+  return 4400 + builtStyles(config).findIndex(({ name }) => name === style.name)
 }
 
 export function upstreamUrl(config: MirrorConfig, name: string): string {

@@ -1,4 +1,4 @@
-// `mirror fetch` snapshots, for each configured style, the upstream items, their
+// `mirror fetch` snapshots, for each upstream style, the upstream items, their
 // docs examples, the style index, the theme's font and each published one, the
 // base color, and shadcn/typeset and the /create preview blocks once, into the
 // repo; `mirror fetch preview` snapshots the preview blocks alone. `mirror
@@ -26,6 +26,7 @@ import {
   parseConfig,
   previewUrl,
   shortStyle,
+  upstreamStyles,
   upstreamUrl,
 } from './config.ts'
 import { prepareExample } from './examples.ts'
@@ -548,9 +549,7 @@ export async function run(args: string[], io: Io): Promise<void> {
   if (command === 'fetch') {
     // Derived styles have no upstream of their own: their base's snapshots
     // are theirs.
-    for (const style of config.upstream.styles) {
-      await fetchStyle(io, forStyle(config, { name: shortStyle(style), base: style }))
-    }
+    for (const style of upstreamStyles(config)) await fetchStyle(io, forStyle(config, style))
     await fetchTypeset(io, config)
     await fetchPreview(io, config)
     return

@@ -5,10 +5,12 @@ import {
   colorsUrl,
   consumerClassReasons,
   forStyle,
+  harnessPort,
   harnessStyle,
   parseConfig,
   previewUrl,
   shortStyle,
+  upstreamStyles,
   upstreamUrl,
 } from './config.ts'
 
@@ -196,6 +198,21 @@ describe('parseConfig', () => {
       'derived[0].name must be kebab-case',
     ],
     [
+      'a non-string derived base',
+      withChange({ derived: [{ name: 'glass', base: 1 }] }),
+      'derived[0].base must be a non-empty string',
+    ],
+    [
+      'a derived style named lib, the shared library',
+      withChange({ derived: [{ name: 'lib', base: 'base-luma' }] }),
+      'derived[0].name lib is reserved',
+    ],
+    [
+      "a derived style named shared, CI's leg for the rest",
+      withChange({ derived: [{ name: 'shared', base: 'base-luma' }] }),
+      'derived[0].name shared is reserved',
+    ],
+    [
       'a derived base not in upstream.styles',
       withChange({ derived: [{ name: 'glass', base: 'base-maia' }] }),
       'derived[0].base base-maia is not one of upstream.styles',
@@ -341,6 +358,15 @@ describe('builtStyles', () => {
   })
 })
 
+describe('upstreamStyles', () => {
+  it('lists the upstream styles alone, each its own base, in config order', () => {
+    expect(upstreamStyles(parseConfig(valid))).toEqual([
+      { name: 'vega', base: 'base-vega' },
+      { name: 'luma', base: 'base-luma' },
+    ])
+  })
+})
+
 describe('forStyle', () => {
   it("sets the style and resolves its output paths with the style's short name", () => {
     const luma = forStyle(parseConfig(valid), { name: 'luma', base: 'base-luma' })
@@ -384,6 +410,15 @@ describe('harnessStyle', () => {
     expect(() => harnessStyle(config, name)).toThrow(
       `AB_STYLE: ${name} is not one of vega, luma, glass`,
     )
+  })
+})
+
+describe('harnessPort', () => {
+  it("serves each built style on 4400 plus its index, a derived style's apart from its base's", () => {
+    const config = parseConfig(valid)
+    expect(builtStyles(config).map((style) => harnessPort(config, style))).toEqual([
+      4400, 4401, 4402,
+    ])
   })
 })
 

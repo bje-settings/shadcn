@@ -5,7 +5,7 @@
 
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
-import { builtStyles, forStyle, harnessStyle, parseConfig } from '../scripts/mirror/config.ts'
+import { forStyle, harnessPort, harnessStyle, parseConfig } from '../scripts/mirror/config.ts'
 
 export const repo = fileURLToPath(new URL('..', import.meta.url))
 const mirror = parseConfig(JSON.parse(readFileSync(`${repo}mirror.config.json`, 'utf8')))
@@ -15,4 +15,4 @@ const style = harnessStyle(mirror, process.env.AB_STYLE)
 export const config = forStyle(mirror, style)
 export const short = style.name
 // A server left running for another style is never reused for this one.
-export const port = 4400 + builtStyles(mirror).findIndex(({ name }) => name === style.name)
+export const port = harnessPort(mirror, style)
