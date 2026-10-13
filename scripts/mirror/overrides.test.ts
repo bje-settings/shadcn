@@ -7,6 +7,7 @@ import { forStyle } from './config.ts'
 import {
   appendOverride,
   classesNamed,
+  DARK_RULE,
   layerOverrides,
   listFiles,
   type Manifest,
@@ -184,12 +185,12 @@ describe('ruleSelectors', () => {
       '.e > .f { color: red; }',
     ].join('\n')
     expect(ruleSelectors(scss)).toEqual([
-      { selector: ':where(.a)', nested: false },
-      { selector: ':where(.b:not(.c, .d))', nested: false },
-      { selector: '.nested', nested: true },
-      { selector: '&[data-x]', nested: true },
-      { selector: '.inMedia', nested: false },
-      { selector: '.e > .f', nested: false },
+      { selector: ':where(.a)', nested: false, direct: false },
+      { selector: ':where(.b:not(.c, .d))', nested: false, direct: false },
+      { selector: '.nested', nested: true, direct: false },
+      { selector: '&[data-x]', nested: true, direct: true },
+      { selector: '.inMedia', nested: false, direct: false },
+      { selector: '.e > .f', nested: false, direct: false },
     ])
   })
 })
@@ -348,6 +349,53 @@ describe('layerOverrides', () => {
     ).rejects.toThrow(
       'registry/frost/overrides/ui/Popover/Popover.module.scss: &:hover is nested in a rule; write it as its own :where()',
     )
+  })
+
+  it("allows maia's dark scope, nested directly in a :where() rule", async () => {
+    const override = [
+      ':where(.popoverContent) {',
+      '  color: blue;',
+      '  &:is(:global(.dark) *) {',
+      '    @supports (color: red) { color: red; }',
+      '  }',
+      '}',
+    ].join('\n')
+    const layered = await layerOverrides(
+      overrides({
+        'ui/FrostFilter/FrostFilter.tsx': '',
+        'ui/Popover/Popover.module.scss': override,
+      }),
+      config,
+      items,
+      written({ 'registry/frost/ui/Popover/Popover.module.scss': POPOVER }),
+    )
+    expect(layered.files.at(-1)?.content).toContain(DARK_RULE)
+  })
+
+  it('refuses the dark scope anywhere but directly in a :where() rule', async () => {
+    for (const [override, selector] of [
+      [
+        `:where(.popoverContent) { @supports (color: red) { ${DARK_RULE} { color: red; } } }`,
+        DARK_RULE,
+      ],
+      [`:where(.popoverContent) { ${DARK_RULE} { ${DARK_RULE} { color: red; } } }`, DARK_RULE],
+      [`:where(.popoverContent) { ${DARK_RULE} { &:hover { color: red; } } }`, '&:hover'],
+      [':where(.popoverContent) { &:is([data-dark] *) { color: red; } }', '&:is([data-dark] *)'],
+    ]) {
+      await expect(
+        layerOverrides(
+          overrides({
+            'ui/FrostFilter/FrostFilter.tsx': '',
+            'ui/Popover/Popover.module.scss': override as string,
+          }),
+          config,
+          items,
+          written({ 'registry/frost/ui/Popover/Popover.module.scss': POPOVER }),
+        ),
+      ).rejects.toThrow(
+        `registry/frost/overrides/ui/Popover/Popover.module.scss: ${selector} is nested in a rule; write it as its own :where()`,
+      )
+    }
   })
 
   it('appends to a global stylesheet without checking classes', async () => {

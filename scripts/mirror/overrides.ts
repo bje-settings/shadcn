@@ -161,7 +161,14 @@ export type RuleSelector = {
   selector: string
   // Inside another style rule, where it compiles to a longer selector
   nested: boolean
+  // Nested in exactly one style rule, with no at-rule between them
+  direct: boolean
 }
+
+// The one nested rule an override may hold, directly inside a :where() rule:
+// maia's own dark rules are scoped this way, (0,1,0), so a page-level
+// control's dark tint can only win at the same rank (ruling 17).
+export const DARK_RULE = '&:is(:global(.dark) *)'
 
 // The selectors of a stylesheet's style rules, outside comments, each split
 // at its commas: at the top level, inside at-rules (@media, @supports) at any
@@ -181,7 +188,9 @@ export function ruleSelectors(scss: string): RuleSelector[] {
       } else {
         if (!blocks.includes('keyframes')) {
           const nested = blocks.includes('rule')
-          for (const selector of splitList(prelude)) selectors.push({ selector, nested })
+          const direct =
+            blocks.at(-1) === 'rule' && blocks.filter((block) => block === 'rule').length === 1
+          for (const selector of splitList(prelude)) selectors.push({ selector, nested, direct })
         }
         blocks.push('rule')
       }
@@ -317,8 +326,10 @@ export async function layerOverrides(
       }
       // Zero specificity, as the generated rules have, so a consumer's
       // className still wins. A nested rule compiles to its parent's
-      // selector plus its own (&:hover to :where(.x):hover), which outranks it.
-      for (const { selector, nested } of ruleSelectors(override)) {
+      // selector plus its own (&:hover to :where(.x):hover), which outranks it;
+      // DARK_RULE alone, directly in a :where() rule, ranks with maia's own.
+      for (const { selector, nested, direct } of ruleSelectors(override)) {
+        if (nested && direct && selector === DARK_RULE) continue
         if (nested) {
           throw new Error(
             `${source}: ${selector} is nested in a rule; write it as its own :where()`,
