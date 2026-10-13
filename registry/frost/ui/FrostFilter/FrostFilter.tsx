@@ -93,10 +93,10 @@ function surfaceFilter(id: string, w: number, h: number, r: number): SVGElement 
 type Built = { id: string; key: string; filter: SVGElement }
 
 // Builds each frost surface's own filter, and rebuilds it when the surface
-// resizes or a popup opens. A frost surface is any element whose computed
-// backdrop-filter names the shared filter, as the frost CSS sets it under
-// REFRACTION_ATTRIBUTE. Returns the cleanup: observers off, filters gone, and
-// each surface back to its CSS.
+// resizes or a popup opens. A frost surface is an element with a data-slot,
+// or the frostSurface class, whose computed backdrop-filter names the shared
+// filter, as the frost CSS sets it under REFRACTION_ATTRIBUTE. Returns the
+// cleanup: observers off, filters gone, and each surface back to its CSS.
 export function startSurfaces(): () => void {
   const defs = svg('svg', { 'aria-hidden': 'true', 'data-slot': 'frost-surfaces' })
   defs.setAttribute('class', styles.frostFilter as string)
@@ -112,19 +112,30 @@ export function startSurfaces(): () => void {
     const radius = Number.parseFloat(getComputedStyle(element).borderTopLeftRadius) || 0
     const r = Math.min(radius, w / 2, h / 2)
     const key = `${w}x${h}r${r}`
-    const have = built.get(element)
-    if (have?.key === key) return
-    const id = have?.id ?? `${FROST_FILTER_ID}-${next++}`
-    const filter = surfaceFilter(id, w, h, r)
-    have?.filter.remove()
-    defs.append(filter)
-    built.set(element, { id, key, filter })
+    let have = built.get(element)
+    if (have?.key !== key) {
+      const id = have?.id ?? `${FROST_FILTER_ID}-${next++}`
+      const filter = surfaceFilter(id, w, h, r)
+      have?.filter.remove()
+      defs.append(filter)
+      have = { id, key, filter }
+      built.set(element, have)
+    }
     // The shared filter's waves through the whole body first, then this
     // surface's own bend at its rim and its rim light.
     element.style.setProperty(
       'backdrop-filter',
-      `url(#${FROST_FILTER_ID}) url(#${id}) var(--frost-saturate)`,
+      `url(#${FROST_FILTER_ID}) url(#${have.id}) var(--frost-saturate)`,
     )
+  }
+
+  // A surface no longer frost, or gone from the page, takes its filter along,
+  // and goes back to its CSS.
+  const drop = (element: HTMLElement, { filter }: Built) => {
+    filter.remove()
+    resize.unobserve(element)
+    element.style.removeProperty('backdrop-filter')
+    built.delete(element)
   }
 
   const resize = new ResizeObserver((entries) => {
@@ -132,21 +143,20 @@ export function startSurfaces(): () => void {
   })
 
   const scan = () => {
-    // A surface gone from the page (a closed popup) takes its filter along.
-    for (const [element, { filter }] of built) {
-      if (element.isConnected) continue
-      filter.remove()
-      resize.unobserve(element)
-      built.delete(element)
-    }
+    for (const [element, have] of built) if (!element.isConnected) drop(element, have)
     for (const element of document.querySelectorAll<HTMLElement>(
       `[data-slot], .${styles.frostSurface}`,
     )) {
-      if (!built.has(element)) {
-        const filter = getComputedStyle(element).getPropertyValue('backdrop-filter')
-        if (!filter.includes(`#${FROST_FILTER_ID}`)) continue
-        resize.observe(element)
+      // The CSS decides, every scan: a variant, a class or a new parent can
+      // take the frost away, and the inline filter would hide that.
+      const have = built.get(element)
+      if (have) element.style.removeProperty('backdrop-filter')
+      const filter = getComputedStyle(element).getPropertyValue('backdrop-filter')
+      if (!filter.includes(`#${FROST_FILTER_ID}`)) {
+        if (have) drop(element, have)
+        continue
       }
+      if (!have) resize.observe(element)
       build(element)
     }
   }
