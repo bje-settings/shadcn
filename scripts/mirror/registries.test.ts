@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { shortStyle } from './config.ts'
+import { builtStyles } from './config.ts'
 import { registryBuilds, showcaseBuilds } from './registries.ts'
 import { parsed } from './test-support.ts'
 
 describe('registryBuilds', () => {
   it('builds each style from its catalog into its own directory', () => {
-    const styles = parsed.upstream.styles.map(shortStyle)
+    const styles = builtStyles(parsed).map((style) => style.name)
+    expect(styles.at(-1), 'a derived style comes last').toBe('glass')
     expect(registryBuilds(parsed, 'out')).toEqual(
       styles.map((style) => ({
         registry: `registry/${style}/registry.json`,
@@ -17,7 +18,8 @@ describe('registryBuilds', () => {
 
 describe('showcaseBuilds', () => {
   it("generates each style's inputs, builds its showcase into its directory, then the root page", () => {
-    const styles = parsed.upstream.styles.map(shortStyle)
+    const styles = builtStyles(parsed).map((style) => style.name)
+    expect(styles.at(-1), 'a derived style comes last').toBe('glass')
     expect(styles.length, 'the config lists more than one style').toBeGreaterThan(1)
     expect(showcaseBuilds(parsed, 'public/r')).toEqual([
       ...styles.flatMap((style) => [
@@ -32,7 +34,7 @@ describe('showcaseBuilds', () => {
           env: { AB_STYLE: style },
         },
       ]),
-      // After every style, with the first style's inputs, into the site root.
+      // After every style, with the first upstream style's inputs, into the site root.
       {
         command: 'pnpm',
         args: [

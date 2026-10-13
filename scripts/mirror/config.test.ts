@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  builtStyles,
   checkConfiguredParts,
   colorsUrl,
   consumerClassReasons,
@@ -18,6 +19,7 @@ const valid = {
     colorsUrl: 'https://example.com/colors/{name}.json',
     styles: ['base-vega', 'base-luma'],
   },
+  derived: [{ name: 'glass', base: 'base-luma' }],
   theme: { baseColor: 'neutral', font: 'inter', iconLibrary: 'lucide' },
   fonts: ['inter', 'heading-geist'],
   components: ['button', 'icon-button'],
@@ -56,7 +58,11 @@ describe('parseConfig', () => {
   it('accepts a valid config and builds item URLs', () => {
     const config = parseConfig(valid)
     // As parsed, the config builds the first style.
-    expect(config).toEqual({ ...valid, upstream: { ...valid.upstream, style: 'base-vega' } })
+    expect(config).toEqual({
+      ...valid,
+      upstream: { ...valid.upstream, style: 'base-vega' },
+      styleName: 'vega',
+    })
     expect(upstreamUrl(config, 'button')).toBe('https://example.com/base-vega/button.json')
     expect(colorsUrl(config)).toBe('https://example.com/colors/neutral.json')
     expect(previewUrl(config, 'preview', 'cards/invoice.tsx')).toBe(
@@ -95,9 +101,11 @@ describe('parseConfig', () => {
         unrenderedInTests: undefined,
         testProps: undefined,
         fonts: undefined,
+        derived: undefined,
       }),
     )
     expect(config.fonts).toEqual([])
+    expect(config.derived).toEqual([])
     expect(config.testProps).toEqual({})
     expect(config.coverageExclusions).toEqual({})
     expect(config.testSetup).toEqual([])
@@ -175,6 +183,37 @@ describe('parseConfig', () => {
       'repeated styles',
       withChange({ upstream: { ...valid.upstream, styles: ['base-vega', 'base-vega'] } }),
       'upstream.styles must not repeat',
+    ],
+    ['a non-array derived', withChange({ derived: {} }), 'derived must be an array'],
+    [
+      'a non-object derived entry',
+      withChange({ derived: ['glass'] }),
+      'derived[0] must be an object',
+    ],
+    [
+      'a non-kebab derived name',
+      withChange({ derived: [{ name: 'Glass', base: 'base-luma' }] }),
+      'derived[0].name must be kebab-case',
+    ],
+    [
+      'a derived base not in upstream.styles',
+      withChange({ derived: [{ name: 'glass', base: 'base-maia' }] }),
+      'derived[0].base base-maia is not one of upstream.styles',
+    ],
+    [
+      "a derived name equal to an upstream style's short name",
+      withChange({ derived: [{ name: 'luma', base: 'base-vega' }] }),
+      "derived[0].name luma is an upstream style's short name",
+    ],
+    [
+      'a repeated derived name',
+      withChange({
+        derived: [
+          { name: 'glass', base: 'base-luma' },
+          { name: 'glass', base: 'base-vega' },
+        ],
+      }),
+      'derived[1].name glass repeats a derived name',
     ],
     [
       'an output path without {style}',
@@ -292,11 +331,22 @@ describe('parseConfig', () => {
   })
 })
 
+describe('builtStyles', () => {
+  it('lists the upstream styles by short name, then the derived ones, each in config order', () => {
+    expect(builtStyles(parseConfig(valid))).toEqual([
+      { name: 'vega', base: 'base-vega' },
+      { name: 'luma', base: 'base-luma' },
+      { name: 'glass', base: 'base-luma' },
+    ])
+  })
+})
+
 describe('forStyle', () => {
   it("sets the style and resolves its output paths with the style's short name", () => {
-    const luma = forStyle(parseConfig(valid), 'base-luma')
+    const luma = forStyle(parseConfig(valid), { name: 'luma', base: 'base-luma' })
     expect(luma.upstream).toMatchObject({ style: 'base-luma', styles: valid.upstream.styles })
     expect(luma).toMatchObject({
+      styleName: 'luma',
       outputDir: 'registry/luma/ui',
       hooksDir: 'registry/luma/hooks',
       globalsDir: 'registry/luma/styles',
@@ -304,18 +354,36 @@ describe('forStyle', () => {
       harnessDir: 'ab/generated/luma',
     })
   })
+
+  it("resolves a derived style's output paths with its own name, and reads its base", () => {
+    const config = parseConfig(valid)
+    const glass = forStyle(config, { name: 'glass', base: 'base-luma' })
+    expect(glass.upstream).toMatchObject({ style: 'base-luma', styles: valid.upstream.styles })
+    expect(glass).toMatchObject({
+      styleName: 'glass',
+      outputDir: 'registry/glass/ui',
+      hooksDir: 'registry/glass/hooks',
+      globalsDir: 'registry/glass/styles',
+      registryFile: 'registry/glass/registry.json',
+      harnessDir: 'ab/generated/glass',
+    })
+    expect(upstreamUrl(glass, 'button')).toBe('https://example.com/base-luma/button.json')
+  })
 })
 
 describe('harnessStyle', () => {
   const config = parseConfig(valid)
 
-  it('takes a style by its short name, and the first style when none is named', () => {
-    expect(harnessStyle(config, 'luma')).toBe('base-luma')
-    expect(harnessStyle(config, undefined)).toBe('base-vega')
+  it('takes a style by its name, and the first upstream style when none is named', () => {
+    expect(harnessStyle(config, 'luma')).toEqual({ name: 'luma', base: 'base-luma' })
+    expect(harnessStyle(config, 'glass')).toEqual({ name: 'glass', base: 'base-luma' })
+    expect(harnessStyle(config, undefined)).toEqual({ name: 'vega', base: 'base-vega' })
   })
 
   it.each(['nova', 'base-luma', ''])('refuses %j, naming the styles it takes', (name) => {
-    expect(() => harnessStyle(config, name)).toThrow(`AB_STYLE: ${name} is not one of vega, luma`)
+    expect(() => harnessStyle(config, name)).toThrow(
+      `AB_STYLE: ${name} is not one of vega, luma, glass`,
+    )
   })
 })
 

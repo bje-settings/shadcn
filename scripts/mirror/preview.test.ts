@@ -136,31 +136,30 @@ describe('skippedCards', () => {
   })
 })
 
-const config = forStyle(
-  parseConfig({
-    namespace: 'bje',
-    upstream: {
-      url: 'https://example.com/{style}/{name}.json',
-      colorsUrl: 'https://example.com/colors/{name}.json',
-      styles: ['base-vega', 'base-luma'],
-    },
-    theme: { baseColor: 'neutral', font: 'inter', iconLibrary: 'lucide' },
-    components: ['card'],
-    typeset: {
-      stylesheet: 'https://example.com/typeset.css',
-      fixturesUrl: 'https://example.com/fixtures/{name}.ts',
-      fixtures: [],
-    },
-    preview: { url: 'https://example.com/{block}/{file}', blocks: ['preview-02', 'preview'] },
-    snapshotDir: 'upstream',
-    outputDir: 'registry/{style}/ui',
-    hooksDir: 'registry/{style}/hooks',
-    globalsDir: 'registry/{style}/styles',
-    harnessDir: 'ab/generated/{style}',
-    registryFile: 'registry/{style}/registry.json',
-  }),
-  'base-luma',
-)
+const parsed = parseConfig({
+  namespace: 'bje',
+  upstream: {
+    url: 'https://example.com/{style}/{name}.json',
+    colorsUrl: 'https://example.com/colors/{name}.json',
+    styles: ['base-vega', 'base-luma'],
+  },
+  derived: [{ name: 'glass', base: 'base-luma' }],
+  theme: { baseColor: 'neutral', font: 'inter', iconLibrary: 'lucide' },
+  components: ['card'],
+  typeset: {
+    stylesheet: 'https://example.com/typeset.css',
+    fixturesUrl: 'https://example.com/fixtures/{name}.ts',
+    fixtures: [],
+  },
+  preview: { url: 'https://example.com/{block}/{file}', blocks: ['preview-02', 'preview'] },
+  snapshotDir: 'upstream',
+  outputDir: 'registry/{style}/ui',
+  hooksDir: 'registry/{style}/hooks',
+  globalsDir: 'registry/{style}/styles',
+  harnessDir: 'ab/generated/{style}',
+  registryFile: 'registry/{style}/registry.json',
+})
+const config = forStyle(parsed, { name: 'luma', base: 'base-luma' })
 
 describe('showcaseIndex', () => {
   it("points the index's card imports at the block's wrappers, and keeps the rest as written", () => {
@@ -254,9 +253,23 @@ export const blocks = [
   it('lists every style the config builds in a module of its own, not the blocks', () => {
     expect(byPath['ab/generated/luma/styles.ts']).toBe(`// header
 
-export const allStyles = ["vega","luma"]
+export const allStyles = ["vega","luma","glass"]
 `)
     expect(byPath['ab/generated/luma/showcase.ts']).not.toContain('allStyles')
+  })
+
+  it("writes a derived style's inputs under its own name", () => {
+    const glass = showcaseFiles(
+      forStyle(parsed, { name: 'glass', base: 'base-luma' }),
+      { cards: showcase, indexes, layoutCss: '/* layout */', fontTitle: 'Inter' },
+      '// header',
+    )
+    expect(glass.every((file) => file.path.startsWith('ab/generated/glass/'))).toBe(true)
+    const byPath = Object.fromEntries(glass.map((file) => [file.path, file.content]))
+    expect(byPath['ab/generated/glass/showcase.ts']).toContain('export const style = "glass"')
+    expect(byPath['ab/generated/glass/showcase-theme.ts']).toContain(
+      'export const styles = [{"name":"glass","title":"Glass"}]',
+    )
   })
 
   it('refuses a block with no index', () => {

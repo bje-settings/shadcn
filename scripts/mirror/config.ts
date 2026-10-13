@@ -18,6 +18,16 @@ export type ClassList = {
   reason: string
 }
 
+// A style the mirror builds and publishes: an upstream style, which goes by its
+// short name (vega for base-vega), or a derived one, which builds from an
+// upstream style's snapshots under a name of its own (glass from base-maia).
+export type BuiltStyle = {
+  // The short name its output paths and published registry go by
+  name: string
+  // The upstream style whose snapshots it builds from
+  base: string
+}
+
 export type MirrorConfig = {
   // This registry's name: cross-component imports and registryDependencies
   // point at @<namespace>/<item>.
@@ -29,10 +39,16 @@ export type MirrorConfig = {
     // The styles mirrored, each published as its own registry, tested and
     // compared with upstream
     styles: string[]
-    // The style this config builds: the first as parsed, each style's own from
-    // forStyle().
+    // The upstream style this config builds from: the first as parsed, each
+    // style's base from forStyle().
     style: string
   }
+  // Styles built from an upstream style's snapshots under their own name,
+  // after the upstream styles. None when unset.
+  derived: BuiltStyle[]
+  // The name this config's output paths and published registry go by: the
+  // first style's as parsed, each style's own from forStyle().
+  styleName: string
   // The preset's theme choices (the shadcn CLI's `vega` preset is neutral + inter).
   theme: {
     baseColor: string
@@ -139,13 +155,23 @@ export function shortStyle(style: string): string {
   return style.replace(/^base-/, '')
 }
 
-// The config one style builds with: its upstream style set, and {style}
-// resolved in its output paths.
-export function forStyle(config: MirrorConfig, style: string): MirrorConfig {
-  const resolve = (path: string) => path.replaceAll('{style}', shortStyle(style))
+// Every style the mirror builds, upstream styles first, then derived ones,
+// each in config order.
+export function builtStyles(config: MirrorConfig): BuiltStyle[] {
+  return [
+    ...config.upstream.styles.map((style) => ({ name: shortStyle(style), base: style })),
+    ...config.derived,
+  ]
+}
+
+// The config one style builds with: its base as the upstream style, and its
+// name in place of {style} in its output paths.
+export function forStyle(config: MirrorConfig, style: BuiltStyle): MirrorConfig {
+  const resolve = (path: string) => path.replaceAll('{style}', style.name)
   return {
     ...config,
-    upstream: { ...config.upstream, style },
+    upstream: { ...config.upstream, style: style.base },
+    styleName: style.name,
     outputDir: resolve(config.outputDir),
     hooksDir: resolve(config.hooksDir),
     globalsDir: resolve(config.globalsDir),
@@ -173,6 +199,7 @@ export function parseConfig(raw: unknown): MirrorConfig {
     shape.fail('upstream.styles must be a non-empty array of kebab-case style names')
   }
   if (new Set(styles).size !== styles.length) shape.fail('upstream.styles must not repeat')
+  const derived = parseDerived(raw.derived, styles)
   const theme = shape.record(raw.theme, 'theme')
   const fonts = raw.fonts ?? []
   if (!Array.isArray(fonts) || !fonts.every((f) => typeof f === 'string' && KEBAB.test(f))) {
@@ -266,6 +293,8 @@ export function parseConfig(raw: unknown): MirrorConfig {
   return {
     namespace: name(raw, 'namespace', ''),
     upstream: { url, colorsUrl, styles, style: styles[0] as string },
+    derived,
+    styleName: shortStyle(styles[0] as string),
     theme: {
       baseColor: name(theme, 'baseColor', 'theme.'),
       font: name(theme, 'font', 'theme.'),
@@ -291,6 +320,28 @@ export function parseConfig(raw: unknown): MirrorConfig {
     testProps,
     testExpressions,
   }
+}
+
+// The optional derived key: each entry builds from one of upstream.styles
+// under a name no other style goes by.
+function parseDerived(raw: unknown, styles: string[]): BuiltStyle[] {
+  const entries = raw ?? []
+  if (!Array.isArray(entries)) shape.fail('derived must be an array')
+  const upstreamNames = new Set(styles.map(shortStyle))
+  const names = new Set<string>()
+  return entries.map((value, i) => {
+    const path = `derived[${i}]`
+    const record = shape.record(value, path)
+    const derivedName = name(record, 'name', `${path}.`)
+    const base = string(record, 'base', `${path}.`)
+    if (!styles.includes(base)) shape.fail(`${path}.base ${base} is not one of upstream.styles`)
+    if (upstreamNames.has(derivedName)) {
+      shape.fail(`${path}.name ${derivedName} is an upstream style's short name`)
+    }
+    if (names.has(derivedName)) shape.fail(`${path}.name ${derivedName} repeats a derived name`)
+    names.add(derivedName)
+    return { name: derivedName, base }
+  })
 }
 
 // The optional preview key: unset previews no block.
@@ -362,21 +413,21 @@ export function checkConfiguredParts(
   }
 }
 
-// The configured style a short name (luma) names; `source` says where the
-// name came from, for the error.
-export function namedStyle(config: MirrorConfig, name: string, source: string): string {
-  const { styles } = config.upstream
-  const style = styles.find((style) => shortStyle(style) === name)
+// The built style a name (luma, glass) names; `source` says where the name
+// came from, for the error.
+export function namedStyle(config: MirrorConfig, name: string, source: string): BuiltStyle {
+  const styles = builtStyles(config)
+  const style = styles.find((style) => style.name === name)
   if (style === undefined) {
-    throw new Error(`${source}: ${name} is not one of ${styles.map(shortStyle).join(', ')}`)
+    throw new Error(`${source}: ${name} is not one of ${styles.map((s) => s.name).join(', ')}`)
   }
   return style
 }
 
-// The style an A/B run renders: the one AB_STYLE names, or the first
-// configured style when it is unset.
-export function harnessStyle(config: MirrorConfig, name: string | undefined): string {
-  if (name === undefined) return config.upstream.styles[0] as string
+// The style an A/B run renders: the one AB_STYLE names, or the first upstream
+// style when it is unset, so a derived style is never the default.
+export function harnessStyle(config: MirrorConfig, name: string | undefined): BuiltStyle {
+  if (name === undefined) return builtStyles(config)[0] as BuiltStyle
   return namedStyle(config, name, 'AB_STYLE')
 }
 

@@ -26,7 +26,7 @@ const config = forStyle(
     harnessDir: 'ab/generated/{style}',
     registryFile: 'registry/{style}/registry.json',
   }),
-  'base-vega',
+  { name: 'vega', base: 'base-vega' },
 )
 
 const chip = `import { cva } from "class-variance-authority"

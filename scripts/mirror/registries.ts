@@ -4,14 +4,14 @@
 // into the same directory, then the site's root page.
 
 import { relative } from 'node:path'
-import { forStyle, harnessStyle, type MirrorConfig, shortStyle } from './config.ts'
+import { builtStyles, forStyle, harnessStyle, type MirrorConfig } from './config.ts'
 
 export type RegistryBuild = { registry: string; output: string }
 
 export function registryBuilds(config: MirrorConfig, outputRoot: string): RegistryBuild[] {
-  return config.upstream.styles.map((style) => ({
+  return builtStyles(config).map((style) => ({
     registry: forStyle(config, style).registryFile,
-    output: `${outputRoot}/${shortStyle(style)}`,
+    output: `${outputRoot}/${style.name}`,
   }))
 }
 
@@ -49,13 +49,10 @@ function viteBuild(mode: 'showcase' | 'site', output: string, short: string): Co
 // ab/generated/<style>/, so the first style's are still in place.
 export function showcaseBuilds(config: MirrorConfig, outputRoot: string): Command[] {
   return [
-    ...config.upstream.styles.flatMap((style) => {
-      const short = shortStyle(style)
-      return [
-        { command: 'pnpm', args: ['mirror:build', short], env: { AB_STYLE: short } },
-        viteBuild('showcase', `${outputRoot}/${short}`, short),
-      ]
-    }),
-    viteBuild('site', outputRoot, shortStyle(harnessStyle(config, undefined))),
+    ...builtStyles(config).flatMap(({ name }) => [
+      { command: 'pnpm', args: ['mirror:build', name], env: { AB_STYLE: name } },
+      viteBuild('showcase', `${outputRoot}/${name}`, name),
+    ]),
+    viteBuild('site', outputRoot, harnessStyle(config, undefined).name),
   ]
 }

@@ -11,7 +11,7 @@
 
 import { readFileSync } from 'node:fs'
 import { expect, type Page, test } from '@playwright/test'
-import { shortStyle } from '../scripts/mirror/config.ts'
+import { builtStyles } from '../scripts/mirror/config.ts'
 import { pascalCase } from '../scripts/mirror/names.ts'
 import { previewCards } from '../scripts/mirror/preview.ts'
 import { PORT } from './playwright.config'
@@ -141,7 +141,7 @@ test(`showcase ${short}`, async ({ page }) => {
   expect(await box(), 'logo box at 375px').toEqual({ width: 42, height: 42 })
   await page.setViewportSize(viewport as { width: number; height: number })
   // The select lists every configured style in order, with this one chosen.
-  const styles = config.upstream.styles.map(shortStyle)
+  const styles = builtStyles(config).map((style) => style.name)
   expect(styles, 'the config lists this style and another').toContain(short)
   expect(styles.length).toBeGreaterThan(1)
   const select = page.getByRole('combobox', { name: 'Style' })

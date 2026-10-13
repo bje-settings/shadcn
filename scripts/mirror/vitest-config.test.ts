@@ -5,7 +5,7 @@
 import { dirname } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import vitestConfig from '../../vitest.config.ts'
-import { forStyle, shortStyle } from './config.ts'
+import { builtStyles, forStyle } from './config.ts'
 import { parsed, root } from './test-support.ts'
 
 type Project = {
@@ -19,9 +19,12 @@ type Project = {
 }
 const projects = (vitestConfig.test?.projects ?? []) as Project[]
 
-describe.each(parsed.upstream.styles)('vitest project for %s', (style) => {
+// Each built style, named for the test title.
+const styles = builtStyles(parsed).map((style) => [style.name, style] as const)
+
+describe.each(styles)('vitest project for %s', (_, style) => {
   const config = forStyle(parsed, style)
-  const name = `registry/${shortStyle(style)}`
+  const name = `registry/${style.name}`
   const project = projects.find((project) => project.test?.name === name)
 
   it("runs the style's tests and resolves its cross-component imports to its own output", () => {
@@ -35,11 +38,9 @@ describe.each(parsed.upstream.styles)('vitest project for %s', (style) => {
   // CI's leg for the style runs this project: one naming another style, or
   // none, would check the wrong output or nothing.
   it("checks the style's generated output in its own project", () => {
-    const generated = projects.find(
-      (project) => project.test?.name === `generated/${shortStyle(style)}`,
-    )
+    const generated = projects.find((project) => project.test?.name === `generated/${style.name}`)
     expect(generated?.test?.include).toEqual(['scripts/mirror/generated.test.ts'])
-    expect(generated?.test?.env).toEqual({ MIRROR_STYLE: shortStyle(style) })
+    expect(generated?.test?.env).toEqual({ MIRROR_STYLE: style.name })
   })
 
   it("covers the style's output", () => {

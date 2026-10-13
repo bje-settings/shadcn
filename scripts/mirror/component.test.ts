@@ -38,7 +38,7 @@ const config = forStyle(
     registryFile: 'registry/{style}/registry.json',
     consumerClasses: [{ classes: ['border-b'], reason: 'consumer class' }],
   }),
-  'base-vega',
+  { name: 'vega', base: 'base-vega' },
 )
 
 const cssPath = join(root, 'upstream/base-vega/index.css')
