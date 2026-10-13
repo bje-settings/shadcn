@@ -8,12 +8,12 @@
 // so only that style's run checks it.
 
 import { expect, test } from '@playwright/test'
-import { shortStyle } from '../scripts/mirror/config.ts'
+import { builtStyles } from '../scripts/mirror/config.ts'
 import { pascalCase } from '../scripts/mirror/names.ts'
 import { PORT } from './playwright.config'
 import { config, short } from './style.ts'
 
-const styles = config.upstream.styles.map(shortStyle)
+const styles = builtStyles(config).map((style) => style.name)
 const first = styles[0]
 
 test.skip(short !== first, `the root page builds with ${first}, not ${short}`)

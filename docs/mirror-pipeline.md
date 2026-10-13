@@ -10,10 +10,10 @@ pnpm mirror:fetch           # snapshot upstream into upstream/
 pnpm mirror:build [style]   # convert the snapshots, for every style or one
 ```
 
-`mirror:fetch` writes, per style, each configured item, its docs example (`<item>-example`) where
-upstream has one, the style's index, each font (`theme.font` and `fonts`) and the base color to
-`upstream/base-<style>/`, Typeset's stylesheet and content fixtures to `upstream/typeset/`, and the
-`/create` preview blocks to `upstream/preview/` ([Showcase](#showcase)). A JSON snapshot whose
+`mirror:fetch` writes, per upstream style, each configured item, its docs example (`<item>-example`)
+where upstream has one, the style's index, each font (`theme.font` and `fonts`) and the base color
+to `upstream/base-<style>/`, Typeset's stylesheet and content fixtures to `upstream/typeset/`, and
+the `/create` preview blocks to `upstream/preview/` ([Showcase](#showcase)). A JSON snapshot whose
 shape the build cannot read fails the fetch before it is written. `pnpm mirror:fetch preview`
 fetches the preview blocks alone, leaving every other snapshot as it is. `mirror:build`
 reads only the snapshots (`scripts/mirror/cli.ts`), so a conversion change is reviewable without
@@ -21,6 +21,14 @@ upstream moving underneath it.
 
 Each style is built whole and on its own: styles differ in their components' classes, not only in
 variables (vega's Button is `rounded-md px-2.5`, luma's `rounded-4xl px-3`).
+
+## Derived styles
+
+A derived style (`derived` in [mirror-config.md](mirror-config.md)) builds from its base's
+snapshots into its own paths: `frost` reads `upstream/base-maia/` and writes `registry/frost/`,
+`ab/generated/frost/` and its own skip lists, and publishes as `frost`. Its global stylesheets'
+header names both (`from shadcn base-maia as frost`). `mirror:fetch` skips derived styles.
+`mirror:build` with no style builds them after the upstream styles.
 
 ## Project CSS
 

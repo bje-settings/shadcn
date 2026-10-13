@@ -21,7 +21,8 @@ concurrency:
 # build, vitest, types, biome and ab by exact name. A renamed job never reports,
 # and every pull request waits on it forever. Update the ruleset with any rename.
 # deploy is not required: it runs on pushes to main only. vitest and ab are
-# fan-ins over legs per style, so the required names hold whatever the styles.
+# fan-ins over legs per style (for ab, per upstream style), so the required
+# names hold whatever the styles.
 # install is not required either, until it has proven stable (issue #13).
 jobs:
   # `shadcn build` validates each style's registry.json and every item against
@@ -41,7 +42,7 @@ jobs:
       # step rather than checking none.
       - name: Refuse a build that writes no registry for a style
         run: |
-          styles=$(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json)
+          styles=$(jq -r '([.upstream.styles[] | sub("^base-"; "")] + [(.derived // [])[].name])[]' mirror.config.json)
           [ -n "$styles" ]
           for style in $styles; do
             jq -e '.name == "bje" and (.items | length > 0)' "public/r/$style/registry.json"
@@ -49,7 +50,7 @@ jobs:
       # The page loads its assets relative to /<style>/.
       - name: Refuse a build that writes no showcase for a style
         run: |
-          styles=$(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json)
+          styles=$(jq -r '([.upstream.styles[] | sub("^base-"; "")] + [(.derived // [])[].name])[]' mirror.config.json)
           [ -n "$styles" ]
           for style in $styles; do
             grep -qF "<meta name=\"bje-showcase\" content=\"$style\"" "public/r/$style/index.html"
@@ -85,7 +86,7 @@ jobs:
         id: list
         # Assigned first, so a jq failure fails the step.
         run: |
-          legs=$(jq -c '[.upstream.styles[] | sub("^base-"; "")] + ["shared"]' mirror.config.json)
+          legs=$(jq -c '[.upstream.styles[] | sub("^base-"; "")] + [(.derived // [])[].name] + ["shared"]' mirror.config.json)
           echo "legs=$legs" >> "$GITHUB_OUTPUT"
 
   # Each leg runs its vitest projects and keeps its results and coverage as a
@@ -163,7 +164,7 @@ jobs:
         # Assigned first: a failed substitution in the for list would not
         # fail the step.
         run: |
-          styles=$(jq -er '.upstream.styles[] | sub("^base-"; "") | "registry/\(.)"' mirror.config.json)
+          styles=$(jq -er '([.upstream.styles[] | sub("^base-"; "")] + [(.derived // [])[].name])[] | "registry/\(.)"' mirror.config.json)
           for dir in $styles registry/lib scripts; do
             jq -e --arg dir "/$dir/" '[keys[] | select(contains($dir))] | length > 0' coverage/coverage-summary.json
           done
@@ -203,6 +204,7 @@ jobs:
         run: pnpm exec biome ci . --error-on-warnings
 
   # The styles the ab-style legs compare, one each, from mirror.config.json.
+  # Upstream styles only: a derived style has no upstream to compare with.
   ab-styles:
     name: ab-styles
     runs-on: ubuntu-latest
@@ -257,7 +259,9 @@ jobs:
             echo run=false >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          others=$(jq -r --arg own "$AB_STYLE" '[.upstream.styles[] | sub("^base-"; "") | select(. != $own)] | join("|")' mirror.config.json)
+          # Derived styles have no leg of their own, so their output is
+          # another style's for every leg.
+          others=$(jq -r --arg own "$AB_STYLE" '[.upstream.styles[] | sub("^base-"; "") | select(. != $own)] + [(.derived // [])[].name] | join("|")' mirror.config.json)
           # One command per assignment, so a failed diff or grep fails the leg
           # rather than reading as no change. grep's exit 1 (nothing left) is
           # the only failure allowed. A rename lists its source too, so a file
@@ -339,7 +343,7 @@ jobs:
             echo run=false >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          others=$(jq -r '[.upstream.styles[1:][] | sub("^base-"; "")] | join("|")' mirror.config.json)
+          others=$(jq -r '[.upstream.styles[1:][] | sub("^base-"; "")] + [(.derived // [])[].name] | join("|")' mirror.config.json)
           # One command per assignment, so a failed diff or grep fails the job
           # rather than reading as no change.
           changed=$(git diff --no-renames --name-only HEAD^1 HEAD)
@@ -392,7 +396,7 @@ jobs:
       # step rather than checking none.
       - name: Refuse a site that serves no registry for a style
         run: |
-          styles=$(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json)
+          styles=$(jq -r '([.upstream.styles[] | sub("^base-"; "")] + [(.derived // [])[].name])[]' mirror.config.json)
           [ -n "$styles" ]
           for style in $styles; do
             curl -fsS --retry 5 --retry-delay 10 --retry-all-errors "https://shadcn.bje.co/$style/registry.json" \
@@ -402,7 +406,7 @@ jobs:
       # than reading as a page without the marker.
       - name: Refuse a site that serves no showcase for a style
         run: |
-          styles=$(jq -r '.upstream.styles[] | sub("^base-"; "")' mirror.config.json)
+          styles=$(jq -r '([.upstream.styles[] | sub("^base-"; "")] + [(.derived // [])[].name])[]' mirror.config.json)
           [ -n "$styles" ]
           for style in $styles; do
             page=$(curl -fsS --retry 5 --retry-delay 10 --retry-all-errors "https://shadcn.bje.co/$style/")

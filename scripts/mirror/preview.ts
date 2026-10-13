@@ -9,7 +9,7 @@ import { dirname, relative } from 'node:path/posix'
 import type { Node } from '@babel/types'
 import MagicString from 'magic-string'
 import { childNodes, parseModule, span } from './ast.ts'
-import { type MirrorConfig, shortStyle } from './config.ts'
+import { builtStyles, type MirrorConfig } from './config.ts'
 import type { PreparedExample } from './examples.ts'
 import { camelCase, pascalCase } from './names.ts'
 
@@ -161,7 +161,7 @@ export function showcaseFiles(
   header: string,
 ): { path: string; content: string }[] {
   const dir = config.harnessDir
-  const short = shortStyle(config.upstream.style)
+  const short = config.styleName
   const cards = showcase.cards.filter(kept)
   const ts = (content: string) => `${header}\n\n${content}\n`
   const { blocks } = config.preview
@@ -222,7 +222,7 @@ export function showcaseFiles(
     {
       path: `${dir}/styles.ts`,
       content: ts(
-        `export const allStyles = ${JSON.stringify(config.upstream.styles.map(shortStyle))}`,
+        `export const allStyles = ${JSON.stringify(builtStyles(config).map((style) => style.name))}`,
       ),
     },
     {

@@ -6,7 +6,7 @@
 // skip fails until the list records it). It also proves every generated stylesheet compiles with
 // Sass and every font item can replace the default it names.
 
-import { cp, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { cp, mkdtemp, readdir, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { dirname, join, relative } from 'node:path'
 import postcss from 'postcss'
@@ -43,9 +43,9 @@ function placements(css: string, variable: string): string[][] {
 // so no hook's time grows with the number of styles.
 const style = namedStyle(parsed, process.env.MIRROR_STYLE ?? '', 'MIRROR_STYLE')
 
-describe(`generated output for ${style}`, () => {
+describe(`generated output for ${style.name}`, () => {
   const config = forStyle(parsed, style)
-  const snapshots = join(config.snapshotDir, style)
+  const snapshots = join(config.snapshotDir, style.base)
   // The A/B harness inputs are not committed (see .gitignore): pnpm ab
   // regenerates them.
   const outputDirs = [config.outputDir, config.hooksDir, config.globalsDir]
@@ -54,9 +54,7 @@ describe(`generated output for ${style}`, () => {
   // Allow for the whole suite running alongside.
   beforeAll(async () => {
     built = await mkdtemp(join(tmpdir(), 'mirror-generated-'))
-    const raw = JSON.parse(await readFile(join(root, 'mirror.config.json'), 'utf8'))
-    raw.upstream.styles = [style]
-    await writeFile(join(built, 'mirror.config.json'), JSON.stringify(raw))
+    await cp(join(root, 'mirror.config.json'), join(built, 'mirror.config.json'))
     await cp(join(root, 'registry.json'), join(built, 'registry.json'))
     for (const path of await files(root, snapshots)) {
       if (path.endsWith('.json')) await cp(join(root, path), join(built, path))
@@ -65,7 +63,8 @@ describe(`generated output for ${style}`, () => {
       const dir = join(parsed.snapshotDir, shared)
       await cp(join(root, dir), join(built, dir), { recursive: true })
     }
-    await run(['build'], {
+    // The style alone, from its base's snapshots, the only ones copied.
+    await run(['build', style.name], {
       root: built,
       fetch: () => Promise.reject(new Error('build must not fetch')),
       log: () => {},

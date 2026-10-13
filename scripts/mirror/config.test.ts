@@ -1,13 +1,16 @@
 import { describe, expect, it } from 'vitest'
 import {
+  builtStyles,
   checkConfiguredParts,
   colorsUrl,
   consumerClassReasons,
   forStyle,
+  harnessPort,
   harnessStyle,
   parseConfig,
   previewUrl,
   shortStyle,
+  upstreamStyles,
   upstreamUrl,
 } from './config.ts'
 
@@ -18,6 +21,7 @@ const valid = {
     colorsUrl: 'https://example.com/colors/{name}.json',
     styles: ['base-vega', 'base-luma'],
   },
+  derived: [{ name: 'frost', base: 'base-luma' }],
   theme: { baseColor: 'neutral', font: 'inter', iconLibrary: 'lucide' },
   fonts: ['inter', 'heading-geist'],
   components: ['button', 'icon-button'],
@@ -56,7 +60,11 @@ describe('parseConfig', () => {
   it('accepts a valid config and builds item URLs', () => {
     const config = parseConfig(valid)
     // As parsed, the config builds the first style.
-    expect(config).toEqual({ ...valid, upstream: { ...valid.upstream, style: 'base-vega' } })
+    expect(config).toEqual({
+      ...valid,
+      upstream: { ...valid.upstream, style: 'base-vega' },
+      styleName: 'vega',
+    })
     expect(upstreamUrl(config, 'button')).toBe('https://example.com/base-vega/button.json')
     expect(colorsUrl(config)).toBe('https://example.com/colors/neutral.json')
     expect(previewUrl(config, 'preview', 'cards/invoice.tsx')).toBe(
@@ -95,9 +103,11 @@ describe('parseConfig', () => {
         unrenderedInTests: undefined,
         testProps: undefined,
         fonts: undefined,
+        derived: undefined,
       }),
     )
     expect(config.fonts).toEqual([])
+    expect(config.derived).toEqual([])
     expect(config.testProps).toEqual({})
     expect(config.coverageExclusions).toEqual({})
     expect(config.testSetup).toEqual([])
@@ -175,6 +185,52 @@ describe('parseConfig', () => {
       'repeated styles',
       withChange({ upstream: { ...valid.upstream, styles: ['base-vega', 'base-vega'] } }),
       'upstream.styles must not repeat',
+    ],
+    ['a non-array derived', withChange({ derived: {} }), 'derived must be an array'],
+    [
+      'a non-object derived entry',
+      withChange({ derived: ['frost'] }),
+      'derived[0] must be an object',
+    ],
+    [
+      'a non-kebab derived name',
+      withChange({ derived: [{ name: 'Frost', base: 'base-luma' }] }),
+      'derived[0].name must be kebab-case',
+    ],
+    [
+      'a non-string derived base',
+      withChange({ derived: [{ name: 'frost', base: 1 }] }),
+      'derived[0].base must be a non-empty string',
+    ],
+    [
+      'a derived style named lib, the shared library',
+      withChange({ derived: [{ name: 'lib', base: 'base-luma' }] }),
+      'derived[0].name lib is reserved',
+    ],
+    [
+      "a derived style named shared, CI's leg for the rest",
+      withChange({ derived: [{ name: 'shared', base: 'base-luma' }] }),
+      'derived[0].name shared is reserved',
+    ],
+    [
+      'a derived base not in upstream.styles',
+      withChange({ derived: [{ name: 'frost', base: 'base-maia' }] }),
+      'derived[0].base base-maia is not one of upstream.styles',
+    ],
+    [
+      "a derived name equal to an upstream style's short name",
+      withChange({ derived: [{ name: 'luma', base: 'base-vega' }] }),
+      "derived[0].name luma is an upstream style's short name",
+    ],
+    [
+      'a repeated derived name',
+      withChange({
+        derived: [
+          { name: 'frost', base: 'base-luma' },
+          { name: 'frost', base: 'base-vega' },
+        ],
+      }),
+      'derived[1].name frost repeats a derived name',
     ],
     [
       'an output path without {style}',
@@ -292,11 +348,31 @@ describe('parseConfig', () => {
   })
 })
 
+describe('builtStyles', () => {
+  it('lists the upstream styles by short name, then the derived ones, each in config order', () => {
+    expect(builtStyles(parseConfig(valid))).toEqual([
+      { name: 'vega', base: 'base-vega' },
+      { name: 'luma', base: 'base-luma' },
+      { name: 'frost', base: 'base-luma' },
+    ])
+  })
+})
+
+describe('upstreamStyles', () => {
+  it('lists the upstream styles alone, each its own base, in config order', () => {
+    expect(upstreamStyles(parseConfig(valid))).toEqual([
+      { name: 'vega', base: 'base-vega' },
+      { name: 'luma', base: 'base-luma' },
+    ])
+  })
+})
+
 describe('forStyle', () => {
   it("sets the style and resolves its output paths with the style's short name", () => {
-    const luma = forStyle(parseConfig(valid), 'base-luma')
+    const luma = forStyle(parseConfig(valid), { name: 'luma', base: 'base-luma' })
     expect(luma.upstream).toMatchObject({ style: 'base-luma', styles: valid.upstream.styles })
     expect(luma).toMatchObject({
+      styleName: 'luma',
       outputDir: 'registry/luma/ui',
       hooksDir: 'registry/luma/hooks',
       globalsDir: 'registry/luma/styles',
@@ -304,18 +380,51 @@ describe('forStyle', () => {
       harnessDir: 'ab/generated/luma',
     })
   })
+
+  it("resolves a derived style's output paths with its own name, and reads its base", () => {
+    const config = parseConfig(valid)
+    const frost = forStyle(config, { name: 'frost', base: 'base-luma' })
+    expect(frost.upstream).toMatchObject({ style: 'base-luma', styles: valid.upstream.styles })
+    expect(frost).toMatchObject({
+      styleName: 'frost',
+      outputDir: 'registry/frost/ui',
+      hooksDir: 'registry/frost/hooks',
+      globalsDir: 'registry/frost/styles',
+      registryFile: 'registry/frost/registry.json',
+      harnessDir: 'ab/generated/frost',
+    })
+    expect(upstreamUrl(frost, 'button')).toBe('https://example.com/base-luma/button.json')
+  })
 })
 
 describe('harnessStyle', () => {
   const config = parseConfig(valid)
 
-  it('takes a style by its short name, and the first style when none is named', () => {
-    expect(harnessStyle(config, 'luma')).toBe('base-luma')
-    expect(harnessStyle(config, undefined)).toBe('base-vega')
+  it('takes a style by its name, and the first upstream style when none is named', () => {
+    expect(harnessStyle(config, 'luma')).toEqual({ name: 'luma', base: 'base-luma' })
+    expect(harnessStyle(config, 'frost')).toEqual({ name: 'frost', base: 'base-luma' })
+    expect(harnessStyle(config, undefined)).toEqual({ name: 'vega', base: 'base-vega' })
   })
 
   it.each(['nova', 'base-luma', ''])('refuses %j, naming the styles it takes', (name) => {
-    expect(() => harnessStyle(config, name)).toThrow(`AB_STYLE: ${name} is not one of vega, luma`)
+    expect(() => harnessStyle(config, name)).toThrow(
+      `AB_STYLE: ${name} is not one of vega, luma, frost`,
+    )
+  })
+})
+
+describe('harnessPort', () => {
+  it("serves each built style on 4400 plus its index, a derived style's apart from its base's", () => {
+    const config = parseConfig(valid)
+    expect(builtStyles(config).map((style) => harnessPort(config, style))).toEqual([
+      4400, 4401, 4402,
+    ])
+  })
+
+  it('refuses a style that is not built, rather than serve it on 4399', () => {
+    expect(() => harnessPort(parseConfig(valid), { name: 'nova', base: 'base-vega' })).toThrow(
+      'harnessPort: nova is not one of vega, luma, frost',
+    )
   })
 })
 

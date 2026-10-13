@@ -4,14 +4,15 @@
 import { readFileSync } from 'node:fs'
 import { dirname } from 'node:path'
 import { configDefaults, defineConfig, type TestProjectInlineConfiguration } from 'vitest/config'
-import { forStyle, parseConfig, shortStyle } from './scripts/mirror/config.ts'
+import { builtStyles, forStyle, parseConfig } from './scripts/mirror/config.ts'
 import { pascalCase } from './scripts/mirror/names.ts'
 
 const mirror = parseConfig(
   JSON.parse(readFileSync(new URL('./mirror.config.json', import.meta.url), 'utf8')),
 )
-// Every style's generated items are tested and covered.
-const styles = mirror.upstream.styles.map((style) => forStyle(mirror, style))
+// Every built style's generated items, derived styles' too, are tested and
+// covered.
+const styles = builtStyles(mirror).map((style) => forStyle(mirror, style))
 const path = (dir: string) => new URL(`./${dir}`, import.meta.url).pathname
 const generated = 'scripts/mirror/generated.test.ts'
 
@@ -39,14 +40,14 @@ export default defineConfig({
       },
       // generated.test.ts once per style, so each style's run reports under its
       // own name.
-      ...mirror.upstream.styles.map(
-        (style): TestProjectInlineConfiguration => ({
+      ...styles.map(
+        (config): TestProjectInlineConfiguration => ({
           extends: true,
           test: {
-            name: `generated/${shortStyle(style)}`,
+            name: `generated/${config.styleName}`,
             include: [generated],
             environment: 'node',
-            env: { MIRROR_STYLE: shortStyle(style) },
+            env: { MIRROR_STYLE: config.styleName },
           },
         }),
       ),
@@ -59,7 +60,7 @@ export default defineConfig({
           extends: true,
           test: {
             ...registry,
-            name: `registry/${shortStyle(config.upstream.style)}`,
+            name: `registry/${config.styleName}`,
             // Cross-component imports, as mapped in registry/<style>/tsconfig.json.
             alias: {
               [`@/registry/${mirror.namespace}/ui`]: path(config.outputDir),
