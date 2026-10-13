@@ -46,7 +46,7 @@ function Showcase() {
       className={`style-${style}`}
       style={{
         minHeight: '100vh',
-        background: theme === 'dark' ? 'var(--background)' : 'var(--muted)',
+        backgroundColor: theme === 'dark' ? 'var(--background)' : 'var(--muted)',
         // Fixed to the viewport, so the surfaces refract it as the page
         // scrolls under them. Credits in ./backgrounds/CREDITS.md.
         ...(frost && {
