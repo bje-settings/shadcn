@@ -50,16 +50,20 @@ style's own directory. The build never writes there. After it builds the style, 
 The build fails on an override with no generated file at its path that no item lists, an override
 of anything but a stylesheet, and a module override that names a class the generated module lacks
 or has a rule outside `:where()`, at the top level or in an at-rule, or nested in another rule
-(either would outrank a consumer's `className`). It fails on an added item with a type the catalog
+(either would outrank a consumer's `className`). The one nested rule allowed is
+`&:is(:global(.dark) *)`, directly inside a `:where()` rule: maia scopes its own dark rules that
+way, so an override's dark value can only win at the same rank. It fails on an added item with a type the catalog
 lacks, a `registry:file` without a `target`, a name a generated or another added item has, a file
 another item lists or `overrides/` lacks, or a directory that holds a generated item; on any output
 written into `overrides/`; and on a dependency for or on an item the style neither generates nor
 adds. A derived style without `overrides/` is its base's output under its own name. An upstream
 style never reads the directory.
 
-Frost's overrides hold its look: `@bje/frost-filter` (`<FrostFilter />`, an SVG refraction built
-from `feTurbulence` and `feDisplacementMap`), the frost tokens (`--frost-*`, appended to
-`variables.scss`), and the surface of each floating component and Card.
+Frost's overrides hold its look: `@bje/frost-filter` (`<FrostFilter />`, the shared SVG
+refraction built from `feTurbulence` and `feDisplacementMap`, and in Chromium a filter per surface
+built from its size and corner radius), the frost tokens (`--frost-*`, and translucent light
+`--border` and `--input`, appended to `variables.scss`), the surface of each floating component
+and Card, and the frost of the page-level controls.
 
 ## Project CSS
 

@@ -69,7 +69,9 @@ the variables in `@bje/globals`.
 ## Frost
 
 `frost` is maia with a liquid glass surface on Popover, DropdownMenu, Menubar, ContextMenu, Select
-and Combobox content, Dialog, AlertDialog, Sheet, Drawer, HoverCard, Tooltip and Card. Each of
+and Combobox content, Dialog, AlertDialog, Sheet, Drawer, HoverCard, Tooltip and Card. Button
+(default, secondary and outline), NativeSelect, Input, Textarea, the Select trigger and the
+outline Toggle get it too, with the card's tint, where no other frost surface holds them. Each of
 those items depends on `@bje/frost-filter`. Mount its `<FrostFilter />` once, at the app's root:
 
 ```tsx
@@ -85,12 +87,14 @@ export function App() {
 }
 ```
 
-In Chromium, served over HTTPS or from localhost, the surfaces then refract what lies behind them.
-Firefox and Safari cannot render an SVG filter in `backdrop-filter`, so there the surfaces keep a
+In Chromium, served over HTTPS or from localhost, the surfaces then refract what lies behind them:
+a shared filter sends waves through each surface, and a filter of its own, rebuilt as it resizes,
+bends its rim like a lens and lights its bottom-right edge. Firefox and Safari cannot render an SVG filter in `backdrop-filter`, so there the surfaces keep a
 frosted blur, as they do everywhere without `<FrostFilter />`. `frostSurface`, exported beside it,
 gives an element of your own the same treatment, tinted from `--background`. The opacity, edge
-highlight, blur and saturation are `--frost-*` custom properties in `variables.scss`; the opacity
-and edge highlight differ in dark.
+highlight, blur and saturation are `--frost-*` custom properties in `variables.scss`; the edge
+highlight differs in dark. In light, `--border` and `--input` are the foreground at 6%, so lines
+let the backdrop through too.
 
 ## Tests
 

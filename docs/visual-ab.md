@@ -64,15 +64,19 @@ Every case is generated (`scripts/mirror/harness.ts`):
   `upstream.styles`, so the test runs only for that style and skips for the others.
 
 - **Frost:** for a style that ships a frost filter (its overrides hold `FrostFilter`), one test
-  per surface and theme (`ab/frost.spec.ts`) opens each item `overrides.json` makes depend on
-  `frost-filter` on its fixture's page (`ours.html?case=PopoverContent light`), and the showcase's
-  header. Both pages mount `<FrostFilter />` once, as a consumer does. It fails, from computed
-  style, when in Chromium the surface's `backdrop-filter` is not the refraction
-  (`url(#bje-frost-filter)`) or `<html>` lacks `data-frost-refraction`; when in Firefox or WebKit
-  it has no `blur(` or any `url(`; when its background is not translucent (alpha 0 or 1); when it
-  has no inset shadow along its edge; or when the page holds other than one `<filter>`. A surface
+  per case and theme (`ab/frost.spec.ts`) opens each item `overrides.json` makes depend on
+  `frost-filter` on its fixtures' page (`ours.html?case=PopoverContent light`): the floating
+  surfaces, Card, and the page-level controls. Both pages mount `<FrostFilter />` once, as a
+  consumer does. It fails, from computed style, when in Chromium the surface's `backdrop-filter`
+  is not the shared filter, then its own, then the saturation
+  (`url(#bje-frost-filter) url(#bje-frost-filter-<n>) saturate(1.7)`), its own filter is not on
+  the page, or `<html>` lacks `data-frost-refraction`; when in Firefox or WebKit it has no `blur(`
+  or any `url(`; when its background is not translucent (alpha 0 or 1); when it has no inset
+  shadow along its edge; or when the page holds other than one shared filter. It also fails when a
+  button, input or select trigger inside a card on the showcase has a backdrop filter. A surface
   `overrides.json` adds without a case here fails too, and so does a tooltip arrow without its
-  `clip-path`. Every other style skips it.
+  `clip-path`. Every other style skips it. The frost showcase shows a photo behind its page in
+  each theme (`ab/backgrounds/`, credited in `CREDITS.md`), with the blocks' own fills cleared.
 
 ## How a run compares
 
