@@ -31,9 +31,10 @@ optional one included, is ignored.
 its path on the site. Output paths must contain `{style}`, which resolves to the short name.
 
 A `derived` entry's `base` is one of `upstream.styles`, and its `name` (kebab-case) is no other
-style's. It goes by `name` wherever an upstream style goes by its short name, and comes after the
-upstream styles in every list: `mirror:build`, the vitest projects, CI's build checks, the A/B port,
-the style select and the root page. It has no snapshots and no A/B leg of its own.
+style's, and not `lib` or `shared`. It goes by `name` wherever an upstream style goes by its short
+name, and comes after the upstream styles in every list: `mirror:build`, the vitest projects, CI's
+build checks, the A/B port, the style select and the root page. It has no snapshots and no A/B leg
+of its own.
 
 `preview.url` is a block file's URL, with `{block}` and `{file}` (`index.tsx`, `cards/<name>.tsx`).
 `preview.blocks` lists the blocks in the order the showcase's switcher numbers them, as `/create`

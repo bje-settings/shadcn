@@ -81,6 +81,7 @@ the same browser in the same run, so its version does not affect the comparison.
 
 Each upstream style runs as its own `ab-style (<style>)` leg behind the required `ab` check, on the
 runner's Chrome. A derived style has no leg: it has no upstream to compare with, so its showcase
-test runs locally, with `AB_STYLE=glass pnpm ab showcase.spec.ts`. A leg appends `pnpm ab:timings` to its job summary and uploads its report as the
-`ab-report-<style>` artifact, with images for the failed comparisons only. When a leg skips its
-comparison is in [CONTRIBUTING.md](../CONTRIBUTING.md#ci).
+test runs locally, with `AB_STYLE=glass pnpm ab showcase.spec.ts`. A leg appends
+`pnpm ab:timings` to its job summary and uploads its report as the `ab-report-<style>` artifact,
+with images for the failed comparisons only. When a leg skips its comparison is in
+[CONTRIBUTING.md](../CONTRIBUTING.md#ci).

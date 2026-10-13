@@ -72,9 +72,9 @@ produces. To change the output, change `scripts/mirror/` or `mirror.config.json`
 
 1. Append upstream's name (`base-<style>`) to `upstream.styles` in `mirror.config.json`. The first
    entry is the A/B default.
-2. Run `pnpm mirror:fetch`, then `pnpm mirror:build <style>`. Fetch refreshes every style, Typeset
-   and the `/create` preview blocks: discard the other changes, or commit them separately with a
-   full `pnpm mirror:build`, as an upstream update.
+2. Run `pnpm mirror:fetch`, then `pnpm mirror:build <style>`. Fetch refreshes every upstream style,
+   Typeset and the `/create` preview blocks: discard the other changes, or commit them separately
+   with a full `pnpm mirror:build`, as an upstream update.
 3. Where the build fails on the style's classes, add the smallest exception to `mirror.config.json`,
    with a reason. Exceptions apply to every style.
 4. Add the style to both lists in `README.md`: the styles, and their showcase links.
@@ -82,7 +82,7 @@ produces. To change the output, change `scripts/mirror/` or `mirror.config.json`
 
 Everything else reads `upstream.styles` and `derived`: the vitest projects, the A/B port,
 `pnpm build`, `pnpm build:showcase`, CI's vitest legs, and the build and deploy checks. CI's
-`ab-style` legs read `upstream.styles` alone.
+`ab-styles` list, one `ab-style` leg per upstream style, reads `upstream.styles` alone.
 
 ## Adding a derived style
 
@@ -104,9 +104,10 @@ ruleset Require CI requires five checks by job name; renaming a job needs the ru
 | `biome`  | `biome ci . --error-on-warnings` passes                                                            |
 | `ab`     | Every `ab-style (<style>)` leg passes or skips its comparison and showcase test                    |
 
-`vitest` and `ab` are fan-ins over one leg per style, so the required names hold whatever the
-styles. `vitest` has one more leg, `shared`, for `scripts/` and `registry/lib/`, which also
-validates `lefthook.yml`. The `vitest` job uploads the merged coverage as `code-coverage/vitest`.
+`vitest` and `ab` are fan-ins over one leg per style (for `ab`, per upstream style), so the
+required names hold whatever the styles. `vitest` has one more leg, `shared`, for `scripts/` and
+`registry/lib/`, which also validates `lefthook.yml`. The `vitest` job uploads the merged coverage
+as `code-coverage/vitest`.
 
 An `ab-style` leg runs the style's A/B comparison and its showcase test, and the first style's leg
 the root page test ([visual-ab.md](docs/visual-ab.md#cases)). It skips them, and still reports
