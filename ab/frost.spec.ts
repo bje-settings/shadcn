@@ -158,6 +158,27 @@ for (const theme of THEMES) {
     }
   }
 
+  // A pressed outline Toggle shows maia's pressed fill over the frost tint,
+  // so pressed and unpressed differ: no frost rule may outrank the pressed one.
+  test(`toggle pressed state shows ${theme}`, async ({ page }) => {
+    const id = `Toggle variant=outline ${theme}`
+    await page.goto(
+      `http://localhost:${PORT}/ours.html?theme=${theme}&case=${encodeURIComponent(id)}`,
+    )
+    const toggle = page.locator('[data-slot="toggle"]').first()
+    await toggle.waitFor()
+    // Settled fills only: a fill mid-transition differs from both.
+    await page.addStyleTag({ content: '* { transition: none !important; }' })
+    await page.mouse.move(0, 0)
+    const fill = () => toggle.evaluate((node) => getComputedStyle(node).backgroundColor)
+    await expect(toggle).toHaveAttribute('aria-pressed', 'true')
+    const pressed = await fill()
+    await toggle.click()
+    await expect(toggle).toHaveAttribute('aria-pressed', 'false')
+    await page.mouse.move(0, 0)
+    expect(await fill()).not.toBe(pressed)
+  })
+
   // The showcase's cards hold buttons, inputs and selects: frost behind them
   // already, so they keep maia's own fill and no backdrop filter.
   test(`controls inside a card ${theme}`, async ({ page }) => {
