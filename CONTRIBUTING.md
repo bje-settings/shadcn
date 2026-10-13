@@ -20,7 +20,7 @@ pnpm mirror:build   # optional: the A/B harness inputs (not committed), for the 
 ## Commands
 
 ```bash
-pnpm mirror:fetch           # snapshot every style's upstream items, examples, index, fonts and base color, Typeset and the /create preview cards
+pnpm mirror:fetch           # snapshot every upstream style's items, examples, index, fonts and base color, Typeset and the /create preview cards
 pnpm mirror:fetch preview   # snapshot the /create preview cards alone
 pnpm mirror:build [style]   # convert the snapshots for every style, or one (vega)
 pnpm build                  # shadcn build per style: validates each catalog, writes public/r/<style>/
@@ -31,8 +31,8 @@ pnpm ab:serve               # browse one style's A/B pages, its showcase (/showc
 pnpm ab:timings             # where the last A/B run spent its time
 ```
 
-The A/B commands take the style's short name from `AB_STYLE` (`AB_STYLE=luma pnpm ab`), the first
-in `upstream.styles` when unset. One style's tests run as its two vitest projects:
+The A/B commands take the style's name from `AB_STYLE` (`AB_STYLE=luma pnpm ab`), the first in
+`upstream.styles` when unset. One style's tests run as its two vitest projects:
 
 ```bash
 pnpm exec vitest run --project registry/luma --project generated/luma   # one style's tests
@@ -80,8 +80,16 @@ produces. To change the output, change `scripts/mirror/` or `mirror.config.json`
 4. Add the style to both lists in `README.md`: the styles, and their showcase links.
 5. Run the style's two vitest projects and `AB_STYLE=<style> pnpm ab`.
 
-Everything else reads `upstream.styles`: the vitest projects, the A/B port, `pnpm build`,
-`pnpm build:showcase`, CI's per-style legs, and the build and deploy checks.
+Everything else reads `upstream.styles` and `derived`: the vitest projects, the A/B port,
+`pnpm build`, `pnpm build:showcase`, CI's vitest legs, and the build and deploy checks. CI's
+`ab-style` legs read `upstream.styles` alone.
+
+## Adding a derived style
+
+1. Append `{ "name": "<style>", "base": "base-<upstream>" }` to `derived` in `mirror.config.json`.
+2. Run `pnpm mirror:build <style>`. It reads the base's snapshots; there is nothing to fetch.
+3. Add the style to both lists in `README.md`.
+4. Run the style's two vitest projects and `AB_STYLE=<style> pnpm ab showcase.spec.ts`.
 
 ## CI
 
@@ -106,8 +114,8 @@ success, when:
 
 - the pull request is a draft (it runs once marked ready);
 - the change touches only Markdown, `.claude/`, `*.test.ts(x)` files, `lefthook.yml`,
-  `biome.json`, `vitest.config.ts`, and other styles' `registry/<style>/` or
-  `upstream/base-<style>/`.
+  `biome.json`, `vitest.config.ts`, and other styles' `registry/<style>/` (every derived style's
+  included) or `upstream/base-<style>/`.
 
 The `install` job is not required. It builds the registries, then `pnpm install-check` installs
 every item of the first style in `upstream.styles`, served locally from `public/r/<style>`, with
@@ -118,6 +126,6 @@ those do not reach, a registry dependency that names no item of the style by its
 pinned version not installed, a type error, a failing shipped test, or a failed `vite build`. It
 skips, and still reports success, on a draft, or when the change touches only Markdown, `.claude/`,
 `ab/`, the scripts' tests, `lefthook.yml`, `biome.json`, `vitest.config.ts`, and other styles'
-`registry/<style>/` or `upstream/base-<style>/`.
+`registry/<style>/` (every derived style's included) or `upstream/base-<style>/`.
 
 Every push to `main` runs every leg, then the `deploy` job ([docs/hosting.md](docs/hosting.md)).

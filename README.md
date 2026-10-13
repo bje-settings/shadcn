@@ -6,7 +6,8 @@ styled with SCSS modules instead of Tailwind.
 ## Styles
 
 Each mirrored Base UI style is its own registry at `https://shadcn.bje.co/<style>/`: `vega`,
-`luma`, `nova`, `maia`, `lyra`, `mira`, `sera` and `rhea`. Styles differ in their components'
+`luma`, `nova`, `maia`, `lyra`, `mira`, `sera` and `rhea`. `glass` is this registry's own style,
+built from maia's components. Styles differ in their components'
 classes, not only in variables, so a project uses one style. Every style uses shadcn's neutral base
 color, the Inter font by default and lucide icons.
 
@@ -15,8 +16,8 @@ Each style's address also serves a showcase: the cards of shadcn's
 components and stylesheets, in light and dark: [vega](https://shadcn.bje.co/vega/),
 [luma](https://shadcn.bje.co/luma/), [nova](https://shadcn.bje.co/nova/),
 [maia](https://shadcn.bje.co/maia/), [lyra](https://shadcn.bje.co/lyra/),
-[mira](https://shadcn.bje.co/mira/), [sera](https://shadcn.bje.co/sera/) and
-[rhea](https://shadcn.bje.co/rhea/). [shadcn.bje.co](https://shadcn.bje.co/) links to every
+[mira](https://shadcn.bje.co/mira/), [sera](https://shadcn.bje.co/sera/),
+[rhea](https://shadcn.bje.co/rhea/) and [glass](https://shadcn.bje.co/glass/). [shadcn.bje.co](https://shadcn.bje.co/) links to every
 style's showcase.
 
 ## Setup

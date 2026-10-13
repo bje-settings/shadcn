@@ -13,6 +13,7 @@ optional one included, is ignored.
 | `upstream.url`       | An upstream item's URL, with `{style}` and `{name}`                                        |
 | `upstream.colorsUrl` | A base color theme's URL, with `{name}`                                                    |
 | `upstream.styles`    | The styles mirrored, each published as its own registry; the first is the A/B default      |
+| `derived`            | Styles built from an upstream style's snapshots, each `{ name, base }`; none when unset    |
 | `theme`              | The preset's `baseColor`, `font` and `iconLibrary` (the library `IconPlaceholder` becomes) |
 | `fonts`              | The upstream fonts each style publishes as `@<namespace>/font-<name>`; none when unset     |
 | `components`         | The upstream items to mirror                                                               |
@@ -28,6 +29,11 @@ optional one included, is ignored.
 `upstream.styles` takes upstream's names (`base-vega`). Each style goes by its short name, without
 `base-` (`vega`): in `mirror:build <style>`, `AB_STYLE`, the vitest project names and CI legs, and
 its path on the site. Output paths must contain `{style}`, which resolves to the short name.
+
+A `derived` entry's `base` is one of `upstream.styles`, and its `name` (kebab-case) is no other
+style's. It goes by `name` wherever an upstream style goes by its short name, and comes after the
+upstream styles in every list: `mirror:build`, the vitest projects, CI's build checks, the A/B port,
+the style select and the root page. It has no snapshots and no A/B leg of its own.
 
 `preview.url` is a block file's URL, with `{block}` and `{file}` (`index.tsx`, `cards/<name>.tsx`).
 `preview.blocks` lists the blocks in the order the showcase's switcher numbers them, as `/create`
