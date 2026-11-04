@@ -46,7 +46,7 @@
   transform-origin: var(--transform-origin);
   align-items: center;
   gap: calc(var(--spacing) * 1.5);
-  border-radius: calc(var(--radius) * .8);
+  border-radius: calc(var(--radius) * 0.8);
   background-color: var(--foreground);
   padding-inline: calc(var(--spacing) * 3);
   padding-block: calc(var(--spacing) * 1.5);
@@ -62,7 +62,8 @@
   &[data-side="inline-end"] {
     --enter-translate-x: calc(2*var(--spacing)*-1);
   }
-  &[data-side="inline-start"], &[data-side="left"] {
+  &[data-side="inline-start"],
+  &[data-side="left"] {
     --enter-translate-x: calc(2*var(--spacing));
   }
   &[data-side="right"] {
@@ -72,17 +73,25 @@
     --enter-translate-y: calc(2*var(--spacing));
   }
   &[data-state="delayed-open"] {
-    animation: enter var(--animation-duration, var(--duration, .15s))var(--ease, ease)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+    animation: enter var(--animation-duration, var(--duration, 0.15s)) var(--ease, ease)
+      var(--animation-delay, 0s) var(--animation-iteration-count, 1)
+      var(--animation-direction, normal) var(--animation-fill-mode, none);
     --enter-opacity: 0;
     --enter-scale: .95;
   }
-  &:where([data-state="open"]), &:where([data-open]:not([data-open="false"])) {
-    animation: enter var(--animation-duration, var(--duration, .15s))var(--ease, ease)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+  &:where([data-state="open"]),
+  &:where([data-open]:not([data-open="false"])) {
+    animation: enter var(--animation-duration, var(--duration, 0.15s)) var(--ease, ease)
+      var(--animation-delay, 0s) var(--animation-iteration-count, 1)
+      var(--animation-direction, normal) var(--animation-fill-mode, none);
     --enter-opacity: 0;
     --enter-scale: .95;
   }
-  &:where([data-state="closed"]), &:where([data-closed]:not([data-closed="false"])) {
-    animation: exit var(--animation-duration, var(--duration, .15s))var(--ease, ease)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+  &:where([data-state="closed"]),
+  &:where([data-closed]:not([data-closed="false"])) {
+    animation: exit var(--animation-duration, var(--duration, 0.15s)) var(--ease, ease)
+      var(--animation-delay, 0s) var(--animation-iteration-count, 1)
+      var(--animation-direction, normal) var(--animation-fill-mode, none);
     --exit-opacity: 0;
     --exit-scale: .95;
   }
@@ -92,7 +101,7 @@
     position: relative;
     isolation: isolate;
     z-index: 50;
-    border-radius: calc(var(--radius) * .6);
+    border-radius: calc(var(--radius) * 0.6);
   }
 }
 

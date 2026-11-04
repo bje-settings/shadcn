@@ -41,20 +41,36 @@
   border-width: 1px;
   border-color: var(--input);
   --shadow: 0 1px 2px 0 var(--shadow-color, #0000000d);
-  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+  box-shadow:
+    var(--inset-shadow),
+    var(--inset-ring-shadow),
+    var(--ring-offset-shadow),
+    var(--ring-shadow),
+    var(--shadow);
   transition-property: box-shadow;
   transition-timing-function: var(--ease, var(--default-transition-timing-function));
   transition-duration: var(--duration, var(--default-transition-duration));
   --outline-style: none;
   outline-style: none;
   &:is(:where([data-slot="field"]):has(:disabled) *) {
-    opacity: .5;
+    opacity: 0.5;
   }
   &:is(:where([data-slot="field-label"]):has(:focus-visible) *) {
-    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(0px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-shadow: var(--ring-inset,) 0 0 0 calc(0px + var(--ring-offset-width)) var(
+      --ring-color,
+      currentcolor
+    );
+    box-shadow:
+      var(--inset-shadow),
+      var(--inset-ring-shadow),
+      var(--ring-offset-shadow),
+      var(--ring-shadow),
+      var(--shadow);
   }
-  &:is(:where([data-slot="field-label"]):has(:focus-visible) *):not(:where([data-state="checked"]), :where([data-checked]:not([data-checked="false"]))) {
+  &:is(:where([data-slot="field-label"]):has(:focus-visible) *):not(
+      :where([data-state="checked"]),
+      :where([data-checked]:not([data-checked="false"]))
+    ) {
     border-color: var(--input);
   }
   &:after {
@@ -67,8 +83,16 @@
   }
   &:focus-visible {
     border-color: var(--ring);
-    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-shadow: var(--ring-inset,) 0 0 0 calc(3px + var(--ring-offset-width)) var(
+      --ring-color,
+      currentcolor
+    );
+    box-shadow:
+      var(--inset-shadow),
+      var(--inset-ring-shadow),
+      var(--ring-offset-shadow),
+      var(--ring-shadow),
+      var(--shadow);
     --ring-color: var(--ring);
     @supports (color: color-mix(in lab, red, red)) {
       --ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
@@ -76,12 +100,20 @@
   }
   &:disabled {
     cursor: not-allowed;
-    opacity: .5;
+    opacity: 0.5;
   }
   &[aria-invalid="true"] {
     border-color: var(--destructive);
-    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-shadow: var(--ring-inset,) 0 0 0 calc(3px + var(--ring-offset-width)) var(
+      --ring-color,
+      currentcolor
+    );
+    box-shadow:
+      var(--inset-shadow),
+      var(--inset-ring-shadow),
+      var(--ring-offset-shadow),
+      var(--ring-shadow),
+      var(--shadow);
     --ring-color: var(--destructive);
     @supports (color: color-mix(in lab, red, red)) {
       --ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
@@ -106,15 +138,20 @@
       --ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
     }
   }
-  &:where([data-state="checked"]), &:where([data-checked]:not([data-checked="false"])) {
+  &:where([data-state="checked"]),
+  &:where([data-checked]:not([data-checked="false"])) {
     border-color: var(--primary);
     background-color: var(--primary);
     color: var(--primary-foreground);
   }
-  &:is(:where([data-slot="field-label"]):has(:focus-visible) *):where([data-state="checked"]), &:is(:where([data-slot="field-label"]):has(:focus-visible) *):where([data-checked]:not([data-checked="false"])) {
+  &:is(:where([data-slot="field-label"]):has(:focus-visible) *):where([data-state="checked"]),
+  &:is(:where([data-slot="field-label"]):has(:focus-visible) *):where(
+      [data-checked]:not([data-checked="false"])
+    ) {
     border-color: var(--primary);
   }
-  &:is(:global(.dark) *):where([data-state="checked"]), &:is(:global(.dark) *):where([data-checked]:not([data-checked="false"])) {
+  &:is(:global(.dark) *):where([data-state="checked"]),
+  &:is(:global(.dark) *):where([data-checked]:not([data-checked="false"])) {
     background-color: var(--primary);
   }
 }

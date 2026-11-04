@@ -4,7 +4,8 @@
 @import "@fontsource/instrument-serif";
 
 @layer theme {
-  :root, :host {
-    --font-serif: 'Instrument Serif', serif;
+  :root,
+  :host {
+    --font-serif: "Instrument Serif", serif;
   }
 }

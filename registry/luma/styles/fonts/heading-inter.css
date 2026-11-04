@@ -4,7 +4,8 @@
 @import "@fontsource-variable/inter";
 
 @layer theme {
-  :root, :host {
-    --font-heading: 'Inter Variable', sans-serif;
+  :root,
+  :host {
+    --font-heading: "Inter Variable", sans-serif;
   }
 }

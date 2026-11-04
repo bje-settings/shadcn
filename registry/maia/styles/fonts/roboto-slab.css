@@ -4,7 +4,8 @@
 @import "@fontsource-variable/roboto-slab";
 
 @layer theme {
-  :root, :host {
-    --font-serif: 'Roboto Slab Variable', serif;
+  :root,
+  :host {
+    --font-serif: "Roboto Slab Variable", serif;
   }
 }

@@ -4,7 +4,8 @@
 @import "@fontsource-variable/source-sans-3";
 
 @layer theme {
-  :root, :host {
-    --font-sans: 'Source Sans 3 Variable', sans-serif;
+  :root,
+  :host {
+    --font-sans: "Source Sans 3 Variable", sans-serif;
   }
 }

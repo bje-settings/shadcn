@@ -4,7 +4,8 @@
 @import "@fontsource-variable/jetbrains-mono";
 
 @layer theme {
-  :root, :host {
-    --font-mono: 'JetBrains Mono Variable', monospace;
+  :root,
+  :host {
+    --font-mono: "JetBrains Mono Variable", monospace;
   }
 }

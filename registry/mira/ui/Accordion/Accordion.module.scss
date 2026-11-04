@@ -32,7 +32,7 @@
   width: 100%;
   flex-direction: column;
   overflow: hidden;
-  border-radius: calc(var(--radius) * .8);
+  border-radius: calc(var(--radius) * 0.8);
   border-style: var(--border-style);
   border-width: 1px;
 }
@@ -42,7 +42,8 @@
     border-bottom-style: var(--border-style);
     border-bottom-width: 1px;
   }
-  &:where([data-state="open"]), &:where([data-open]:not([data-open="false"])) {
+  &:where([data-state="open"]),
+  &:where([data-open]:not([data-open="false"])) {
     background-color: var(--muted);
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--muted) 50%, transparent);
@@ -82,7 +83,7 @@
   }
   &[aria-disabled="true"] {
     pointer-events: none;
-    opacity: .5;
+    opacity: 0.5;
   }
 }
 .accordionTrigger {
@@ -116,11 +117,17 @@
   padding-inline: calc(var(--spacing) * 2);
   font-size: var(--text-xs);
   line-height: var(--leading-relaxed);
-  &:where([data-state="open"]), &:where([data-open]:not([data-open="false"])) {
-    animation: accordion-down var(--animation-duration, var(--duration, .2s))var(--ease, ease-out)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+  &:where([data-state="open"]),
+  &:where([data-open]:not([data-open="false"])) {
+    animation: accordion-down var(--animation-duration, var(--duration, 0.2s)) var(--ease, ease-out)
+      var(--animation-delay, 0s) var(--animation-iteration-count, 1)
+      var(--animation-direction, normal) var(--animation-fill-mode, none);
   }
-  &:where([data-state="closed"]), &:where([data-closed]:not([data-closed="false"])) {
-    animation: accordion-up var(--animation-duration, var(--duration, .2s))var(--ease, ease-out)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+  &:where([data-state="closed"]),
+  &:where([data-closed]:not([data-closed="false"])) {
+    animation: accordion-up var(--animation-duration, var(--duration, 0.2s)) var(--ease, ease-out)
+      var(--animation-delay, 0s) var(--animation-iteration-count, 1)
+      var(--animation-direction, normal) var(--animation-fill-mode, none);
   }
 }
 
@@ -128,7 +135,8 @@
   height: var(--accordion-panel-height);
   padding-top: 0;
   padding-bottom: calc(var(--spacing) * 4);
-  &[data-ending-style], &[data-starting-style] {
+  &[data-ending-style],
+  &[data-starting-style] {
     height: 0;
   }
 }

@@ -67,7 +67,8 @@
   & :global(.recharts-polar-grid) [stroke="#ccc"] {
     stroke: var(--border);
   }
-  & :global(.recharts-radial-bar-background-sector), & :global(.recharts-rectangle):global(.recharts-tooltip-cursor) {
+  & :global(.recharts-radial-bar-background-sector),
+  & :global(.recharts-rectangle):global(.recharts-tooltip-cursor) {
     fill: var(--muted);
   }
   & :global(.recharts-reference-line) [stroke="#ccc"] {
@@ -116,8 +117,16 @@
   padding-block: calc(var(--spacing) * 1.5);
   font-size: var(--text-xs);
   line-height: var(--leading, var(--text-xs--line-height));
-  --shadow: 0 20px 25px -5px var(--shadow-color, #0000001a), 0 8px 10px -6px var(--shadow-color, #0000001a);
-  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+  --shadow: 0 20px 25px -5px var(--shadow-color, #0000001a), 0 8px 10px -6px var(
+    --shadow-color,
+    #0000001a
+  );
+  box-shadow:
+    var(--inset-shadow),
+    var(--inset-ring-shadow),
+    var(--ring-offset-shadow),
+    var(--ring-shadow),
+    var(--shadow);
 }
 
 :where(.chartTooltipContentDiv2) {
@@ -163,7 +172,7 @@
 }
 
 :where(.chartTooltipContentDivNestLabelAndDashed) {
-  margin-block: calc(var(--spacing) * .5);
+  margin-block: calc(var(--spacing) * 0.5);
 }
 
 :where(.chartTooltipContentDiv4) {
@@ -199,7 +208,8 @@
   font-weight: var(--font-weight-medium);
   color: var(--foreground);
   --numeric-spacing: tabular-nums;
-  font-variant-numeric: var(--ordinal, ) var(--slashed-zero, ) var(--numeric-figure, ) var(--numeric-spacing, ) var(--numeric-fraction, );
+  font-variant-numeric: var(--ordinal,) var(--slashed-zero,) var(--numeric-figure,)
+    var(--numeric-spacing,) var(--numeric-fraction,);
 }
 
 :where(.chartLegendContentDivTop) {

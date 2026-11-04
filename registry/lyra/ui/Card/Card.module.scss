@@ -39,8 +39,16 @@
   font-size: var(--text-xs);
   line-height: var(--leading-relaxed);
   color: var(--card-foreground);
-  --ring-shadow: var(--ring-inset, ) 0 0 0 calc(1px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+  --ring-shadow: var(--ring-inset,) 0 0 0 calc(1px + var(--ring-offset-width)) var(
+    --ring-color,
+    currentcolor
+  );
+  box-shadow:
+    var(--inset-shadow),
+    var(--inset-ring-shadow),
+    var(--ring-offset-shadow),
+    var(--ring-shadow),
+    var(--shadow);
   --ring-color: var(--foreground);
   @supports (color: color-mix(in lab, red, red)) {
     --ring-color: color-mix(in oklab, var(--foreground) 10%, transparent);
@@ -49,7 +57,7 @@
   &:has([data-slot="card-footer"]) {
     padding-bottom: 0;
   }
-  &:has( > img:first-child) {
+  &:has(> img:first-child) {
     padding-top: 0;
   }
   &[data-size="sm"] {
@@ -60,7 +68,8 @@
   }
 }
 .card {
-  :is(& > *):is(img:first-child), :is(& > *):is(img:last-child) {
+  :is(& > *):is(img:first-child),
+  :is(& > *):is(img:last-child) {
     border-radius: 0;
   }
 }

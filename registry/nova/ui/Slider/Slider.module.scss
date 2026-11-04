@@ -41,8 +41,9 @@
   align-items: center;
   -webkit-user-select: none;
   user-select: none;
-  &:where([data-disabled="true"]), &:where([data-disabled]:not([data-disabled="false"])) {
-    opacity: .5;
+  &:where([data-disabled="true"]),
+  &:where([data-disabled]:not([data-disabled="false"])) {
+    opacity: 0.5;
   }
   &:where([data-orientation="vertical"]) {
     height: 100%;
@@ -110,13 +111,29 @@
   }
   &:hover {
     @media (hover: hover) {
-      --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-      box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+      --ring-shadow: var(--ring-inset,) 0 0 0 calc(3px + var(--ring-offset-width)) var(
+        --ring-color,
+        currentcolor
+      );
+      box-shadow:
+        var(--inset-shadow),
+        var(--inset-ring-shadow),
+        var(--ring-offset-shadow),
+        var(--ring-shadow),
+        var(--shadow);
     }
   }
   &:focus-visible {
-    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-shadow: var(--ring-inset,) 0 0 0 calc(3px + var(--ring-offset-width)) var(
+      --ring-color,
+      currentcolor
+    );
+    box-shadow:
+      var(--inset-shadow),
+      var(--inset-ring-shadow),
+      var(--ring-offset-shadow),
+      var(--ring-shadow),
+      var(--shadow);
     --outline-style: none;
     outline-style: none;
     @media (forced-colors: active) {
@@ -125,11 +142,19 @@
     }
   }
   &:active {
-    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-shadow: var(--ring-inset,) 0 0 0 calc(3px + var(--ring-offset-width)) var(
+      --ring-color,
+      currentcolor
+    );
+    box-shadow:
+      var(--inset-shadow),
+      var(--inset-ring-shadow),
+      var(--ring-offset-shadow),
+      var(--ring-shadow),
+      var(--shadow);
   }
   &:disabled {
     pointer-events: none;
-    opacity: .5;
+    opacity: 0.5;
   }
 }

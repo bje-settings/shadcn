@@ -41,8 +41,8 @@
   border-width: 1px;
   border-color: #0000;
   padding-inline: calc(var(--spacing) * 2);
-  padding-block: calc(var(--spacing) * .5);
-  font-size: .625rem;
+  padding-block: calc(var(--spacing) * 0.5);
+  font-size: 0.625rem;
   --font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
   white-space: nowrap;
@@ -51,8 +51,16 @@
   transition-duration: var(--duration, var(--default-transition-duration));
   &:focus-visible {
     border-color: var(--ring);
-    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-shadow: var(--ring-inset,) 0 0 0 calc(3px + var(--ring-offset-width)) var(
+      --ring-color,
+      currentcolor
+    );
+    box-shadow:
+      var(--inset-shadow),
+      var(--inset-ring-shadow),
+      var(--ring-offset-shadow),
+      var(--ring-shadow),
+      var(--shadow);
     --ring-color: var(--ring);
     @supports (color: color-mix(in lab, red, red)) {
       --ring-color: color-mix(in oklab, var(--ring) 50%, transparent);

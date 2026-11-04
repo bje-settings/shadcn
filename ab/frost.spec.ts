@@ -112,7 +112,9 @@ test('every control skips every frost surface', () => {
   for (const entry of readdirSync(`${OVERRIDES}/ui`, { recursive: true, encoding: 'utf8' })) {
     if (!entry.endsWith('.module.scss')) continue
     const scss = readFileSync(`${OVERRIDES}/ui/${entry}`, 'utf8')
-    for (const [, list] of scss.matchAll(/:not\(:is\(([^)]*)\) \*\)/g)) lists.add(list as string)
+    for (const [, list] of scss.matchAll(/:not\(\s*:is\(([^)]*)\)\s*\*\s*\)/g)) {
+      lists.add((list as string).replace(/\s+/g, ' ').trim())
+    }
   }
   expect(lists.size).toBe(1)
   const slots = [...lists][0]?.match(/data-slot="([a-z-]+)"/g) ?? []

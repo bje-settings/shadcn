@@ -4,7 +4,8 @@
 @import "@fontsource-variable/ibm-plex-sans";
 
 @layer theme {
-  :root, :host {
-    --font-sans: 'IBM Plex Sans Variable', sans-serif;
+  :root,
+  :host {
+    --font-sans: "IBM Plex Sans Variable", sans-serif;
   }
 }

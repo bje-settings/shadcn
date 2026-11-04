@@ -4,7 +4,8 @@
 @import "@fontsource-variable/raleway";
 
 @layer theme {
-  :root, :host {
-    --font-sans: 'Raleway Variable', sans-serif;
+  :root,
+  :host {
+    --font-sans: "Raleway Variable", sans-serif;
   }
 }

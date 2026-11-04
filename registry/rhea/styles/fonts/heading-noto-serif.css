@@ -4,7 +4,8 @@
 @import "@fontsource-variable/noto-serif";
 
 @layer theme {
-  :root, :host {
-    --font-heading: 'Noto Serif Variable', serif;
+  :root,
+  :host {
+    --font-heading: "Noto Serif Variable", serif;
   }
 }

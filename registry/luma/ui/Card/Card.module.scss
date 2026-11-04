@@ -40,16 +40,32 @@
   font-size: var(--text-sm);
   line-height: var(--leading, var(--text-sm--line-height));
   color: var(--card-foreground);
-  --shadow: 0 4px 6px -1px var(--shadow-color, #0000001a), 0 2px 4px -2px var(--shadow-color, #0000001a);
-  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
-  --ring-shadow: var(--ring-inset, ) 0 0 0 calc(1px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+  --shadow: 0 4px 6px -1px var(--shadow-color, #0000001a), 0 2px 4px -2px var(
+    --shadow-color,
+    #0000001a
+  );
+  box-shadow:
+    var(--inset-shadow),
+    var(--inset-ring-shadow),
+    var(--ring-offset-shadow),
+    var(--ring-shadow),
+    var(--shadow);
+  --ring-shadow: var(--ring-inset,) 0 0 0 calc(1px + var(--ring-offset-width)) var(
+    --ring-color,
+    currentcolor
+  );
+  box-shadow:
+    var(--inset-shadow),
+    var(--inset-ring-shadow),
+    var(--ring-offset-shadow),
+    var(--ring-shadow),
+    var(--shadow);
   --ring-color: var(--foreground);
   @supports (color: color-mix(in lab, red, red)) {
     --ring-color: color-mix(in oklab, var(--foreground) 5%, transparent);
   }
   --card-spacing: calc(var(--spacing) * 6);
-  &:has( > img:first-child) {
+  &:has(> img:first-child) {
     padding-top: 0;
   }
   &[data-size="sm"] {

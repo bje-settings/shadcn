@@ -4,7 +4,8 @@
 @import "@fontsource-variable/montserrat";
 
 @layer theme {
-  :root, :host {
-    --font-heading: 'Montserrat Variable', sans-serif;
+  :root,
+  :host {
+    --font-heading: "Montserrat Variable", sans-serif;
   }
 }

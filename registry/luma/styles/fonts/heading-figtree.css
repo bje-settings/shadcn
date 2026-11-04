@@ -4,7 +4,8 @@
 @import "@fontsource-variable/figtree";
 
 @layer theme {
-  :root, :host {
-    --font-heading: 'Figtree Variable', sans-serif;
+  :root,
+  :host {
+    --font-heading: "Figtree Variable", sans-serif;
   }
 }

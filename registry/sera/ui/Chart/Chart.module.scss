@@ -71,7 +71,8 @@
   & :global(.recharts-polar-grid) [stroke="#ccc"] {
     stroke: var(--border);
   }
-  & :global(.recharts-radial-bar-background-sector), & :global(.recharts-rectangle):global(.recharts-tooltip-cursor) {
+  & :global(.recharts-radial-bar-background-sector),
+  & :global(.recharts-rectangle):global(.recharts-tooltip-cursor) {
     fill: var(--muted);
   }
   & :global(.recharts-reference-line) [stroke="#ccc"] {
@@ -114,10 +115,26 @@
   font-size: var(--text-xs);
   line-height: var(--leading, var(--text-xs--line-height));
   color: var(--popover-foreground);
-  --shadow: 0 1px 3px 0 var(--shadow-color, #0000001a), 0 1px 2px -1px var(--shadow-color, #0000001a);
-  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
-  --ring-shadow: var(--ring-inset, ) 0 0 0 calc(1px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+  --shadow: 0 1px 3px 0 var(--shadow-color, #0000001a), 0 1px 2px -1px var(
+    --shadow-color,
+    #0000001a
+  );
+  box-shadow:
+    var(--inset-shadow),
+    var(--inset-ring-shadow),
+    var(--ring-offset-shadow),
+    var(--ring-shadow),
+    var(--shadow);
+  --ring-shadow: var(--ring-inset,) 0 0 0 calc(1px + var(--ring-offset-width)) var(
+    --ring-color,
+    currentcolor
+  );
+  box-shadow:
+    var(--inset-shadow),
+    var(--inset-ring-shadow),
+    var(--ring-offset-shadow),
+    var(--ring-shadow),
+    var(--shadow);
   --ring-color: var(--foreground);
   @supports (color: color-mix(in lab, red, red)) {
     --ring-color: color-mix(in oklab, var(--foreground) 10%, transparent);
@@ -167,7 +184,7 @@
 }
 
 :where(.chartTooltipContentDivNestLabelAndDashed) {
-  margin-block: calc(var(--spacing) * .5);
+  margin-block: calc(var(--spacing) * 0.5);
 }
 
 :where(.chartTooltipContentDiv4) {
@@ -203,7 +220,8 @@
   font-weight: var(--font-weight-medium);
   color: var(--foreground);
   --numeric-spacing: tabular-nums;
-  font-variant-numeric: var(--ordinal, ) var(--slashed-zero, ) var(--numeric-figure, ) var(--numeric-spacing, ) var(--numeric-fraction, );
+  font-variant-numeric: var(--ordinal,) var(--slashed-zero,) var(--numeric-figure,)
+    var(--numeric-spacing,) var(--numeric-fraction,);
 }
 
 :where(.chartLegendContentDivTop) {
