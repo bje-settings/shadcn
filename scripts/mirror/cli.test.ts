@@ -90,8 +90,8 @@ function io(status = 200): Io {
 const read = async (path: string) => readFile(join(root, path), 'utf8')
 
 // A build compiles every style's classes with Tailwind, which takes longer than
-// vitest's default timeout on CI's runners.
-const BUILDS = { timeout: 30_000 }
+// vitest's default timeout on CI's runners. Each describe that builds ends with a
+// 30_000 timeout, a literal: Biome reindents the whole body for a named one.
 
 beforeEach(async () => {
   root = await mkdtemp(join(tmpdir(), 'mirror-'))
@@ -134,7 +134,7 @@ afterEach(async () => {
   await rm(root, { recursive: true, force: true })
 })
 
-describe('mirror fetch', BUILDS, () => {
+describe('mirror fetch', () => {
   it("snapshots each upstream style's items and theme sources, and Typeset once", async () => {
     await run(['fetch'], io())
     const colors = 'https://example.com/colors/neutral.json'
@@ -205,9 +205,9 @@ describe('mirror fetch', BUILDS, () => {
       'GET https://example.com/base-vega/badge.json: 404',
     )
   })
-})
+}, 30_000)
 
-describe('mirror build', BUILDS, () => {
+describe('mirror build', () => {
   it("generates each style's components, globals, harness inputs and registry", async () => {
     await run(['fetch'], io())
     logs = []
@@ -711,7 +711,7 @@ describe('mirror build', BUILDS, () => {
       'no snapshot for typeset/typeset.css; run mirror fetch first',
     )
   })
-})
+}, 30_000)
 
 describe('usage', () => {
   it.each([
@@ -725,7 +725,7 @@ describe('usage', () => {
   })
 })
 
-describe('preview blocks', BUILDS, () => {
+describe('preview blocks', () => {
   const blocks = 'https://example.com/blocks/preview'
   const cards = '@/registry/bases/base/blocks/preview/cards'
   const index = [
@@ -902,4 +902,4 @@ describe('preview blocks', BUILDS, () => {
       'no snapshot for preview/preview/cards/badge-card.tsx; run mirror fetch first',
     )
   })
-})
+}, 30_000)
