@@ -5,7 +5,13 @@
 // what it changes, or no longer changes the source, fails the build naming
 // the item, so a patch upstream has absorbed is noticed on the next sync.
 
-import type { FunctionDeclaration, JSXAttribute, JSXOpeningElement, Node } from '@babel/types'
+import type {
+  FunctionDeclaration,
+  JSXAttribute,
+  JSXOpeningElement,
+  Node,
+  ObjectProperty,
+} from '@babel/types'
 import MagicString from 'magic-string'
 import { childNodes, parseModule } from './ast.ts'
 
@@ -20,15 +26,20 @@ export type Patch = {
 
 export type Patches = Readonly<Record<string, Patch>>
 
-// Every node of a module, depth first.
-function nodes(source: string): Node[] {
+// A node and every node under it, depth first.
+function descendants(root: Node): Node[] {
   const all: Node[] = []
   const visit = (node: Node) => {
     all.push(node)
     for (const child of childNodes(node)) visit(child)
   }
-  visit(parseModule(source).program)
+  visit(root)
   return all
+}
+
+// Every node of a module, depth first.
+function nodes(source: string): Node[] {
+  return descendants(parseModule(source).program)
 }
 
 function openingElements(source: string): JSXOpeningElement[] {
@@ -68,6 +79,80 @@ export function dropAttributes(source: string, slot: string, names: string[]): s
     out.remove((before[i] as Node).end as number, a.end as number)
   }
   return out.toString()
+}
+
+// What a suppression's locator returns: each site it names, with the node
+// the comment goes before, or undefined when upstream's source lacks it.
+export type Sites = Array<[what: string, node: Node | undefined]>
+
+// Puts `biome-ignore <rule>: <reason>` on its own line before each node the
+// locator names, at that line's indentation, since Biome applies it to the
+// next line. Among JSX children it is `{/* */}`, as `//` there would be text;
+// elsewhere (a statement, an object property, a returned element) it is `//`.
+// A named site that is gone fails the build by name; naming no site changes
+// nothing, so applyPatch reports the patch as absorbed.
+export function suppress(
+  source: string,
+  rule: string,
+  reason: string,
+  locate: (all: Node[]) => Sites,
+): string {
+  const all = nodes(source)
+  const parents = new Map<Node, Node>()
+  for (const node of all) for (const child of childNodes(node)) parents.set(child, node)
+  const out = new MagicString(source)
+  for (const [what, located] of locate(all)) {
+    const node = found(located, what)
+    const start = node.start as number
+    const indent = source.slice(source.lastIndexOf('\n', start - 1) + 1, start)
+    if (indent.trim() !== '') throw new Error(`patches.ts: ${what} does not start its line`)
+    const parent = parents.get(node)?.type
+    const comment = `biome-ignore ${rule}: ${reason}`
+    out.appendLeft(
+      start,
+      parent === 'JSXElement' || parent === 'JSXFragment'
+        ? `{/* ${comment} */}\n${indent}`
+        : `// ${comment}\n${indent}`,
+    )
+  }
+  return out.toString()
+}
+
+const CALENDAR_COMPONENTS = ['Root', 'Chevron', 'DayButton', 'WeekNumber']
+
+// The properties of the components object Calendar passes to DayPicker that
+// upstream writes as inline render functions.
+export function calendarComponents(all: Node[]): Sites {
+  const calendar = found(
+    all.find(
+      (n): n is FunctionDeclaration =>
+        n.type === 'FunctionDeclaration' && n.id?.name === 'Calendar',
+    ),
+    'Calendar function',
+  )
+  const dayPicker = found(
+    descendants(calendar).find(
+      (n): n is JSXOpeningElement =>
+        n.type === 'JSXOpeningElement' &&
+        n.name.type === 'JSXIdentifier' &&
+        n.name.name === 'DayPicker',
+    ),
+    'DayPicker element in Calendar',
+  )
+  const value = attribute(dayPicker, 'components')?.value
+  const object = found(
+    value?.type === 'JSXExpressionContainer' && value.expression.type === 'ObjectExpression'
+      ? value.expression
+      : undefined,
+    'components object on DayPicker',
+  )
+  return CALENDAR_COMPONENTS.map((name) => [
+    `${name} in DayPicker's components`,
+    object.properties.find(
+      (p): p is ObjectProperty =>
+        p.type === 'ObjectProperty' && p.key.type === 'Identifier' && p.key.name === name,
+    ),
+  ])
 }
 
 const THUMB_LABELS = ['getAriaLabel', 'getAriaValueText']
@@ -161,6 +246,17 @@ export const PATCHES: Patches = {
       '  })',
       '})',
     ],
+  },
+  calendar: {
+    reason:
+      "react-day-picker's components prop takes render functions, which upstream writes inline in Calendar; they stay as written, so each sync copies upstream unchanged.",
+    transform: (source) =>
+      suppress(
+        source,
+        'lint/correctness/noComponentHookFactories',
+        'upstream passes react-day-picker its components inline',
+        calendarComponents,
+      ),
   },
   alert: {
     reason:

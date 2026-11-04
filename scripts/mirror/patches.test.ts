@@ -1,8 +1,17 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import type { Node } from '@babel/types'
 import { describe, expect, it } from 'vitest'
 import { parseModule } from './ast.ts'
-import { applyPatch, dropAttributes, forwardThumbLabels, PATCHES, type Patches } from './patches.ts'
+import {
+  applyPatch,
+  calendarComponents,
+  dropAttributes,
+  forwardThumbLabels,
+  PATCHES,
+  type Patches,
+  suppress,
+} from './patches.ts'
 import { config, root } from './test-support.ts'
 
 // Upstream's luma source for an item, as snapshotted.
@@ -160,5 +169,101 @@ describe('the slider patch', () => {
     ['Slider props type', 'function Slider({ ...props }) { return <S.Thumb /> }'],
   ])('fails on a source with no %s', (what, code) => {
     expect(() => forwardThumbLabels(code)).toThrow(`patches.ts: upstream's source has no ${what}`)
+  })
+})
+
+describe('suppress', () => {
+  const rule = 'lint/x/y'
+  const named =
+    (type: string, what = type) =>
+    (all: Node[]): [string, Node | undefined][] => [[what, all.find((n) => n.type === type)]]
+
+  it('puts a line comment before an object property, at its indentation', () => {
+    expect(suppress('const a = {\n  b: 1,\n}\n', rule, 'why', named('ObjectProperty'))).toBe(
+      'const a = {\n  // biome-ignore lint/x/y: why\n  b: 1,\n}\n',
+    )
+  })
+
+  it('puts a JSX comment before an element among JSX children', () => {
+    const code = '<a>\n  <b />\n</a>'
+    const b = (all: Node[]): [string, Node | undefined][] => [
+      ['b', all.filter((n) => n.type === 'JSXElement')[1]],
+    ]
+    expect(suppress(code, rule, 'why', b)).toBe(
+      '<a>\n  {/* biome-ignore lint/x/y: why */}\n  <b />\n</a>',
+    )
+    expect(suppress('<>\n  <b />\n</>', rule, 'why', named('JSXElement'))).toBe(
+      '<>\n  {/* biome-ignore lint/x/y: why */}\n  <b />\n</>',
+    )
+  })
+
+  it('puts a line comment before an element that is not a JSX child', () => {
+    expect(suppress('() => (\n  <b />\n)', rule, 'why', named('JSXElement'))).toBe(
+      '() => (\n  // biome-ignore lint/x/y: why\n  <b />\n)',
+    )
+  })
+
+  it('fails by name when a site is gone', () => {
+    expect(() => suppress('const a = 1\n', rule, 'why', named('ObjectProperty', 'b'))).toThrow(
+      "patches.ts: upstream's source has no b",
+    )
+  })
+
+  it('fails by name when a site shares its line with other code', () => {
+    expect(() =>
+      suppress('const a = { b: 1 }\n', rule, 'why', named('ObjectProperty', 'b')),
+    ).toThrow('patches.ts: b does not start its line')
+  })
+
+  it('leaves the source unchanged when it names no site', () => {
+    expect(suppress('const a = 1\n', rule, 'why', () => [])).toBe('const a = 1\n')
+  })
+})
+
+describe('the calendar patch', () => {
+  const source = luma('calendar')
+  const comment = '// biome-ignore lint/correctness/noComponentHookFactories: '
+
+  it("puts a noComponentHookFactories suppression before each of DayPicker's inline components", () => {
+    const { source: patched } = applyPatch('calendar', source)
+    parseModule(patched)
+    for (const name of ['Root', 'Chevron', 'DayButton', 'WeekNumber']) {
+      expect(patched).toMatch(new RegExp(`\\n( +)${comment}[^\\n]+\\n\\1${name}: `))
+    }
+    expect(patched.split(comment)).toHaveLength(5)
+  })
+
+  it('fails the build naming a component upstream no longer writes inline', () => {
+    const without = source.replace(/\n {8}WeekNumber: /, '\n        Other: ')
+    expect(without).not.toBe(source)
+    expect(() => applyPatch('calendar', without)).toThrow(
+      "calendar: its patch in scripts/mirror/patches.ts failed: patches.ts: upstream's source has no WeekNumber in DayPicker's components",
+    )
+  })
+
+  it.each([
+    ['Calendar function', 'function Other() { return <DayPicker components={{}} /> }'],
+    ['DayPicker element in Calendar', 'function Calendar() { return <Other components={{}} /> }'],
+    ['components object on DayPicker', 'function Calendar() { return <DayPicker /> }'],
+    [
+      'components object on DayPicker',
+      'function Calendar() { return <DayPicker components={c} /> }',
+    ],
+    [
+      'components object on DayPicker',
+      'function Calendar() { return <DayPicker components="c" /> }',
+    ],
+  ])('fails on a source with no %s', (what, code) => {
+    expect(() => suppress(code, 'lint/x/y', 'why', calendarComponents)).toThrow(
+      `patches.ts: upstream's source has no ${what}`,
+    )
+  })
+
+  it('looks past spread and computed properties for a component', () => {
+    const code =
+      'function Calendar() {\n  return <DayPicker components={{ ...c, ["Root"]: r }} />\n}'
+    expect(() => suppress(code, 'lint/x/y', 'why', calendarComponents)).toThrow(
+      "patches.ts: upstream's source has no Root in DayPicker's components",
+    )
   })
 })
