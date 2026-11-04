@@ -7,24 +7,24 @@ optional one included, is ignored.
 
 ## Sources and output
 
-| Key                  | Sets                                                                                      |
-| -------------------- | ----------------------------------------------------------------------------------------- |
-| `namespace`          | This registry's name: imports and `registryDependencies` point at `@<namespace>/<item>`    |
-| `upstream.url`       | An upstream item's URL, with `{style}` and `{name}`                                        |
-| `upstream.colorsUrl` | A base color theme's URL, with `{name}`                                                    |
-| `upstream.styles`    | The styles mirrored, each published as its own registry; the first is the A/B default      |
-| `derived`            | Styles built from an upstream style's snapshots, each `{ name, base }`; none when unset    |
-| `theme`              | The preset's `baseColor`, `font` and `iconLibrary` (the library `IconPlaceholder` becomes) |
-| `fonts`              | The upstream fonts each style publishes as `@<namespace>/font-<name>`; none when unset     |
-| `components`         | The upstream items to mirror                                                               |
+| Key                  | Sets                                                                                           |
+| -------------------- | ---------------------------------------------------------------------------------------------- |
+| `namespace`          | This registry's name: imports and `registryDependencies` point at `@<namespace>/<item>`        |
+| `upstream.url`       | An upstream item's URL, with `{style}` and `{name}`                                            |
+| `upstream.colorsUrl` | A base color theme's URL, with `{name}`                                                        |
+| `upstream.styles`    | The styles mirrored, each published as its own registry; the first is the A/B default          |
+| `derived`            | Styles built from an upstream style's snapshots, each `{ name, base }`; none when unset        |
+| `theme`              | The preset's `baseColor`, `font` and `iconLibrary` (the library `IconPlaceholder` becomes)     |
+| `fonts`              | The upstream fonts each style publishes as `@<namespace>/font-<name>`; none when unset         |
+| `components`         | The upstream items to mirror                                                                   |
 | `typeset`            | shadcn/typeset's `stylesheet` URL, and the content `fixtures` (from `fixturesUrl`) A/B renders |
-| `preview`            | The `/create` preview blocks the showcase renders; none when unset (below)                |
-| `snapshotDir`        | Where `mirror:fetch` writes snapshots, one directory per upstream style                    |
-| `outputDir`          | Components                                                                                 |
-| `hooksDir`           | Mirrored hooks (`use-mobile`)                                                              |
-| `globalsDir`         | The global stylesheets and Typeset                                                         |
-| `harnessDir`         | The A/B harness inputs                                                                     |
-| `registryFile`       | The style's catalog                                                                        |
+| `preview`            | The `/create` preview blocks the showcase renders; none when unset (below)                     |
+| `snapshotDir`        | Where `mirror:fetch` writes snapshots, one directory per upstream style                        |
+| `outputDir`          | Components                                                                                     |
+| `hooksDir`           | Mirrored hooks (`use-mobile`)                                                                  |
+| `globalsDir`         | The global stylesheets and Typeset                                                             |
+| `harnessDir`         | The A/B harness inputs                                                                         |
+| `registryFile`       | The style's catalog                                                                            |
 
 `upstream.styles` takes upstream's names (`base-vega`). Each style goes by its short name, without
 `base-` (`vega`): in `mirror:build <style>`, `AB_STYLE`, the vitest project names and CI legs, and
@@ -52,17 +52,17 @@ The rest records, each with a reason, what the pipeline cannot infer. Every entr
 style. An entry keyed by an item or part fails the run unless the item is in `components` and
 exports the part.
 
-| Key                  | For                                                                                 |
-| -------------------- | ----------------------------------------------------------------------------------- |
+| Key                  | For                                                                                  |
+| -------------------- | ------------------------------------------------------------------------------------ |
 | `consumerClasses`    | Tailwind classes upstream styles gate on when a consumer passes them; rules dropped  |
 | `globalClasses`      | Outside classes elements really carry (`dark`, `sr-only`, `rdp-*`, `recharts-*`)     |
 | `classesWithoutCss`  | Upstream classes Tailwind compiles to nothing upstream too                           |
-| `coverageExclusions` | Items whose upstream logic no generated render reaches (interaction, runtime state) |
+| `coverageExclusions` | Items whose upstream logic no generated render reaches (interaction, runtime state)  |
 | `testSetup`          | Lines a generated test runs first: jsdom stubs (`ResizeObserver`, `matchMedia`, ...) |
 | `testProps`          | Props a part needs that no docs example passes as a literal (a Toast's `toast`)      |
 | `testExpressions`    | Such props as TypeScript expressions, where JSON cannot hold them (a `Date`)         |
 | `unrenderedInTests`  | Parts jsdom renders nothing for; their test checks exactly that                      |
-| `sameRenderInTests`  | Props whose other values render the same in the test's scaffold (Sidebar collapsed) |
+| `sameRenderInTests`  | Props whose other values render the same in the test's scaffold (Sidebar collapsed)  |
 
 `consumerClasses` also makes the A/B harness skip the docs examples and `/create` preview cards
 that pass one of those classes to a component whose item drops rules gated on it.

@@ -44,11 +44,11 @@ and `@bje/globals` lists it in `devDependencies`.
 Every component depends on `@bje/globals`, which installs three files into `styles/` under the
 project's `components` alias. Import each once, at the app's entry:
 
-| File             | Holds                                                                         |
-| ---------------- | ----------------------------------------------------------------------------- |
-| `variables.scss` | Tailwind's default theme and shadcn's light and dark colors, as custom properties |
+| File             | Holds                                                                               |
+| ---------------- | ----------------------------------------------------------------------------------- |
+| `variables.scss` | Tailwind's default theme and shadcn's light and dark colors, as custom properties   |
 | `base.scss`      | Tailwind's preflight, shadcn's base layer and the keyframes components animate with |
-| `fonts.css`      | The default font's package import (`@fontsource-variable/inter`)              |
+| `fonts.css`      | The default font's package import (`@fontsource-variable/inter`)                    |
 
 Dark colors apply under a `.dark` class, which shadcn apps set on `<html>`.
 
