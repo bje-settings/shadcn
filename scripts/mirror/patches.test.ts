@@ -237,13 +237,17 @@ describe('the calendar patch', () => {
     const without = source.replace(/\n {8}WeekNumber: /, '\n        Other: ')
     expect(without).not.toBe(source)
     expect(() => applyPatch('calendar', without)).toThrow(
-      "calendar: its patch in scripts/mirror/patches.ts failed: patches.ts: upstream's source has no WeekNumber in DayPicker's components",
+      "calendar: its patch in scripts/mirror/patches.ts failed: patches.ts: upstream's source has no inline WeekNumber in DayPicker's components",
     )
   })
 
   it.each([
     ['Calendar function', 'function Other() { return <DayPicker components={{}} /> }'],
     ['DayPicker element in Calendar', 'function Calendar() { return <Other components={{}} /> }'],
+    [
+      'DayPicker element in Calendar',
+      'function Other() { return <DayPicker components={{}} /> }\nfunction Calendar() { return <div /> }',
+    ],
     ['components object on DayPicker', 'function Calendar() { return <DayPicker /> }'],
     [
       'components object on DayPicker',
@@ -259,11 +263,15 @@ describe('the calendar patch', () => {
     )
   })
 
-  it('looks past spread and computed properties for a component', () => {
-    const code =
-      'function Calendar() {\n  return <DayPicker components={{ ...c, ["Root"]: r }} />\n}'
+  it.each([
+    ['a spread', '...c'],
+    ['a string-keyed computed property', '["Root"]: () => null'],
+    ['an identifier-keyed computed property', '[Root]: () => null'],
+    ['a hoisted component', 'Root: CalendarRoot'],
+  ])('does not take %s for an inline component', (_, property) => {
+    const code = `function Calendar() {\n  return <DayPicker components={{\n    ${property},\n  }} />\n}`
     expect(() => suppress(code, 'lint/x/y', 'why', calendarComponents)).toThrow(
-      "patches.ts: upstream's source has no Root in DayPicker's components",
+      "patches.ts: upstream's source has no inline Root in DayPicker's components",
     )
   })
 })

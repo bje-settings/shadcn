@@ -119,9 +119,12 @@ export function suppress(
 }
 
 const CALENDAR_COMPONENTS = ['Root', 'Chevron', 'DayButton', 'WeekNumber']
+const INLINE = ['ArrowFunctionExpression', 'FunctionExpression']
 
 // The properties of the components object Calendar passes to DayPicker that
-// upstream writes as inline render functions.
+// upstream writes as inline render functions. One upstream hoists is a site
+// gone, so the build fails by name instead of suppressing a rule it no longer
+// trips.
 export function calendarComponents(all: Node[]): Sites {
   const calendar = found(
     all.find(
@@ -147,10 +150,14 @@ export function calendarComponents(all: Node[]): Sites {
     'components object on DayPicker',
   )
   return CALENDAR_COMPONENTS.map((name) => [
-    `${name} in DayPicker's components`,
+    `inline ${name} in DayPicker's components`,
     object.properties.find(
       (p): p is ObjectProperty =>
-        p.type === 'ObjectProperty' && p.key.type === 'Identifier' && p.key.name === name,
+        p.type === 'ObjectProperty' &&
+        !p.computed &&
+        p.key.type === 'Identifier' &&
+        p.key.name === name &&
+        INLINE.includes(p.value.type),
     ),
   ])
 }
