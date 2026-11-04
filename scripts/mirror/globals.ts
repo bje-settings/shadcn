@@ -15,10 +15,11 @@
 // Utilities are the components' own CSS and live in their modules. Anything
 // else at the top level fails the build rather than being guessed at.
 
-import postcss, { type ChildNode, type Container } from 'postcss'
+import postcss, { type ChildNode, type Container, type Root } from 'postcss'
 
 import { renameInternal } from './internal.ts'
 import type { FontItem } from './project-css.ts'
+import { needsUnknownUnitIgnore, UNKNOWN_UNIT_IGNORE, winners } from './stylesheet-lint.ts'
 
 export type GlobalStylesheets = { variables: string; base: string }
 
@@ -58,6 +59,35 @@ function removeEmpty(container: Container): void {
   }
 }
 
+const IMPORTANT_IGNORE =
+  "// biome-ignore lint/complexity/noImportantStyles: Tailwind's preflight keeps a hidden element hidden whatever display another rule gives it"
+
+// Each block keeps one declaration per property (stylesheet-lint.ts), and an
+// !important one, preflight's [hidden] rule, gets a suppression on the line
+// before it.
+function forBiome(root: Root): void {
+  const containers: Container[] = []
+  root.walk((node) => {
+    if (node.type === 'rule' || node.type === 'atrule') containers.push(node)
+  })
+  for (const container of containers) {
+    const nodes = container.nodes ?? []
+    const kept = new Set(
+      winners(nodes, (node) =>
+        node.type === 'decl' ? { prop: node.prop, important: node.important } : undefined,
+      ),
+    )
+    for (const node of nodes.filter((n) => !kept.has(n))) node.remove()
+  }
+  root.walkDecls((decl) => {
+    if (!decl.important) return
+    // A line comment needs the declaration on the next line.
+    const raw = decl.raws.before ?? ''
+    const before = raw.includes('\n') ? raw : `\n${raw}`
+    decl.raws.before = `${before}${IMPORTANT_IGNORE}${before}`
+  })
+}
+
 export function globalStylesheets(css: string, header: string): GlobalStylesheets {
   const parts: Record<Destination, string[]> = { variables: [], base: [], drop: [] }
   const root = postcss.parse(css)
@@ -69,9 +99,14 @@ export function globalStylesheets(css: string, header: string): GlobalStylesheet
       })
   })
   removeEmpty(root)
+  forBiome(root)
   for (const node of root.nodes) parts[destination(node)].push(renameInternal(node.toString()))
-  const file = (blocks: string[], extra: string[] = []) =>
-    [header, ...extra, '', blocks.join('\n\n'), ''].join('\n')
+  const file = (blocks: string[], extra: string[] = []) => {
+    const rules = blocks.join('\n\n')
+    // Biome honours it only before any rule.
+    const ignore = needsUnknownUnitIgnore(rules) ? [UNKNOWN_UNIT_IGNORE] : []
+    return [header, ...ignore, ...extra, '', rules, ''].join('\n')
+  }
   return {
     variables: file(parts.variables),
     // Preflight is Tailwind's code: keep its license notice with it.

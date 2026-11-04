@@ -2,6 +2,7 @@ import postcss from 'postcss'
 import { describe, expect, it } from 'vitest'
 import { fontStylesheet, globalStylesheets } from './globals.ts'
 import { staticTheme } from './project-css.ts'
+import { UNKNOWN_UNIT_IGNORE } from './stylesheet-lint.ts'
 import { compileCandidates } from './tailwind.ts'
 import { compile, input } from './test-support.ts'
 
@@ -48,6 +49,46 @@ describe('globalStylesheets', () => {
     ['an unknown at-rule', '@font-face { font-family: x }'],
   ])('refuses %s', (_, css) => {
     expect(() => globalStylesheets(css, '')).toThrow('globals: no destination for top-level')
+  })
+})
+
+describe('the global stylesheets, for Biome', () => {
+  const base = (rules: string) => globalStylesheets(`@layer base { ${rules} }`, '// h').base
+
+  it("collapses preflight's repeated declarations to one", () => {
+    expect(
+      base('a { -webkit-text-decoration: inherit; -webkit-text-decoration: inherit; color: red }'),
+    ).toBe('// h\n\n@layer base { a { -webkit-text-decoration: inherit; color: red } }\n')
+  })
+
+  it('keeps the later of two values, or an earlier !important one', () => {
+    expect(base('a { width: auto; width: 100% }')).toContain('a { width: 100% }')
+    expect(base('a { color: red !important; color: blue }')).not.toContain('blue')
+  })
+
+  it('leaves declarations in different blocks alone', () => {
+    expect(
+      base('a { color: red } b { color: red; & c { color: red } }').split('color'),
+    ).toHaveLength(4)
+  })
+
+  it('puts one noImportantStyles suppression before each !important declaration', () => {
+    const comment =
+      "// biome-ignore lint/complexity/noImportantStyles: Tailwind's preflight keeps a hidden element hidden whatever display another rule gives it"
+    const one = base('[hidden] {\n    display: none !important;\n  }')
+    expect(one).toContain(`{\n    ${comment}\n    display: none !important;`)
+    const two = base('a { b: 1 !important; c: 2 !important; d: 3 }')
+    expect(two.split(comment)).toHaveLength(3)
+    expect(two).toContain(`\n ${comment}\n b: 1 !important;\n ${comment}\n c: 2 !important; d: 3 }`)
+  })
+
+  it('puts the noUnknownUnit suppression second in the header of a sheet Biome misreads', () => {
+    const { variables, base: other } = globalStylesheets(
+      '/*! license */ @layer theme { :root { --shadow: 0 1px #0000001a } } @layer base { a { color: #0000001a } }',
+      '// h',
+    )
+    expect(variables.split('\n').slice(0, 2)).toEqual(['// h', UNKNOWN_UNIT_IGNORE])
+    expect(other.split('\n').slice(0, 2)).toEqual(['// h', '/*! license */'])
   })
 })
 

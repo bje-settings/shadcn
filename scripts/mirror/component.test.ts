@@ -146,6 +146,33 @@ describe('buildComponent', () => {
     expect(pinned.files[2]?.content.startsWith(header)).toBe(true)
   })
 
+  it('puts the noUnknownUnit suppression second in the header of a module Biome misreads', async () => {
+    const [, scss] = (await build(badge(source('shadow-xs')))).files
+    const lines = scss?.content.split('\n') ?? []
+    expect(lines[1]).toBe(
+      '// biome-ignore-all lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)',
+    )
+    expect(scss?.content).toContain('#0000000d')
+    expect(scss?.content.split('biome-ignore-all')).toHaveLength(2)
+  })
+
+  it('leaves a slot with no rule out of the module', async () => {
+    const content = source('flex').replace(
+      '<span data-slot="badge" className={cn(badgeVariants({ className }))} />',
+      '<span data-slot="badge" className={cn(badgeVariants({ className }))}><i className="group/x" /><b className="block" /></span>',
+    )
+    const [, scss] = (await build(badge(content))).files
+    expect(scss?.content).toMatch(
+      /\n\n:where\(\.badge\) \{\n {2}display: flex;\n\}\n\n:where\(\.[a-zA-Z]+\) \{\n {2}display: block;\n\}\n$/,
+    )
+  })
+
+  it("fails the build naming a noDescendingSpecificity site the item's module lacks", async () => {
+    await expect(build({ ...badge(source('flex')), name: 'avatar' })).rejects.toThrow(
+      'scss.ts: avatar has no nested rule "& > svg" in .avatarGroupCount for its noDescendingSpecificity suppression',
+    )
+  })
+
   it('leaves an unpatched item with its one header line', async () => {
     const result = await build(badge(source('flex')), compile, {})
     for (const file of result.files) {

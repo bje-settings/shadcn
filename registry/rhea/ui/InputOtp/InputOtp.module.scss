@@ -88,7 +88,6 @@
   line-height: var(--leading, var(--text-sm--line-height));
   transition-property: color, box-shadow;
   transition-timing-function: var(--ease, var(--default-transition-timing-function));
-  transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .2s;
   transition-duration: 0.2s;
   --outline-style: none;

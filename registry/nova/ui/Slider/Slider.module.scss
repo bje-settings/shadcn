@@ -104,7 +104,6 @@
   -webkit-user-select: none;
   user-select: none;
   &:after {
-    content: var(--content);
     position: absolute;
     content: var(--content);
     inset: calc(var(--spacing) * -2);

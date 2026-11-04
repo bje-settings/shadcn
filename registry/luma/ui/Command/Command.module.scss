@@ -55,7 +55,9 @@
   --transform-translate-y: 0px;
   translate: var(--transform-translate-x) var(--transform-translate-y);
   overflow: hidden;
+  // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
   border-radius: calc(var(--radius) * 2.6) !important;
+  // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
   padding: 0;
 }
 

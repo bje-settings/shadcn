@@ -42,13 +42,9 @@
   background-color: var(--border);
   --ring-offset-color: var(--background);
   &:after {
-    content: var(--content);
     position: absolute;
-    content: var(--content);
     inset-block: 0;
-    content: var(--content);
     left: 50%;
-    content: var(--content);
     width: var(--spacing);
     content: var(--content);
     --transform-translate-x: calc(calc(1 / 2 * 100%) * -1);
@@ -78,15 +74,10 @@
     width: 100%;
   }
   &[aria-orientation="horizontal"]:after {
-    content: var(--content);
     left: 0;
-    content: var(--content);
     height: var(--spacing);
-    content: var(--content);
     width: 100%;
-    content: var(--content);
     --transform-translate-x: 0px;
-    translate: var(--transform-translate-x) var(--transform-translate-y);
     content: var(--content);
     --transform-translate-y: calc(calc(1 / 2 * 100%) * -1);
     translate: var(--transform-translate-x) var(--transform-translate-y);

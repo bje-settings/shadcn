@@ -121,25 +121,17 @@
 
 :where(.variantSeparator) {
   &:before {
-    content: var(--content);
     margin-right: var(--spacing);
-    content: var(--content);
     height: 1px;
-    content: var(--content);
     min-width: 0;
-    content: var(--content);
     flex: 1;
     content: var(--content);
     background-color: var(--border);
   }
   &:after {
-    content: var(--content);
     margin-left: var(--spacing);
-    content: var(--content);
     height: 1px;
-    content: var(--content);
     min-width: 0;
-    content: var(--content);
     flex: 1;
     content: var(--content);
     background-color: var(--border);

@@ -375,7 +375,6 @@
   line-height: var(--leading, var(--text-base--line-height));
   transition-property: color, box-shadow, background-color;
   transition-timing-function: var(--ease, var(--default-transition-timing-function));
-  transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .2s;
   transition-duration: 0.2s;
   --outline-style: none;

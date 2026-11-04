@@ -206,8 +206,6 @@
   user-select: none;
 }
 
-:where(.calendarDayShowWeekNumber) {
-}
 .calendarDayShowWeekNumber {
   &:nth-child(2)[data-selected="true"] button {
     border-top-left-radius: var(--cell-radius);
@@ -215,8 +213,6 @@
   }
 }
 
-:where(.calendarDayNotShowWeekNumber) {
-}
 .calendarDayNotShowWeekNumber {
   &:first-child[data-selected="true"] button {
     border-top-left-radius: var(--cell-radius);
@@ -250,13 +246,9 @@
   border-bottom-left-radius: var(--cell-radius);
   background-color: var(--muted);
   &:after {
-    content: var(--content);
     position: absolute;
-    content: var(--content);
     inset-block: 0;
-    content: var(--content);
     right: 0;
-    content: var(--content);
     width: calc(var(--spacing) * 4);
     content: var(--content);
     background-color: var(--muted);
@@ -275,13 +267,9 @@
   border-bottom-right-radius: var(--cell-radius);
   background-color: var(--muted);
   &:after {
-    content: var(--content);
     position: absolute;
-    content: var(--content);
     inset-block: 0;
-    content: var(--content);
     left: 0;
-    content: var(--content);
     width: calc(var(--spacing) * 4);
     content: var(--content);
     background-color: var(--muted);
@@ -343,7 +331,6 @@
   z-index: 10;
   display: flex;
   aspect-ratio: 1;
-  width: auto;
   height: auto;
   width: 100%;
   min-width: var(--cell-size);

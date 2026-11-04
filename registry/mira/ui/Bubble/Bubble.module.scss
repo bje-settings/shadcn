@@ -50,8 +50,6 @@
   }
 }
 
-:where(.variantDefault) {
-}
 .variantDefault {
   :is(& > *)[data-slot="bubble-content"] {
     background-color: var(--primary);
@@ -65,8 +63,6 @@
   }
 }
 
-:where(.variantSecondary) {
-}
 .variantSecondary {
   :is(& > *)[data-slot="bubble-content"] {
     background-color: var(--secondary);
@@ -80,8 +76,6 @@
   }
 }
 
-:where(.variantMuted) {
-}
 .variantMuted {
   :is(& > *)[data-slot="bubble-content"],
   & > [data-slot="bubble-content"]:is(button, a):hover {
@@ -94,8 +88,6 @@
   }
 }
 
-:where(.variantTinted) {
-}
 .variantTinted {
   :is(& > *)[data-slot="bubble-content"] {
     background-color: oklch(from var(--primary) 0.93 calc(c * 0.4) h);
@@ -112,13 +104,12 @@
   }
 }
 
-:where(.variantOutline) {
-}
 .variantOutline {
   :is(& > *)[data-slot="bubble-content"] {
     border-color: var(--border);
     background-color: var(--background);
   }
+  // biome-ignore lint/style/noDescendingSpecificity: upstream's cascade order; moving the rule would move a declaration past another
   & > [data-slot="bubble-content"]:is(button, a):hover {
     background-color: var(--muted);
     color: var(--foreground);
@@ -141,6 +132,7 @@
     background-color: #0000;
     padding: 0;
   }
+  // biome-ignore lint/style/noDescendingSpecificity: upstream's cascade order; moving the rule would move a declaration past another
   & > [data-slot="bubble-content"]:is(button, a):hover {
     background-color: var(--muted);
     color: var(--foreground);
@@ -153,8 +145,6 @@
   }
 }
 
-:where(.variantDestructive) {
-}
 .variantDestructive {
   :is(& > *)[data-slot="bubble-content"] {
     background-color: var(--destructive);
@@ -169,6 +159,7 @@
       background-color: color-mix(in oklab, var(--destructive) 20%, transparent);
     }
   }
+  // biome-ignore lint/style/noDescendingSpecificity: upstream's cascade order; moving the rule would move a declaration past another
   & > [data-slot="bubble-content"]:is(button, a):hover {
     background-color: var(--destructive);
     @supports (color: color-mix(in lab, red, red)) {

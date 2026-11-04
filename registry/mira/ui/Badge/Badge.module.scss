@@ -89,8 +89,12 @@
 .badge {
   & > svg {
     pointer-events: none;
+    // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
     width: calc(var(--spacing) * 2.5) !important;
+    // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
+    // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
     height: calc(var(--spacing) * 2.5) !important;
+    // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
   }
 }
 

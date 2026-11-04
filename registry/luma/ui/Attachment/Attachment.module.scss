@@ -189,8 +189,12 @@
   :is(
       &:is(:where([data-slot="attachment"])[data-orientation="vertical"] *) > *
     )[data-slot="spinner"] {
+    // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
     width: calc(var(--spacing) * 6) !important;
+    // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
+    // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
     height: calc(var(--spacing) * 6) !important;
+    // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
   }
   & svg {
     pointer-events: none;
@@ -627,11 +631,7 @@
     );
   }
   -webkit-mask-image: var(--scroll-fade-mask, var(--scroll-fade-inline));
-  -webkit-mask-image: var(--scroll-fade-mask, var(--scroll-fade-inline));
-  -webkit-mask-image: var(--scroll-fade-mask, var(--scroll-fade-inline));
   mask-image: var(--scroll-fade-mask, var(--scroll-fade-inline));
-  -webkit-mask-composite: source-in;
-  -webkit-mask-composite: source-in;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-composite: source-in;

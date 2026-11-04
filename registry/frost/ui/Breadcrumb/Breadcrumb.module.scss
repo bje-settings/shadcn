@@ -63,8 +63,6 @@
   color: var(--foreground);
 }
 
-:where(.breadcrumbSeparator) {
-}
 .breadcrumbSeparator {
   & > svg {
     width: calc(var(--spacing) * 3.5);

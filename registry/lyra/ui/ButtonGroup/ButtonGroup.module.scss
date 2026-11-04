@@ -178,8 +178,6 @@
   }
 }
 
-:where(.orientationHorizontal) {
-}
 .orientationHorizontal {
   :is(& > *)[data-slot] {
     border-top-right-radius: 0;

@@ -102,7 +102,6 @@
   display: grid;
   width: 100%;
   --transform-translate-x: calc(calc(1 / 2 * 100%) * -1);
-  translate: var(--transform-translate-x) var(--transform-translate-y);
   --transform-translate-y: calc(calc(1 / 2 * 100%) * -1);
   translate: var(--transform-translate-x) var(--transform-translate-y);
   gap: calc(var(--spacing) * 3);

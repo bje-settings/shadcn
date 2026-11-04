@@ -69,8 +69,6 @@
   }
   opacity: max(var(--drawer-overlay-min-opacity, 0), calc(1 - var(--drawer-swipe-progress)));
   transition-property: opacity;
-  transition-timing-function: var(--ease, var(--default-transition-timing-function));
-  transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .45s;
   transition-duration: 0.45s;
   --ease: cubic-bezier(.32, .72, 0, 1);
@@ -116,7 +114,6 @@
   cursor: grab;
   transition-property: opacity;
   transition-timing-function: var(--ease, var(--default-transition-timing-function));
-  transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .2s;
   transition-duration: 0.2s;
   &:is(:where([data-slot="drawer-popup"])[data-nested-drawer-open] *) {
@@ -150,23 +147,18 @@
     align-items: flex-start;
   }
   &:after {
-    content: var(--content);
     display: block;
-    content: var(--content);
     flex-shrink: 0;
-    content: var(--content);
     border-radius: 3.40282e38px;
     content: var(--content);
     background-color: var(--muted);
   }
   &:is(:where([data-slot="drawer-popup"])[data-swipe-axis="x"] *):after {
-    content: var(--content);
     height: 100px;
     content: var(--content);
     width: calc(var(--spacing) * 1.5);
   }
   &:is(:where([data-slot="drawer-popup"])[data-swipe-axis="y"] *):after {
-    content: var(--content);
     height: calc(var(--spacing) * 1.5);
     content: var(--content);
     width: 100px;
@@ -210,8 +202,6 @@
   line-height: var(--leading, var(--text-sm--line-height));
   color: var(--popover-foreground);
   transition-property: transform, height, opacity, filter;
-  transition-timing-function: var(--ease, var(--default-transition-timing-function));
-  transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .45s;
   transition-duration: 0.45s;
   --ease: cubic-bezier(.22, 1, .36, 1);
@@ -242,9 +232,7 @@
   --stack-step: .05;
   interpolate-size: allow-keywords;
   &:after {
-    content: var(--content);
     pointer-events: none;
-    content: var(--content);
     position: absolute;
     content: var(--content);
     background-color: var(--drawer-bleed-background, var(--color-popover));
@@ -286,7 +274,6 @@
     --drawer-content-width: 75%;
   }
   &[data-swipe-axis="x"]:after {
-    content: var(--content);
     inset-block: 0;
     content: var(--content);
     width: var(--bleed);
@@ -296,7 +283,6 @@
     --drawer-content-max-height: calc(100dvh - 6rem);
   }
   &[data-swipe-axis="y"]:after {
-    content: var(--content);
     inset-inline: 0;
     content: var(--content);
     height: var(--bleed);
@@ -376,8 +362,6 @@
   overscroll-behavior: contain;
   border-radius: inherit;
   transition-property: opacity;
-  transition-timing-function: var(--ease, var(--default-transition-timing-function));
-  transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .3s;
   transition-duration: 0.3s;
   --ease: cubic-bezier(.45, 1.005, 0, 1.005);

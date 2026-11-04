@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { registrations, type SlotOptions, slotToScss } from './scss.ts'
-import { compile, internalDefaults } from './test-support.ts'
+import {
+  CASCADE_ORDER,
+  checkCascadeOrder,
+  registrations,
+  type SlotOptions,
+  slotToScss,
+} from './scss.ts'
+import { compile, config, internalDefaults } from './test-support.ts'
 
 const none: SlotOptions = {
   consumerClasses: new Map(),
@@ -272,7 +278,8 @@ describe('slotToScss', () => {
 
   it('reports classes with no CSS and an empty block when nothing compiles', async () => {
     expect(await convert(['group/button'])).toEqual({
-      scss: ':where(.root) {\n}',
+      scss: '',
+      cascadeOrdered: [],
       unresolved: ['group/button'],
       customProperties: [],
       empty: true,
@@ -325,6 +332,109 @@ describe('slotToScss', () => {
   it('refuses an internal variable with no registration', async () => {
     await expect(convert(['shadow-xs'], { internalDefaults: new Map() })).rejects.toThrow(
       /^root: no registration for --/,
+    )
+  })
+})
+
+describe('the declarations of one block', () => {
+  it('collapses a same-value repeat to one', async () => {
+    const { scss } = await convert(['size-4', 'w-4'])
+    expect(scss.match(/ width: /g)).toHaveLength(1)
+    expect(scss).toContain('  height: calc(var(--spacing) * 4);')
+  })
+
+  it('keeps the later of two values', async () => {
+    const { scss } = await convert(['w-auto', 'w-full'])
+    expect(scss).toBe(':where(.root) {\n  width: 100%;\n}')
+  })
+
+  it('keeps an earlier !important declaration over a later plain one', async () => {
+    const { scss } = await convert(['w-full', 'w-auto!'])
+    expect(scss).toContain('  width: auto !important;')
+    expect(scss).not.toContain('100%')
+  })
+
+  it('leaves declarations in different blocks alone', async () => {
+    const { scss } = await convert(['w-auto', 'hover:w-full'])
+    expect(scss).toContain(':where(.root) {\n  width: auto;\n')
+    expect(scss).toContain('width: 100%;')
+  })
+
+  it('puts each !important declaration in a noImportantStyles range suppression', async () => {
+    const rule = "lint/complexity/noImportantStyles: upstream's ! modifier"
+    const one = await convert(['flex!'])
+    expect(one.scss).toBe(
+      `:where(.root) {\n  // biome-ignore-start ${rule}\n  display: flex !important;\n  // biome-ignore-end ${rule}\n}`,
+    )
+    const two = await convert(['flex!', 'w-full!', 'hover:h-full!'])
+    expect(two.scss.split(`biome-ignore-start ${rule}`)).toHaveLength(4)
+    expect(two.scss.split(`biome-ignore-end ${rule}`)).toHaveLength(4)
+    expect(two.scss).toContain(
+      `      // biome-ignore-start ${rule}\n      height: 100% !important;\n      // biome-ignore-end ${rule}\n`,
+    )
+  })
+})
+
+describe('the root block', () => {
+  it('is left out when it has no declaration, since Sass drops it anyway', async () => {
+    const { scss, empty } = await convert(['*:w-full'])
+    expect(scss).toBe('.root {\n  :is(& > *) {\n    width: 100%;\n  }\n}')
+    expect(empty).toBe(false)
+  })
+})
+
+describe('the noDescendingSpecificity suppressions', () => {
+  const comment =
+    "// biome-ignore lint/style/noDescendingSpecificity: upstream's cascade order; moving the rule would move a declaration past another"
+
+  it('go inside the parent block, before each nested rule the table names', async () => {
+    const { scss, cascadeOrdered } = await convert(['[&>svg]:size-4', 'hover:flex'], {
+      cascadeOrder: [['.root', '& > svg']],
+    })
+    expect(scss).toContain(`.root {\n  ${comment}\n  & > svg {\n`)
+    expect(scss.split(comment)).toHaveLength(2)
+    expect(cascadeOrdered).toEqual([['.root', '& > svg']])
+  })
+
+  it('report no site the slot lacks', async () => {
+    const { scss, cascadeOrdered } = await convert(['[&>svg]:size-4'], {
+      cascadeOrder: [[':where(.root)', '& > svg']],
+    })
+    expect(scss).not.toContain('biome-ignore')
+    expect(cascadeOrdered).toEqual([])
+  })
+
+  it('fail the build naming each site an item no longer has', () => {
+    const table = { chip: [['.a', '& b'] as const, ['.c', '& d'] as const] }
+    expect(() => checkCascadeOrder('chip', [['.a', '& b']], table)).toThrow(
+      'scss.ts: chip has no nested rule "& d" in .c for its noDescendingSpecificity suppression',
+    )
+    expect(() =>
+      checkCascadeOrder(
+        'chip',
+        [
+          ['.a', '& b'],
+          ['.a', '& d'],
+        ],
+        table,
+      ),
+    ).toThrow('scss.ts: chip has no nested rule "& d" in .c')
+    expect(() =>
+      checkCascadeOrder(
+        'chip',
+        [
+          ['.c', '& d'],
+          ['.a', '& b'],
+        ],
+        table,
+      ),
+    ).not.toThrow()
+    expect(() => checkCascadeOrder('other', [])).not.toThrow()
+  })
+
+  it('name only configured components', () => {
+    expect(Object.keys(CASCADE_ORDER).filter((name) => !config.components.includes(name))).toEqual(
+      [],
     )
   })
 })

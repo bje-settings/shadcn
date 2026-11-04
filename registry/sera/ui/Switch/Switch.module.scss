@@ -56,9 +56,7 @@
       var(--shadow);
   }
   &:after {
-    content: var(--content);
     position: absolute;
-    content: var(--content);
     inset-inline: calc(var(--spacing) * -3);
     content: var(--content);
     inset-block: calc(var(--spacing) * -2);

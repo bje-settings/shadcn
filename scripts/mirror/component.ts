@@ -7,12 +7,16 @@ import { pascalCase } from './names.ts'
 import type { ItemParts } from './parts.ts'
 import { applyPatch, PATCHES, type Patch, type Patches } from './patches.ts'
 import {
+  CASCADE_ORDER,
+  checkCascadeOrder,
   NAMED_TEXT_SIZE,
   SIZE_ATTRIBUTE,
   SIZE_PROBE,
+  type Site,
   type SlotOptions,
   slotToScss,
 } from './scss.ts'
+import { needsUnknownUnitIgnore, UNKNOWN_UNIT_IGNORE } from './stylesheet-lint.ts'
 import { generateTest } from './tests.ts'
 import { type TransformedComponent, transformComponent } from './tsx.ts'
 
@@ -324,9 +328,15 @@ export async function buildComponent(
   const gated = new Set<string>()
   // Slots the module exports no class for.
   const unstyled = new Set<string>()
+  const cascadeOrdered: Site[] = []
   for (const slot of source.slots) {
-    const block = slotToScss(await compile(slot.classes), slot, context.slotOptions)
-    blocks.push(block.scss)
+    const block = slotToScss(await compile(slot.classes), slot, {
+      ...context.slotOptions,
+      cascadeOrder: CASCADE_ORDER[upstream.name],
+    })
+    // A slot with no rule prints nothing.
+    if (block.scss !== '') blocks.push(block.scss)
+    cascadeOrdered.push(...block.cascadeOrdered)
     // One table serves every slot, so a name always has the same default.
     for (const [name, value] of Object.entries(block.defaults)) defaults.set(name, value)
     for (const selector of block.defaultSelectors) defaultSelectors.add(selector)
@@ -338,19 +348,12 @@ export async function buildComponent(
     for (const reason of block.dropped) dropped.add(reason)
     for (const c of block.gated) gated.add(c)
   }
+  checkCascadeOrder(upstream.name, cascadeOrdered)
 
-  const scss = [
-    generated,
-    ...wrap(
-      'Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):',
-      [...properties].sort(),
-    ),
-    ...wrap('Upstream classes with no CSS output, dropped:', Object.values(unresolved).flat()),
-    ...[...dropped].flatMap((reason) => ['//', `// Dropped rules: ${reason}`]),
-    '',
-    // Tailwind registers these globally with @property. A layer loses to every
-    // unlayered rule, and each module declares the same constants, so modules
-    // never conflict.
+  // Tailwind registers these globally with @property. A layer loses to every
+  // unlayered rule, and each module declares the same constants, so modules
+  // never conflict.
+  const rules = [
     ...(defaults.size > 0
       ? [
           '// Defaults for the internal variables the rules below compose with.',
@@ -366,6 +369,19 @@ export async function buildComponent(
       : []),
     blocks.join('\n\n'),
     '',
+  ].join('\n')
+  const scss = [
+    generated,
+    // Biome honours it only before any rule.
+    ...(needsUnknownUnitIgnore(rules) ? [UNKNOWN_UNIT_IGNORE] : []),
+    ...wrap(
+      'Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):',
+      [...properties].sort(),
+    ),
+    ...wrap('Upstream classes with no CSS output, dropped:', Object.values(unresolved).flat()),
+    ...[...dropped].flatMap((reason) => ['//', `// Dropped rules: ${reason}`]),
+    '',
+    rules,
   ].join('\n')
   const test = generateTest(upstream.name, source, {
     types: context.types,
