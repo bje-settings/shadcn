@@ -93,8 +93,9 @@ export function dropAttributes(source: string, slot: string, names: string[]): s
   return out.toString()
 }
 
-// What a suppression's locator returns: each site it names, with the node
-// the comment goes before, or undefined when upstream's source lacks it.
+// What a suppression's locator returns: each site it names, with a node on
+// the line the comment goes before (suppress puts it before the outermost
+// node starting that line), or undefined when upstream's source lacks it.
 export type Sites = Array<[what: string, node: Node | undefined]>
 
 // Where the line holding a position starts.
@@ -216,7 +217,7 @@ export function roles(slots: Record<string, string>): (all: Node[]) => Sites {
       const element = slotted(elements, slot)
       const value = element && attribute(element, 'role')?.value
       return [
-        `element with data-slot="${slot}" and role="${role}"`,
+        `single element with data-slot="${slot}" and role="${role}"`,
         value?.type === 'StringLiteral' && value.value === role ? element : undefined,
       ]
     })
@@ -228,7 +229,7 @@ export function roles(slots: Record<string, string>): (all: Node[]) => Sites {
 export function slotElement(slot: string): (all: Node[]) => Sites {
   return (all) => [
     [
-      `element with data-slot="${slot}"`,
+      `single element with data-slot="${slot}"`,
       slotted(
         all.filter((n): n is JSXOpeningElement => n.type === 'JSXOpeningElement'),
         slot,

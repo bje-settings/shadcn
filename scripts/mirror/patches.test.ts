@@ -415,12 +415,12 @@ describe('a suppression whose site upstream dropped', () => {
     [
       'button-group',
       ['role="group"\n      data-slot="button-group"', 'data-slot="button-group"'],
-      'element with data-slot="button-group" and role="group"',
+      'single element with data-slot="button-group" and role="group"',
     ],
     [
       'carousel',
       ['data-slot="carousel-item"', 'data-slot="slide"'],
-      'element with data-slot="carousel-item" and role="group"',
+      'single element with data-slot="carousel-item" and role="group"',
     ],
     [
       'field',
@@ -430,17 +430,17 @@ describe('a suppression whose site upstream dropped', () => {
     [
       'input-group',
       ['role="group"\n      data-slot="input-group-addon"', 'data-slot="input-group-addon"'],
-      'element with data-slot="input-group-addon" and role="group"',
+      'single element with data-slot="input-group-addon" and role="group"',
     ],
     [
       'input-otp',
       ['role="separator"', 'role="presentation"'],
-      'element with data-slot="input-otp-separator" and role="separator"',
+      'single element with data-slot="input-otp-separator" and role="separator"',
     ],
     [
       'item',
       ['role="list"', 'role="group"'],
-      'element with data-slot="item-group" and role="list"',
+      'single element with data-slot="item-group" and role="list"',
     ],
     [
       'chart',
@@ -466,7 +466,7 @@ describe('a suppression whose site upstream dropped', () => {
     ['label', ['<label', '<span'], 'return of a label element in Label'],
   ])('fails the %s build naming it', (name, [from, to], what) => {
     const source = luma(name as string)
-    // The last occurrence: the legend's key comes after the tooltip's.
+    // The last occurrence (for chart, the legend's key comes after the tooltip's).
     const at = source.lastIndexOf(from as string)
     const changed = source.slice(0, at) + to + source.slice(at + (from as string).length)
     expect(changed).not.toBe(source)
@@ -496,23 +496,25 @@ describe('the locators', () => {
     ['another role', '<b data-slot="s" role="list" />'],
   ])('roles finds no site on %s', (_, code) => {
     expect(sites(roles({ s: 'group' }), code)).toEqual([
-      ['element with data-slot="s" and role="group"', undefined],
+      ['single element with data-slot="s" and role="group"', undefined],
     ])
   })
 
   it('roles takes the element carrying the slot and the role', () => {
     expect(sites(roles({ s: 'group' }), '<b data-slot="s" role="group" />')).toEqual([
-      ['element with data-slot="s" and role="group"', 'JSXOpeningElement'],
+      ['single element with data-slot="s" and role="group"', 'JSXOpeningElement'],
     ])
   })
 
   it('slotElement takes the one element with the slot, and nothing for none or two', () => {
     expect(sites(slotElement('s'), '<b data-slot="s" />')).toEqual([
-      ['element with data-slot="s"', 'JSXOpeningElement'],
+      ['single element with data-slot="s"', 'JSXOpeningElement'],
     ])
-    expect(sites(slotElement('s'), '<b />')).toEqual([['element with data-slot="s"', undefined]])
+    expect(sites(slotElement('s'), '<b />')).toEqual([
+      ['single element with data-slot="s"', undefined],
+    ])
     expect(sites(slotElement('s'), '<a><b data-slot="s" /><b data-slot="s" /></a>')).toEqual([
-      ['element with data-slot="s"', undefined],
+      ['single element with data-slot="s"', undefined],
     ])
   })
 
