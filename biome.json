@@ -6,21 +6,10 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": [
-      "**/*.json",
-      "**/*.mjs",
-      "**/*.ts",
-      "**/*.tsx",
-      "**/*.scss",
-      "**/*.css",
-      "!.claude/worktrees",
-      "!.claude/skills",
-      "!upstream"
-    ]
+    "includes": ["**", "!.claude/worktrees", "!.claude/skills", "!upstream"]
   },
   "linter": {
     "enabled": true,
-    "includes": ["**", "!**/*.scss"],
     "rules": {
       "preset": "recommended",
       "a11y": {
@@ -47,38 +36,14 @@
       "trailingCommas": "all"
     }
   },
-  "css": {
-    "linter": {
-      "enabled": false
-    }
-  },
   "json": {
     "parser": {
       "allowComments": true
     }
   },
-  "overrides": [
-    {
-      "includes": ["registry/*/ui/**"],
-      "linter": {
-        "rules": {
-          "a11y": {
-            "noLabelWithoutControl": "off",
-            "useKeyWithClickEvents": "off",
-            "useSemanticElements": "off"
-          },
-          "correctness": {
-            "useExhaustiveDependencies": "off"
-          },
-          "security": {
-            "noDangerouslySetInnerHtml": "off"
-          },
-          "suspicious": {
-            "noArrayIndexKey": "off",
-            "noDocumentCookie": "off"
-          }
-        }
-      }
+  "markdown": {
+    "parser": {
+      "frontmatter": true
     }
-  ]
+  }
 }
