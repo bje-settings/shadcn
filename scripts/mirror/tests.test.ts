@@ -13,6 +13,7 @@ const none: TestInput = {
   external: new Map(),
   expressions: {},
   sameRender: {},
+  patched: [],
 }
 
 const generate = (source: string, parts: Partial<TestInput> = {}) =>
@@ -197,6 +198,17 @@ export { Chip, ChipMark }`,
     expect(test).toContain('    ["loud", styles.toneLoud],')
     expect(test).not.toContain('styles.toneSoft')
     expect(test).not.toContain('styles.chipMark')
+  })
+
+  it("appends a patch's test lines after the derived tests, which still import render", () => {
+    const source = `${header}
+function Chip({ className }) { return <span data-slot="chip" className={cn("x", className)} /> }
+export { Chip }`
+    const lines = ['it("drops the role", () => {', '  render(<Chip />)', '})']
+    const test = generate(source, { patched: lines })
+    expect(test).toContain('import { cleanup, render } from "@testing-library/react"')
+    expect(test.endsWith(`})\n\n${lines.join('\n')}\n`)).toBe(true)
+    expect(generate(source)).not.toContain('drops the role')
   })
 
   it('checks that a part jsdom cannot render renders nothing, and smoke-tests function children', () => {
