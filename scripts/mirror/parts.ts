@@ -67,7 +67,7 @@ export type ItemParts = {
 const repo = fileURLToPath(new URL('../..', import.meta.url))
 
 // Types for every exported component of every prepared item, from upstream's
-// installed source with its own imports resolved.
+// installed source with its patch applied and its own imports resolved.
 export function partTypes(
   style: string,
   components: PreparedComponent[],
@@ -85,8 +85,8 @@ export function partTypes(
     },
     skipAddingFilesFromTsConfig: true,
   })
-  const files = components.map(({ upstream, installed }) =>
-    project.createSourceFile(`${repo}.mirror-types/${upstream.name}.tsx`, installed, {
+  const files = components.map(({ upstream, source }) =>
+    project.createSourceFile(`${repo}.mirror-types/${upstream.name}.tsx`, source, {
       overwrite: true,
     }),
   )

@@ -528,6 +528,8 @@ export type TestInput = ItemParts & {
   expressions: Record<string, Record<string, string>>
   // Props whose other values render the same, by `Part.prop`
   sameRender: Record<string, string>
+  // Lines scripts/mirror/patches.ts adds after the component tests
+  patched: string[]
 }
 
 export function generateTest(
@@ -614,6 +616,7 @@ export function generateTest(
   const body = [
     ...parts.setup.flatMap(({ lines, reason }) => ['', `// ${reason}`, ...lines]),
     ...components.flatMap((component) => ['', ...testsFor(component)]),
+    ...(parts.patched.length > 0 ? ['', ...parts.patched] : []),
     ...(forwarded.length > 0
       ? [
           '',

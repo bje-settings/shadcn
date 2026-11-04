@@ -79,6 +79,23 @@ export { Button }`,
     expect(types?.get('DialogMeter')?.options.tone).toEqual(['soft', 'loud'])
     expect(types?.get('DialogMeter')?.options.value).toBeUndefined()
   }, 30_000)
+
+  it('reads the patched source', async () => {
+    const patches = {
+      dialog: {
+        reason: 'DialogDot takes a label.',
+        transform: (s: string) =>
+          s.replace(
+            'DialogDot(props: { className?: string })',
+            'DialogDot(props: { className?: string; label: string })',
+          ),
+      },
+    }
+    const prepared = [await prepareComponent(dialog, config, cssPath, patches)]
+    expect(partTypes('base-vega', prepared).get('dialog')?.get('DialogDot')?.required).toEqual([
+      'label',
+    ])
+  }, 30_000)
 })
 
 describe('scaffolds', () => {

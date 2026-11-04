@@ -19,7 +19,16 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "preset": "recommended"
+      "preset": "recommended",
+      "a11y": {
+        "noRedundantRoles": { "level": "error", "fix": "safe" }
+      },
+      "correctness": {
+        "noUnusedImports": { "level": "warn", "fix": "safe" }
+      },
+      "suspicious": {
+        "noDoubleEquals": { "level": "error", "fix": "safe" }
+      }
     }
   },
   "formatter": {
@@ -47,13 +56,10 @@
         "rules": {
           "a11y": {
             "noLabelWithoutControl": "off",
-            "noRedundantRoles": "off",
-            "useFocusableInteractive": "off",
             "useKeyWithClickEvents": "off",
             "useSemanticElements": "off"
           },
           "correctness": {
-            "noUnusedImports": "off",
             "useExhaustiveDependencies": "off"
           },
           "security": {
@@ -61,8 +67,7 @@
           },
           "suspicious": {
             "noArrayIndexKey": "off",
-            "noDocumentCookie": "off",
-            "noDoubleEquals": "off"
+            "noDocumentCookie": "off"
           }
         }
       }

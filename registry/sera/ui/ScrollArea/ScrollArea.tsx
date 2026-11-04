@@ -4,7 +4,6 @@
 
 import { ScrollArea as ScrollAreaPrimitive } from '@base-ui/react/scroll-area'
 import { clsx } from 'clsx'
-import * as React from 'react'
 import styles from './ScrollArea.module.scss'
 
 function ScrollArea({ className, children, ...props }: ScrollAreaPrimitive.Root.Props) {
