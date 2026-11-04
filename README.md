@@ -107,9 +107,9 @@ Where the items differ from upstream's, each on purpose:
   current page as a link or as plain text, and a span that navigates nowhere is not a link.
 - **Slider**: `getAriaLabel` and `getAriaValueText` pass through to every thumb. Base UI reads them
   on the thumb, not the root, so without them a range slider cannot name its thumbs.
-- **ScrollArea**: no unused `import * as React from 'react'`, which upstream carries.
-- **Pagination** and **Field**: no redundant `role="navigation"` on the `nav`, and `===` in
-  `FieldError` in place of `==`, so Biome's recommended rules pass on both.
+- **ScrollArea**, **Pagination** and **Field**: no unused `React` import in ScrollArea, no
+  redundant `role="navigation"` on Pagination's `nav`, and `===` in `FieldError` in place of
+  `==`, so Biome's recommended rules pass on all three.
 
 Two upstream defaults stay, and your `role` replaces them:
 

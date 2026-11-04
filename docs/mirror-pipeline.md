@@ -89,8 +89,8 @@ For each component, the build:
    upstream's source, with its reason, and test lines the generated test gains. The steps after
    this one see the patched source; the A/B harness keeps upstream's. The reason is a second header
    line in the patched `.tsx` and `.test.tsx` (the `.test.tsx` alone for an entry with only tests).
-   A patch that no longer changes the source fails the build, so one upstream has absorbed is
-   removed on the next sync.
+   A patch that no longer applies fails the build, naming the item, so one upstream has absorbed is
+   caught on the next sync.
 3. Rewrites the TSX (`scripts/mirror/tsx.ts`): `cva()` becomes a lookup object plus a same-named
    function, `cn()` becomes `clsx()`, and class strings become `styles.<slot>` references named
    from `data-slot` (or Base UI `useRender`'s `state.slot`). An element without a `data-slot` is
@@ -242,8 +242,8 @@ Generated files get Biome's formatting and safe fixes (import order, `import typ
 `noDoubleEquals` and `noUnusedImports`, whose fixes Biome otherwise counts as unsafe, so the build
 strips a redundant `role`, turns `==` into `===` and drops an unused import. For
 `registry/*/ui/**`, an override turns off the rules upstream's code trips where this registry
-keeps it (`useSemanticElements`, `useKeyWithClickEvents`, `noLabelWithoutControl`,
-`noDocumentCookie`), and three that fire only on later Biome versions (`noArrayIndexKey`,
-`useExhaustiveDependencies`, `noDangerouslySetInnerHtml`). Every other rule applies there. A change
-Biome cannot make is a patch in `scripts/mirror/patches.ts` (step 2 of [Components](#components)).
+keeps it: `useSemanticElements`, `useKeyWithClickEvents`, `noLabelWithoutControl`,
+`noDocumentCookie`, `noArrayIndexKey`, `useExhaustiveDependencies` and
+`noDangerouslySetInnerHtml`. Every other rule applies there. A change Biome cannot make is a patch
+in `scripts/mirror/patches.ts` (step 2 of [Components](#components)).
 `ab/generated/` is written unformatted, and Biome skips it as a gitignored path.
