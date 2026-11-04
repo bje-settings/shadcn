@@ -6,7 +6,8 @@
 // nests under the slot's class, and adjacent rules that share a selector and
 // wrappers merge. Order is preserved exactly: Tailwind emits utilities in
 // cascade order, and only adjacent blocks merge, so no declaration moves past
-// another that could override it.
+// another that could override it. A property a block sets twice keeps only
+// the declaration the cascade applies (stylesheet-lint.ts).
 //
 // Rules styling the slot's own element nest under :where(.slot), so a
 // consumer's className outranks them, the job tailwind-merge does upstream.

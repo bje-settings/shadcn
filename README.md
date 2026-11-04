@@ -135,7 +135,7 @@ no override:
 - `noDocumentCookie`: SidebarProvider keeps its open state by assigning `document.cookie`.
 - `noDangerouslySetInnerHtml`: ChartStyle injects the chart's CSS variables as a `style` element.
 
-The stylesheets differ from upstream's compiled CSS in the same way:
+The pipeline keeps upstream's compiled CSS in the stylesheets the same way, with no patch:
 
 - `noImportantStyles`: each `!important` declaration, from upstream's `!` modifier or preflight's
   `[hidden]` rule, sits in a suppression.
@@ -147,7 +147,7 @@ The stylesheets differ from upstream's compiled CSS in the same way:
   [biomejs/biome#12332](https://github.com/biomejs/biome/issues/12332).
 - A property a block sets twice keeps only the declaration the cascade applies, as tailwind-merge
   keeps the later class upstream.
-- A slot's `:where()` block with no declaration is left out, since Sass drops it anyway.
+- A slot's empty `:where()` block is left out, since Sass drops it anyway.
 
 Two upstream defaults stay, and your `role` replaces them:
 

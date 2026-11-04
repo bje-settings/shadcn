@@ -387,7 +387,7 @@ describe('the declarations of one block', () => {
 })
 
 describe('the root block', () => {
-  it('is left out when it has no declaration, since Sass drops it anyway', async () => {
+  it('is left out when it is empty, since Sass drops it anyway', async () => {
     const { scss, empty } = await convert(['*:w-full'])
     expect(scss).toBe('.root {\n  :is(& > *) {\n    width: 100%;\n  }\n}')
     expect(empty).toBe(false)

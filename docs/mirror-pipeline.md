@@ -248,25 +248,27 @@ Generated files get Biome's formatting and safe fixes (import order, `import typ
 strips a redundant `role`, turns `==` into `===` and drops an unused import.
 
 The stylesheets pass the CSS rules as written (`scripts/mirror/stylesheet-lint.ts`, used by
-`scss.ts` for the modules and `globals.ts` for `variables.scss` and `base.scss`):
+`scss.ts` and `component.ts` for the modules, `globals.ts` for `variables.scss` and `base.scss`,
+and `overrides.ts` for a frost override):
 
 - A block that sets a property twice keeps only the declaration the cascade applies, the last
   `!important` one or else the last (`noDuplicateProperties`): two utilities merged into one block,
   where tailwind-merge keeps the later class upstream, or preflight's repeated
   `-webkit-text-decoration`.
-- A slot's `:where(.<slot>)` block with no declaration is left out (`noEmptyBlock`). Sass drops an
+- A slot's empty `:where(.<slot>)` block is left out (`noEmptyBlock`). Sass drops an
   empty block, so the module exports no class for the slot either way.
 - Each `!important` declaration sits between `biome-ignore-start` and `biome-ignore-end` comments
   for `noImportantStyles` in a module, since the formatter can spread a value over lines and Biome
   reports the line `!important` is on; preflight's one in `base.scss` has a `biome-ignore` on the
-  line before it.
+  line before it, and any other `!important` in the global stylesheets fails the build by name.
 - A nested rule `CASCADE_ORDER` in `scss.ts` lists by item, parent and selector gets a
   `noDescendingSpecificity` suppression inside its parent block, before the rule: moving the rule
   would move its declarations past others. A listed rule an item no longer has fails the build by
   name.
 - A file with a custom property whose hex colour Biome reads as a number and a unit (`#0000001a`,
   [biomejs/biome#12332](https://github.com/biomejs/biome/issues/12332)) gets a file-level
-  `biome-ignore-all lint/correctness/noUnknownUnit` as its second line, which covers a value the
+  `biome-ignore-all lint/correctness/noUnknownUnit` in its header, after the generated line (and
+  a frost override's `Ends with` line), which covers a value the
   formatter spreads over lines; no other file does. A frost override that brings one adds the line when it is appended.
 
 A change Biome cannot make is a patch in `scripts/mirror/patches.ts` (step 2 of
