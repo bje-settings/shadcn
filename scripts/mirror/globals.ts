@@ -62,10 +62,14 @@ function removeEmpty(container: Container): void {
 const IMPORTANT_IGNORE =
   "// biome-ignore lint/complexity/noImportantStyles: Tailwind's preflight keeps a hidden element hidden whatever display another rule gives it"
 
+// Preflight's [hidden]:where(...) rule, one compound selector on the hidden
+// element itself: no list, no combinator.
+const HIDDEN = /^\[hidden\][^\s>+~]*$/
+
 // Each block keeps one declaration per property (stylesheet-lint.ts), and an
-// !important one, preflight's [hidden] rule, gets a suppression on the line
-// before it. The reason is that rule's, so an !important declaration anywhere
-// else fails the build by name, to be given a reason of its own.
+// !important one, preflight's [hidden] display rule, gets a suppression on the
+// line before it. The reason is that rule's, so an !important declaration
+// anywhere else fails the build by name, to be given a reason of its own.
 function forBiome(top: Container): void {
   const containers: Container[] = [top]
   top.walk((node) => {
@@ -84,9 +88,10 @@ function forBiome(top: Container): void {
     if (!decl.important) return
     const parent = decl.parent as Rule | AtRule
     const selector = parent.type === 'rule' ? parent.selector : `@${parent.name}`
-    if (!selector.startsWith('[hidden]')) {
+    const hidden = parent.type === 'rule' && parent.selectors.every((s) => HIDDEN.test(s))
+    if (!hidden || decl.prop !== 'display') {
       throw new Error(
-        `globals: ${decl.prop} in ${selector} is !important outside preflight's [hidden] rule`,
+        `globals: ${decl.prop} in ${selector} is !important outside preflight's [hidden] display rule`,
       )
     }
     // postcss sets raws.before on every node it parses.

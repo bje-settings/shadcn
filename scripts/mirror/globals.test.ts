@@ -63,7 +63,7 @@ describe('the global stylesheets, for Biome', () => {
 
   it('keeps the later of two values, or an earlier !important one', () => {
     expect(base('a { width: auto; width: 100% }')).toContain('a { width: 100% }')
-    expect(base('[hidden] { color: red !important; color: blue }')).not.toContain('blue')
+    expect(base('[hidden] { display: none !important; display: block }')).not.toContain('block')
   })
 
   it('collapses repeated declarations directly inside an at-rule, and keeps one with no block', () => {
@@ -90,18 +90,47 @@ describe('the global stylesheets, for Biome', () => {
       "// biome-ignore lint/complexity/noImportantStyles: Tailwind's preflight keeps a hidden element hidden whatever display another rule gives it"
     const one = base('[hidden] {\n    display: none !important;\n  }')
     expect(one).toContain(`{\n    ${comment}\n    display: none !important;`)
-    const two = base('[hidden] { b: 1 !important; c: 2 !important; d: 3 }')
+    const two = base(
+      '[hidden] { display: none !important; d: 3 } [hidden]:x { display: none !important }',
+    )
     expect(two.split(comment)).toHaveLength(3)
-    expect(two).toContain(`\n ${comment}\n b: 1 !important;\n ${comment}\n c: 2 !important; d: 3 }`)
+    expect(two).toContain(`{\n ${comment}\n display: none !important; d: 3 }`)
+    expect(two).toContain(`[hidden]:x {\n ${comment}\n display: none !important }`)
   })
 
-  it("fails the build naming an !important declaration outside preflight's [hidden] rule", () => {
-    expect(() => base('a { color: red !important }')).toThrow(
-      "globals: color in a is !important outside preflight's [hidden] rule",
+  it.each([
+    ['another selector', 'a { display: none !important }', 'display in a'],
+    ['another attribute', '[data-x] { display: none !important }', 'display in [data-x]'],
+    [
+      'a rule that only names it',
+      'a:not([hidden]) { display: flex !important }',
+      'display in a:not([hidden])',
+    ],
+    ['a descendant of it', '[hidden] a { display: none !important }', 'display in [hidden] a'],
+    ['a list beyond it', '[hidden], .x { display: none !important }', 'display in [hidden], .x'],
+    ['another property', '[hidden] { color: red !important }', 'color in [hidden]'],
+  ])('fails the build naming an !important declaration in %s', (_, rules, what) => {
+    expect(() => base(rules)).toThrow(
+      `globals: ${what} is !important outside preflight's [hidden] display rule`,
     )
+  })
+
+  it('fails the build naming an !important declaration in an at-rule', () => {
     expect(() => base('@font-face { font-display: swap !important }')).toThrow(
-      "globals: font-display in @font-face is !important outside preflight's [hidden] rule",
+      "globals: font-display in @font-face is !important outside preflight's [hidden] display rule",
     )
+  })
+
+  // A dropped utility's !important is the module's, with its own suppression.
+  it.each([
+    ['the utilities layer', '@layer utilities { .x { color: red !important } }'],
+    ['a class-only media query', '@media (hover: hover) { .x { color: red !important } }'],
+  ])('leaves an !important declaration alone in %s, which is dropped', (_, dropped) => {
+    const { variables, base: other } = globalStylesheets(
+      `${dropped} @layer base { a { color: red } }`,
+      '// h',
+    )
+    for (const sheet of [variables, other]) expect(sheet).not.toContain('important')
   })
 
   it('puts the noUnknownUnit suppression second in the header of a sheet Biome misreads', () => {
