@@ -109,7 +109,7 @@ Where the items differ from upstream's, each on purpose:
   on the thumb, not the root, so without them a range slider cannot name its thumbs.
 - **ScrollArea**, **Pagination** and **Field**: no unused `React` import in ScrollArea, no
   redundant `role="navigation"` on Pagination's `nav`, and `===` in `FieldError` in place of
-  `==`, so Biome's recommended rules pass on all three.
+  `==`, so Biome's `noUnusedImports`, `noRedundantRoles` and `noDoubleEquals` pass on them.
 
 Two upstream defaults stay, and your `role` replaces them:
 
