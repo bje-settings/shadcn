@@ -248,8 +248,7 @@ Generated files get Biome's formatting and safe fixes (import order, `import typ
 strips a redundant `role`, turns `==` into `===` and drops an unused import.
 
 The stylesheets pass the CSS rules as written (`scripts/mirror/stylesheet-lint.ts`, used by
-`scss.ts` and `component.ts` for the modules, `globals.ts` for `variables.scss` and `base.scss`,
-and `overrides.ts` for a frost override):
+`scss.ts` for the modules and `globals.ts` for `variables.scss` and `base.scss`):
 
 - A block that sets a property twice keeps only the declaration the cascade applies, the last
   `!important` one or else the last (`noDuplicateProperties`): two utilities merged into one block,
@@ -265,11 +264,13 @@ and `overrides.ts` for a frost override):
   `noDescendingSpecificity` suppression inside its parent block, before the rule: moving the rule
   would move its declarations past others. A listed rule an item no longer has fails the build by
   name.
-- A file with a custom property whose hex colour Biome reads as a number and a unit (`#0000001a`,
-  [biomejs/biome#12332](https://github.com/biomejs/biome/issues/12332)) gets a file-level
-  `biome-ignore-all lint/correctness/noUnknownUnit` in its header, after the generated line (and
-  a frost override's `Ends with` line), which covers a value the
-  formatter spreads over lines; no other file does. A frost override that brings one adds the line when it is appended.
+- A custom property whose hex colour Biome reads as a number and a unit (`#0000001a`,
+  [biomejs/biome#12332](https://github.com/biomejs/biome/issues/12332)) gets a
+  `noUnknownUnit` suppression beside it: a `biome-ignore` on the line before it when it fits on one
+  line, and a `biome-ignore-start` / `biome-ignore-end` range when its value breaks or is too long
+  for the formatter's 100 columns, since Biome reports the line the colour lands on. Never a
+  file-level one: `shadcn add` writes a file without its leading comment block. A frost override
+  is linted as its own file, so it carries any suppression it needs.
 
 A change Biome cannot make is a patch in `scripts/mirror/patches.ts` (step 2 of
 [Components](#components)). Where upstream's TSX trips a rule on a pattern this registry keeps,
