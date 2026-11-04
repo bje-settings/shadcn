@@ -17,7 +17,6 @@ import {
   readOverrides,
   ruleSelectors,
 } from './overrides.ts'
-import { UNKNOWN_UNIT_IGNORE } from './stylesheet-lint.ts'
 import { parsed } from './test-support.ts'
 
 const config = forStyle(parsed, { name: 'frost', base: 'base-maia' })
@@ -214,26 +213,6 @@ describe('appendOverride', () => {
         '.a { color: red; }',
         '',
       ].join('\n'),
-    )
-  })
-
-  it('brings the noUnknownUnit suppression when only the override needs it', () => {
-    const override = ':where(.a) { --x: #0000001a; }\n'
-    expect(appendOverride('// Generated.\n\n.a {}\n', override, 'o/A.scss').split('\n')).toEqual([
-      '// Generated.',
-      '// Ends with o/A.scss, appended by scripts/mirror.',
-      UNKNOWN_UNIT_IGNORE,
-      '',
-      '.a {}',
-      '',
-      '// Appended from o/A.scss.',
-      '',
-      ':where(.a) { --x: #0000001a; }',
-      '',
-    ])
-    const generated = `// Generated.\n${UNKNOWN_UNIT_IGNORE}\n\n.a {}\n`
-    expect(appendOverride(generated, override, 'o/A.scss').split(UNKNOWN_UNIT_IGNORE)).toHaveLength(
-      2,
     )
   })
 })

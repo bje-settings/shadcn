@@ -146,14 +146,13 @@ describe('buildComponent', () => {
     expect(pinned.files[2]?.content.startsWith(header)).toBe(true)
   })
 
-  it('puts the noUnknownUnit suppression second in the header of a module Biome misreads', async () => {
+  // A consumer's install drops the module's leading comments.
+  it('suppresses noUnknownUnit beside the declaration Biome misreads, not in the header', async () => {
     const [, scss] = (await build(badge(source('shadow-xs')))).files
-    const lines = scss?.content.split('\n') ?? []
-    expect(lines[1]).toBe(
-      '// biome-ignore-all lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)',
+    expect(scss?.content).not.toContain('biome-ignore-all')
+    expect(scss?.content).toMatch(
+      /\n {2}\/\/ biome-ignore lint\/correctness\/noUnknownUnit: [^\n]+\n {2}--shadow: [^\n]*#0000000d/,
     )
-    expect(scss?.content).toContain('#0000000d')
-    expect(scss?.content.split('biome-ignore-all')).toHaveLength(2)
   })
 
   it('leaves a slot with no rule out of the module', async () => {

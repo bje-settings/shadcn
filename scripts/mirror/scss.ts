@@ -18,7 +18,12 @@ import postcss, { type AtRule, type Root, type Rule } from 'postcss'
 import selectorParser from 'postcss-selector-parser'
 
 import { internalName, renameInternal } from './internal.ts'
-import { type Declaration, winners } from './stylesheet-lint.ts'
+import {
+  type Declaration,
+  misreadsHex,
+  unknownUnitSuppression,
+  winners,
+} from './stylesheet-lint.ts'
 
 // The class fragment upstream's `svg:not([class*="size-"])` defaults probe
 // for, and the attribute the mirror puts on an element without a data-slot
@@ -281,11 +286,16 @@ function print(block: Block, depth: number, sites: readonly Site[], used: Site[]
       }
       lines.push(...print(item, depth + 1, sites, used))
     } else {
-      if (item.decl.endsWith(IMPORTANT)) {
-        lines.push(`${indent}  // biome-ignore-start ${IMPORTANT_IGNORE}`)
-        lines.push(`${indent}  ${item.decl};`)
-        lines.push(`${indent}  // biome-ignore-end ${IMPORTANT_IGNORE}`)
-      } else lines.push(`${indent}  ${item.decl};`)
+      const line = `${indent}  ${item.decl}`
+      const colon = item.decl.indexOf(':')
+      const misread = misreadsHex(item.decl.slice(0, colon), item.decl.slice(colon + 1))
+      const { before, after } = misread ? unknownUnitSuppression(line) : {}
+      const important = item.decl.endsWith(IMPORTANT)
+      if (important) lines.push(`${indent}  // biome-ignore-start ${IMPORTANT_IGNORE}`)
+      if (before) lines.push(before)
+      lines.push(`${line};`)
+      if (after) lines.push(after)
+      if (important) lines.push(`${indent}  // biome-ignore-end ${IMPORTANT_IGNORE}`)
     }
   }
   lines.push(`${indent}}`)

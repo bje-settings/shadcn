@@ -15,11 +15,17 @@
 // Utilities are the components' own CSS and live in their modules. Anything
 // else at the top level fails the build rather than being guessed at.
 
-import postcss, { type AtRule, type ChildNode, type Container, type Rule } from 'postcss'
+import postcss, {
+  type AtRule,
+  type ChildNode,
+  type Container,
+  type Declaration,
+  type Rule,
+} from 'postcss'
 
 import { renameInternal } from './internal.ts'
 import type { FontItem } from './project-css.ts'
-import { needsUnknownUnitIgnore, UNKNOWN_UNIT_IGNORE, winners } from './stylesheet-lint.ts'
+import { misreadsHex, unknownUnitSuppression, winners } from './stylesheet-lint.ts'
 
 export type GlobalStylesheets = { variables: string; base: string }
 
@@ -66,6 +72,43 @@ const IMPORTANT_IGNORE =
 // element itself: no list, no combinator.
 const HIDDEN = /^\[hidden\][^\s>+~]*$/
 
+// A line comment, on its own line, last before a node, at the node's
+// indentation: postcss sets raws.before on every node it parses.
+function commentBefore(node: ChildNode, comment: string): void {
+  const raw = node.raws.before as string
+  const before = raw.includes('\n') ? raw : `\n${raw}`
+  node.raws.before = `${before}${comment}${before.slice(before.lastIndexOf('\n'))}`
+}
+
+// The declarations Biome misreads (noUnknownUnit) get their suppression at the
+// indentation the formatter gives them.
+function suppressUnknownUnits(top: Container): void {
+  const ends: [Declaration, string][] = []
+  top.walkDecls((decl) => {
+    if (!misreadsHex(decl.prop, decl.value)) return
+    let depth = 0
+    for (let node = decl.parent; node && node.type !== 'root'; node = node.parent) depth++
+    const indent = '  '.repeat(depth)
+    const { before, after } = unknownUnitSuppression(`${indent}${decl.prop}: ${decl.value}`)
+    commentBefore(decl, before.trimStart())
+    if (after !== undefined) ends.push([decl, `\n${after}`])
+  })
+  // After every start, so an end lands before the next declaration's start.
+  for (const [decl, end] of ends) {
+    const next = decl.next()
+    if (next) next.raws.before = `${end}${next.raws.before}`
+    else {
+      // postcss keeps the space after a last declaration with no semicolon
+      // in its value.
+      const space = decl.value.slice(decl.value.trimEnd().length)
+      decl.value = decl.value.trimEnd()
+      const parent = decl.parent as Container
+      parent.raws.semicolon = true
+      parent.raws.after = `${end}${space}${parent.raws.after}`
+    }
+  }
+}
+
 // Each block keeps one declaration per property (stylesheet-lint.ts), and an
 // !important one, preflight's [hidden] display rule, gets a suppression on the
 // line before it. The reason is that rule's, so an !important declaration
@@ -94,12 +137,9 @@ function forBiome(top: Container): void {
         `globals: ${decl.prop} in ${selector} is !important outside preflight's [hidden] display rule`,
       )
     }
-    // postcss sets raws.before on every node it parses.
-    const raw = decl.raws.before as string
-    // A line comment needs the declaration on the next line.
-    const before = raw.includes('\n') ? raw : `\n${raw}`
-    decl.raws.before = `${before}${IMPORTANT_IGNORE}${before}`
+    commentBefore(decl, IMPORTANT_IGNORE)
   })
+  suppressUnknownUnits(top)
 }
 
 export function globalStylesheets(css: string, header: string): GlobalStylesheets {
@@ -119,12 +159,8 @@ export function globalStylesheets(css: string, header: string): GlobalStylesheet
     if (to !== 'drop') forBiome(node as Container)
     parts[to].push(renameInternal(node.toString()))
   }
-  const file = (blocks: string[], extra: string[] = []) => {
-    const rules = blocks.join('\n\n')
-    // Biome honours it only before any rule.
-    const ignore = needsUnknownUnitIgnore(rules) ? [UNKNOWN_UNIT_IGNORE] : []
-    return [header, ...ignore, ...extra, '', rules, ''].join('\n')
-  }
+  const file = (blocks: string[], extra: string[] = []) =>
+    [header, ...extra, '', blocks.join('\n\n'), ''].join('\n')
   return {
     variables: file(parts.variables),
     // Preflight is Tailwind's code: keep its license notice with it.

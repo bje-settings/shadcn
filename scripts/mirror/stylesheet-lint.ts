@@ -1,6 +1,5 @@
 // What the generated stylesheets do about Biome's CSS rules, shared by the
-// module printer (scss.ts, component.ts), the global stylesheets (globals.ts)
-// and a frost override (overrides.ts).
+// module printer (scss.ts) and the global stylesheets (globals.ts).
 
 export type Declaration = { prop: string; important: boolean }
 
@@ -28,25 +27,42 @@ export function winners<T>(items: readonly T[], read: (item: T) => Declaration |
 }
 
 // Biome reads a hex colour whose digits are followed by a letter (#0000001a)
-// as a number and a unit, in a custom property's value only. A file-level
-// suppression, before any rule, also covers a value the formatter spreads
-// over lines, which a next-line one would miss.
+// as a number and a unit, in a custom property's value only (noUnknownUnit,
+// biomejs/biome#12332). The suppression sits beside each such declaration: a
+// consumer's install drops a file's leading comments, and a file-level one
+// with them.
 export const UNKNOWN_UNIT_IGNORE =
-  '// biome-ignore-all lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)'
+  'lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)'
 
-const CUSTOM_PROPERTY = /(?:^|[{;\s])--[\w-]+\s*:([^;{}]*)/g
 const HEX = /#([0-9a-fA-F]+)/g
 // The number a CSS tokenizer reads at the start of a hex colour's digits
 const NUMBER = /^\d+(?:[eE]\d+)?/
 
-// Whether a stylesheet needs UNKNOWN_UNIT_IGNORE.
-export function needsUnknownUnitIgnore(css: string): boolean {
-  const code = css.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '')
-  for (const [, value] of code.matchAll(CUSTOM_PROPERTY)) {
-    for (const [, digits] of (value as string).matchAll(HEX)) {
-      const number = NUMBER.exec(digits as string)?.[0]
-      if (number !== undefined && number.length < (digits as string).length) return true
-    }
+// Whether Biome misreads a declaration's value as a number and a unit.
+export function misreadsHex(prop: string, value: string): boolean {
+  if (!prop.startsWith('--')) return false
+  for (const [, digits] of value.matchAll(HEX)) {
+    const number = NUMBER.exec(digits as string)?.[0]
+    if (number !== undefined && number.length < (digits as string).length) return true
   }
   return false
+}
+
+// biome.json's formatter lineWidth
+const LINE_WIDTH = 100
+
+// The comments that go before and after a declaration Biome misreads, given
+// the declaration's line as printed, its indentation included and its
+// semicolon not. A next-line suppression when the line stays whole; a range
+// when it already breaks, or is too long and the formatter spreads it, since
+// Biome reports the line the hex colour lands on.
+export function unknownUnitSuppression(line: string): { before: string; after?: string } {
+  const indent = line.slice(0, line.length - line.trimStart().length)
+  if (!line.includes('\n') && line.length + 1 <= LINE_WIDTH) {
+    return { before: `${indent}// biome-ignore ${UNKNOWN_UNIT_IGNORE}` }
+  }
+  return {
+    before: `${indent}// biome-ignore-start ${UNKNOWN_UNIT_IGNORE}`,
+    after: `${indent}// biome-ignore-end ${UNKNOWN_UNIT_IGNORE}`,
+  }
 }

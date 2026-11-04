@@ -11,7 +11,6 @@ import { dirname, join, relative, sep } from 'node:path'
 import { ITEM_TYPES, type ItemType, type RegistryItem } from './component.ts'
 import type { MirrorConfig } from './config.ts'
 import { KEBAB, Shape } from './parse.ts'
-import { needsUnknownUnitIgnore, UNKNOWN_UNIT_IGNORE } from './stylesheet-lint.ts'
 
 // What overrides.json declares: the items the style adds, and the
 // registryDependencies each item (generated or added) gains.
@@ -248,18 +247,12 @@ function zeroSpecificity(selector: string): boolean {
 
 // A generated stylesheet with an override appended: its first line, the
 // generated header, gains a second that names the override, so nobody takes
-// the file for the base style's. An override Biome misreads (noUnknownUnit)
-// brings the file-level suppression a generated header without it lacks.
+// the file for the base style's.
 export function appendOverride(generated: string, override: string, source: string): string {
   const [header, ...rest] = generated.split('\n')
-  const ignore =
-    !rest.includes(UNKNOWN_UNIT_IGNORE) && needsUnknownUnitIgnore(override)
-      ? [UNKNOWN_UNIT_IGNORE]
-      : []
   return [
     header,
     `// Ends with ${source}, appended by scripts/mirror.`,
-    ...ignore,
     ...rest,
     `// Appended from ${source}.`,
     '',

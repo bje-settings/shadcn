@@ -386,6 +386,33 @@ describe('the declarations of one block', () => {
   })
 })
 
+describe('the noUnknownUnit suppressions', () => {
+  const rule =
+    'lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)'
+  const long = `0_1px_${'1px_'.repeat(22)}#0000001a`
+
+  it('go on the line before a one-line custom property Biome misreads, and nowhere else', async () => {
+    const { scss } = await convert(['[--a:#0000]', '[--b:0_1px_#0000001a]', 'text-[#0000001a]'])
+    expect(scss).toBe(
+      `:where(.root) {\n  color: #0000001a;\n  --a: #0000;\n  // biome-ignore ${rule}\n  --b: 0 1px #0000001a;\n}`,
+    )
+  })
+
+  it('go around one the formatter spreads over lines', async () => {
+    const { scss } = await convert([`[--a:${long}]`])
+    expect(scss).toBe(
+      `:where(.root) {\n  // biome-ignore-start ${rule}\n  --a: ${long.replaceAll('_', ' ')};\n  // biome-ignore-end ${rule}\n}`,
+    )
+  })
+
+  it('sit inside the noImportantStyles range of an !important one', async () => {
+    const { scss } = await convert(['[--b:0_1px_#0000001a]!'])
+    expect(scss).toContain(
+      `  // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier\n  // biome-ignore ${rule}\n  --b: 0 1px #0000001a !important;\n  // biome-ignore-end`,
+    )
+  })
+})
+
 describe('the root block', () => {
   it('is left out when it is empty, since Sass drops it anyway', async () => {
     const { scss, empty } = await convert(['*:w-full'])

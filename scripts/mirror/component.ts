@@ -16,7 +16,6 @@ import {
   type SlotOptions,
   slotToScss,
 } from './scss.ts'
-import { needsUnknownUnitIgnore, UNKNOWN_UNIT_IGNORE } from './stylesheet-lint.ts'
 import { generateTest } from './tests.ts'
 import { type TransformedComponent, transformComponent } from './tsx.ts'
 
@@ -350,10 +349,18 @@ export async function buildComponent(
   }
   checkCascadeOrder(upstream.name, cascadeOrdered)
 
-  // Tailwind registers these globally with @property. A layer loses to every
-  // unlayered rule, and each module declares the same constants, so modules
-  // never conflict.
-  const rules = [
+  const scss = [
+    generated,
+    ...wrap(
+      'Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):',
+      [...properties].sort(),
+    ),
+    ...wrap('Upstream classes with no CSS output, dropped:', Object.values(unresolved).flat()),
+    ...[...dropped].flatMap((reason) => ['//', `// Dropped rules: ${reason}`]),
+    '',
+    // Tailwind registers these globally with @property. A layer loses to every
+    // unlayered rule, and each module declares the same constants, so modules
+    // never conflict.
     ...(defaults.size > 0
       ? [
           '// Defaults for the internal variables the rules below compose with.',
@@ -369,19 +376,6 @@ export async function buildComponent(
       : []),
     blocks.join('\n\n'),
     '',
-  ].join('\n')
-  const scss = [
-    generated,
-    // Biome honours it only before any rule.
-    ...(needsUnknownUnitIgnore(rules) ? [UNKNOWN_UNIT_IGNORE] : []),
-    ...wrap(
-      'Custom properties read here and set elsewhere (tokens, enclosing slots, inline styles):',
-      [...properties].sort(),
-    ),
-    ...wrap('Upstream classes with no CSS output, dropped:', Object.values(unresolved).flat()),
-    ...[...dropped].flatMap((reason) => ['//', `// Dropped rules: ${reason}`]),
-    '',
-    rules,
   ].join('\n')
   const test = generateTest(upstream.name, source, {
     types: context.types,

@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { needsUnknownUnitIgnore, UNKNOWN_UNIT_IGNORE, winners } from './stylesheet-lint.ts'
+import {
+  misreadsHex,
+  UNKNOWN_UNIT_IGNORE,
+  unknownUnitSuppression,
+  winners,
+} from './stylesheet-lint.ts'
 
 describe('winners', () => {
   const parse = (decl: string) => {
@@ -46,47 +51,63 @@ describe('winners', () => {
   })
 })
 
-describe('needsUnknownUnitIgnore', () => {
+describe('misreadsHex', () => {
   // Probed on Biome 2.6.4: a digit-led hex colour fires only in a custom
   // property's value, and only where the digits (with an exponent) are
   // followed by a letter, which Biome then reads as a unit.
   it.each([
-    ['--x: 0 1px #0000001a;', true],
-    ['--x: #0000000d;', true],
-    ['--x: #0000001A;', true],
-    ['--x: #000c;', true],
-    ['--x: #00e;', true],
-    ['--x: #0e0a;', true],
-    ['--x: #0E0a;', true],
-    ['--x: #00a0ff;', true],
-    ['--x: var(--r, 0 0 #0000001a);', true],
-    ['--x: a#0000001a;', true],
-    ['--x:\n    0 1px #0000001a,\n    0 2px #0000;', true],
-    ['--x: #0000;', false],
-    ['--x: #0003;', false],
-    ['--x: #0e0;', false],
-    ['--x: #1e5;', false],
-    ['--x: #0E0;', false],
-    ['--x: #00000026;', false],
-    ['--x: #ff0000;', false],
-    ['color: #0000001a;', false],
-    ['box-shadow: 0 1px #0000001a;', false],
-    ['box-shadow: var(--r, 0 0 #0000001a);', false],
-  ])('%s needs it: %s', (declaration, expected) => {
-    expect(needsUnknownUnitIgnore(`a {\n  ${declaration}\n}\n`)).toBe(expected)
+    ['--x', '0 1px #0000001a', true],
+    ['--x', '#0000000d', true],
+    ['--x', '#0000001A', true],
+    ['--x', '#000c', true],
+    ['--x', '#00e', true],
+    ['--x', '#0e0a', true],
+    ['--x', '#0E0a', true],
+    ['--x', '#00a0ff', true],
+    ['--x', 'var(--r, 0 0 #0000001a)', true],
+    ['--x', 'a#0000001a', true],
+    ['--x', '\n    0 1px #0000,\n    0 2px #0000001a', true],
+    ['--x', '#0000', false],
+    ['--x', '#0003', false],
+    ['--x', '#0e0', false],
+    ['--x', '#1e5', false],
+    ['--x', '#0E0', false],
+    ['--x', '#00000026', false],
+    ['--x', '#ff0000', false],
+    ['color', '#0000001a', false],
+    ['box-shadow', '0 1px #0000001a', false],
+    ['box-shadow', 'var(--r, 0 0 #0000001a)', false],
+  ])('%s: %s is misread: %s', (prop, value, expected) => {
+    expect(misreadsHex(prop, value)).toBe(expected)
   })
+})
 
-  it('reads a declaration at the start of the text', () => {
-    expect(needsUnknownUnitIgnore('--x: #0000001a;')).toBe(true)
-  })
-
-  it('reads no comment as a declaration', () => {
-    expect(needsUnknownUnitIgnore('// --x: #0000001a;\n/* --y: #0000001a; */\na {}\n')).toBe(false)
-  })
+describe('unknownUnitSuppression', () => {
+  const ignore =
+    'lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)'
 
   it('names the rule, the reason and the Biome issue', () => {
-    expect(UNKNOWN_UNIT_IGNORE).toBe(
-      '// biome-ignore-all lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)',
-    )
+    expect(UNKNOWN_UNIT_IGNORE).toBe(ignore)
+  })
+
+  // biome.json's lineWidth is 100, and the line's semicolon counts.
+  it('suppresses a line the formatter keeps whole on the line before, at its indentation', () => {
+    const line = `    --x: ${'a'.repeat(90)}`
+    expect(line.length + 1).toBe(100)
+    expect(unknownUnitSuppression(line)).toEqual({ before: `    // biome-ignore ${ignore}` })
+  })
+
+  it('suppresses a line the formatter spreads over lines with a range', () => {
+    expect(unknownUnitSuppression(`  --x: ${'a'.repeat(93)}`)).toEqual({
+      before: `  // biome-ignore-start ${ignore}`,
+      after: `  // biome-ignore-end ${ignore}`,
+    })
+  })
+
+  it('suppresses a value that already breaks with a range', () => {
+    expect(unknownUnitSuppression('--x: a,\n    b')).toEqual({
+      before: `// biome-ignore-start ${ignore}`,
+      after: `// biome-ignore-end ${ignore}`,
+    })
   })
 })

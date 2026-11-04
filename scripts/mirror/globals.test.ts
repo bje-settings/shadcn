@@ -133,13 +133,40 @@ describe('the global stylesheets, for Biome', () => {
     for (const sheet of [variables, other]) expect(sheet).not.toContain('important')
   })
 
-  it('puts the noUnknownUnit suppression second in the header of a sheet Biome misreads', () => {
-    const { variables, base: other } = globalStylesheets(
-      '/*! license */ @layer theme { :root { --shadow: 0 1px #0000001a } } @layer base { a { color: #0000001a } }',
-      '// h',
-    )
-    expect(variables.split('\n').slice(0, 2)).toEqual(['// h', UNKNOWN_UNIT_IGNORE])
-    expect(other.split('\n').slice(0, 2)).toEqual(['// h', '/*! license */'])
+  describe('the noUnknownUnit suppressions', () => {
+    const next = `// biome-ignore ${UNKNOWN_UNIT_IGNORE}`
+    const start = `// biome-ignore-start ${UNKNOWN_UNIT_IGNORE}`
+    const end = `// biome-ignore-end ${UNKNOWN_UNIT_IGNORE}`
+    const theme = (decls: string) =>
+      globalStylesheets(`@layer theme {\n  :root {\n    ${decls}\n  }\n}`, '// h').variables
+    const long = `0 1px ${'1px '.repeat(20)}#0000001a`
+
+    it('go on the line before a one-line declaration Biome misreads, and nowhere else', () => {
+      expect(theme('--a: 0 1px #0000;\n    --b: 0 1px #0000001a;\n    --c: 1px')).toBe(
+        `// h\n\n@layer theme {\n  :root {\n    --a: 0 1px #0000;\n    ${next}\n    --b: 0 1px #0000001a;\n    --c: 1px\n  }\n}\n`,
+      )
+    })
+
+    it('go around a declaration the formatter spreads, the last one in its block too', () => {
+      expect(theme(`--a: ${long};\n    --b: ${long}`)).toBe(
+        `// h\n\n@layer theme {\n  :root {\n    ${start}\n    --a: ${long};\n    ${end}\n    ${start}\n    --b: ${long};\n    ${end}\n  }\n}\n`,
+      )
+    })
+
+    it('go around a declaration whose value already breaks', () => {
+      expect(theme('--a: 0 1px #0000001a,\n    0 2px #0000001a;')).toContain(
+        `${start}\n    --a: 0 1px #0000001a,\n    0 2px #0000001a;\n    ${end}\n  }`,
+      )
+    })
+
+    it('leave alone a property Biome reads right, and a dropped utility', () => {
+      const { variables, base: other } = globalStylesheets(
+        '/*! license */ @layer utilities { .x { --s: #0000001a } } @layer base { a { color: #0000001a } }',
+        '// h',
+      )
+      expect(variables + other).not.toContain('noUnknownUnit')
+      expect(other.split('\n').slice(0, 2)).toEqual(['// h', '/*! license */'])
+    })
   })
 })
 
@@ -171,7 +198,8 @@ describe('fontStylesheet', () => {
   // Where a declaration of the variable sits: its enclosing at-rules and rules.
   const placements = (css: string, variable: string) => {
     const found: string[][] = []
-    postcss.parse(css).walkDecls(variable, (decl) => {
+    // postcss reads no // comment.
+    postcss.parse(css.replace(/^\s*\/\/.*\n/gm, '')).walkDecls(variable, (decl) => {
       const path: string[] = []
       for (let node = decl.parent; node && node.type !== 'root'; node = node.parent) {
         path.unshift(node.type === 'rule' ? node.selector : `@${node.name} ${node.params}`)
