@@ -143,7 +143,7 @@ The pipeline keeps upstream's compiled CSS in the stylesheets the same way, with
   outline, ghost and destructive variants keep upstream's cascade order, with a suppression;
   moving them would move a declaration past another.
 - `noUnknownUnit`: a stylesheet with a custom property whose hex colour Biome reads as a number
-  and a unit (`#0000001a`) starts with a file-level `biome-ignore-all`, for Biome's own bug
+  and a unit (`#0000001a`) has a file-level `biome-ignore-all` in its header, for Biome's own bug
   [biomejs/biome#12332](https://github.com/biomejs/biome/issues/12332).
 - A property a block sets twice keeps only the declaration the cascade applies, as tailwind-merge
   keeps the later class upstream.
