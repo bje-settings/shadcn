@@ -256,7 +256,7 @@ and `overrides.ts` for a frost override):
   where tailwind-merge keeps the later class upstream, or preflight's repeated
   `-webkit-text-decoration`.
 - A slot's empty `:where(.<slot>)` block is left out (`noEmptyBlock`). Sass drops an
-  empty block, so the module exports no class for the slot either way.
+  empty block, so leaving it out changes nothing the module exports.
 - Each `!important` declaration sits between `biome-ignore-start` and `biome-ignore-end` comments
   for `noImportantStyles` in a module, since the formatter can spread a value over lines and Biome
   reports the line `!important` is on; preflight's one in `base.scss` has a `biome-ignore` on the

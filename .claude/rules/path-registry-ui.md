@@ -23,7 +23,8 @@ committed file differs from what the pipeline produces. `ab/generated/` is not c
 - To change a component's output, change the pipeline (`scripts/mirror/`) or `mirror.config.json`,
   then run `pnpm mirror:build`. A deliberate change to upstream's TSX, a patch or a Biome
   suppression, goes in `scripts/mirror/patches.ts`; the stylesheets' suppressions come from
-  `scripts/mirror/scss.ts`, `globals.ts` and `stylesheet-lint.ts`.
+  `scripts/mirror/scss.ts`, `component.ts`, `globals.ts` and `overrides.ts`, with their shared text
+  and checks in `stylesheet-lint.ts`.
 - To pick up upstream changes, run `pnpm mirror:fetch` then `pnpm mirror:build`.
 - The upstream and derived styles, theme and component list live in `mirror.config.json`.
 - After changing generated output, run `pnpm ab` to compare it with upstream pixel for pixel.

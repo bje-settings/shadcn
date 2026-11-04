@@ -525,8 +525,8 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
   }
   const cascadeOrdered: Site[] = []
   return {
-    // An empty root block is left out: Sass drops it, so it exports no class
-    // either way, and Biome reports it (noEmptyBlock).
+    // An empty root block is left out: Sass drops it anyway, so the module
+    // exports the same classes, and Biome reports it (noEmptyBlock).
     scss: [root, context]
       .filter((block) => block.items.length > 0)
       .flatMap((block) => print(block, 0, options.cascadeOrder ?? [], cascadeOrdered))

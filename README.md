@@ -135,7 +135,8 @@ no override:
 - `noDocumentCookie`: SidebarProvider keeps its open state by assigning `document.cookie`.
 - `noDangerouslySetInnerHtml`: ChartStyle injects the chart's CSS variables as a `style` element.
 
-The pipeline keeps upstream's compiled CSS in the stylesheets the same way, with no patch:
+The stylesheets need no patch. The pipeline keeps the first three patterns below with a
+suppression, and changes upstream's compiled CSS for the last two:
 
 - `noImportantStyles`: each `!important` declaration, from upstream's `!` modifier or preflight's
   `[hidden]` rule, sits in a suppression.
