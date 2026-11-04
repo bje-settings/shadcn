@@ -110,6 +110,10 @@ Where the items differ from upstream's, each on purpose:
 - **ScrollArea**, **Pagination** and **Field**: no unused `React` import in ScrollArea, no
   redundant `role="navigation"` on Pagination's `nav`, and `===` in `FieldError` in place of
   `==`, so Biome's `noUnusedImports`, `noRedundantRoles` and `noDoubleEquals` pass on them.
+- **Calendar**: a `biome-ignore lint/correctness/noComponentHookFactories` comment sits above
+  each of the `Root`, `Chevron`, `DayButton` and `WeekNumber` render functions that upstream
+  passes to react-day-picker's `components` prop inline. They stay as upstream writes them, so each
+  sync copies its Calendar unchanged.
 
 Two upstream defaults stay, and your `role` replaces them:
 

@@ -237,13 +237,17 @@ stylesheets the page loads are the registry's own.
 
 ## Formatting and Biome
 
-Generated files get Biome's formatting and safe fixes (import order, `import type`;
-`scripts/mirror/format.ts`). `biome.json` sets `fix: "safe"` on `noRedundantRoles`,
+Generated files, stylesheets included, get Biome's formatting and safe fixes (import order,
+`import type`; `scripts/mirror/format.ts`). `files.includes` covers `.scss` and `.css`, since
+Biome returns an existing file it does not cover unchanged; the CSS linter is off
+(`css.linter.enabled`, and `linter.includes` leaving out `.scss`) until #80's second layer
+turns it on. `biome.json` sets `fix: "safe"` on `noRedundantRoles`,
 `noDoubleEquals` and `noUnusedImports`, whose fixes Biome otherwise counts as unsafe, so the build
 strips a redundant `role`, turns `==` into `===` and drops an unused import. For
 `registry/*/ui/**`, an override turns off the rules upstream's code trips where this registry
 keeps it: `useSemanticElements`, `useKeyWithClickEvents`, `noLabelWithoutControl`,
 `noDocumentCookie`, `noArrayIndexKey`, `useExhaustiveDependencies` and
 `noDangerouslySetInnerHtml`. Every other rule applies there. A change Biome cannot make is a patch
-in `scripts/mirror/patches.ts` (step 2 of [Components](#components)).
+in `scripts/mirror/patches.ts` (step 2 of [Components](#components)), as is Calendar's
+`noComponentHookFactories` suppression on the render functions upstream writes inline.
 `ab/generated/` is written unformatted, and Biome skips it as a gitignored path.
