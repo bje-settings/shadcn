@@ -16,6 +16,7 @@ import {
   type SlotOptions,
   slotToScss,
 } from './scss.ts'
+import { misreadsHex, unknownUnitSuppression } from './stylesheet-lint.ts'
 import { generateTest } from './tests.ts'
 import { type TransformedComponent, transformComponent } from './tsx.ts'
 
@@ -99,6 +100,14 @@ function wrap(label: string, values: string[]): string[] {
   }
   lines.push(line)
   return lines
+}
+
+// A default's declaration, in the noUnknownUnit suppression it needs when
+// Biome misreads its value, as print in scss.ts does for the rules.
+function defaultLines(line: string, misread: boolean): string[] {
+  if (!misread) return [`${line};`]
+  const { before, after } = unknownUnitSuppression(line)
+  return [before, `${line};`, ...(after === undefined ? [] : [after])]
 }
 
 // An upstream component as `shadcn add` would write it, and its transform.
@@ -368,7 +377,7 @@ export async function buildComponent(
           `  ${[...defaultSelectors].sort().join(',\n  ')} {`,
           ...[...defaults]
             .sort(([a], [b]) => a.localeCompare(b))
-            .map(([n, v]) => `    ${n}: ${v};`),
+            .flatMap(([n, v]) => defaultLines(`    ${n}: ${v}`, misreadsHex(n, v))),
           '  }',
           '}',
           '',

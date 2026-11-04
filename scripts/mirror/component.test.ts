@@ -44,11 +44,16 @@ const config = forStyle(
 
 const cssPath = join(root, 'upstream/base-vega/index.css')
 
-async function build(item: UpstreamItem, compiler = compile, patches?: Patches) {
+async function build(
+  item: UpstreamItem,
+  compiler = compile,
+  patches?: Patches,
+  defaults = internalDefaults,
+) {
   const prepared = await prepareComponent(item, config, cssPath, patches)
   const context = {
     slotOptions: {
-      ...sharedSlotOptions(config, [prepared], internalDefaults),
+      ...sharedSlotOptions(config, [prepared], defaults),
       markers: markerSelectors([prepared], prepared),
     },
     types: new Map(),
@@ -153,6 +158,28 @@ describe('buildComponent', () => {
     expect(scss?.content).toMatch(
       /\n {2}\/\/ biome-ignore lint\/correctness\/noUnknownUnit: [^\n]+\n {2}--shadow: [^\n]*#0000000d/,
     )
+  })
+
+  it('suppresses noUnknownUnit beside a default Biome misreads, a range for a long one', async () => {
+    const long = `0 0 ${'1px '.repeat(25)}#0000001a`
+    const defaults = new Map([
+      ...internalDefaults,
+      ['--shadow', '0 0 #0000001a'],
+      ['--ring-shadow', long],
+    ])
+    const [, scss] = (await build(badge(source('shadow-xs ring-3')), compile, undefined, defaults))
+      .files
+    const rule = 'lint/correctness/noUnknownUnit'
+    expect(scss?.content).toMatch(
+      new RegExp(`\\n {4}// biome-ignore ${rule}: [^\\n]+\\n {4}--shadow: 0 0 #0000001a;\\n`),
+    )
+    expect(scss?.content).toContain(
+      `\n    --ring-shadow: ${long};\n    // biome-ignore-end ${rule}`,
+    )
+    expect(scss?.content).toMatch(
+      new RegExp(`// biome-ignore-start ${rule}: [^\\n]+\\n {4}--ring-shadow`),
+    )
+    expect(scss?.content).not.toMatch(/biome-ignore[^\n]*\n {4}--shadow-color/)
   })
 
   it('leaves a slot with no rule out of the module', async () => {
