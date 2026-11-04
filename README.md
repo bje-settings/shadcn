@@ -112,8 +112,8 @@ Where the items differ from upstream's, each on purpose:
   `==`, so Biome's `noUnusedImports`, `noRedundantRoles` and `noDoubleEquals` pass on them.
 - **Calendar**: a `biome-ignore lint/correctness/noComponentHookFactories` comment sits above
   each of the `Root`, `Chevron`, `DayButton` and `WeekNumber` render functions that upstream
-  passes to react-day-picker's `components` prop inline. The functions stay as upstream writes
-  them; only the comments are added.
+  passes to react-day-picker's `components` prop inline. The functions stay inline, where
+  upstream writes them; the patch adds only the comments.
 
 Two upstream defaults stay, and your `role` replaces them:
 

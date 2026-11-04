@@ -122,9 +122,9 @@ const CALENDAR_COMPONENTS = ['Root', 'Chevron', 'DayButton', 'WeekNumber']
 const INLINE = ['ArrowFunctionExpression', 'FunctionExpression']
 
 // The properties of the components object Calendar passes to DayPicker that
-// upstream writes as inline render functions. One upstream hoists is a site
-// gone, so the build fails by name instead of suppressing a rule it no longer
-// trips.
+// upstream writes as `Name: () => ...` or `Name: function () {}`. Any other
+// form (hoisted, a method, a quoted key) is a site gone, so the build fails
+// by name instead of suppressing a rule it may no longer trip.
 export function calendarComponents(all: Node[]): Sites {
   const calendar = found(
     all.find(
@@ -256,7 +256,7 @@ export const PATCHES: Patches = {
   },
   calendar: {
     reason:
-      "Biome's noComponentHookFactories is suppressed on the render functions upstream passes inline to react-day-picker's components prop, which stay as upstream writes them.",
+      "Biome's noComponentHookFactories is suppressed on the render functions upstream passes inline to react-day-picker's components prop.",
     transform: (source) =>
       suppress(
         source,
