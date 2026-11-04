@@ -1,9 +1,9 @@
 // Deliberate changes to upstream's source, by item: each entry says why, and
 // may rewrite the source (after the CLI's install transforms, before the
 // conversion, so slots and generated tests see the patched code) and add test
-// lines that pin the behaviour it is for. A transform that no longer changes
-// the source fails the build, so a patch upstream has absorbed is noticed on
-// the next sync.
+// lines that pin the behaviour it is for. A transform that no longer finds
+// what it changes, or no longer changes the source, fails the build naming
+// the item, so a patch upstream has absorbed is noticed on the next sync.
 
 import type { FunctionDeclaration, JSXAttribute, JSXOpeningElement, Node } from '@babel/types'
 import MagicString from 'magic-string'
