@@ -48,7 +48,8 @@ Never edit by hand: each style's `registry/<style>/` (`ui/`, `hooks/`, `styles/`
 `ab/skipped-examples/<style>.json` and `ab/skipped-cards/<style>.json`.
 `scripts/mirror/generated.test.ts` fails when a committed file differs from what the pipeline
 produces. To change the output, change `scripts/mirror/` or `mirror.config.json`, then run
-`pnpm mirror:build`.
+`pnpm mirror:build`. To change a component's source on purpose, add an entry to
+`scripts/mirror/patches.ts` with its reason and a test.
 
 ## Adding an upstream item
 

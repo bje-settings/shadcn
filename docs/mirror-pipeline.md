@@ -85,15 +85,21 @@ For each component, the build:
    `shadcn add` writes into a project: `IconPlaceholder` becomes the configured icon library's
    icon, `cn-font-heading` becomes `font-heading`, and the menu hooks resolve. Any other `cn-*`
    style hook is dropped, as the CLI does.
-2. Rewrites the TSX (`scripts/mirror/tsx.ts`): `cva()` becomes a lookup object plus a same-named
+2. Applies the item's patch, if `scripts/mirror/patches.ts` has one: a deliberate change to
+   upstream's source, with its reason, and test lines the generated test gains. The steps after
+   this one see the patched source; the A/B harness keeps upstream's. The reason is a second header
+   line in the patched `.tsx` and `.test.tsx` (the `.test.tsx` alone for an entry with only tests).
+   A patch that no longer changes the source fails the build, so one upstream has absorbed is
+   removed on the next sync.
+3. Rewrites the TSX (`scripts/mirror/tsx.ts`): `cva()` becomes a lookup object plus a same-named
    function, `cn()` becomes `clsx()`, and class strings become `styles.<slot>` references named
    from `data-slot` (or Base UI `useRender`'s `state.slot`). An element without a `data-slot` is
    named from its component and tag (`accordionTriggerHeader`); each branch of a conditional class
    gets its own slot. An element without a `data-slot` whose own class names contain `size-` gets
-   a `data-class-size` attribute, for step 3's probe. Imports of other upstream components point at
+   a `data-class-size` attribute, for step 4's probe. Imports of other upstream components point at
    this registry's copies, and each upstream `registryDependencies` entry becomes `@bje/<item>`; a
    dependency not listed in `mirror.config.json` fails the build.
-3. Compiles each slot's classes with Tailwind itself against `upstream/base-<style>/index.css`
+4. Compiles each slot's classes with Tailwind itself against `upstream/base-<style>/index.css`
    (`scripts/mirror/scss.ts`):
    - Rules styling the slot's own element nest under `:where(.<slot>)`, so a consumer's
      `className` wins. Rules styling descendants (`*:w-full`, `& svg`) nest under `.<slot>`.
@@ -122,7 +128,7 @@ For each component, the build:
    - Rules that need a configured consumer class (Card's `[.border-b]:` padding) are dropped and
      listed in the module's header and the build log. An outside class in `globalClasses` stays,
      as `:global()`; any other fails the build.
-4. Renames Tailwind's internal variables, the ones that compose one property from several
+5. Renames Tailwind's internal variables, the ones that compose one property from several
    utilities (a shadow and a focus ring share one `box-shadow`, animate-in's keyframes read
    `--enter-*`), by dropping the `tw-` prefix: `--tw-ring-shadow` becomes `--ring-shadow`. A family
    whose bare names a component already uses is renamed whole (`--tw-translate-*` becomes
@@ -132,7 +138,7 @@ For each component, the build:
    module declares defaults for the ones it uses, on the elements that use them, in
    `@layer properties`. A layered rule loses to every unlayered one, and every module declares the
    same constants, so modules never conflict.
-5. Lists in the module's header the custom properties it reads and does not set (global tokens,
+6. Lists in the module's header the custom properties it reads and does not set (global tokens,
    or set by an enclosing slot or an inline style). Any class Tailwind produces no CSS for, other
    than `group`/`peer` markers and `classesWithoutCss` entries, fails the build.
 
@@ -232,6 +238,12 @@ stylesheets the page loads are the registry's own.
 ## Formatting and Biome
 
 Generated files get Biome's formatting and safe fixes (import order, `import type`;
-`scripts/mirror/format.ts`). They keep upstream's code, so `biome.json` turns off the rules
-upstream's code trips for `registry/*/ui/**`. Every other rule still applies there.
+`scripts/mirror/format.ts`). `biome.json` sets `fix: "safe"` on `noRedundantRoles`,
+`noDoubleEquals` and `noUnusedImports`, whose fixes Biome otherwise counts as unsafe, so the build
+strips a redundant `role`, turns `==` into `===` and drops an unused import. For
+`registry/*/ui/**`, an override turns off the rules upstream's code trips where this registry
+keeps it (`useSemanticElements`, `useKeyWithClickEvents`, `noLabelWithoutControl`,
+`noDocumentCookie`), and three that fire only on later Biome versions (`noArrayIndexKey`,
+`useExhaustiveDependencies`, `noDangerouslySetInnerHtml`). Every other rule applies there. A change
+Biome cannot make is a patch in `scripts/mirror/patches.ts` (step 2 of [Components](#components)).
 `ab/generated/` is written unformatted, and Biome skips it as a gitignored path.

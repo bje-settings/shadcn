@@ -97,6 +97,27 @@ same treatment, tinted from `--background`. The opacity, edge highlight, blur an
 `--frost-*` custom properties in `variables.scss`; the edge highlight differs in dark. In light,
 `--border` and `--input` are the foreground at 6%, so lines let the backdrop through too.
 
+## Intentional divergences
+
+Where the items differ from upstream's, each on purpose:
+
+- **Breadcrumb**: `BreadcrumbPage` renders a plain `span` with `aria-current="page"`, without
+  `role="link"` or `aria-disabled`. The
+  [WAI-ARIA breadcrumb pattern](https://www.w3.org/WAI/ARIA/apg/patterns/breadcrumb/) marks the
+  current page as a link or as plain text, and a span that navigates nowhere is not a link.
+- **Slider**: `getAriaLabel` and `getAriaValueText` pass through to every thumb. Base UI reads them
+  on the thumb, not the root, so without them a range slider cannot name its thumbs.
+- **ScrollArea**: no unused `import * as React from 'react'`, which upstream carries.
+- **Pagination** and **Field**: no redundant `role="navigation"` on the `nav`, and `===` in
+  `FieldError` in place of `==`, so Biome's recommended rules pass on both.
+
+Two upstream defaults stay, and your `role` replaces them:
+
+- **Alert** renders `role="alert"`, announced at once. Pass `role="status"` for a message that can
+  wait.
+- **Button** rendered as a link (`nativeButton={false}`, `render={<a />}`) gets Base UI's
+  `role="button"`. Pass `role="link"` for it to be announced as a link.
+
 ## Tests
 
 Each component ships a `<Name>.test.tsx`. It needs Vitest with `environment: 'jsdom'`; the item
