@@ -200,7 +200,7 @@ export { Chip, ChipMark }`,
     expect(test).not.toContain('styles.chipMark')
   })
 
-  it("appends a patch's test lines after the derived tests, which still import render", () => {
+  it("adds a patch's test lines after the component tests, which still import render", () => {
     const source = `${header}
 function Chip({ className }) { return <span data-slot="chip" className={cn("x", className)} /> }
 export { Chip }`

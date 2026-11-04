@@ -14,7 +14,7 @@ export type Patch = {
   // component file when there is a transform
   reason: string
   transform?: (source: string) => string
-  // Lines appended to the item's generated test
+  // Lines added to the item's generated test, after the component tests
   tests?: string[]
 }
 
@@ -213,6 +213,7 @@ export function applyPatch(
   } catch (error) {
     throw new Error(
       `${name}: its patch in scripts/mirror/patches.ts failed: ${(error as Error).message}`,
+      { cause: error },
     )
   }
   if (patched === source) {

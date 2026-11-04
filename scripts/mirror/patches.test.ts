@@ -40,9 +40,14 @@ describe('applyPatch', () => {
     )
   })
 
-  it('names the item when its transform fails', () => {
+  it('names the item when its transform fails, and keeps the original error', () => {
     expect(() => applyPatch('broken', '<span />', patches)).toThrow(
       "broken: its patch in scripts/mirror/patches.ts failed: patches.ts: upstream's source has no chip",
+    )
+    expect(() => applyPatch('broken', '<span />', patches)).toThrow(
+      expect.objectContaining({
+        cause: new Error("patches.ts: upstream's source has no chip"),
+      }),
     )
   })
 
