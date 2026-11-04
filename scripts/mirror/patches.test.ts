@@ -268,10 +268,28 @@ describe('the calendar patch', () => {
     ['a string-keyed computed property', '["Root"]: () => null'],
     ['an identifier-keyed computed property', '[Root]: () => null'],
     ['a hoisted component', 'Root: CalendarRoot'],
+    ['a component read from an object', 'Root: Parts.Root'],
+    ['a method', 'Root() { return null }'],
   ])('does not take %s for an inline component', (_, property) => {
     const code = `function Calendar() {\n  return <DayPicker components={{\n    ${property},\n  }} />\n}`
     expect(() => suppress(code, 'lint/x/y', 'why', calendarComponents)).toThrow(
       "patches.ts: upstream's source has no inline Root in DayPicker's components",
+    )
+  })
+
+  it('takes a function expression for an inline component', () => {
+    const code = [
+      'function Calendar() {',
+      '  return <DayPicker components={{',
+      '    Root: function () { return null },',
+      '    Chevron: () => null,',
+      '    DayButton: () => null,',
+      '    WeekNumber: () => null,',
+      '  }} />',
+      '}',
+    ].join('\n')
+    expect(suppress(code, 'lint/x/y', 'why', calendarComponents)).toContain(
+      '    // biome-ignore lint/x/y: why\n    Root: function',
     )
   })
 })
