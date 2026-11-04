@@ -256,7 +256,7 @@ export const PATCHES: Patches = {
   },
   calendar: {
     reason:
-      "react-day-picker's components prop takes render functions, which upstream writes inline in Calendar; they stay as written, so each sync copies upstream unchanged.",
+      "Biome's noComponentHookFactories is suppressed on the render functions upstream passes inline to react-day-picker's components prop, which stay as upstream writes them.",
     transform: (source) =>
       suppress(
         source,
