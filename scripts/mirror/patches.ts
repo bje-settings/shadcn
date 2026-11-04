@@ -5,6 +5,10 @@
 // the source fails the build, so a patch upstream has absorbed is noticed on
 // the next sync.
 
+import type { FunctionDeclaration, JSXAttribute, JSXOpeningElement, Node } from '@babel/types'
+import MagicString from 'magic-string'
+import { childNodes, parseModule } from './ast.ts'
+
 export type Patch = {
   // One line, written into the header of each file the patch reaches
   reason: string
@@ -15,7 +19,169 @@ export type Patch = {
 
 export type Patches = Readonly<Record<string, Patch>>
 
-export const PATCHES: Patches = {}
+// Every node of a module, depth first.
+function nodes(source: string): Node[] {
+  const all: Node[] = []
+  const visit = (node: Node) => {
+    all.push(node)
+    for (const child of childNodes(node)) visit(child)
+  }
+  visit(parseModule(source).program)
+  return all
+}
+
+function openingElements(source: string): JSXOpeningElement[] {
+  return nodes(source).filter(
+    (node): node is JSXOpeningElement => node.type === 'JSXOpeningElement',
+  )
+}
+
+function attribute(element: JSXOpeningElement, name: string): JSXAttribute | undefined {
+  return element.attributes.find(
+    (a): a is JSXAttribute => a.type === 'JSXAttribute' && a.name.name === name,
+  )
+}
+
+function found<T>(value: T | undefined, what: string): T {
+  if (value === undefined) throw new Error(`patches.ts: upstream's source has no ${what}`)
+  return value
+}
+
+// Drops the named attributes from the element carrying data-slot="<slot>".
+export function dropAttributes(source: string, slot: string, names: string[]): string {
+  const out = new MagicString(source)
+  for (const element of openingElements(source)) {
+    const value = attribute(element, 'data-slot')?.value
+    if (value?.type !== 'StringLiteral' || value.value !== slot) continue
+    const before = [element.name, ...element.attributes]
+    element.attributes.forEach((a, i) => {
+      if (a.type === 'JSXAttribute' && names.includes(String(a.name.name))) {
+        out.remove((before[i] as Node).end as number, a.end as number)
+      }
+    })
+  }
+  return out.toString()
+}
+
+const THUMB_LABELS = ['getAriaLabel', 'getAriaValueText']
+
+// Slider takes the thumb label props and passes them to every Thumb, where
+// Base UI reads them.
+export function forwardThumbLabels(source: string): string {
+  const all = nodes(source)
+  const thumb = found(
+    openingElements(source).find(
+      (e) => e.name.type === 'JSXMemberExpression' && e.name.property.name === 'Thumb',
+    ),
+    'Slider Thumb element',
+  )
+  // Upstream forwards them itself now.
+  if (attribute(thumb, 'getAriaLabel')) return source
+  const slider = found(
+    all.find(
+      (n): n is FunctionDeclaration => n.type === 'FunctionDeclaration' && n.id?.name === 'Slider',
+    ),
+    'Slider function',
+  )
+  const [param] = slider.params
+  const props = found(param?.type === 'ObjectPattern' ? param : undefined, 'Slider props pattern')
+  const rest = found(
+    props.properties.find((p) => p.type === 'RestElement'),
+    'rest element in the Slider props',
+  )
+  const type = found(
+    props.typeAnnotation?.type === 'TSTypeAnnotation' ? props.typeAnnotation : undefined,
+    'Slider props type',
+  )
+  const out = new MagicString(source)
+  const primitive = source.slice(thumb.name.start as number, thumb.name.end as number)
+  out.appendLeft(rest.start as number, THUMB_LABELS.map((name) => `${name}, `).join(''))
+  out.appendLeft(
+    type.typeAnnotation.end as number,
+    ` & Pick<${primitive}.Props, ${THUMB_LABELS.map((name) => `'${name}'`).join(' | ')}>`,
+  )
+  out.appendLeft(
+    thumb.name.end as number,
+    THUMB_LABELS.map((name) => ` ${name}={${name}}`).join(''),
+  )
+  return out.toString()
+}
+
+export const PATCHES: Patches = {
+  breadcrumb: {
+    reason:
+      'The WAI-ARIA APG breadcrumb pattern marks the current page as a link with aria-current="page" or as plain text; a span that navigates nowhere carries no link role.',
+    transform: (source) => dropAttributes(source, 'breadcrumb-page', ['role', 'aria-disabled']),
+    tests: [
+      'describe("BreadcrumbPage, as patched", () => {',
+      '  it("marks the current page with aria-current and no role", () => {',
+      '    cleanup()',
+      '    render(<BreadcrumbPage data-subject>Page</BreadcrumbPage>)',
+      '    const page = document.querySelector("[data-subject]")',
+      '    expect(page?.getAttribute("aria-current")).toBe("page")',
+      '    expect(page?.hasAttribute("role")).toBe(false)',
+      '    expect(page?.hasAttribute("aria-disabled")).toBe(false)',
+      '  })',
+      '})',
+    ],
+  },
+  slider: {
+    reason:
+      'Base UI reads getAriaLabel and getAriaValueText on each Thumb, not the Root, so Slider takes both and passes them on: a range slider can name each thumb.',
+    transform: forwardThumbLabels,
+    tests: [
+      'describe("Slider, as patched", () => {',
+      '  it("names each thumb with getAriaLabel and getAriaValueText", () => {',
+      '    cleanup()',
+      '    render(',
+      '      <Slider',
+      '        defaultValue={[20, 60]}',
+      '        getAriaLabel={(index) => (index === 0 ? "Minimum" : "Maximum")}',
+      '        getAriaValueText={(formatted) => ["value", formatted].join(" ")}',
+      '      />,',
+      '    )',
+      '    const inputs = [...document.querySelectorAll(\'[data-slot="slider-thumb"] input\')]',
+      '    expect(inputs.map((input) => input.getAttribute("aria-label"))).toEqual(["Minimum", "Maximum"])',
+      '    expect(inputs.map((input) => input.getAttribute("aria-valuetext"))).toEqual([',
+      '      "value 20",',
+      '      "value 60",',
+      '    ])',
+      '  })',
+      '})',
+    ],
+  },
+  alert: {
+    reason:
+      'A consumer\'s role replaces Alert\'s role="alert", so a status message can take role="status" and be announced politely.',
+    tests: [
+      'describe("Alert, with a consumer role", () => {',
+      '  it("renders the consumer\'s role=\\"status\\" in place of role=\\"alert\\"", () => {',
+      '    cleanup()',
+      '    render(<Alert role="status">Saved</Alert>)',
+      '    expect(document.querySelector(\'[data-slot="alert"]\')?.getAttribute("role")).toBe("status")',
+      '  })',
+      '})',
+    ],
+  },
+  button: {
+    reason:
+      'Base UI gives a Button rendered as a link role="button"; a consumer\'s role="link" replaces it, so the link is announced as one.',
+    tests: [
+      'describe("Button, rendered as a link", () => {',
+      '  it("takes the consumer\'s role=\\"link\\" over Base UI\'s role=\\"button\\"", () => {',
+      '    cleanup()',
+      '    render(<Button nativeButton={false} render={<a href="/docs">Docs</a>} />)',
+      '    expect(document.querySelector(\'[data-slot="button"]\')?.getAttribute("role")).toBe("button")',
+      '    cleanup()',
+      '    render(<Button nativeButton={false} role="link" render={<a href="/docs">Docs</a>} />)',
+      '    const link = document.querySelector(\'[data-slot="button"]\')',
+      '    expect(link?.tagName).toBe("A")',
+      '    expect(link?.getAttribute("role")).toBe("link")',
+      '  })',
+      '})',
+    ],
+  },
+}
 
 // The item's source with its patch applied, and the patch, if it has one.
 export function applyPatch(

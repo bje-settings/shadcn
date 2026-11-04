@@ -9,7 +9,6 @@ import styles from './Pagination.module.scss'
 function Pagination({ className, ...props }: React.ComponentProps<'nav'>) {
   return (
     <nav
-      role="navigation"
       aria-label="pagination"
       data-slot="pagination"
       className={clsx(styles.pagination, className)}

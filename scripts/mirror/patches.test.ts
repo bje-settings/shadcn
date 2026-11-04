@@ -1,5 +1,14 @@
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { applyPatch, PATCHES, type Patches } from './patches.ts'
+import { parseModule } from './ast.ts'
+import { applyPatch, dropAttributes, forwardThumbLabels, PATCHES, type Patches } from './patches.ts'
+import { root } from './test-support.ts'
+
+// Upstream's luma source for an item, as snapshotted.
+const luma = (name: string): string =>
+  JSON.parse(readFileSync(join(root, 'upstream/base-luma', `${name}.json`), 'utf8')).files[0]
+    .content
 
 const patches: Patches = {
   chip: { reason: 'Chip drops its role.', transform: (s) => s.replace(' role="button"', '') },
@@ -34,6 +43,67 @@ describe('applyPatch', () => {
 
   it('reads the shipped table by default', () => {
     expect(applyPatch('nothing-patched', 'x')).toEqual({ source: 'x' })
-    expect(Object.keys(PATCHES)).toEqual(expect.any(Array))
+    expect(applyPatch('alert', 'x')).toEqual({ source: 'x', patch: PATCHES.alert })
+  })
+})
+
+describe('the breadcrumb patch', () => {
+  const source = luma('breadcrumb')
+  const page = (code: string) =>
+    code.slice(
+      code.indexOf('function BreadcrumbPage'),
+      code.indexOf('function BreadcrumbSeparator'),
+    )
+
+  it("drops BreadcrumbPage's link role and aria-disabled, and keeps aria-current", () => {
+    expect(page(source)).toContain('role="link"')
+    const { source: patched } = applyPatch('breadcrumb', source)
+    expect(page(patched)).not.toContain('role=')
+    expect(page(patched)).not.toContain('aria-disabled')
+    expect(page(patched)).toContain('aria-current="page"')
+  })
+
+  it('leaves every other element as upstream wrote it', () => {
+    const { source: patched } = applyPatch('breadcrumb', source)
+    expect(patched.replace(page(patched), '')).toBe(source.replace(page(source), ''))
+    expect(patched).toContain('role="presentation"')
+  })
+
+  it('fails the build once upstream drops the attributes itself', () => {
+    const absorbed = dropAttributes(source, 'breadcrumb-page', ['role', 'aria-disabled'])
+    expect(() => applyPatch('breadcrumb', absorbed)).toThrow('breadcrumb: its patch')
+  })
+})
+
+describe('the slider patch', () => {
+  const source = luma('slider')
+
+  it('takes getAriaLabel and getAriaValueText, typed from the Thumb, and passes them to it', () => {
+    const { source: patched } = applyPatch('slider', source)
+    parseModule(patched)
+    expect(patched).toContain('max = 100,\n  getAriaLabel, getAriaValueText, ...props\n')
+    expect(patched).toContain(
+      "}: SliderPrimitive.Root.Props & Pick<SliderPrimitive.Thumb.Props, 'getAriaLabel' | 'getAriaValueText'>) {",
+    )
+    expect(patched).toContain(
+      '<SliderPrimitive.Thumb getAriaLabel={getAriaLabel} getAriaValueText={getAriaValueText}\n',
+    )
+  })
+
+  it('fails the build once upstream forwards them itself', () => {
+    expect(() => applyPatch('slider', forwardThumbLabels(source))).toThrow(
+      'slider: its patch in scripts/mirror/patches.ts changes nothing',
+    )
+  })
+
+  it.each([
+    ['Slider Thumb element', 'function Slider({ ...props }: P) { return <Root /> }'],
+    ['Slider function', 'export default function ({ ...props }: P) { return <S.Thumb /> }'],
+    ['Slider props pattern', 'function Slider() { return <S.Thumb /> }'],
+    ['Slider props pattern', 'function Slider(props: P) { return <S.Thumb /> }'],
+    ['rest element in the Slider props', 'function Slider({ a }: P) { return <S.Thumb /> }'],
+    ['Slider props type', 'function Slider({ ...props }) { return <S.Thumb /> }'],
+  ])('fails on a source with no %s', (what, code) => {
+    expect(() => forwardThumbLabels(code)).toThrow(`patches.ts: upstream's source has no ${what}`)
   })
 })
