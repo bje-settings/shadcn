@@ -11,6 +11,8 @@
       "**/*.mjs",
       "**/*.ts",
       "**/*.tsx",
+      "**/*.scss",
+      "**/*.css",
       "!.claude/worktrees",
       "!.claude/skills",
       "!upstream"
@@ -18,6 +20,7 @@
   },
   "linter": {
     "enabled": true,
+    "includes": ["**", "!**/*.scss"],
     "rules": {
       "preset": "recommended",
       "a11y": {
@@ -42,6 +45,11 @@
       "quoteStyle": "single",
       "semicolons": "asNeeded",
       "trailingCommas": "all"
+    }
+  },
+  "css": {
+    "linter": {
+      "enabled": false
     }
   },
   "json": {
