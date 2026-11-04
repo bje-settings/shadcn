@@ -445,7 +445,7 @@ describe('a suppression whose site upstream dropped', () => {
     [
       'chart',
       ['dangerouslySetInnerHTML', 'data-css'],
-      'dangerouslySetInnerHTML on a style element',
+      'single dangerouslySetInnerHTML on a style element',
     ],
     [
       'chart',
@@ -549,11 +549,13 @@ describe('the locators', () => {
   it('tagAttribute takes the one attribute on that tag, and nothing for none or two', () => {
     const at = tagAttribute('style', 'x')
     expect(sites(at, '<a><style x="1" /><style /><b.style x="2" /></a>')).toEqual([
-      ['x on a style element', 'JSXAttribute'],
+      ['single x on a style element', 'JSXAttribute'],
     ])
-    expect(sites(at, '<a><style /><b x="1" /></a>')).toEqual([['x on a style element', undefined]])
+    expect(sites(at, '<a><style /><b x="1" /></a>')).toEqual([
+      ['single x on a style element', undefined],
+    ])
     expect(sites(at, '<a><style x="1" /><style x="2" /></a>')).toEqual([
-      ['x on a style element', undefined],
+      ['single x on a style element', undefined],
     ])
   })
 

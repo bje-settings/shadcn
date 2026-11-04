@@ -280,7 +280,7 @@ export function tagAttribute(tag: string, name: string): (all: Node[]) => Sites 
         ? [attribute(n, name)].filter((a) => a !== undefined)
         : [],
     )
-    return [[`${name} on a ${tag} element`, matches.length === 1 ? matches[0] : undefined]]
+    return [[`single ${name} on a ${tag} element`, matches.length === 1 ? matches[0] : undefined]]
   }
 }
 
