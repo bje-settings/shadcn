@@ -410,6 +410,10 @@ describe('the noUnknownUnit suppressions', () => {
     expect(scss).toContain(
       `  // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier\n  // biome-ignore ${rule}\n  --b: 0 1px #0000001a !important;\n  // biome-ignore-end`,
     )
+    const spread = (await convert([`[--a:${long}]!`])).scss
+    expect(spread).toContain(
+      `!important;\n  // biome-ignore-end ${rule}\n  // biome-ignore-end lint/complexity/noImportantStyles`,
+    )
   })
 })
 
