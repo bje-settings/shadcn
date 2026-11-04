@@ -15,7 +15,7 @@
 // Utilities are the components' own CSS and live in their modules. Anything
 // else at the top level fails the build rather than being guessed at.
 
-import postcss, { type ChildNode, type Container, type Root } from 'postcss'
+import postcss, { type AtRule, type ChildNode, type Container, type Rule } from 'postcss'
 
 import { renameInternal } from './internal.ts'
 import type { FontItem } from './project-css.ts'
@@ -64,10 +64,11 @@ const IMPORTANT_IGNORE =
 
 // Each block keeps one declaration per property (stylesheet-lint.ts), and an
 // !important one, preflight's [hidden] rule, gets a suppression on the line
-// before it.
-function forBiome(root: Root): void {
-  const containers: Container[] = []
-  root.walk((node) => {
+// before it. The reason is that rule's, so an !important declaration anywhere
+// else fails the build by name, to be given a reason of its own.
+function forBiome(top: Container): void {
+  const containers: Container[] = [top]
+  top.walk((node) => {
     if (node.type === 'rule' || node.type === 'atrule') containers.push(node)
   })
   for (const container of containers) {
@@ -79,11 +80,18 @@ function forBiome(root: Root): void {
     )
     for (const node of nodes.filter((n) => !kept.has(n))) node.remove()
   }
-  root.walkDecls((decl) => {
+  top.walkDecls((decl) => {
     if (!decl.important) return
-    // A line comment needs the declaration on the next line.
-    // Set on every node postcss parses
+    const parent = decl.parent as Rule | AtRule
+    const selector = parent.type === 'rule' ? parent.selector : `@${parent.name}`
+    if (!selector.startsWith('[hidden]')) {
+      throw new Error(
+        `globals: ${decl.prop} in ${selector} is !important outside preflight's [hidden] rule`,
+      )
+    }
+    // postcss sets raws.before on every node it parses.
     const raw = decl.raws.before as string
+    // A line comment needs the declaration on the next line.
     const before = raw.includes('\n') ? raw : `\n${raw}`
     decl.raws.before = `${before}${IMPORTANT_IGNORE}${before}`
   })
@@ -100,8 +108,12 @@ export function globalStylesheets(css: string, header: string): GlobalStylesheet
       })
   })
   removeEmpty(root)
-  forBiome(root)
-  for (const node of root.nodes) parts[destination(node)].push(renameInternal(node.toString()))
+  for (const node of root.nodes) {
+    const to = destination(node)
+    // Only what ships: a dropped utility's !important is not preflight's.
+    if (to !== 'drop') forBiome(node as Container)
+    parts[to].push(renameInternal(node.toString()))
+  }
   const file = (blocks: string[], extra: string[] = []) => {
     const rules = blocks.join('\n\n')
     // Biome honours it only before any rule.

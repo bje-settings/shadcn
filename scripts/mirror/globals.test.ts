@@ -63,12 +63,19 @@ describe('the global stylesheets, for Biome', () => {
 
   it('keeps the later of two values, or an earlier !important one', () => {
     expect(base('a { width: auto; width: 100% }')).toContain('a { width: 100% }')
-    expect(base('a { color: red !important; color: blue }')).not.toContain('blue')
+    expect(base('[hidden] { color: red !important; color: blue }')).not.toContain('blue')
   })
 
-  it('collapses repeated declarations directly inside an at-rule', () => {
+  it('collapses repeated declarations directly inside an at-rule, and keeps one with no block', () => {
     expect(base('@font-face { font-display: swap; font-display: block }')).toContain(
       '@font-face { font-display: block }',
+    )
+    expect(base('@media print; a { color: red }')).toContain('@media print; a { color: red }')
+  })
+
+  it('collapses repeated declarations in a top-level rule', () => {
+    expect(globalStylesheets(':root { --x: 1; --x: 2 }', '// h').variables).toContain(
+      ':root { --x: 2 }',
     )
   })
 
@@ -83,9 +90,18 @@ describe('the global stylesheets, for Biome', () => {
       "// biome-ignore lint/complexity/noImportantStyles: Tailwind's preflight keeps a hidden element hidden whatever display another rule gives it"
     const one = base('[hidden] {\n    display: none !important;\n  }')
     expect(one).toContain(`{\n    ${comment}\n    display: none !important;`)
-    const two = base('a { b: 1 !important; c: 2 !important; d: 3 }')
+    const two = base('[hidden] { b: 1 !important; c: 2 !important; d: 3 }')
     expect(two.split(comment)).toHaveLength(3)
     expect(two).toContain(`\n ${comment}\n b: 1 !important;\n ${comment}\n c: 2 !important; d: 3 }`)
+  })
+
+  it("fails the build naming an !important declaration outside preflight's [hidden] rule", () => {
+    expect(() => base('a { color: red !important }')).toThrow(
+      "globals: color in a is !important outside preflight's [hidden] rule",
+    )
+    expect(() => base('@font-face { font-display: swap !important }')).toThrow(
+      "globals: font-display in @font-face is !important outside preflight's [hidden] rule",
+    )
   })
 
   it('puts the noUnknownUnit suppression second in the header of a sheet Biome misreads', () => {
