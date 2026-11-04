@@ -276,7 +276,7 @@ function print(block: Block, depth: number, sites: readonly Site[], used: Site[]
       const site = sites.find(([parent, selector]) => parent === block.key && selector === item.key)
       if (site) {
         lines.push(`${indent}  ${CASCADE_IGNORE}`)
-        if (!used.includes(site)) used.push(site)
+        used.push(site)
       }
       lines.push(...print(item, depth + 1, sites, used))
     } else {

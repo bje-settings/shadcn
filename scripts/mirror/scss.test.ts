@@ -354,6 +354,17 @@ describe('the declarations of one block', () => {
     expect(scss).not.toContain('100%')
   })
 
+  it("lets a reset line-height replace the slot's own, past a nested block", async () => {
+    const classes = ['leading-none', 'hover:flex', 'text-[0.8rem]']
+    const { scss } = slotToScss(
+      await compile(classes),
+      { name: 'root', classes, resetsLeading: true },
+      none,
+    )
+    expect(scss.match(/line-height/g)).toEqual(['line-height'])
+    expect(scss).toMatch(/\n {2}\}\n {2}line-height: inherit;\n\}$/)
+  })
+
   it('leaves declarations in different blocks alone', async () => {
     const { scss } = await convert(['w-auto', 'hover:w-full'])
     expect(scss).toContain(':where(.root) {\n  width: auto;\n')

@@ -278,7 +278,8 @@ describe('markerSelectors', () => {
     type: 'registry:ui',
     files: [{ path: `registry/base-vega/ui/${name}.tsx`, type: 'registry:ui', content: body }],
   })
-  const prepare = (upstream: UpstreamItem) => prepareComponent(upstream, config, cssPath)
+  // No patches: the items borrow shipped names (field, label) for made-up sources.
+  const prepare = (upstream: UpstreamItem) => prepareComponent(upstream, config, cssPath, {})
 
   it('maps markers to the data-slot of every element carrying them', async () => {
     const field = await prepare(

@@ -11,6 +11,7 @@ import type {
   JSXOpeningElement,
   Node,
   ObjectProperty,
+  VariableDeclaration,
 } from '@babel/types'
 import MagicString from 'magic-string'
 import { childNodes, parseModule } from './ast.ts'
@@ -54,6 +55,21 @@ function attribute(element: JSXOpeningElement, name: string): JSXAttribute | und
   )
 }
 
+// The one element carrying data-slot="<slot>", or undefined for none or more.
+function slotted(elements: JSXOpeningElement[], slot: string): JSXOpeningElement | undefined {
+  const matches = elements.filter((element) => {
+    const value = attribute(element, 'data-slot')?.value
+    return value?.type === 'StringLiteral' && value.value === slot
+  })
+  return matches.length === 1 ? matches[0] : undefined
+}
+
+function functionNamed(all: Node[], name: string): FunctionDeclaration | undefined {
+  return all.find(
+    (n): n is FunctionDeclaration => n.type === 'FunctionDeclaration' && n.id?.name === name,
+  )
+}
+
 function found<T>(value: T | undefined, what: string): T {
   if (value === undefined) throw new Error(`patches.ts: upstream's source has no ${what}`)
   return value
@@ -63,12 +79,8 @@ function found<T>(value: T | undefined, what: string): T {
 // data-slot="<slot>". Each must be there, so a slot upstream renamed, or an
 // attribute it dropped itself, fails the build by name.
 export function dropAttributes(source: string, slot: string, names: string[]): string {
-  const matches = openingElements(source).filter((element) => {
-    const value = attribute(element, 'data-slot')?.value
-    return value?.type === 'StringLiteral' && value.value === slot
-  })
   const element = found(
-    matches.length === 1 ? matches[0] : undefined,
+    slotted(openingElements(source), slot),
     `single element with data-slot="${slot}"`,
   )
   const before = [element.name, ...element.attributes]
@@ -85,11 +97,19 @@ export function dropAttributes(source: string, slot: string, names: string[]): s
 // the comment goes before, or undefined when upstream's source lacks it.
 export type Sites = Array<[what: string, node: Node | undefined]>
 
+// Where the line holding a position starts.
+function lineStart(source: string, at: number): number {
+  return source.lastIndexOf('\n', at - 1) + 1
+}
+
 // Puts `biome-ignore <rule>: <reason>` on its own line before each node the
 // locator names, at that line's indentation, since Biome applies it to the
-// next line. Among JSX children it is `{/* */}`, as `//` there would be text;
-// elsewhere (a statement, an object property, a returned element) it is `//`.
-// A named site that is gone fails the build by name; naming no site changes
+// next line. A node after other code on its line (`<li key={index}>` after
+// `error?.message && `) is suppressed from its ancestor that starts that line;
+// one with none fails by name. The form is the position's: among JSX children
+// `{/* */}`, as `//` there would be text; elsewhere (a statement, an object
+// property, an attribute in an opening tag, a returned element) `//`. A
+// named site that is gone fails the build by name; naming no site changes
 // nothing, so applyPatch fails the build as absorbed.
 export function suppress(
   source: string,
@@ -102,10 +122,24 @@ export function suppress(
   for (const node of all) for (const child of childNodes(node)) parents.set(child, node)
   const out = new MagicString(source)
   for (const [what, located] of locate(all)) {
-    const node = found(located, what)
+    let node = found(located, what)
+    const line = lineStart(source, node.start as number)
+    while (source.slice(line, node.start as number).trim() !== '') {
+      // The program starts at 0, so every node has a parent until one starts
+      // on an earlier line.
+      node = parents.get(node) as Node
+      if ((node.start as number) < line) {
+        throw new Error(`patches.ts: ${what} does not start its line`)
+      }
+    }
+    // The outermost node starting there takes the comment: an opening
+    // element's element, an expression's statement.
+    for (let up = parents.get(node); up !== undefined && up.start === node.start; ) {
+      node = up
+      up = parents.get(node)
+    }
     const start = node.start as number
-    const indent = source.slice(source.lastIndexOf('\n', start - 1) + 1, start)
-    if (indent.trim() !== '') throw new Error(`patches.ts: ${what} does not start its line`)
+    const indent = source.slice(line, start)
     const parent = parents.get(node)?.type
     const comment = `biome-ignore ${rule}: ${reason}`
     out.appendLeft(
@@ -162,6 +196,161 @@ export function calendarComponents(all: Node[]): Sites {
   ])
 }
 
+// Each suppression an entry applies, in order: the rule, why, and where.
+type Suppression = [rule: string, reason: string, locate: (all: Node[]) => Sites]
+
+function suppressEach(source: string, suppressions: Suppression[]): string {
+  return suppressions.reduce(
+    (code, [rule, reason, locate]) => suppress(code, rule, reason, locate),
+    source,
+  )
+}
+
+// The one element carrying each data-slot, when it has the role given. Biome
+// honours a useSemanticElements suppression before the element, not before
+// its role attribute.
+export function roles(slots: Record<string, string>): (all: Node[]) => Sites {
+  return (all) => {
+    const elements = all.filter((n): n is JSXOpeningElement => n.type === 'JSXOpeningElement')
+    return Object.entries(slots).map(([slot, role]) => {
+      const element = slotted(elements, slot)
+      const value = element && attribute(element, 'role')?.value
+      return [
+        `element with data-slot="${slot}" and role="${role}"`,
+        value?.type === 'StringLiteral' && value.value === role ? element : undefined,
+      ]
+    })
+  }
+}
+
+// The one element carrying data-slot="<slot>", for a rule Biome reports on
+// the whole element.
+export function slotElement(slot: string): (all: Node[]) => Sites {
+  return (all) => [
+    [
+      `element with data-slot="${slot}"`,
+      slotted(
+        all.filter((n): n is JSXOpeningElement => n.type === 'JSXOpeningElement'),
+        slot,
+      ),
+    ],
+  ]
+}
+
+// In each function named, the one key attribute set from a callback's index
+// parameter: `.map((item, index) => <div key={index} />)`, or Array.from's.
+export function indexKeys(...functions: string[]): (all: Node[]) => Sites {
+  return (all) =>
+    functions.map((name) => {
+      const fn = all.find(
+        (n) =>
+          (n.type === 'FunctionDeclaration' && n.id?.name === name) ||
+          (n.type === 'VariableDeclarator' && n.id.type === 'Identifier' && n.id.name === name),
+      )
+      const keys = (fn ? descendants(fn) : []).flatMap((n) =>
+        n.type === 'CallExpression' ? n.arguments.flatMap(indexKeyed) : [],
+      )
+      return [`key from a callback's index in ${name}`, keys.length === 1 ? keys[0] : undefined]
+    })
+}
+
+function indexKeyed(callback: Node): JSXAttribute[] {
+  if (callback.type !== 'ArrowFunctionExpression' && callback.type !== 'FunctionExpression') {
+    return []
+  }
+  const index = callback.params[1]
+  if (index?.type !== 'Identifier') return []
+  return descendants(callback).filter((n): n is JSXAttribute => {
+    if (n.type !== 'JSXAttribute' || n.name.name !== 'key') return false
+    const value = n.value
+    return (
+      value?.type === 'JSXExpressionContainer' &&
+      value.expression.type === 'Identifier' &&
+      value.expression.name === index.name
+    )
+  })
+}
+
+// The one attribute of that name on an element with that tag.
+export function tagAttribute(tag: string, name: string): (all: Node[]) => Sites {
+  return (all) => {
+    const matches = all.flatMap((n) =>
+      n.type === 'JSXOpeningElement' && n.name.type === 'JSXIdentifier' && n.name.name === tag
+        ? [attribute(n, name)].filter((a) => a !== undefined)
+        : [],
+    )
+    return [[`${name} on a ${tag} element`, matches.length === 1 ? matches[0] : undefined]]
+  }
+}
+
+// In the function, each `const <name> = React.<hook>(..., [deps])` whose
+// dependencies list the identifier given.
+export function hookDependencies(
+  fn: string,
+  dependency: string,
+  hooks: Record<string, string>,
+): (all: Node[]) => Sites {
+  return (all) => {
+    const body = descendants(found(functionNamed(all, fn), `${fn} function`))
+    return Object.entries(hooks).map(([name, hook]) => [
+      `${name} = React.${hook}(...) listing ${dependency} in ${fn}`,
+      body.find((n): n is VariableDeclaration => {
+        if (n.type !== 'VariableDeclaration' || n.declarations.length !== 1) return false
+        const [{ id, init }] = n.declarations as [VariableDeclaration['declarations'][number]]
+        if (id.type !== 'Identifier' || id.name !== name || init?.type !== 'CallExpression') {
+          return false
+        }
+        const { callee } = init
+        const deps = init.arguments.at(-1)
+        return (
+          callee.type === 'MemberExpression' &&
+          !callee.computed &&
+          callee.object.type === 'Identifier' &&
+          callee.object.name === 'React' &&
+          callee.property.type === 'Identifier' &&
+          callee.property.name === hook &&
+          deps?.type === 'ArrayExpression' &&
+          deps.elements.some((e) => e?.type === 'Identifier' && e.name === dependency)
+        )
+      }),
+    ])
+  }
+}
+
+// In the function, the statement assigning document.cookie.
+export function cookieWrite(fn: string): (all: Node[]) => Sites {
+  return (all) => [
+    [
+      `document.cookie assignment in ${fn}`,
+      descendants(found(functionNamed(all, fn), `${fn} function`)).find(
+        (n) =>
+          n.type === 'ExpressionStatement' &&
+          n.expression.type === 'AssignmentExpression' &&
+          n.expression.left.type === 'MemberExpression' &&
+          !n.expression.left.computed &&
+          n.expression.left.object.type === 'Identifier' &&
+          n.expression.left.object.name === 'document' &&
+          n.expression.left.property.type === 'Identifier' &&
+          n.expression.left.property.name === 'cookie',
+      ),
+    ],
+  ]
+}
+
+// The function's return statement that returns a <tag> element.
+export function returnedElement(fn: string, tag: string): (all: Node[]) => Sites {
+  return (all) => [
+    [
+      `return of a ${tag} element in ${fn}`,
+      descendants(found(functionNamed(all, fn), `${fn} function`)).find((n) => {
+        if (n.type !== 'ReturnStatement' || n.argument?.type !== 'JSXElement') return false
+        const { name } = n.argument.openingElement
+        return name.type === 'JSXIdentifier' && name.name === tag
+      }),
+    ],
+  ]
+}
+
 const THUMB_LABELS = ['getAriaLabel', 'getAriaValueText']
 
 // Slider takes the thumb label props and passes them to every Thumb, where
@@ -211,6 +400,11 @@ export function forwardThumbLabels(source: string): string {
   return out.toString()
 }
 
+const SEMANTIC = 'lint/a11y/useSemanticElements'
+const INDEX_KEY = 'lint/suspicious/noArrayIndexKey'
+const GROUP_REASON =
+  'upstream\'s div carries role="group"; a fieldset would change the box and the form semantics'
+
 export const PATCHES: Patches = {
   breadcrumb: {
     reason:
@@ -231,8 +425,19 @@ export const PATCHES: Patches = {
   },
   slider: {
     reason:
-      'Base UI reads getAriaLabel and getAriaValueText on each Thumb, not the Root, so Slider takes both and passes them on: a range slider can name each thumb.',
-    transform: forwardThumbLabels,
+      "Base UI reads getAriaLabel and getAriaValueText on each Thumb, not the Root, so Slider takes both and passes them on, and Biome's noArrayIndexKey is suppressed on the thumbs upstream keys by index.",
+    // Once upstream forwards the labels, the source comes back unchanged, so
+    // applyPatch reports the patch as absorbed.
+    transform: (source) => {
+      const forwarded = forwardThumbLabels(source)
+      if (forwarded === source) return source
+      return suppress(
+        forwarded,
+        INDEX_KEY,
+        'upstream renders one thumb per value with Array.from, so the index is all a thumb has',
+        indexKeys('Slider'),
+      )
+    },
     tests: [
       'describe("Slider, as patched", () => {',
       '  it("names each thumb with getAriaLabel and getAriaValueText", () => {',
@@ -263,6 +468,116 @@ export const PATCHES: Patches = {
         'lint/correctness/noComponentHookFactories',
         'upstream passes react-day-picker its components inline',
         calendarComponents,
+      ),
+  },
+  'button-group': {
+    reason: 'Biome\'s useSemanticElements is suppressed on the div upstream gives role="group".',
+    transform: (source) =>
+      suppress(source, SEMANTIC, GROUP_REASON, roles({ 'button-group': 'group' })),
+  },
+  carousel: {
+    reason:
+      'Biome\'s useSemanticElements is suppressed on the divs upstream gives role="region" and role="group".',
+    transform: (source) =>
+      suppress(
+        source,
+        SEMANTIC,
+        'upstream\'s divs carry role="region" and role="group" with an aria-roledescription; a section or fieldset would change the box and the semantics',
+        roles({ carousel: 'region', 'carousel-item': 'group' }),
+      ),
+  },
+  field: {
+    reason:
+      'Biome\'s useSemanticElements and noArrayIndexKey are suppressed on the div Field gives role="group" and on the errors FieldError keys by index.',
+    transform: (source) =>
+      suppressEach(source, [
+        [SEMANTIC, GROUP_REASON, roles({ field: 'group' })],
+        [
+          INDEX_KEY,
+          'upstream keys each error by its index; the items hold no state, so a reorder only re-renders them',
+          indexKeys('FieldError'),
+        ],
+      ]),
+  },
+  'input-group': {
+    reason:
+      'Biome\'s useSemanticElements and useKeyWithClickEvents are suppressed on the divs upstream gives role="group" and on the addon that focuses the input when clicked.',
+    transform: (source) =>
+      suppressEach(source, [
+        [SEMANTIC, GROUP_REASON, roles({ 'input-group': 'group', 'input-group-addon': 'group' })],
+        [
+          'lint/a11y/useKeyWithClickEvents',
+          'upstream focuses the input on an addon click; the input itself is keyboard reachable',
+          slotElement('input-group-addon'),
+        ],
+      ]),
+  },
+  'input-otp': {
+    reason:
+      'Biome\'s useSemanticElements is suppressed on the div upstream gives role="separator".',
+    transform: (source) =>
+      suppress(
+        source,
+        SEMANTIC,
+        'upstream\'s div carries role="separator" around an icon, which an hr cannot hold',
+        roles({ 'input-otp-separator': 'separator' }),
+      ),
+  },
+  item: {
+    reason: 'Biome\'s useSemanticElements is suppressed on the div upstream gives role="list".',
+    transform: (source) =>
+      suppress(
+        source,
+        SEMANTIC,
+        'upstream\'s div carries role="list"; a ul would bring list styles and need li children',
+        roles({ 'item-group': 'list' }),
+      ),
+  },
+  chart: {
+    reason:
+      "Biome's noDangerouslySetInnerHtml and noArrayIndexKey are suppressed on ChartStyle's style element and on the tooltip and legend items upstream keys by index.",
+    transform: (source) =>
+      suppressEach(source, [
+        [
+          'lint/security/noDangerouslySetInnerHtml',
+          "upstream injects the chart's generated CSS variables as a style element",
+          tagAttribute('style', 'dangerouslySetInnerHTML'),
+        ],
+        [
+          INDEX_KEY,
+          'upstream keys each payload item by its index; the items hold no state, so a reorder only re-renders them',
+          indexKeys('ChartTooltipContent', 'ChartLegendContent'),
+        ],
+      ]),
+  },
+  sidebar: {
+    reason:
+      "Biome's useExhaustiveDependencies and noDocumentCookie are suppressed on SidebarProvider's hooks that list setOpenMobile and on its cookie write.",
+    transform: (source) =>
+      suppressEach(source, [
+        [
+          'lint/correctness/useExhaustiveDependencies',
+          'upstream lists setOpenMobile, a stable setter, in the dependencies',
+          hookDependencies('SidebarProvider', 'setOpenMobile', {
+            toggleSidebar: 'useCallback',
+            contextValue: 'useMemo',
+          }),
+        ],
+        [
+          'lint/suspicious/noDocumentCookie',
+          'upstream persists the sidebar state in a cookie by assignment',
+          cookieWrite('SidebarProvider'),
+        ],
+      ]),
+  },
+  label: {
+    reason: "Biome's noLabelWithoutControl is suppressed on the native label Label renders.",
+    transform: (source) =>
+      suppress(
+        source,
+        'lint/a11y/noLabelWithoutControl',
+        'Label wraps a native label; the consumer associates it with htmlFor or nesting',
+        returnedElement('Label', 'label'),
       ),
   },
   alert: {

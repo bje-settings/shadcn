@@ -82,7 +82,8 @@ function forBiome(root: Root): void {
   root.walkDecls((decl) => {
     if (!decl.important) return
     // A line comment needs the declaration on the next line.
-    const raw = decl.raws.before ?? ''
+    // Set on every node postcss parses
+    const raw = decl.raws.before as string
     const before = raw.includes('\n') ? raw : `\n${raw}`
     decl.raws.before = `${before}${IMPORTANT_IGNORE}${before}`
   })
