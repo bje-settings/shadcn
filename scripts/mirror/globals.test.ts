@@ -66,6 +66,12 @@ describe('the global stylesheets, for Biome', () => {
     expect(base('a { color: red !important; color: blue }')).not.toContain('blue')
   })
 
+  it('collapses repeated declarations directly inside an at-rule', () => {
+    expect(base('@font-face { font-display: swap; font-display: block }')).toContain(
+      '@font-face { font-display: block }',
+    )
+  })
+
   it('leaves declarations in different blocks alone', () => {
     expect(
       base('a { color: red } b { color: red; & c { color: red } }').split('color'),

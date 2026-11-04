@@ -434,6 +434,16 @@ describe('the noDescendingSpecificity suppressions', () => {
       checkCascadeOrder(
         'chip',
         [
+          ['.a', '& x'],
+          ['.c', '& d'],
+        ],
+        table,
+      ),
+    ).toThrow('scss.ts: chip has no nested rule "& b" in .a')
+    expect(() =>
+      checkCascadeOrder(
+        'chip',
+        [
           ['.c', '& d'],
           ['.a', '& b'],
         ],

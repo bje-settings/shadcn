@@ -57,6 +57,7 @@ describe('needsUnknownUnitIgnore', () => {
     ['--x: #000c;', true],
     ['--x: #00e;', true],
     ['--x: #0e0a;', true],
+    ['--x: #0E0a;', true],
     ['--x: #00a0ff;', true],
     ['--x: var(--r, 0 0 #0000001a);', true],
     ['--x: a#0000001a;', true],
@@ -65,6 +66,7 @@ describe('needsUnknownUnitIgnore', () => {
     ['--x: #0003;', false],
     ['--x: #0e0;', false],
     ['--x: #1e5;', false],
+    ['--x: #0E0;', false],
     ['--x: #00000026;', false],
     ['--x: #ff0000;', false],
     ['color: #0000001a;', false],
@@ -72,6 +74,10 @@ describe('needsUnknownUnitIgnore', () => {
     ['box-shadow: var(--r, 0 0 #0000001a);', false],
   ])('%s needs it: %s', (declaration, expected) => {
     expect(needsUnknownUnitIgnore(`a {\n  ${declaration}\n}\n`)).toBe(expected)
+  })
+
+  it('reads a declaration at the start of the text', () => {
+    expect(needsUnknownUnitIgnore('--x: #0000001a;')).toBe(true)
   })
 
   it('reads no comment as a declaration', () => {
