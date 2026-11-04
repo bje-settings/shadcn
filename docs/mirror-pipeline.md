@@ -237,17 +237,44 @@ stylesheets the page loads are the registry's own.
 
 ## Formatting and Biome
 
-Generated files, stylesheets included, get Biome's formatting and safe fixes (import order,
-`import type`; `scripts/mirror/format.ts`). `files.includes` covers `.scss` and `.css`, since
-Biome returns an existing file it does not cover unchanged; the CSS linter is off
-(`css.linter.enabled`, and `linter.includes` leaving out `.scss`) until #80's second layer
-turns it on. `biome.json` sets `fix: "safe"` on `noRedundantRoles`,
+Biome checks every file type it handles (`files.includes` is `**`, less `.claude/worktrees`,
+`.claude/skills` and `upstream`), with the recommended rules everywhere and no override. Biome
+rejects comments in its own `biome.json`, so the reasons live here. Markdown frontmatter is parsed
+(`markdown.parser.frontmatter`), so the formatter leaves a rule file's YAML header alone.
+
+Generated files get Biome's formatting and safe fixes (import order, `import type`;
+`scripts/mirror/format.ts`). `biome.json` sets `fix: "safe"` on `noRedundantRoles`,
 `noDoubleEquals` and `noUnusedImports`, whose fixes Biome otherwise counts as unsafe, so the build
-strips a redundant `role`, turns `==` into `===` and drops an unused import. For
-`registry/*/ui/**`, an override turns off the rules upstream's code trips where this registry
-keeps it: `useSemanticElements`, `useKeyWithClickEvents`, `noLabelWithoutControl`,
-`noDocumentCookie`, `noArrayIndexKey`, `useExhaustiveDependencies` and
-`noDangerouslySetInnerHtml`. Every other rule applies there. A change Biome cannot make is a patch
-in `scripts/mirror/patches.ts` (step 2 of [Components](#components)), as is Calendar's
-`noComponentHookFactories` suppression on the render functions upstream writes inline.
+strips a redundant `role`, turns `==` into `===` and drops an unused import.
+
+The stylesheets pass the CSS rules as written (`scripts/mirror/stylesheet-lint.ts`, used by
+`scss.ts` for the modules and `globals.ts` for `variables.scss` and `base.scss`):
+
+- A block that sets a property twice keeps only the declaration the cascade applies, the last
+  `!important` one or else the last (`noDuplicateProperties`): two utilities merged into one block,
+  where tailwind-merge keeps the later class upstream, or preflight's repeated
+  `-webkit-text-decoration`.
+- A slot's `:where(.<slot>)` block with no declaration is left out (`noEmptyBlock`). Sass drops an
+  empty block, so the module exports no class for the slot either way.
+- Each `!important` declaration sits between `biome-ignore-start` and `biome-ignore-end` comments
+  for `noImportantStyles` in a module, since the formatter can spread a value over lines and Biome
+  reports the line `!important` is on; preflight's one in `base.scss` has a `biome-ignore` on the
+  line before it.
+- A nested rule `CASCADE_ORDER` in `scss.ts` lists by item, parent and selector gets a
+  `noDescendingSpecificity` suppression inside its parent block, before the rule: moving the rule
+  would move its declarations past others. A listed rule an item no longer has fails the build by
+  name.
+- A file with a custom property whose hex colour Biome reads as a number and a unit (`#0000001a`,
+  [biomejs/biome#12332](https://github.com/biomejs/biome/issues/12332)) gets a file-level
+  `biome-ignore-all lint/correctness/noUnknownUnit` as its second line, which covers a value the
+  formatter spreads over lines; no other file does. A frost override that brings one adds the line when it is appended.
+
+A change Biome cannot make is a patch in `scripts/mirror/patches.ts` (step 2 of
+[Components](#components)). Where upstream's TSX trips a rule on a pattern this registry keeps,
+the patch puts a `biome-ignore` with the rule and a reason before each site, found by its place in
+the syntax tree, and the build fails naming a site upstream no longer has. The README's
+[intentional divergences](../README.md#intentional-divergences) list each one. `pnpm install-check`
+ends with `biome lint`, the recommended rules and no override, over every directory the items were
+installed into, as a consumer would run it.
+
 `ab/generated/` is written unformatted, and Biome skips it as a gitignored path.

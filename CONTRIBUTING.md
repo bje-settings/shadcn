@@ -140,7 +140,8 @@ every item of the first style in `upstream.styles`, served locally from `public/
 a file not at its alias, an import left pointing at `@/registry/`, a package imported that neither
 the item nor an item it reaches through `registryDependencies` declares, an item imported that
 those do not reach, a registry dependency that names no item of the style by its namespace, a
-pinned version not installed, a type error, a failing shipped test, or a failed `vite build`. It
+pinned version not installed, a type error, a failing shipped test, a failed `vite build`, or a
+finding of Biome's recommended rules, with no override, in an installed file. It
 skips, and still reports success, on a draft, or when the change touches only Markdown, `.claude/`,
 `ab/`, the scripts' tests, `lefthook.yml`, `biome.json`, `vitest.config.ts`, and other styles'
 `registry/<style>/` (every derived style's included) or `upstream/base-<style>/`.

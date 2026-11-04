@@ -27,8 +27,9 @@ export function winners<T>(items: readonly T[], read: (item: T) => Declaration |
 }
 
 // Biome reads a hex colour whose digits are followed by a letter (#0000001a)
-// as a number and a unit, in a custom property's value only. Its one honoured
-// suppression is a file-level one, before any rule.
+// as a number and a unit, in a custom property's value only. A file-level
+// suppression, before any rule, also covers a value the formatter spreads
+// over lines, which a next-line one would miss.
 export const UNKNOWN_UNIT_IGNORE =
   '// biome-ignore-all lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)'
 

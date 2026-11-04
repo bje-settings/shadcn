@@ -115,6 +115,40 @@ Where the items differ from upstream's, each on purpose:
   passes to react-day-picker's `components` prop inline. The functions stay inline, where
   upstream writes them; the patch adds only the comments.
 
+The patches in `scripts/mirror/patches.ts` keep these upstream patterns and put a `biome-ignore`,
+with the rule and a reason, before each site, so Biome's recommended rules pass on every item with
+no override:
+
+- `useSemanticElements`: ButtonGroup, Field, InputGroup and InputGroupAddon render a `div` with
+  `role="group"`, Carousel one with `role="region"` and CarouselItem one with `role="group"`,
+  InputOTPSeparator one with `role="separator"` and ItemGroup one with `role="list"`. The element
+  Biome suggests (`fieldset`, `section`, `hr`, `ul`) would change the box and the semantics, and an
+  `hr` cannot hold the separator's icon.
+- `noArrayIndexKey`: FieldError's errors, Chart's tooltip and legend items and Slider's thumbs are
+  keyed by their index, as upstream keys them.
+- `useKeyWithClickEvents`: InputGroupAddon focuses its input when clicked; the input itself is
+  reachable by keyboard.
+- `noLabelWithoutControl`: Label renders a native `label`; you associate it with `htmlFor` or by
+  nesting the control.
+- `useExhaustiveDependencies`: SidebarProvider's `toggleSidebar` and context value list
+  `setOpenMobile`, a stable state setter, in their dependencies.
+- `noDocumentCookie`: SidebarProvider keeps its open state by assigning `document.cookie`.
+- `noDangerouslySetInnerHtml`: ChartStyle injects the chart's CSS variables as a `style` element.
+
+The stylesheets differ from upstream's compiled CSS in the same way:
+
+- `noImportantStyles`: each `!important` declaration, from upstream's `!` modifier or preflight's
+  `[hidden]` rule, sits in a suppression.
+- `noDescendingSpecificity`: Avatar's `.avatarGroupCount > svg` and Bubble's content hover in its
+  outline, ghost and destructive variants keep upstream's cascade order, with a suppression;
+  moving them would move a declaration past another.
+- `noUnknownUnit`: a stylesheet with a custom property whose hex colour Biome reads as a number
+  and a unit (`#0000001a`) starts with a file-level `biome-ignore-all`, for Biome's own bug
+  [biomejs/biome#12332](https://github.com/biomejs/biome/issues/12332).
+- A property a block sets twice keeps only the declaration the cascade applies, as tailwind-merge
+  keeps the later class upstream.
+- A slot's `:where()` block with no declaration is left out, since Sass drops it anyway.
+
 Two upstream defaults stay, and your `role` replaces them:
 
 - **Alert** renders `role="alert"`, announced at once. Pass `role="status"` for a message that can
