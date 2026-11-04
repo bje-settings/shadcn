@@ -180,6 +180,9 @@ describe('AlertAction', () => {
 describe('Alert, with a consumer role', () => {
   it('renders the consumer\'s role="status" in place of role="alert"', () => {
     cleanup()
+    render(<Alert>Saved</Alert>)
+    expect(document.querySelector('[data-slot="alert"]')?.getAttribute('role')).toBe('alert')
+    cleanup()
     render(<Alert role="status">Saved</Alert>)
     expect(document.querySelector('[data-slot="alert"]')?.getAttribute('role')).toBe('status')
   })

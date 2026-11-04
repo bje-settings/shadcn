@@ -107,7 +107,9 @@ export type PreparedComponent = {
   installed: string
   // What scripts/mirror/patches.ts changes in it, if anything
   patch?: Patch
-  // Converted from the installed source with the patch applied
+  // The installed source with the patch applied: what the conversion and the
+  // generated tests' type extraction read
+  source: string
   transformed: TransformedComponent
 }
 
@@ -134,6 +136,7 @@ export async function prepareComponent(
     upstream,
     installed,
     patch,
+    source,
     transformed: transformComponent(source, upstream.name, config.namespace),
   }
 }

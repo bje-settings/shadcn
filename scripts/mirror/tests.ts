@@ -528,7 +528,7 @@ export type TestInput = ItemParts & {
   expressions: Record<string, Record<string, string>>
   // Props whose other values render the same, by `Part.prop`
   sameRender: Record<string, string>
-  // Lines scripts/mirror/patches.ts adds after the derived tests
+  // Lines scripts/mirror/patches.ts adds after the component tests
   patched: string[]
 }
 

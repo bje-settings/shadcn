@@ -10,7 +10,8 @@ import MagicString from 'magic-string'
 import { childNodes, parseModule } from './ast.ts'
 
 export type Patch = {
-  // One line, written into the header of each file the patch reaches
+  // One line, added to the header of the generated test, and of the
+  // component file when there is a transform
   reason: string
   transform?: (source: string) => string
   // Lines appended to the item's generated test
@@ -47,18 +48,24 @@ function found<T>(value: T | undefined, what: string): T {
   return value
 }
 
-// Drops the named attributes from the element carrying data-slot="<slot>".
+// Drops the named attributes from the one element carrying
+// data-slot="<slot>". Each must be there, so a slot upstream renamed, or an
+// attribute it dropped itself, fails the build by name.
 export function dropAttributes(source: string, slot: string, names: string[]): string {
-  const out = new MagicString(source)
-  for (const element of openingElements(source)) {
+  const matches = openingElements(source).filter((element) => {
     const value = attribute(element, 'data-slot')?.value
-    if (value?.type !== 'StringLiteral' || value.value !== slot) continue
-    const before = [element.name, ...element.attributes]
-    element.attributes.forEach((a, i) => {
-      if (a.type === 'JSXAttribute' && names.includes(String(a.name.name))) {
-        out.remove((before[i] as Node).end as number, a.end as number)
-      }
-    })
+    return value?.type === 'StringLiteral' && value.value === slot
+  })
+  const element = found(
+    matches.length === 1 ? matches[0] : undefined,
+    `single element with data-slot="${slot}"`,
+  )
+  const before = [element.name, ...element.attributes]
+  const out = new MagicString(source)
+  for (const name of names) {
+    const a = found(attribute(element, name), `${name} on ${slot}`)
+    const i = element.attributes.indexOf(a)
+    out.remove((before[i] as Node).end as number, a.end as number)
   }
   return out.toString()
 }
@@ -75,8 +82,13 @@ export function forwardThumbLabels(source: string): string {
     ),
     'Slider Thumb element',
   )
-  // Upstream forwards them itself now.
-  if (attribute(thumb, 'getAriaLabel')) return source
+  // If upstream forwards both, return the source unchanged, so applyPatch
+  // reports the patch as absorbed. One alone is a change to look at.
+  const forwarded = THUMB_LABELS.filter((name) => attribute(thumb, name))
+  if (forwarded.length === THUMB_LABELS.length) return source
+  if (forwarded.length > 0) {
+    throw new Error(`patches.ts: upstream's Slider Thumb forwards only ${forwarded.join(', ')}`)
+  }
   const slider = found(
     all.find(
       (n): n is FunctionDeclaration => n.type === 'FunctionDeclaration' && n.id?.name === 'Slider',
@@ -157,6 +169,9 @@ export const PATCHES: Patches = {
       'describe("Alert, with a consumer role", () => {',
       '  it("renders the consumer\'s role=\\"status\\" in place of role=\\"alert\\"", () => {',
       '    cleanup()',
+      '    render(<Alert>Saved</Alert>)',
+      '    expect(document.querySelector(\'[data-slot="alert"]\')?.getAttribute("role")).toBe("alert")',
+      '    cleanup()',
       '    render(<Alert role="status">Saved</Alert>)',
       '    expect(document.querySelector(\'[data-slot="alert"]\')?.getAttribute("role")).toBe("status")',
       '  })',
@@ -192,7 +207,14 @@ export function applyPatch(
   const patch = patches[name]
   if (!patch) return { source }
   if (!patch.transform) return { source, patch }
-  const patched = patch.transform(source)
+  let patched: string
+  try {
+    patched = patch.transform(source)
+  } catch (error) {
+    throw new Error(
+      `${name}: its patch in scripts/mirror/patches.ts failed: ${(error as Error).message}`,
+    )
+  }
   if (patched === source) {
     throw new Error(
       `${name}: its patch in scripts/mirror/patches.ts changes nothing; upstream may have absorbed it (${patch.reason})`,

@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseModule } from './ast.ts'
 import { applyPatch, dropAttributes, forwardThumbLabels, PATCHES, type Patches } from './patches.ts'
-import { root } from './test-support.ts'
+import { config, root } from './test-support.ts'
 
 // Upstream's luma source for an item, as snapshotted.
 const luma = (name: string): string =>
@@ -13,6 +13,12 @@ const luma = (name: string): string =>
 const patches: Patches = {
   chip: { reason: 'Chip drops its role.', transform: (s) => s.replace(' role="button"', '') },
   stale: { reason: 'Upstream fixed it.', transform: (s) => s },
+  broken: {
+    reason: 'Upstream moved it.',
+    transform: () => {
+      throw new Error("patches.ts: upstream's source has no chip")
+    },
+  },
   pinned: { reason: 'A consumer role wins.', tests: ['it("x", () => {})'] },
 }
 
@@ -34,6 +40,12 @@ describe('applyPatch', () => {
     )
   })
 
+  it('names the item when its transform fails', () => {
+    expect(() => applyPatch('broken', '<span />', patches)).toThrow(
+      "broken: its patch in scripts/mirror/patches.ts failed: patches.ts: upstream's source has no chip",
+    )
+  })
+
   it('keeps the source of a test-only entry and returns its patch', () => {
     expect(applyPatch('pinned', '<span />', patches)).toEqual({
       source: '<span />',
@@ -41,9 +53,34 @@ describe('applyPatch', () => {
     })
   })
 
+  it('patches only configured components', () => {
+    expect(Object.keys(PATCHES).filter((name) => !config.components.includes(name))).toEqual([])
+  })
+
   it('reads the shipped table by default', () => {
     expect(applyPatch('nothing-patched', 'x')).toEqual({ source: 'x' })
     expect(applyPatch('alert', 'x')).toEqual({ source: 'x', patch: PATCHES.alert })
+  })
+})
+
+describe('dropAttributes', () => {
+  it('drops each named attribute wherever it sits on the element', () => {
+    expect(
+      dropAttributes('<span role="x" data-slot="s" {...p} aria-disabled="true" />', 's', [
+        'role',
+        'aria-disabled',
+      ]),
+    ).toBe('<span data-slot="s" {...p} />')
+  })
+
+  it.each([
+    ['single element with data-slot="s"', '<b data-slot="t" role="x" />'],
+    ['single element with data-slot="s"', '<b><i data-slot="s" role="x" /><i data-slot="s" /></b>'],
+    ['role on s', '<b data-slot="s" />'],
+  ])('fails on a source with no %s', (what, code) => {
+    expect(() => dropAttributes(code, 's', ['role'])).toThrow(
+      `patches.ts: upstream's source has no ${what}`,
+    )
   })
 })
 
@@ -69,9 +106,11 @@ describe('the breadcrumb patch', () => {
     expect(patched).toContain('role="presentation"')
   })
 
-  it('fails the build once upstream drops the attributes itself', () => {
-    const absorbed = dropAttributes(source, 'breadcrumb-page', ['role', 'aria-disabled'])
-    expect(() => applyPatch('breadcrumb', absorbed)).toThrow('breadcrumb: its patch')
+  it('fails the build, naming what is gone, once upstream drops an attribute itself', () => {
+    const absorbed = dropAttributes(source, 'breadcrumb-page', ['aria-disabled'])
+    expect(() => applyPatch('breadcrumb', absorbed)).toThrow(
+      "breadcrumb: its patch in scripts/mirror/patches.ts failed: patches.ts: upstream's source has no aria-disabled on breadcrumb-page",
+    )
   })
 })
 
@@ -93,6 +132,17 @@ describe('the slider patch', () => {
   it('fails the build once upstream forwards them itself', () => {
     expect(() => applyPatch('slider', forwardThumbLabels(source))).toThrow(
       'slider: its patch in scripts/mirror/patches.ts changes nothing',
+    )
+  })
+
+  it('fails when upstream forwards only one of them', () => {
+    const one = source.replace(
+      '<SliderPrimitive.Thumb',
+      '<SliderPrimitive.Thumb getAriaValueText={f}',
+    )
+    expect(one).not.toBe(source)
+    expect(() => forwardThumbLabels(one)).toThrow(
+      "patches.ts: upstream's Slider Thumb forwards only getAriaValueText",
     )
   })
 
