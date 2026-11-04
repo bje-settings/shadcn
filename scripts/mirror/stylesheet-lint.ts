@@ -1,5 +1,6 @@
 // What the generated stylesheets do about Biome's CSS rules, shared by the
-// module printer (scss.ts) and the global stylesheets (globals.ts).
+// module printer (scss.ts), a module's defaults (component.ts) and the global
+// stylesheets (globals.ts).
 
 export type Declaration = { prop: string; important: boolean }
 

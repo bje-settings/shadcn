@@ -248,7 +248,8 @@ Generated files get Biome's formatting and safe fixes (import order, `import typ
 strips a redundant `role`, turns `==` into `===` and drops an unused import.
 
 The stylesheets pass the CSS rules as written (`scripts/mirror/stylesheet-lint.ts`, used by
-`scss.ts` for the modules and `globals.ts` for `variables.scss` and `base.scss`):
+`scss.ts` for the modules, `component.ts` for a module's defaults, and `globals.ts` for
+`variables.scss` and `base.scss`):
 
 - A block that sets a property twice keeps only the declaration the cascade applies, the last
   `!important` one or else the last (`noDuplicateProperties`): two utilities merged into one block,
@@ -270,7 +271,8 @@ The stylesheets pass the CSS rules as written (`scripts/mirror/stylesheet-lint.t
   line, and a `biome-ignore-start` / `biome-ignore-end` range when its value breaks or is too long
   for the formatter's 100 columns, since Biome reports the line the colour lands on. Never a
   file-level one: `shadcn add` writes a file without its leading comment block. A frost override
-  is linted as its own file, so it carries any suppression it needs.
+  is hand-written and linted as its own file, so its author writes any suppression it needs, and
+  appending it to the generated file keeps it.
 
 A change Biome cannot make is a patch in `scripts/mirror/patches.ts` (step 2 of
 [Components](#components)). Where upstream's TSX trips a rule on a pattern this registry keeps,

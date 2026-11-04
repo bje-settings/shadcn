@@ -143,10 +143,10 @@ suppression, and changes upstream's compiled CSS for the last two:
 - `noDescendingSpecificity`: Avatar's `.avatarGroupCount > svg` and Bubble's content hover in its
   outline, ghost and destructive variants keep upstream's cascade order, with a suppression;
   moving them would move a declaration past another.
-- `noUnknownUnit`: each custom property whose hex colour Biome reads as a number and a unit
-  (`#0000001a`), Biome's own bug [biomejs/biome#12332](https://github.com/biomejs/biome/issues/12332),
-  sits in a suppression beside it. `shadcn add` drops a file's leading comments, so a file-level
-  suppression would not reach your project.
+- `noUnknownUnit`: Biome reads a digit-led hex colour in a custom property (`#0000001a`) as a
+  number and a unit, its own bug [biomejs/biome#12332](https://github.com/biomejs/biome/issues/12332).
+  Each such declaration has a suppression beside it: `shadcn add` drops a file's leading comments,
+  so a file-level suppression would not reach your project.
 - A property a block sets twice keeps only the declaration the cascade applies, as tailwind-merge
   keeps the later class upstream.
 - A slot's empty `:where()` block is left out, since Sass drops it anyway.
