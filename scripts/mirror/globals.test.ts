@@ -159,6 +159,26 @@ describe('the global stylesheets, for Biome', () => {
       )
     })
 
+    it('end a range on a line of its own when the source has none', () => {
+      for (const css of [`:root { --a: ${long}; --c: 1px }`, `:root { --c: 1px; --a: ${long} }`]) {
+        const lines = globalStylesheets(css, '// h').variables.split('\n')
+        const ends = lines.filter((line) => line.includes('biome-ignore-end'))
+        expect(ends.map((line) => line.trim())).toEqual([end])
+        expect(lines.some((line) => /^\s*(--c: 1px;?\s*)?\}?\s*$/.test(line))).toBe(true)
+      }
+    })
+
+    // Measured at 99 columns with --tw-translate-x; printed at 106 once renamed.
+    it('measure the line with its internal names renamed', () => {
+      const value = `var(--tw-translate-x) ${'a'.repeat(57)} #0000001a`
+      expect(`    --x: ${value};`).toHaveLength(99)
+      expect(theme(`--x: ${value}`)).toContain(`${start}\n    --x: var(--transform-translate-x)`)
+    })
+
+    it('measure a last declaration without the space postcss keeps after it', () => {
+      expect(theme('--b: 0 1px #0000001a')).toContain(`${next}\n    --b: 0 1px #0000001a\n  }`)
+    })
+
     it('leave alone a property Biome reads right, and a dropped utility', () => {
       const { variables, base: other } = globalStylesheets(
         '/*! license */ @layer utilities { .x { --s: #0000001a } } @layer base { a { color: #0000001a } }',

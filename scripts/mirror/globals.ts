@@ -80,8 +80,13 @@ function commentBefore(node: ChildNode, comment: string): void {
   node.raws.before = `${before}${comment}${before.slice(before.lastIndexOf('\n'))}`
 }
 
-// The declarations Biome misreads (noUnknownUnit) get their suppression at the
-// indentation the formatter gives them.
+// What follows a line comment starts on a line of its own.
+const onNewLine = (raw: string) => (raw.includes('\n') ? raw : `\n${raw}`)
+
+// Each declaration Biome misreads (noUnknownUnit) gets a suppression. Its form
+// depends on the line the formatter prints: at the declaration's depth, with
+// internal names renamed (renameInternal runs on this output), and without a
+// last declaration's trailing space.
 function suppressUnknownUnits(top: Container): void {
   const ends: [Declaration, string][] = []
   top.walkDecls((decl) => {
@@ -89,22 +94,25 @@ function suppressUnknownUnits(top: Container): void {
     let depth = 0
     for (let node = decl.parent; node && node.type !== 'root'; node = node.parent) depth++
     const indent = '  '.repeat(depth)
-    const { before, after } = unknownUnitSuppression(`${indent}${decl.prop}: ${decl.value}`)
+    const { before, after } = unknownUnitSuppression(
+      renameInternal(`${indent}${decl.prop}: ${decl.value.trimEnd()}`),
+    )
     commentBefore(decl, before.trimStart())
     if (after !== undefined) ends.push([decl, `\n${after}`])
   })
   // After every start, so an end lands before the next declaration's start.
   for (const [decl, end] of ends) {
     const next = decl.next()
-    if (next) next.raws.before = `${end}${next.raws.before}`
+    if (next) next.raws.before = `${end}${onNewLine(next.raws.before as string)}`
     else {
-      // postcss keeps the space after a last declaration with no semicolon
-      // in its value.
+      // postcss keeps a custom property's trailing space in its value when no
+      // semicolon ends it: move the space after the end comment, and end the
+      // declaration with a semicolon before the comment.
       const space = decl.value.slice(decl.value.trimEnd().length)
       decl.value = decl.value.trimEnd()
       const parent = decl.parent as Container
       parent.raws.semicolon = true
-      parent.raws.after = `${end}${space}${parent.raws.after}`
+      parent.raws.after = `${end}${onNewLine(`${space}${parent.raws.after}`)}`
     }
   }
 }
@@ -112,7 +120,8 @@ function suppressUnknownUnits(top: Container): void {
 // Each block keeps one declaration per property (stylesheet-lint.ts), and an
 // !important one, preflight's [hidden] display rule, gets a suppression on the
 // line before it. The reason is that rule's, so an !important declaration
-// anywhere else fails the build by name, to be given a reason of its own.
+// anywhere else fails the build by name, to be given a reason of its own. Each
+// custom property Biome misreads gets its noUnknownUnit suppression.
 function forBiome(top: Container): void {
   const containers: Container[] = [top]
   top.walk((node) => {
