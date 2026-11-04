@@ -4,7 +4,8 @@
 @import "@fontsource-variable/outfit";
 
 @layer theme {
-  :root, :host {
-    --font-heading: 'Outfit Variable', sans-serif;
+  :root,
+  :host {
+    --font-heading: "Outfit Variable", sans-serif;
   }
 }

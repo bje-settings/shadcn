@@ -74,7 +74,17 @@
   font-size: var(--text-sm);
   line-height: var(--leading, var(--text-sm--line-height));
   white-space: nowrap;
-  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --gradient-from, --gradient-via, --gradient-to;
+  transition-property:
+    color,
+    background-color,
+    border-color,
+    outline-color,
+    text-decoration-color,
+    fill,
+    stroke,
+    --gradient-from,
+    --gradient-via,
+    --gradient-to;
   transition-timing-function: var(--ease, var(--default-transition-timing-function));
   transition-duration: var(--duration, var(--default-transition-duration));
   --outline-style: none;
@@ -83,8 +93,16 @@
   user-select: none;
   &:focus-visible {
     border-color: var(--ring);
-    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-shadow: var(--ring-inset,) 0 0 0 calc(3px + var(--ring-offset-width)) var(
+      --ring-color,
+      currentcolor
+    );
+    box-shadow:
+      var(--inset-shadow),
+      var(--inset-ring-shadow),
+      var(--ring-offset-shadow),
+      var(--ring-shadow),
+      var(--shadow);
     --ring-color: var(--ring);
     @supports (color: color-mix(in lab, red, red)) {
       --ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
@@ -92,12 +110,20 @@
   }
   &:disabled {
     cursor: not-allowed;
-    opacity: .5;
+    opacity: 0.5;
   }
   &[aria-invalid="true"] {
     border-color: var(--destructive);
-    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-shadow: var(--ring-inset,) 0 0 0 calc(3px + var(--ring-offset-width)) var(
+      --ring-color,
+      currentcolor
+    );
+    box-shadow:
+      var(--inset-shadow),
+      var(--inset-ring-shadow),
+      var(--ring-offset-shadow),
+      var(--ring-shadow),
+      var(--shadow);
     --ring-color: var(--destructive);
     @supports (color: color-mix(in lab, red, red)) {
       --ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
@@ -152,7 +178,80 @@
     pointer-events: none;
     flex-shrink: 0;
   }
-  & svg:not([class*="size-"], [data-class-size], [data-slot="accordion-trigger"], [data-slot="alert"], [data-slot="alert-dialog-media"], [data-slot="attachment-media"], [data-slot="avatar"], [data-slot="avatar-badge"], [data-slot="avatar-fallback"], [data-slot="avatar-group-count"], [data-slot="avatar-image"], [data-slot="badge"], [data-slot="breadcrumb-ellipsis"], [data-slot="breadcrumb-separator"], [data-slot="button"], [data-slot="button-group-text"], [data-slot="checkbox"], [data-slot="checkbox-indicator"], [data-slot="combobox-item"], [data-slot="combobox-trigger"], [data-slot="command"], [data-slot="command-item"], [data-slot="context-menu-checkbox-item"], [data-slot="context-menu-item"], [data-slot="context-menu-radio-item"], [data-slot="context-menu-sub-trigger"], [data-slot="dropdown-menu-checkbox-item"], [data-slot="dropdown-menu-item"], [data-slot="dropdown-menu-radio-item"], [data-slot="dropdown-menu-sub-trigger"], [data-slot="empty-icon"], [data-slot="input-group-addon"], [data-slot="input-group-control"], [data-slot="input-otp-separator"], [data-slot="input-otp-slot"], [data-slot="item-media"], [data-slot="kbd"], [data-slot="marker"], [data-slot="marker-icon"], [data-slot="menubar-item"], [data-slot="menubar-radio-item"], [data-slot="menubar-sub-trigger"], [data-slot="message-scroller"], [data-slot="message-scroller-viewport"], [data-slot="native-select-icon"], [data-slot="navigation-menu-link"], [data-slot="pagination-ellipsis"], [data-slot="questionnaire-choice-indicator"], [data-slot="questionnaire-choice-indicator-check"], [data-slot="questionnaire-choice-indicator-dot"], [data-slot="questionnaire-choice-input"], [data-slot="questionnaire-choice-shortcut"], [data-slot="radio-group-indicator"], [data-slot="radio-group-item"], [data-slot="scroll-area-viewport"], [data-slot="select-item"], [data-slot="select-scroll-down-button"], [data-slot="select-scroll-up-button"], [data-slot="select-trigger"], [data-slot="sidebar-group-action"], [data-slot="sidebar-group-label"], [data-slot="sidebar-inner"], [data-slot="sidebar-menu-action"], [data-slot="sidebar-menu-button"], [data-slot="sidebar-menu-sub-button"], [data-slot="slider-thumb"], [data-slot="spinner"], [data-slot="switch-thumb"], [data-slot="tabs-trigger"], [data-slot="toast-icon"], [data-slot="toggle"]):not([class*="size-"]):not([class*="size-"]) {
+  &
+    svg:not(
+      [class*="size-"],
+      [data-class-size],
+      [data-slot="accordion-trigger"],
+      [data-slot="alert"],
+      [data-slot="alert-dialog-media"],
+      [data-slot="attachment-media"],
+      [data-slot="avatar"],
+      [data-slot="avatar-badge"],
+      [data-slot="avatar-fallback"],
+      [data-slot="avatar-group-count"],
+      [data-slot="avatar-image"],
+      [data-slot="badge"],
+      [data-slot="breadcrumb-ellipsis"],
+      [data-slot="breadcrumb-separator"],
+      [data-slot="button"],
+      [data-slot="button-group-text"],
+      [data-slot="checkbox"],
+      [data-slot="checkbox-indicator"],
+      [data-slot="combobox-item"],
+      [data-slot="combobox-trigger"],
+      [data-slot="command"],
+      [data-slot="command-item"],
+      [data-slot="context-menu-checkbox-item"],
+      [data-slot="context-menu-item"],
+      [data-slot="context-menu-radio-item"],
+      [data-slot="context-menu-sub-trigger"],
+      [data-slot="dropdown-menu-checkbox-item"],
+      [data-slot="dropdown-menu-item"],
+      [data-slot="dropdown-menu-radio-item"],
+      [data-slot="dropdown-menu-sub-trigger"],
+      [data-slot="empty-icon"],
+      [data-slot="input-group-addon"],
+      [data-slot="input-group-control"],
+      [data-slot="input-otp-separator"],
+      [data-slot="input-otp-slot"],
+      [data-slot="item-media"],
+      [data-slot="kbd"],
+      [data-slot="marker"],
+      [data-slot="marker-icon"],
+      [data-slot="menubar-item"],
+      [data-slot="menubar-radio-item"],
+      [data-slot="menubar-sub-trigger"],
+      [data-slot="message-scroller"],
+      [data-slot="message-scroller-viewport"],
+      [data-slot="native-select-icon"],
+      [data-slot="navigation-menu-link"],
+      [data-slot="pagination-ellipsis"],
+      [data-slot="questionnaire-choice-indicator"],
+      [data-slot="questionnaire-choice-indicator-check"],
+      [data-slot="questionnaire-choice-indicator-dot"],
+      [data-slot="questionnaire-choice-input"],
+      [data-slot="questionnaire-choice-shortcut"],
+      [data-slot="radio-group-indicator"],
+      [data-slot="radio-group-item"],
+      [data-slot="scroll-area-viewport"],
+      [data-slot="select-item"],
+      [data-slot="select-scroll-down-button"],
+      [data-slot="select-scroll-up-button"],
+      [data-slot="select-trigger"],
+      [data-slot="sidebar-group-action"],
+      [data-slot="sidebar-group-label"],
+      [data-slot="sidebar-inner"],
+      [data-slot="sidebar-menu-action"],
+      [data-slot="sidebar-menu-button"],
+      [data-slot="sidebar-menu-sub-button"],
+      [data-slot="slider-thumb"],
+      [data-slot="spinner"],
+      [data-slot="switch-thumb"],
+      [data-slot="tabs-trigger"],
+      [data-slot="toast-icon"],
+      [data-slot="toggle"]
+    ):not([class*="size-"]):not([class*="size-"]) {
     width: calc(var(--spacing) * 4);
     height: calc(var(--spacing) * 4);
   }
@@ -183,16 +282,32 @@
   border-radius: var(--radius);
   background-color: var(--popover);
   color: var(--popover-foreground);
-  --shadow: 0 4px 6px -1px var(--shadow-color, #0000001a), 0 2px 4px -2px var(--shadow-color, #0000001a);
-  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
-  --ring-shadow: var(--ring-inset, ) 0 0 0 calc(1px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+  --shadow: 0 4px 6px -1px var(--shadow-color, #0000001a), 0 2px 4px -2px var(
+    --shadow-color,
+    #0000001a
+  );
+  box-shadow:
+    var(--inset-shadow),
+    var(--inset-ring-shadow),
+    var(--ring-offset-shadow),
+    var(--ring-shadow),
+    var(--shadow);
+  --ring-shadow: var(--ring-inset,) 0 0 0 calc(1px + var(--ring-offset-width)) var(
+    --ring-color,
+    currentcolor
+  );
+  box-shadow:
+    var(--inset-shadow),
+    var(--inset-ring-shadow),
+    var(--ring-offset-shadow),
+    var(--ring-shadow),
+    var(--shadow);
   --ring-color: var(--foreground);
   @supports (color: color-mix(in lab, red, red)) {
     --ring-color: color-mix(in oklab, var(--foreground) 10%, transparent);
   }
   --duration: .1s;
-  transition-duration: .1s;
+  transition-duration: 0.1s;
   &[data-align-trigger="true"] {
     animation: none;
   }
@@ -202,7 +317,8 @@
   &[data-side="inline-end"] {
     --enter-translate-x: calc(2*var(--spacing)*-1);
   }
-  &[data-side="inline-start"], &[data-side="left"] {
+  &[data-side="inline-start"],
+  &[data-side="left"] {
     --enter-translate-x: calc(2*var(--spacing));
   }
   &[data-side="right"] {
@@ -211,13 +327,19 @@
   &[data-side="top"] {
     --enter-translate-y: calc(2*var(--spacing));
   }
-  &:where([data-state="open"]), &:where([data-open]:not([data-open="false"])) {
-    animation: enter var(--animation-duration, var(--duration, .15s))var(--ease, ease)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+  &:where([data-state="open"]),
+  &:where([data-open]:not([data-open="false"])) {
+    animation: enter var(--animation-duration, var(--duration, 0.15s)) var(--ease, ease)
+      var(--animation-delay, 0s) var(--animation-iteration-count, 1)
+      var(--animation-direction, normal) var(--animation-fill-mode, none);
     --enter-opacity: 0;
     --enter-scale: .95;
   }
-  &:where([data-state="closed"]), &:where([data-closed]:not([data-closed="false"])) {
-    animation: exit var(--animation-duration, var(--duration, .15s))var(--ease, ease)var(--animation-delay, 0s)var(--animation-iteration-count, 1)var(--animation-direction, normal)var(--animation-fill-mode, none);
+  &:where([data-state="closed"]),
+  &:where([data-closed]:not([data-closed="false"])) {
+    animation: exit var(--animation-duration, var(--duration, 0.15s)) var(--ease, ease)
+      var(--animation-delay, 0s) var(--animation-iteration-count, 1)
+      var(--animation-direction, normal) var(--animation-fill-mode, none);
     --exit-opacity: 0;
     --exit-scale: .95;
   }
@@ -238,7 +360,7 @@
   cursor: default;
   align-items: center;
   gap: calc(var(--spacing) * 1.5);
-  border-radius: calc(var(--radius) * .8);
+  border-radius: calc(var(--radius) * 0.8);
   padding-block: var(--spacing);
   padding-right: calc(var(--spacing) * 8);
   padding-left: calc(var(--spacing) * 1.5);
@@ -256,9 +378,10 @@
     background-color: var(--accent);
     color: var(--accent-foreground);
   }
-  &:where([data-disabled="true"]), &:where([data-disabled]:not([data-disabled="false"])) {
+  &:where([data-disabled="true"]),
+  &:where([data-disabled]:not([data-disabled="false"])) {
     pointer-events: none;
-    opacity: .5;
+    opacity: 0.5;
   }
 }
 .selectItem {
@@ -269,7 +392,80 @@
     pointer-events: none;
     flex-shrink: 0;
   }
-  & svg:not([class*="size-"], [data-class-size], [data-slot="accordion-trigger"], [data-slot="alert"], [data-slot="alert-dialog-media"], [data-slot="attachment-media"], [data-slot="avatar"], [data-slot="avatar-badge"], [data-slot="avatar-fallback"], [data-slot="avatar-group-count"], [data-slot="avatar-image"], [data-slot="badge"], [data-slot="breadcrumb-ellipsis"], [data-slot="breadcrumb-separator"], [data-slot="button"], [data-slot="button-group-text"], [data-slot="checkbox"], [data-slot="checkbox-indicator"], [data-slot="combobox-item"], [data-slot="combobox-trigger"], [data-slot="command"], [data-slot="command-item"], [data-slot="context-menu-checkbox-item"], [data-slot="context-menu-item"], [data-slot="context-menu-radio-item"], [data-slot="context-menu-sub-trigger"], [data-slot="dropdown-menu-checkbox-item"], [data-slot="dropdown-menu-item"], [data-slot="dropdown-menu-radio-item"], [data-slot="dropdown-menu-sub-trigger"], [data-slot="empty-icon"], [data-slot="input-group-addon"], [data-slot="input-group-control"], [data-slot="input-otp-separator"], [data-slot="input-otp-slot"], [data-slot="item-media"], [data-slot="kbd"], [data-slot="marker"], [data-slot="marker-icon"], [data-slot="menubar-item"], [data-slot="menubar-radio-item"], [data-slot="menubar-sub-trigger"], [data-slot="message-scroller"], [data-slot="message-scroller-viewport"], [data-slot="native-select-icon"], [data-slot="navigation-menu-link"], [data-slot="pagination-ellipsis"], [data-slot="questionnaire-choice-indicator"], [data-slot="questionnaire-choice-indicator-check"], [data-slot="questionnaire-choice-indicator-dot"], [data-slot="questionnaire-choice-input"], [data-slot="questionnaire-choice-shortcut"], [data-slot="radio-group-indicator"], [data-slot="radio-group-item"], [data-slot="scroll-area-viewport"], [data-slot="select-item"], [data-slot="select-scroll-down-button"], [data-slot="select-scroll-up-button"], [data-slot="select-trigger"], [data-slot="sidebar-group-action"], [data-slot="sidebar-group-label"], [data-slot="sidebar-inner"], [data-slot="sidebar-menu-action"], [data-slot="sidebar-menu-button"], [data-slot="sidebar-menu-sub-button"], [data-slot="slider-thumb"], [data-slot="spinner"], [data-slot="switch-thumb"], [data-slot="tabs-trigger"], [data-slot="toast-icon"], [data-slot="toggle"]):not([class*="size-"]):not([class*="size-"]) {
+  &
+    svg:not(
+      [class*="size-"],
+      [data-class-size],
+      [data-slot="accordion-trigger"],
+      [data-slot="alert"],
+      [data-slot="alert-dialog-media"],
+      [data-slot="attachment-media"],
+      [data-slot="avatar"],
+      [data-slot="avatar-badge"],
+      [data-slot="avatar-fallback"],
+      [data-slot="avatar-group-count"],
+      [data-slot="avatar-image"],
+      [data-slot="badge"],
+      [data-slot="breadcrumb-ellipsis"],
+      [data-slot="breadcrumb-separator"],
+      [data-slot="button"],
+      [data-slot="button-group-text"],
+      [data-slot="checkbox"],
+      [data-slot="checkbox-indicator"],
+      [data-slot="combobox-item"],
+      [data-slot="combobox-trigger"],
+      [data-slot="command"],
+      [data-slot="command-item"],
+      [data-slot="context-menu-checkbox-item"],
+      [data-slot="context-menu-item"],
+      [data-slot="context-menu-radio-item"],
+      [data-slot="context-menu-sub-trigger"],
+      [data-slot="dropdown-menu-checkbox-item"],
+      [data-slot="dropdown-menu-item"],
+      [data-slot="dropdown-menu-radio-item"],
+      [data-slot="dropdown-menu-sub-trigger"],
+      [data-slot="empty-icon"],
+      [data-slot="input-group-addon"],
+      [data-slot="input-group-control"],
+      [data-slot="input-otp-separator"],
+      [data-slot="input-otp-slot"],
+      [data-slot="item-media"],
+      [data-slot="kbd"],
+      [data-slot="marker"],
+      [data-slot="marker-icon"],
+      [data-slot="menubar-item"],
+      [data-slot="menubar-radio-item"],
+      [data-slot="menubar-sub-trigger"],
+      [data-slot="message-scroller"],
+      [data-slot="message-scroller-viewport"],
+      [data-slot="native-select-icon"],
+      [data-slot="navigation-menu-link"],
+      [data-slot="pagination-ellipsis"],
+      [data-slot="questionnaire-choice-indicator"],
+      [data-slot="questionnaire-choice-indicator-check"],
+      [data-slot="questionnaire-choice-indicator-dot"],
+      [data-slot="questionnaire-choice-input"],
+      [data-slot="questionnaire-choice-shortcut"],
+      [data-slot="radio-group-indicator"],
+      [data-slot="radio-group-item"],
+      [data-slot="scroll-area-viewport"],
+      [data-slot="select-item"],
+      [data-slot="select-scroll-down-button"],
+      [data-slot="select-scroll-up-button"],
+      [data-slot="select-trigger"],
+      [data-slot="sidebar-group-action"],
+      [data-slot="sidebar-group-label"],
+      [data-slot="sidebar-inner"],
+      [data-slot="sidebar-menu-action"],
+      [data-slot="sidebar-menu-button"],
+      [data-slot="sidebar-menu-sub-button"],
+      [data-slot="slider-thumb"],
+      [data-slot="spinner"],
+      [data-slot="switch-thumb"],
+      [data-slot="tabs-trigger"],
+      [data-slot="toast-icon"],
+      [data-slot="toggle"]
+    ):not([class*="size-"]):not([class*="size-"]) {
     width: calc(var(--spacing) * 4);
     height: calc(var(--spacing) * 4);
   }
@@ -323,7 +519,80 @@
   padding-block: var(--spacing);
 }
 .selectScrollUpButton {
-  & svg:not([class*="size-"], [data-class-size], [data-slot="accordion-trigger"], [data-slot="alert"], [data-slot="alert-dialog-media"], [data-slot="attachment-media"], [data-slot="avatar"], [data-slot="avatar-badge"], [data-slot="avatar-fallback"], [data-slot="avatar-group-count"], [data-slot="avatar-image"], [data-slot="badge"], [data-slot="breadcrumb-ellipsis"], [data-slot="breadcrumb-separator"], [data-slot="button"], [data-slot="button-group-text"], [data-slot="checkbox"], [data-slot="checkbox-indicator"], [data-slot="combobox-item"], [data-slot="combobox-trigger"], [data-slot="command"], [data-slot="command-item"], [data-slot="context-menu-checkbox-item"], [data-slot="context-menu-item"], [data-slot="context-menu-radio-item"], [data-slot="context-menu-sub-trigger"], [data-slot="dropdown-menu-checkbox-item"], [data-slot="dropdown-menu-item"], [data-slot="dropdown-menu-radio-item"], [data-slot="dropdown-menu-sub-trigger"], [data-slot="empty-icon"], [data-slot="input-group-addon"], [data-slot="input-group-control"], [data-slot="input-otp-separator"], [data-slot="input-otp-slot"], [data-slot="item-media"], [data-slot="kbd"], [data-slot="marker"], [data-slot="marker-icon"], [data-slot="menubar-item"], [data-slot="menubar-radio-item"], [data-slot="menubar-sub-trigger"], [data-slot="message-scroller"], [data-slot="message-scroller-viewport"], [data-slot="native-select-icon"], [data-slot="navigation-menu-link"], [data-slot="pagination-ellipsis"], [data-slot="questionnaire-choice-indicator"], [data-slot="questionnaire-choice-indicator-check"], [data-slot="questionnaire-choice-indicator-dot"], [data-slot="questionnaire-choice-input"], [data-slot="questionnaire-choice-shortcut"], [data-slot="radio-group-indicator"], [data-slot="radio-group-item"], [data-slot="scroll-area-viewport"], [data-slot="select-item"], [data-slot="select-scroll-down-button"], [data-slot="select-scroll-up-button"], [data-slot="select-trigger"], [data-slot="sidebar-group-action"], [data-slot="sidebar-group-label"], [data-slot="sidebar-inner"], [data-slot="sidebar-menu-action"], [data-slot="sidebar-menu-button"], [data-slot="sidebar-menu-sub-button"], [data-slot="slider-thumb"], [data-slot="spinner"], [data-slot="switch-thumb"], [data-slot="tabs-trigger"], [data-slot="toast-icon"], [data-slot="toggle"]):not([class*="size-"]):not([class*="size-"]) {
+  &
+    svg:not(
+      [class*="size-"],
+      [data-class-size],
+      [data-slot="accordion-trigger"],
+      [data-slot="alert"],
+      [data-slot="alert-dialog-media"],
+      [data-slot="attachment-media"],
+      [data-slot="avatar"],
+      [data-slot="avatar-badge"],
+      [data-slot="avatar-fallback"],
+      [data-slot="avatar-group-count"],
+      [data-slot="avatar-image"],
+      [data-slot="badge"],
+      [data-slot="breadcrumb-ellipsis"],
+      [data-slot="breadcrumb-separator"],
+      [data-slot="button"],
+      [data-slot="button-group-text"],
+      [data-slot="checkbox"],
+      [data-slot="checkbox-indicator"],
+      [data-slot="combobox-item"],
+      [data-slot="combobox-trigger"],
+      [data-slot="command"],
+      [data-slot="command-item"],
+      [data-slot="context-menu-checkbox-item"],
+      [data-slot="context-menu-item"],
+      [data-slot="context-menu-radio-item"],
+      [data-slot="context-menu-sub-trigger"],
+      [data-slot="dropdown-menu-checkbox-item"],
+      [data-slot="dropdown-menu-item"],
+      [data-slot="dropdown-menu-radio-item"],
+      [data-slot="dropdown-menu-sub-trigger"],
+      [data-slot="empty-icon"],
+      [data-slot="input-group-addon"],
+      [data-slot="input-group-control"],
+      [data-slot="input-otp-separator"],
+      [data-slot="input-otp-slot"],
+      [data-slot="item-media"],
+      [data-slot="kbd"],
+      [data-slot="marker"],
+      [data-slot="marker-icon"],
+      [data-slot="menubar-item"],
+      [data-slot="menubar-radio-item"],
+      [data-slot="menubar-sub-trigger"],
+      [data-slot="message-scroller"],
+      [data-slot="message-scroller-viewport"],
+      [data-slot="native-select-icon"],
+      [data-slot="navigation-menu-link"],
+      [data-slot="pagination-ellipsis"],
+      [data-slot="questionnaire-choice-indicator"],
+      [data-slot="questionnaire-choice-indicator-check"],
+      [data-slot="questionnaire-choice-indicator-dot"],
+      [data-slot="questionnaire-choice-input"],
+      [data-slot="questionnaire-choice-shortcut"],
+      [data-slot="radio-group-indicator"],
+      [data-slot="radio-group-item"],
+      [data-slot="scroll-area-viewport"],
+      [data-slot="select-item"],
+      [data-slot="select-scroll-down-button"],
+      [data-slot="select-scroll-up-button"],
+      [data-slot="select-trigger"],
+      [data-slot="sidebar-group-action"],
+      [data-slot="sidebar-group-label"],
+      [data-slot="sidebar-inner"],
+      [data-slot="sidebar-menu-action"],
+      [data-slot="sidebar-menu-button"],
+      [data-slot="sidebar-menu-sub-button"],
+      [data-slot="slider-thumb"],
+      [data-slot="spinner"],
+      [data-slot="switch-thumb"],
+      [data-slot="tabs-trigger"],
+      [data-slot="toast-icon"],
+      [data-slot="toggle"]
+    ):not([class*="size-"]):not([class*="size-"]) {
     width: calc(var(--spacing) * 4);
     height: calc(var(--spacing) * 4);
   }
@@ -341,7 +610,80 @@
   padding-block: var(--spacing);
 }
 .selectScrollDownButton {
-  & svg:not([class*="size-"], [data-class-size], [data-slot="accordion-trigger"], [data-slot="alert"], [data-slot="alert-dialog-media"], [data-slot="attachment-media"], [data-slot="avatar"], [data-slot="avatar-badge"], [data-slot="avatar-fallback"], [data-slot="avatar-group-count"], [data-slot="avatar-image"], [data-slot="badge"], [data-slot="breadcrumb-ellipsis"], [data-slot="breadcrumb-separator"], [data-slot="button"], [data-slot="button-group-text"], [data-slot="checkbox"], [data-slot="checkbox-indicator"], [data-slot="combobox-item"], [data-slot="combobox-trigger"], [data-slot="command"], [data-slot="command-item"], [data-slot="context-menu-checkbox-item"], [data-slot="context-menu-item"], [data-slot="context-menu-radio-item"], [data-slot="context-menu-sub-trigger"], [data-slot="dropdown-menu-checkbox-item"], [data-slot="dropdown-menu-item"], [data-slot="dropdown-menu-radio-item"], [data-slot="dropdown-menu-sub-trigger"], [data-slot="empty-icon"], [data-slot="input-group-addon"], [data-slot="input-group-control"], [data-slot="input-otp-separator"], [data-slot="input-otp-slot"], [data-slot="item-media"], [data-slot="kbd"], [data-slot="marker"], [data-slot="marker-icon"], [data-slot="menubar-item"], [data-slot="menubar-radio-item"], [data-slot="menubar-sub-trigger"], [data-slot="message-scroller"], [data-slot="message-scroller-viewport"], [data-slot="native-select-icon"], [data-slot="navigation-menu-link"], [data-slot="pagination-ellipsis"], [data-slot="questionnaire-choice-indicator"], [data-slot="questionnaire-choice-indicator-check"], [data-slot="questionnaire-choice-indicator-dot"], [data-slot="questionnaire-choice-input"], [data-slot="questionnaire-choice-shortcut"], [data-slot="radio-group-indicator"], [data-slot="radio-group-item"], [data-slot="scroll-area-viewport"], [data-slot="select-item"], [data-slot="select-scroll-down-button"], [data-slot="select-scroll-up-button"], [data-slot="select-trigger"], [data-slot="sidebar-group-action"], [data-slot="sidebar-group-label"], [data-slot="sidebar-inner"], [data-slot="sidebar-menu-action"], [data-slot="sidebar-menu-button"], [data-slot="sidebar-menu-sub-button"], [data-slot="slider-thumb"], [data-slot="spinner"], [data-slot="switch-thumb"], [data-slot="tabs-trigger"], [data-slot="toast-icon"], [data-slot="toggle"]):not([class*="size-"]):not([class*="size-"]) {
+  &
+    svg:not(
+      [class*="size-"],
+      [data-class-size],
+      [data-slot="accordion-trigger"],
+      [data-slot="alert"],
+      [data-slot="alert-dialog-media"],
+      [data-slot="attachment-media"],
+      [data-slot="avatar"],
+      [data-slot="avatar-badge"],
+      [data-slot="avatar-fallback"],
+      [data-slot="avatar-group-count"],
+      [data-slot="avatar-image"],
+      [data-slot="badge"],
+      [data-slot="breadcrumb-ellipsis"],
+      [data-slot="breadcrumb-separator"],
+      [data-slot="button"],
+      [data-slot="button-group-text"],
+      [data-slot="checkbox"],
+      [data-slot="checkbox-indicator"],
+      [data-slot="combobox-item"],
+      [data-slot="combobox-trigger"],
+      [data-slot="command"],
+      [data-slot="command-item"],
+      [data-slot="context-menu-checkbox-item"],
+      [data-slot="context-menu-item"],
+      [data-slot="context-menu-radio-item"],
+      [data-slot="context-menu-sub-trigger"],
+      [data-slot="dropdown-menu-checkbox-item"],
+      [data-slot="dropdown-menu-item"],
+      [data-slot="dropdown-menu-radio-item"],
+      [data-slot="dropdown-menu-sub-trigger"],
+      [data-slot="empty-icon"],
+      [data-slot="input-group-addon"],
+      [data-slot="input-group-control"],
+      [data-slot="input-otp-separator"],
+      [data-slot="input-otp-slot"],
+      [data-slot="item-media"],
+      [data-slot="kbd"],
+      [data-slot="marker"],
+      [data-slot="marker-icon"],
+      [data-slot="menubar-item"],
+      [data-slot="menubar-radio-item"],
+      [data-slot="menubar-sub-trigger"],
+      [data-slot="message-scroller"],
+      [data-slot="message-scroller-viewport"],
+      [data-slot="native-select-icon"],
+      [data-slot="navigation-menu-link"],
+      [data-slot="pagination-ellipsis"],
+      [data-slot="questionnaire-choice-indicator"],
+      [data-slot="questionnaire-choice-indicator-check"],
+      [data-slot="questionnaire-choice-indicator-dot"],
+      [data-slot="questionnaire-choice-input"],
+      [data-slot="questionnaire-choice-shortcut"],
+      [data-slot="radio-group-indicator"],
+      [data-slot="radio-group-item"],
+      [data-slot="scroll-area-viewport"],
+      [data-slot="select-item"],
+      [data-slot="select-scroll-down-button"],
+      [data-slot="select-scroll-up-button"],
+      [data-slot="select-trigger"],
+      [data-slot="sidebar-group-action"],
+      [data-slot="sidebar-group-label"],
+      [data-slot="sidebar-inner"],
+      [data-slot="sidebar-menu-action"],
+      [data-slot="sidebar-menu-button"],
+      [data-slot="sidebar-menu-sub-button"],
+      [data-slot="slider-thumb"],
+      [data-slot="spinner"],
+      [data-slot="switch-thumb"],
+      [data-slot="tabs-trigger"],
+      [data-slot="toast-icon"],
+      [data-slot="toggle"]
+    ):not([class*="size-"]):not([class*="size-"]) {
     width: calc(var(--spacing) * 4);
     height: calc(var(--spacing) * 4);
   }

@@ -55,8 +55,16 @@
     translate: var(--transform-translate-x) var(--transform-translate-y);
   }
   &:focus-visible {
-    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(1px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-shadow: var(--ring-inset,) 0 0 0 calc(1px + var(--ring-offset-width)) var(
+      --ring-color,
+      currentcolor
+    );
+    box-shadow:
+      var(--inset-shadow),
+      var(--inset-ring-shadow),
+      var(--ring-offset-shadow),
+      var(--ring-shadow),
+      var(--shadow);
     --ring-color: var(--ring);
     --outline-style: none;
     outline-style: none;

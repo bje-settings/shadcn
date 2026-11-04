@@ -34,7 +34,17 @@
 }
 
 :where(.breadcrumbLink) {
-  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --gradient-from, --gradient-via, --gradient-to;
+  transition-property:
+    color,
+    background-color,
+    border-color,
+    outline-color,
+    text-decoration-color,
+    fill,
+    stroke,
+    --gradient-from,
+    --gradient-via,
+    --gradient-to;
   transition-timing-function: var(--ease, var(--default-transition-timing-function));
   transition-duration: var(--duration, var(--default-transition-duration));
   &:hover {

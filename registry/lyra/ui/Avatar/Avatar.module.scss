@@ -106,8 +106,16 @@
   background-color: var(--primary);
   color: var(--primary-foreground);
   background-blend-mode: color;
-  --ring-shadow: var(--ring-inset, ) 0 0 0 calc(2px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+  --ring-shadow: var(--ring-inset,) 0 0 0 calc(2px + var(--ring-offset-width)) var(
+    --ring-color,
+    currentcolor
+  );
+  box-shadow:
+    var(--inset-shadow),
+    var(--inset-ring-shadow),
+    var(--ring-offset-shadow),
+    var(--ring-shadow),
+    var(--shadow);
   --ring-color: var(--background);
   -webkit-user-select: none;
   user-select: none;
@@ -125,7 +133,8 @@
   }
 }
 .avatarBadge {
-  &:is(:where([data-slot="avatar"])[data-size="default"] *) > svg, &:is(:where([data-slot="avatar"])[data-size="lg"] *) > svg {
+  &:is(:where([data-slot="avatar"])[data-size="default"] *) > svg,
+  &:is(:where([data-slot="avatar"])[data-size="lg"] *) > svg {
     width: calc(var(--spacing) * 2);
     height: calc(var(--spacing) * 2);
   }
@@ -144,8 +153,16 @@
     margin-inline-end: calc(calc(var(--spacing) * -2) * calc(1 - var(--space-x-reverse)));
   }
   :is(& > *)[data-slot="avatar"] {
-    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(2px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-shadow: var(--ring-inset,) 0 0 0 calc(2px + var(--ring-offset-width)) var(
+      --ring-color,
+      currentcolor
+    );
+    box-shadow:
+      var(--inset-shadow),
+      var(--inset-ring-shadow),
+      var(--ring-offset-shadow),
+      var(--ring-shadow),
+      var(--shadow);
     --ring-color: var(--background);
   }
 }
@@ -163,8 +180,16 @@
   font-size: var(--text-xs);
   line-height: var(--leading, var(--text-xs--line-height));
   color: var(--muted-foreground);
-  --ring-shadow: var(--ring-inset, ) 0 0 0 calc(2px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+  --ring-shadow: var(--ring-inset,) 0 0 0 calc(2px + var(--ring-offset-width)) var(
+    --ring-color,
+    currentcolor
+  );
+  box-shadow:
+    var(--inset-shadow),
+    var(--inset-ring-shadow),
+    var(--ring-offset-shadow),
+    var(--ring-shadow),
+    var(--shadow);
   --ring-color: var(--background);
   &:is(:where([data-slot="avatar-group"]):has([data-size="lg"]) *) {
     width: calc(var(--spacing) * 10);

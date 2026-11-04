@@ -33,7 +33,7 @@
   width: 100%;
   align-items: center;
   overflow-x: hidden;
-  border-radius: calc(var(--radius) * .8);
+  border-radius: calc(var(--radius) * 0.8);
   background-color: var(--muted);
 }
 
@@ -58,5 +58,6 @@
   line-height: var(--leading-relaxed);
   color: var(--muted-foreground);
   --numeric-spacing: tabular-nums;
-  font-variant-numeric: var(--ordinal, ) var(--slashed-zero, ) var(--numeric-figure, ) var(--numeric-spacing, ) var(--numeric-fraction, );
+  font-variant-numeric: var(--ordinal,) var(--slashed-zero,) var(--numeric-figure,)
+    var(--numeric-spacing,) var(--numeric-fraction,);
 }

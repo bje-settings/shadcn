@@ -41,7 +41,8 @@
   min-width: 0;
   flex-direction: column;
   gap: var(--spacing);
-  &:is(:where([data-slot="message"])[data-align="end"] *), &[data-align="end"] {
+  &:is(:where([data-slot="message"])[data-align="end"] *),
+  &[data-align="end"] {
     align-self: flex-end;
   }
   &[data-variant="ghost"] {
@@ -74,7 +75,7 @@
   & > [data-slot="bubble-content"]:is(button, a):hover {
     background-color: var(--secondary);
     @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklch,var(--secondary),var(--foreground) 5%);
+      background-color: color-mix(in oklch, var(--secondary), var(--foreground) 5%);
     }
   }
 }
@@ -82,12 +83,13 @@
 :where(.variantMuted) {
 }
 .variantMuted {
-  :is(& > *)[data-slot="bubble-content"], & > [data-slot="bubble-content"]:is(button, a):hover {
+  :is(& > *)[data-slot="bubble-content"],
+  & > [data-slot="bubble-content"]:is(button, a):hover {
     background-color: var(--muted);
   }
   & > [data-slot="bubble-content"]:is(button, a):hover {
     @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklch,var(--muted),var(--foreground) 5%);
+      background-color: color-mix(in oklch, var(--muted), var(--foreground) 5%);
     }
   }
 }
@@ -96,17 +98,17 @@
 }
 .variantTinted {
   :is(& > *)[data-slot="bubble-content"] {
-    background-color: oklch(from var(--primary) .93 calc(c * .4) h);
+    background-color: oklch(from var(--primary) 0.93 calc(c * 0.4) h);
     color: var(--foreground);
   }
   :is(&:is(:global(.dark) *) > *)[data-slot="bubble-content"] {
-    background-color: oklch(from var(--primary) .3 calc(c * .4) h);
+    background-color: oklch(from var(--primary) 0.3 calc(c * 0.4) h);
   }
   & > [data-slot="bubble-content"]:is(button, a):hover {
-    background-color: oklch(from var(--primary) .88 calc(c * .5) h);
+    background-color: oklch(from var(--primary) 0.88 calc(c * 0.5) h);
   }
   &:is(:global(.dark) *) > [data-slot="bubble-content"]:is(button, a):hover {
-    background-color: oklch(from var(--primary) .35 calc(c * .5) h);
+    background-color: oklch(from var(--primary) 0.35 calc(c * 0.5) h);
   }
 }
 
@@ -193,11 +195,19 @@
   border-radius: 3.40282e38px;
   background-color: var(--muted);
   padding-inline: calc(var(--spacing) * 1.5);
-  padding-block: calc(var(--spacing) * .5);
+  padding-block: calc(var(--spacing) * 0.5);
   font-size: var(--text-sm);
   line-height: var(--leading, var(--text-sm--line-height));
-  --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+  --ring-shadow: var(--ring-inset,) 0 0 0 calc(3px + var(--ring-offset-width)) var(
+    --ring-color,
+    currentcolor
+  );
+  box-shadow:
+    var(--inset-shadow),
+    var(--inset-ring-shadow),
+    var(--ring-offset-shadow),
+    var(--ring-shadow),
+    var(--shadow);
   --ring-color: var(--card);
   &:has(:is(button)) {
     padding: 0;
@@ -244,7 +254,107 @@
   padding-block: calc(var(--spacing) * 2);
   font-size: var(--text-sm);
   line-height: var(--leading, var(--text-sm--line-height));
-  &:where(:not([data-slot="accordion-content"], [data-slot="accordion-trigger"], [data-slot="alert"], [data-slot="alert-description"], [data-slot="alert-dialog-description"], [data-slot="alert-dialog-title"], [data-slot="attachment"], [data-slot="attachment-description"], [data-slot="avatar-fallback"], [data-slot="avatar-group-count"], [data-slot="badge"], [data-slot="breadcrumb-list"], [data-slot="bubble-reactions"], [data-slot="button"], [data-slot="button-group-text"], [data-slot="card"], [data-slot="card-description"], [data-slot="chart"], [data-slot="combobox-chip"], [data-slot="combobox-chips"], [data-slot="combobox-empty"], [data-slot="combobox-item"], [data-slot="combobox-label"], [data-slot="command-empty"], [data-slot="command-input"], [data-slot="command-item"], [data-slot="command-shortcut"], [data-slot="context-menu-checkbox-item"], [data-slot="context-menu-item"], [data-slot="context-menu-label"], [data-slot="context-menu-radio-item"], [data-slot="context-menu-shortcut"], [data-slot="context-menu-sub-trigger"], [data-slot="dialog-content"], [data-slot="dialog-description"], [data-slot="drawer-description"], [data-slot="drawer-popup"], [data-slot="drawer-title"], [data-slot="dropdown-menu-checkbox-item"], [data-slot="dropdown-menu-item"], [data-slot="dropdown-menu-label"], [data-slot="dropdown-menu-radio-item"], [data-slot="dropdown-menu-shortcut"], [data-slot="dropdown-menu-sub-trigger"], [data-slot="empty-content"], [data-slot="empty-description"], [data-slot="empty-title"], [data-slot="field-error"], [data-slot="field-separator"], [data-slot="hover-card-content"], [data-slot="input"], [data-slot="input-group-addon"], [data-slot="input-otp-slot"], [data-slot="item"], [data-slot="kbd"], [data-slot="marker"], [data-slot="menubar-checkbox-item"], [data-slot="menubar-item"], [data-slot="menubar-label"], [data-slot="menubar-radio-item"], [data-slot="menubar-shortcut"], [data-slot="menubar-sub-trigger"], [data-slot="menubar-trigger"], [data-slot="message"], [data-slot="message-footer"], [data-slot="message-header"], [data-slot="native-select"], [data-slot="navigation-menu-link"], [data-slot="navigation-menu-trigger"], [data-slot="popover-content"], [data-slot="popover-header"], [data-slot="progress-label"], [data-slot="progress-value"], [data-slot="questionnaire-choice"], [data-slot="questionnaire-description"], [data-slot="questionnaire-error"], [data-slot="questionnaire-input"], [data-slot="questionnaire-progress"], [data-slot="select-item"], [data-slot="select-label"], [data-slot="select-trigger"], [data-slot="sheet-content"], [data-slot="sheet-description"], [data-slot="sheet-title"], [data-slot="sidebar-group-content"], [data-slot="sidebar-group-label"], [data-slot="sidebar-menu-badge"], [data-slot="sidebar-menu-button"], [data-slot="table"], [data-slot="table-caption"], [data-slot="tabs-content"], [data-slot="tabs-trigger"], [data-slot="textarea"], [data-slot="toast-description"], [data-slot="toast-title"], [data-slot="toggle"], [data-slot="tooltip-content"])) {
+  &:where(
+      :not(
+        [data-slot="accordion-content"],
+        [data-slot="accordion-trigger"],
+        [data-slot="alert"],
+        [data-slot="alert-description"],
+        [data-slot="alert-dialog-description"],
+        [data-slot="alert-dialog-title"],
+        [data-slot="attachment"],
+        [data-slot="attachment-description"],
+        [data-slot="avatar-fallback"],
+        [data-slot="avatar-group-count"],
+        [data-slot="badge"],
+        [data-slot="breadcrumb-list"],
+        [data-slot="bubble-reactions"],
+        [data-slot="button"],
+        [data-slot="button-group-text"],
+        [data-slot="card"],
+        [data-slot="card-description"],
+        [data-slot="chart"],
+        [data-slot="combobox-chip"],
+        [data-slot="combobox-chips"],
+        [data-slot="combobox-empty"],
+        [data-slot="combobox-item"],
+        [data-slot="combobox-label"],
+        [data-slot="command-empty"],
+        [data-slot="command-input"],
+        [data-slot="command-item"],
+        [data-slot="command-shortcut"],
+        [data-slot="context-menu-checkbox-item"],
+        [data-slot="context-menu-item"],
+        [data-slot="context-menu-label"],
+        [data-slot="context-menu-radio-item"],
+        [data-slot="context-menu-shortcut"],
+        [data-slot="context-menu-sub-trigger"],
+        [data-slot="dialog-content"],
+        [data-slot="dialog-description"],
+        [data-slot="drawer-description"],
+        [data-slot="drawer-popup"],
+        [data-slot="drawer-title"],
+        [data-slot="dropdown-menu-checkbox-item"],
+        [data-slot="dropdown-menu-item"],
+        [data-slot="dropdown-menu-label"],
+        [data-slot="dropdown-menu-radio-item"],
+        [data-slot="dropdown-menu-shortcut"],
+        [data-slot="dropdown-menu-sub-trigger"],
+        [data-slot="empty-content"],
+        [data-slot="empty-description"],
+        [data-slot="empty-title"],
+        [data-slot="field-error"],
+        [data-slot="field-separator"],
+        [data-slot="hover-card-content"],
+        [data-slot="input"],
+        [data-slot="input-group-addon"],
+        [data-slot="input-otp-slot"],
+        [data-slot="item"],
+        [data-slot="kbd"],
+        [data-slot="marker"],
+        [data-slot="menubar-checkbox-item"],
+        [data-slot="menubar-item"],
+        [data-slot="menubar-label"],
+        [data-slot="menubar-radio-item"],
+        [data-slot="menubar-shortcut"],
+        [data-slot="menubar-sub-trigger"],
+        [data-slot="menubar-trigger"],
+        [data-slot="message"],
+        [data-slot="message-footer"],
+        [data-slot="message-header"],
+        [data-slot="native-select"],
+        [data-slot="navigation-menu-link"],
+        [data-slot="navigation-menu-trigger"],
+        [data-slot="popover-content"],
+        [data-slot="popover-header"],
+        [data-slot="progress-label"],
+        [data-slot="progress-value"],
+        [data-slot="questionnaire-choice"],
+        [data-slot="questionnaire-description"],
+        [data-slot="questionnaire-error"],
+        [data-slot="questionnaire-input"],
+        [data-slot="questionnaire-progress"],
+        [data-slot="select-item"],
+        [data-slot="select-label"],
+        [data-slot="select-trigger"],
+        [data-slot="sheet-content"],
+        [data-slot="sheet-description"],
+        [data-slot="sheet-title"],
+        [data-slot="sidebar-group-content"],
+        [data-slot="sidebar-group-label"],
+        [data-slot="sidebar-menu-badge"],
+        [data-slot="sidebar-menu-button"],
+        [data-slot="table"],
+        [data-slot="table-caption"],
+        [data-slot="tabs-content"],
+        [data-slot="tabs-trigger"],
+        [data-slot="textarea"],
+        [data-slot="toast-description"],
+        [data-slot="toast-title"],
+        [data-slot="toggle"],
+        [data-slot="tooltip-content"]
+      )
+    ) {
     --leading: var(--leading-relaxed);
     line-height: var(--leading-relaxed);
   }
@@ -256,7 +366,17 @@
     text-align: left;
   }
   &:is(button, a) {
-    transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --gradient-from, --gradient-via, --gradient-to;
+    transition-property:
+      color,
+      background-color,
+      border-color,
+      outline-color,
+      text-decoration-color,
+      fill,
+      stroke,
+      --gradient-from,
+      --gradient-via,
+      --gradient-to;
     transition-timing-function: var(--ease, var(--default-transition-timing-function));
     transition-duration: var(--duration, var(--default-transition-duration));
     --outline-style: none;
@@ -264,8 +384,16 @@
   }
   &:is(button, a):focus-visible {
     border-color: var(--ring);
-    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-shadow: var(--ring-inset,) 0 0 0 calc(3px + var(--ring-offset-width)) var(
+      --ring-color,
+      currentcolor
+    );
+    box-shadow:
+      var(--inset-shadow),
+      var(--inset-ring-shadow),
+      var(--ring-offset-shadow),
+      var(--ring-shadow),
+      var(--shadow);
     --ring-color: var(--ring);
     @supports (color: color-mix(in lab, red, red)) {
       --ring-color: color-mix(in oklab, var(--ring) 50%, transparent);

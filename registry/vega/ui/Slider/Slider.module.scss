@@ -40,8 +40,9 @@
   align-items: center;
   -webkit-user-select: none;
   user-select: none;
-  &:where([data-disabled="true"]), &:where([data-disabled]:not([data-disabled="false"])) {
-    opacity: .5;
+  &:where([data-disabled="true"]),
+  &:where([data-disabled]:not([data-disabled="false"])) {
+    opacity: 0.5;
   }
   &:where([data-orientation="vertical"]) {
     height: 100%;
@@ -91,8 +92,16 @@
   border-width: 1px;
   border-color: var(--primary);
   background-color: var(--color-white);
-  --shadow: 0 1px 3px 0 var(--shadow-color, #0000001a), 0 1px 2px -1px var(--shadow-color, #0000001a);
-  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+  --shadow: 0 1px 3px 0 var(--shadow-color, #0000001a), 0 1px 2px -1px var(
+    --shadow-color,
+    #0000001a
+  );
+  box-shadow:
+    var(--inset-shadow),
+    var(--inset-ring-shadow),
+    var(--ring-offset-shadow),
+    var(--ring-shadow),
+    var(--shadow);
   --ring-color: var(--ring);
   @supports (color: color-mix(in lab, red, red)) {
     --ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
@@ -104,13 +113,29 @@
   user-select: none;
   &:hover {
     @media (hover: hover) {
-      --ring-shadow: var(--ring-inset, ) 0 0 0 calc(4px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-      box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+      --ring-shadow: var(--ring-inset,) 0 0 0 calc(4px + var(--ring-offset-width)) var(
+        --ring-color,
+        currentcolor
+      );
+      box-shadow:
+        var(--inset-shadow),
+        var(--inset-ring-shadow),
+        var(--ring-offset-shadow),
+        var(--ring-shadow),
+        var(--shadow);
     }
   }
   &:focus-visible {
-    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(4px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-shadow: var(--ring-inset,) 0 0 0 calc(4px + var(--ring-offset-width)) var(
+      --ring-color,
+      currentcolor
+    );
+    box-shadow:
+      var(--inset-shadow),
+      var(--inset-ring-shadow),
+      var(--ring-offset-shadow),
+      var(--ring-shadow),
+      var(--shadow);
     --outline-style: none;
     outline-style: none;
     @media (forced-colors: active) {
@@ -120,6 +145,6 @@
   }
   &:disabled {
     pointer-events: none;
-    opacity: .5;
+    opacity: 0.5;
   }
 }

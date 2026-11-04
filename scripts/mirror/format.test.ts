@@ -17,7 +17,15 @@ describe('formatWithBiome', () => {
   })
 
   it('formats stylesheets', () => {
-    expect(formatWithBiome(root, 'a.module.scss', 'a{b:c}')).toBe('a {\n  b: c;\n}\n')
-    expect(formatWithBiome(root, 'a.css', 'a{opacity:.5}')).toBe('a {\n  opacity: 0.5;\n}\n')
+    expect(formatWithBiome(root, 'registry/vega/ui/Button/Button.module.scss', 'a{b:c}')).toBe(
+      'a {\n  b: c;\n}\n',
+    )
+    expect(formatWithBiome(root, 'registry/vega/styles/fonts.css', 'a{opacity:.5}')).toBe(
+      'a {\n  opacity: 0.5;\n}\n',
+    )
+  })
+
+  it('returns an existing file that files.includes does not cover unchanged', () => {
+    expect(formatWithBiome(root, 'upstream/base-vega/index.css', 'a{b:c}')).toBe('a{b:c}')
   })
 })

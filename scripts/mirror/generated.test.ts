@@ -27,13 +27,16 @@ async function files(base: string, dir: string): Promise<string[]> {
 }
 
 // Where each declaration of a variable sits: its enclosing at-rules and rules,
-// and whether it is !important.
+// and whether it is !important. A selector list reads as on one line, as Sass
+// prints it, whatever line breaks the formatter gave it.
 function placements(css: string, variable: string): string[][] {
   const found: string[][] = []
   postcss.parse(css).walkDecls(variable, (decl) => {
     const path: string[] = decl.important ? ['!important'] : []
     for (let node = decl.parent; node && node.type !== 'root'; node = node.parent) {
-      path.unshift(node.type === 'rule' ? node.selector : `@${node.name} ${node.params}`)
+      path.unshift(
+        node.type === 'rule' ? node.selector.replace(/\s+/g, ' ') : `@${node.name} ${node.params}`,
+      )
     }
     found.push(path)
   })

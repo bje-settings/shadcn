@@ -45,8 +45,16 @@
   --outline-style: none;
   outline-style: none;
   &:is(:where([data-slot="field-label"]):has(:focus-visible) *) {
-    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(0px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-shadow: var(--ring-inset,) 0 0 0 calc(0px + var(--ring-offset-width)) var(
+      --ring-color,
+      currentcolor
+    );
+    box-shadow:
+      var(--inset-shadow),
+      var(--inset-ring-shadow),
+      var(--ring-offset-shadow),
+      var(--ring-shadow),
+      var(--shadow);
   }
   &:after {
     content: var(--content);
@@ -58,8 +66,16 @@
   }
   &:focus-visible {
     border-color: var(--ring);
-    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-shadow: var(--ring-inset,) 0 0 0 calc(3px + var(--ring-offset-width)) var(
+      --ring-color,
+      currentcolor
+    );
+    box-shadow:
+      var(--inset-shadow),
+      var(--inset-ring-shadow),
+      var(--ring-offset-shadow),
+      var(--ring-shadow),
+      var(--shadow);
     --ring-color: var(--ring);
     @supports (color: color-mix(in lab, red, red)) {
       --ring-color: color-mix(in oklab, var(--ring) 30%, transparent);
@@ -67,8 +83,16 @@
   }
   &[aria-invalid="true"] {
     border-color: var(--destructive);
-    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(3px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-shadow: var(--ring-inset,) 0 0 0 calc(3px + var(--ring-offset-width)) var(
+      --ring-color,
+      currentcolor
+    );
+    box-shadow:
+      var(--inset-shadow),
+      var(--inset-ring-shadow),
+      var(--ring-offset-shadow),
+      var(--ring-shadow),
+      var(--shadow);
     --ring-color: var(--destructive);
     @supports (color: color-mix(in lab, red, red)) {
       --ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
@@ -92,26 +116,35 @@
       --ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
     }
   }
-  &:where([data-state="checked"]), &:where([data-checked]:not([data-checked="false"])) {
+  &:where([data-state="checked"]),
+  &:where([data-checked]:not([data-checked="false"])) {
     border-color: var(--primary);
     background-color: var(--primary);
   }
-  &:is(:where([data-slot="field-label"]):has(:focus-visible) *):where([data-state="checked"]), &:is(:where([data-slot="field-label"]):has(:focus-visible) *):where([data-checked]:not([data-checked="false"])) {
+  &:is(:where([data-slot="field-label"]):has(:focus-visible) *):where([data-state="checked"]),
+  &:is(:where([data-slot="field-label"]):has(:focus-visible) *):where(
+      [data-checked]:not([data-checked="false"])
+    ) {
     border-color: var(--primary);
   }
-  &:where([data-state="unchecked"]), &:where([data-unchecked]:not([data-unchecked="false"])) {
+  &:where([data-state="unchecked"]),
+  &:where([data-unchecked]:not([data-unchecked="false"])) {
     border-color: #0000;
     background-color: var(--input);
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--input) 90%, transparent);
     }
   }
-  &:is(:where([data-slot="field-label"]):has(:focus-visible) *):where([data-state="unchecked"]), &:is(:where([data-slot="field-label"]):has(:focus-visible) *):where([data-unchecked]:not([data-unchecked="false"])) {
+  &:is(:where([data-slot="field-label"]):has(:focus-visible) *):where([data-state="unchecked"]),
+  &:is(:where([data-slot="field-label"]):has(:focus-visible) *):where(
+      [data-unchecked]:not([data-unchecked="false"])
+    ) {
     border-color: #0000;
   }
-  &:where([data-disabled="true"]), &:where([data-disabled]:not([data-disabled="false"])) {
+  &:where([data-disabled="true"]),
+  &:where([data-disabled]:not([data-disabled="false"])) {
     cursor: not-allowed;
-    opacity: .5;
+    opacity: 0.5;
   }
 }
 
@@ -120,10 +153,26 @@
   display: block;
   border-radius: calc(var(--radius) * 1.8);
   background-color: var(--background);
-  --shadow: 0 1px 3px 0 var(--shadow-color, #0000001a), 0 1px 2px -1px var(--shadow-color, #0000001a);
-  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
-  --ring-shadow: var(--ring-inset, ) 0 0 0 calc(0px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+  --shadow: 0 1px 3px 0 var(--shadow-color, #0000001a), 0 1px 2px -1px var(
+    --shadow-color,
+    #0000001a
+  );
+  box-shadow:
+    var(--inset-shadow),
+    var(--inset-ring-shadow),
+    var(--ring-offset-shadow),
+    var(--ring-shadow),
+    var(--shadow);
+  --ring-shadow: var(--ring-inset,) 0 0 0 calc(0px + var(--ring-offset-width)) var(
+    --ring-color,
+    currentcolor
+  );
+  box-shadow:
+    var(--inset-shadow),
+    var(--inset-ring-shadow),
+    var(--ring-offset-shadow),
+    var(--ring-shadow),
+    var(--shadow);
   transition-property: transform, translate, scale, rotate;
   transition-timing-function: var(--ease, var(--default-transition-timing-function));
   transition-duration: var(--duration, var(--default-transition-duration));
@@ -138,18 +187,22 @@
     width: calc(var(--spacing) * 3);
     height: calc(var(--spacing) * 3);
   }
-  &:where([data-state="checked"]), &:where([data-checked]:not([data-checked="false"])) {
+  &:where([data-state="checked"]),
+  &:where([data-checked]:not([data-checked="false"])) {
     --transform-translate-x: calc(100% - 4px);
     translate: var(--transform-translate-x) var(--transform-translate-y);
   }
-  &:is(:global(.dark) *):where([data-state="checked"]), &:is(:global(.dark) *):where([data-checked]:not([data-checked="false"])) {
+  &:is(:global(.dark) *):where([data-state="checked"]),
+  &:is(:global(.dark) *):where([data-checked]:not([data-checked="false"])) {
     background-color: var(--primary-foreground);
   }
-  &:where([data-state="unchecked"]), &:where([data-unchecked]:not([data-unchecked="false"])) {
+  &:where([data-state="unchecked"]),
+  &:where([data-unchecked]:not([data-unchecked="false"])) {
     --transform-translate-x: 0px;
     translate: var(--transform-translate-x) var(--transform-translate-y);
   }
-  &:is(:global(.dark) *):where([data-state="unchecked"]), &:is(:global(.dark) *):where([data-unchecked]:not([data-unchecked="false"])) {
+  &:is(:global(.dark) *):where([data-state="unchecked"]),
+  &:is(:global(.dark) *):where([data-unchecked]:not([data-unchecked="false"])) {
     background-color: var(--foreground);
   }
 }

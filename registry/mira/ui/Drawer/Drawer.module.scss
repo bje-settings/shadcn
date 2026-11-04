@@ -70,16 +70,16 @@
   transition-timing-function: var(--ease, var(--default-transition-timing-function));
   transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .45s;
-  transition-duration: .45s;
-  --ease: cubic-bezier(.32,.72,0,1);
-  transition-timing-function: cubic-bezier(.32, .72, 0, 1);
+  transition-duration: 0.45s;
+  --ease: cubic-bezier(.32, .72, 0, 1);
+  transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
   -webkit-user-select: none;
   user-select: none;
   &[data-ending-style] {
     pointer-events: none;
     opacity: 0;
     --duration: calc(var(--drawer-swipe-strength) * .4s);
-    transition-duration: calc(var(--drawer-swipe-strength) * .4s);
+    transition-duration: calc(var(--drawer-swipe-strength) * 0.4s);
   }
   &[data-snap-points] {
     --drawer-overlay-min-opacity: .5;
@@ -93,8 +93,13 @@
   }
   @supports ((-webkit-backdrop-filter: var(--tw)) or (backdrop-filter: var(--tw))) {
     --backdrop-blur: blur(var(--blur-xs));
-    -webkit-backdrop-filter: var(--backdrop-blur, ) var(--backdrop-brightness, ) var(--backdrop-contrast, ) var(--backdrop-grayscale, ) var(--backdrop-hue-rotate, ) var(--backdrop-invert, ) var(--backdrop-opacity, ) var(--backdrop-saturate, ) var(--backdrop-sepia, );
-    backdrop-filter: var(--backdrop-blur, ) var(--backdrop-brightness, ) var(--backdrop-contrast, ) var(--backdrop-grayscale, ) var(--backdrop-hue-rotate, ) var(--backdrop-invert, ) var(--backdrop-opacity, ) var(--backdrop-saturate, ) var(--backdrop-sepia, );
+    -webkit-backdrop-filter: var(--backdrop-blur,) var(--backdrop-brightness,)
+      var(--backdrop-contrast,) var(--backdrop-grayscale,) var(--backdrop-hue-rotate,)
+      var(--backdrop-invert,) var(--backdrop-opacity,) var(--backdrop-saturate,)
+      var(--backdrop-sepia,);
+    backdrop-filter: var(--backdrop-blur,) var(--backdrop-brightness,) var(--backdrop-contrast,)
+      var(--backdrop-grayscale,) var(--backdrop-hue-rotate,) var(--backdrop-invert,)
+      var(--backdrop-opacity,) var(--backdrop-saturate,) var(--backdrop-sepia,);
   }
   @supports (-webkit-touch-callout: none) {
     position: absolute;
@@ -111,7 +116,7 @@
   transition-timing-function: var(--ease, var(--default-transition-timing-function));
   transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .2s;
-  transition-duration: .2s;
+  transition-duration: 0.2s;
   &:is(:where([data-slot="drawer-popup"])[data-nested-drawer-open] *) {
     opacity: 0;
   }
@@ -191,7 +196,8 @@
   max-height: var(--drawer-content-max-height, none);
   min-height: 0;
   width: var(--drawer-content-width, auto);
-  transform: translate3d(var(--translate-x, 0px),var(--translate-y, 0px),0) scale(var(--stack-scale));
+  transform: translate3d(var(--translate-x, 0px), var(--translate-y, 0px), 0)
+    scale(var(--stack-scale));
   flex-direction: column;
   border-radius: calc(var(--radius) * 1.4);
   border-style: var(--border-style);
@@ -205,9 +211,9 @@
   transition-timing-function: var(--ease, var(--default-transition-timing-function));
   transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .45s;
-  transition-duration: .45s;
-  --ease: cubic-bezier(.22,1,.36,1);
-  transition-timing-function: cubic-bezier(.22, 1, .36, 1);
+  transition-duration: 0.45s;
+  --ease: cubic-bezier(.22, 1, .36, 1);
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
   --outline-style: none;
   outline-style: none;
@@ -219,10 +225,17 @@
   --drawer-inset: calc(var(--spacing) * 2);
   --peek: 1rem;
   --stack-height: var(--drawer-frontmost-height, var(--drawer-height, 0px));
-  --stack-peek-offset: max(0px, calc((var(--nested-drawers) - var(--stack-progress)) * var(--peek)));
+  --stack-peek-offset: max(
+    0px,
+    calc((var(--nested-drawers) - var(--stack-progress)) * var(--peek))
+  );
   --stack-progress: clamp(0, var(--drawer-swipe-progress), 1);
   --stack-scale-base: max(0, calc(1 - (var(--nested-drawers) * var(--stack-step))));
-  --stack-scale: clamp(0, calc(var(--stack-scale-base) + (var(--stack-step) * var(--stack-progress))), 1);
+  --stack-scale: clamp(
+    0,
+    calc(var(--stack-scale-base) + (var(--stack-step) * var(--stack-progress))),
+    1
+  );
   --stack-shrink: calc(1 - var(--stack-scale));
   --stack-step: .05;
   interpolate-size: allow-keywords;
@@ -236,14 +249,15 @@
   }
   &[data-ending-style] {
     transform: var(--closed-transform);
-    opacity: .9999;
+    opacity: 0.9999;
     --duration: calc(var(--drawer-swipe-strength) * .4s);
-    transition-duration: calc(var(--drawer-swipe-strength) * .4s);
+    transition-duration: calc(var(--drawer-swipe-strength) * 0.4s);
   }
   &[data-nested-drawer-open] {
     overflow: hidden;
     --brightness: brightness(95%);
-    filter: var(--blur, ) var(--brightness, ) var(--contrast, ) var(--grayscale, ) var(--hue-rotate, ) var(--invert, ) var(--saturate, ) var(--sepia, ) var(--drop-shadow, );
+    filter: var(--blur,) var(--brightness,) var(--contrast,) var(--grayscale,) var(--hue-rotate,)
+      var(--invert,) var(--saturate,) var(--sepia,) var(--drop-shadow,);
   }
   &[data-nested-drawer-swiping] {
     --duration: 0s;
@@ -251,7 +265,7 @@
   }
   &[data-ending-style][data-nested-drawer-swiping] {
     --duration: calc(var(--drawer-swipe-strength) * .4s);
-    transition-duration: calc(var(--drawer-swipe-strength) * .4s);
+    transition-duration: calc(var(--drawer-swipe-strength) * 0.4s);
   }
   &[data-starting-style] {
     transform: var(--closed-transform);
@@ -262,7 +276,7 @@
   }
   &[data-ending-style][data-swiping] {
     --duration: calc(var(--drawer-swipe-strength) * .4s);
-    transition-duration: calc(var(--drawer-swipe-strength) * .4s);
+    transition-duration: calc(var(--drawer-swipe-strength) * 0.4s);
   }
   &[data-swipe-axis="x"] {
     inset-block: 0;
@@ -294,8 +308,11 @@
   &[data-swipe-direction="down"] {
     bottom: 0;
     transform-origin: bottom;
-    --closed-transform: translate3d(0,calc(100% + var(--drawer-inset, 0px) + 2px),0);
-    --translate-y: calc(var(--drawer-snap-point-offset, 0px) + var(--drawer-swipe-movement-y) - var(--stack-peek-offset) - (var(--stack-shrink) * var(--stack-height)));
+    --closed-transform: translate3d(0, calc(100% + var(--drawer-inset, 0px) + 2px), 0);
+    --translate-y: calc(
+      var(--drawer-snap-point-offset, 0px) + var(--drawer-swipe-movement-y) -
+        var(--stack-peek-offset) - (var(--stack-shrink) * var(--stack-height))
+    );
   }
   &[data-swipe-direction="down"]:after {
     content: var(--content);
@@ -304,8 +321,10 @@
   &[data-swipe-direction="left"] {
     left: 0;
     transform-origin: 0;
-    --closed-transform: translate3d(calc(-100% - var(--drawer-inset, 0px) - 2px),0,0);
-    --translate-x: calc(var(--drawer-swipe-movement-x) + var(--stack-peek-offset) + (var(--stack-shrink) * 100%));
+    --closed-transform: translate3d(calc(-100% - var(--drawer-inset, 0px) - 2px), 0, 0);
+    --translate-x: calc(
+      var(--drawer-swipe-movement-x) + var(--stack-peek-offset) + (var(--stack-shrink) * 100%)
+    );
   }
   &[data-swipe-direction="left"]:after {
     content: var(--content);
@@ -314,8 +333,10 @@
   &[data-swipe-direction="right"] {
     right: 0;
     transform-origin: 100%;
-    --closed-transform: translate3d(calc(100% + var(--drawer-inset, 0px) + 2px),0,0);
-    --translate-x: calc(var(--drawer-swipe-movement-x) - var(--stack-peek-offset) - (var(--stack-shrink) * 100%));
+    --closed-transform: translate3d(calc(100% + var(--drawer-inset, 0px) + 2px), 0, 0);
+    --translate-x: calc(
+      var(--drawer-swipe-movement-x) - var(--stack-peek-offset) - (var(--stack-shrink) * 100%)
+    );
   }
   &[data-swipe-direction="right"]:after {
     content: var(--content);
@@ -324,8 +345,11 @@
   &[data-swipe-direction="up"] {
     top: 0;
     transform-origin: top;
-    --closed-transform: translate3d(0,calc(-100% - var(--drawer-inset, 0px) - 2px),0);
-    --translate-y: calc(var(--drawer-snap-point-offset, 0px) + var(--drawer-swipe-movement-y) + var(--stack-peek-offset) + (var(--stack-shrink) * var(--stack-height)));
+    --closed-transform: translate3d(0, calc(-100% - var(--drawer-inset, 0px) - 2px), 0);
+    --translate-y: calc(
+      var(--drawer-snap-point-offset, 0px) + var(--drawer-swipe-movement-y) +
+        var(--stack-peek-offset) + (var(--stack-shrink) * var(--stack-height))
+    );
   }
   &[data-swipe-direction="up"]:after {
     content: var(--content);
@@ -353,9 +377,9 @@
   transition-timing-function: var(--ease, var(--default-transition-timing-function));
   transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .3s;
-  transition-duration: .3s;
-  --ease: cubic-bezier(.45,1.005,0,1.005);
-  transition-timing-function: cubic-bezier(.45, 1.005, 0, 1.005);
+  transition-duration: 0.3s;
+  --ease: cubic-bezier(.45, 1.005, 0, 1.005);
+  transition-timing-function: cubic-bezier(0.45, 1.005, 0, 1.005);
   -webkit-user-select: text;
   user-select: text;
   &:is(:where([data-slot="drawer-popup"])[data-nested-drawer-open] *) {

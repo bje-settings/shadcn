@@ -32,7 +32,7 @@
 :where(.progressTrack) {
   position: relative;
   display: flex;
-  height: calc(var(--spacing) * .5);
+  height: calc(var(--spacing) * 0.5);
   width: 100%;
   align-items: center;
   overflow-x: hidden;
@@ -64,5 +64,6 @@
   line-height: var(--leading, var(--text-sm--line-height));
   color: var(--muted-foreground);
   --numeric-spacing: tabular-nums;
-  font-variant-numeric: var(--ordinal, ) var(--slashed-zero, ) var(--numeric-figure, ) var(--numeric-spacing, ) var(--numeric-fraction, );
+  font-variant-numeric: var(--ordinal,) var(--slashed-zero,) var(--numeric-figure,)
+    var(--numeric-spacing,) var(--numeric-fraction,);
 }

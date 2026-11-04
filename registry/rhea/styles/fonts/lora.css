@@ -4,7 +4,8 @@
 @import "@fontsource-variable/lora";
 
 @layer theme {
-  :root, :host {
-    --font-serif: 'Lora Variable', serif;
+  :root,
+  :host {
+    --font-serif: "Lora Variable", serif;
   }
 }

@@ -41,7 +41,8 @@
   min-width: 0;
   flex-direction: column;
   gap: var(--spacing);
-  &:is(:where([data-slot="message"])[data-align="end"] *), &[data-align="end"] {
+  &:is(:where([data-slot="message"])[data-align="end"] *),
+  &[data-align="end"] {
     align-self: flex-end;
   }
   &[data-variant="ghost"] {
@@ -74,7 +75,7 @@
   & > [data-slot="bubble-content"]:is(button, a):hover {
     background-color: var(--secondary);
     @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklch,var(--secondary),var(--foreground) 5%);
+      background-color: color-mix(in oklch, var(--secondary), var(--foreground) 5%);
     }
   }
 }
@@ -82,12 +83,13 @@
 :where(.variantMuted) {
 }
 .variantMuted {
-  :is(& > *)[data-slot="bubble-content"], & > [data-slot="bubble-content"]:is(button, a):hover {
+  :is(& > *)[data-slot="bubble-content"],
+  & > [data-slot="bubble-content"]:is(button, a):hover {
     background-color: var(--muted);
   }
   & > [data-slot="bubble-content"]:is(button, a):hover {
     @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklch,var(--muted),var(--foreground) 5%);
+      background-color: color-mix(in oklch, var(--muted), var(--foreground) 5%);
     }
   }
 }
@@ -96,17 +98,17 @@
 }
 .variantTinted {
   :is(& > *)[data-slot="bubble-content"] {
-    background-color: oklch(from var(--primary) .93 calc(c * .4) h);
+    background-color: oklch(from var(--primary) 0.93 calc(c * 0.4) h);
     color: var(--foreground);
   }
   :is(&:is(:global(.dark) *) > *)[data-slot="bubble-content"] {
-    background-color: oklch(from var(--primary) .3 calc(c * .4) h);
+    background-color: oklch(from var(--primary) 0.3 calc(c * 0.4) h);
   }
   & > [data-slot="bubble-content"]:is(button, a):hover {
-    background-color: oklch(from var(--primary) .88 calc(c * .5) h);
+    background-color: oklch(from var(--primary) 0.88 calc(c * 0.5) h);
   }
   &:is(:global(.dark) *) > [data-slot="bubble-content"]:is(button, a):hover {
-    background-color: oklch(from var(--primary) .35 calc(c * .5) h);
+    background-color: oklch(from var(--primary) 0.35 calc(c * 0.5) h);
   }
 }
 
@@ -193,11 +195,19 @@
   border-radius: 3.40282e38px;
   background-color: var(--muted);
   padding-inline: calc(var(--spacing) * 1.5);
-  padding-block: calc(var(--spacing) * .5);
+  padding-block: calc(var(--spacing) * 0.5);
   font-size: var(--text-xs);
   line-height: var(--leading, var(--text-xs--line-height));
-  --ring-shadow: var(--ring-inset, ) 0 0 0 calc(2px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-  box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+  --ring-shadow: var(--ring-inset,) 0 0 0 calc(2px + var(--ring-offset-width)) var(
+    --ring-color,
+    currentcolor
+  );
+  box-shadow:
+    var(--inset-shadow),
+    var(--inset-ring-shadow),
+    var(--ring-offset-shadow),
+    var(--ring-shadow),
+    var(--shadow);
   --ring-color: var(--card);
   &:has(:is(button)) {
     padding: 0;
@@ -252,7 +262,17 @@
     text-align: left;
   }
   &:is(button, a) {
-    transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --gradient-from, --gradient-via, --gradient-to;
+    transition-property:
+      color,
+      background-color,
+      border-color,
+      outline-color,
+      text-decoration-color,
+      fill,
+      stroke,
+      --gradient-from,
+      --gradient-via,
+      --gradient-to;
     transition-timing-function: var(--ease, var(--default-transition-timing-function));
     transition-duration: var(--duration, var(--default-transition-duration));
     --outline-style: none;
@@ -260,8 +280,16 @@
   }
   &:is(button, a):focus-visible {
     border-color: var(--ring);
-    --ring-shadow: var(--ring-inset, ) 0 0 0 calc(2px + var(--ring-offset-width)) var(--ring-color, currentcolor);
-    box-shadow: var(--inset-shadow), var(--inset-ring-shadow), var(--ring-offset-shadow), var(--ring-shadow), var(--shadow);
+    --ring-shadow: var(--ring-inset,) 0 0 0 calc(2px + var(--ring-offset-width)) var(
+      --ring-color,
+      currentcolor
+    );
+    box-shadow:
+      var(--inset-shadow),
+      var(--inset-ring-shadow),
+      var(--ring-offset-shadow),
+      var(--ring-shadow),
+      var(--shadow);
     --ring-color: var(--ring);
     @supports (color: color-mix(in lab, red, red)) {
       --ring-color: color-mix(in oklab, var(--ring) 30%, transparent);

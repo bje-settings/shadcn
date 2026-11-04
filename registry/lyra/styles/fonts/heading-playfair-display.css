@@ -4,7 +4,8 @@
 @import "@fontsource-variable/playfair-display";
 
 @layer theme {
-  :root, :host {
-    --font-heading: 'Playfair Display Variable', serif;
+  :root,
+  :host {
+    --font-heading: "Playfair Display Variable", serif;
   }
 }
