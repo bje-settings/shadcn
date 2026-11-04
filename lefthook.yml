@@ -6,7 +6,7 @@ pre-commit:
     # `check`, never `check --write`: a hook that edits the tree commits
     # something nobody reviewed.
     biome:
-      glob: '*.{json,mjs,ts,tsx}'
+      glob: "*.{json,mjs,ts,tsx,scss,css,md,yml,yaml,html}"
       run: pnpm exec biome check --staged --error-on-warnings --no-errors-on-unmatched
 
     # Project-wide: a type error caused by a staged file is usually in a file
@@ -15,7 +15,7 @@ pre-commit:
     # paths point at), so the hook skips it until ab/generated/vega exists; CI
     # generates them and checks it.
     types:
-      glob: '{*.ts,*.tsx,tsconfig.json}'
+      glob: "{*.ts,*.tsx,tsconfig.json}"
       run: |
         pnpm exec tsc -p tsconfig.json || exit 1
         for p in registry/tsconfig.json registry/*/tsconfig.json; do
@@ -28,10 +28,10 @@ pre-commit:
         fi
 
     vitest-related:
-      glob: '*.{ts,tsx}'
+      glob: "*.{ts,tsx}"
       run: pnpm exec vitest related --run --coverage.enabled=false --passWithNoTests {staged_files}
 
     # Validates each style's registry.json and every item against the shadcn schema.
     build:
-      glob: '{registry.json,registry/**,mirror.config.json}'
+      glob: "{registry.json,registry/**,mirror.config.json}"
       run: pnpm build

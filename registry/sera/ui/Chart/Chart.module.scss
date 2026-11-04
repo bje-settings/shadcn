@@ -115,16 +115,12 @@
   font-size: var(--text-xs);
   line-height: var(--leading, var(--text-xs--line-height));
   color: var(--popover-foreground);
+  // biome-ignore-start lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   --shadow: 0 1px 3px 0 var(--shadow-color, #0000001a), 0 1px 2px -1px var(
     --shadow-color,
     #0000001a
   );
-  box-shadow:
-    var(--inset-shadow),
-    var(--inset-ring-shadow),
-    var(--ring-offset-shadow),
-    var(--ring-shadow),
-    var(--shadow);
+  // biome-ignore-end lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   --ring-shadow: var(--ring-inset,) 0 0 0 calc(1px + var(--ring-offset-width)) var(
     --ring-color,
     currentcolor
@@ -176,7 +172,6 @@
 
 :where(.chartTooltipContentDivDashed) {
   width: 0;
-  border-style: var(--border-style);
   border-width: 1.5px;
   --border-style: dashed;
   border-style: dashed;

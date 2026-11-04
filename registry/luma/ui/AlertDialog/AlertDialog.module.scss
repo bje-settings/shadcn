@@ -104,7 +104,6 @@
   display: grid;
   width: 100%;
   --transform-translate-x: calc(calc(1 / 2 * 100%) * -1);
-  translate: var(--transform-translate-x) var(--transform-translate-y);
   --transform-translate-y: calc(calc(1 / 2 * 100%) * -1);
   translate: var(--transform-translate-x) var(--transform-translate-y);
   gap: calc(var(--spacing) * 6);
@@ -112,16 +111,12 @@
   background-color: var(--popover);
   padding: calc(var(--spacing) * 6);
   color: var(--popover-foreground);
+  // biome-ignore-start lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   --shadow: 0 20px 25px -5px var(--shadow-color, #0000001a), 0 8px 10px -6px var(
     --shadow-color,
     #0000001a
   );
-  box-shadow:
-    var(--inset-shadow),
-    var(--inset-ring-shadow),
-    var(--ring-offset-shadow),
-    var(--ring-shadow),
-    var(--shadow);
+  // biome-ignore-end lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   --ring-shadow: var(--ring-inset,) 0 0 0 calc(1px + var(--ring-offset-width)) var(
     --ring-color,
     currentcolor

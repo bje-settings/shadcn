@@ -112,7 +112,6 @@
   :is(& > *)[data-slot="select-value"] {
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
-    display: -webkit-box;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -227,16 +226,12 @@
   border-radius: 0;
   background-color: var(--popover);
   color: var(--popover-foreground);
+  // biome-ignore-start lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   --shadow: 0 4px 6px -1px var(--shadow-color, #0000001a), 0 2px 4px -2px var(
     --shadow-color,
     #0000001a
   );
-  box-shadow:
-    var(--inset-shadow),
-    var(--inset-ring-shadow),
-    var(--ring-offset-shadow),
-    var(--ring-shadow),
-    var(--shadow);
+  // biome-ignore-end lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   --ring-shadow: var(--ring-inset,) 0 0 0 calc(1px + var(--ring-offset-width)) var(
     --ring-color,
     currentcolor

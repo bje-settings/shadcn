@@ -54,7 +54,9 @@
   --transform-translate-y: 0px;
   translate: var(--transform-translate-x) var(--transform-translate-y);
   overflow: hidden;
+  // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
   border-radius: calc(var(--radius) * 1.4) !important;
+  // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
   padding: 0;
 }
 
@@ -64,7 +66,9 @@
 }
 
 :where(.commandInputInputGroup) {
+  // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
   height: calc(var(--spacing) * 8) !important;
+  // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
   background-color: var(--input);
   @supports (color: color-mix(in lab, red, red)) {
     background-color: color-mix(in oklab, var(--input) 20%, transparent);

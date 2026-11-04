@@ -119,29 +119,35 @@
     top: var(--spacing);
   }
   &[data-side="inline-end"] {
+    // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
     top: 50% !important;
+    // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
     left: calc(var(--spacing) * -1);
     --transform-translate-x: 1.5px;
-    translate: var(--transform-translate-x) var(--transform-translate-y);
     --transform-translate-y: calc(calc(1 / 2 * 100%) * -1);
     translate: var(--transform-translate-x) var(--transform-translate-y);
   }
   &[data-side="inline-start"] {
+    // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
     top: 50% !important;
+    // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
     right: calc(var(--spacing) * -1);
     --transform-translate-x: -1.5px;
-    translate: var(--transform-translate-x) var(--transform-translate-y);
     --transform-translate-y: calc(calc(1 / 2 * 100%) * -1);
     translate: var(--transform-translate-x) var(--transform-translate-y);
   }
   &[data-side="left"] {
+    // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
     top: 50% !important;
+    // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
     right: calc(var(--spacing) * -1);
     --transform-translate-y: calc(calc(1 / 2 * 100%) * -1);
     translate: var(--transform-translate-x) var(--transform-translate-y);
   }
   &[data-side="right"] {
+    // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
     top: 50% !important;
+    // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
     left: calc(var(--spacing) * -1);
     --transform-translate-y: calc(calc(1 / 2 * 100%) * -1);
     translate: var(--transform-translate-x) var(--transform-translate-y);

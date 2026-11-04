@@ -56,7 +56,6 @@
     --gradient-via,
     --gradient-to;
   transition-timing-function: var(--ease, var(--default-transition-timing-function));
-  transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .1s;
   transition-duration: 0.1s;
   --outline-style: none;
@@ -159,8 +158,6 @@
   background-color: #0000;
 }
 
-:where(.itemMediaVariantIcon) {
-}
 .itemMediaVariantIcon {
   &
     svg:not(
@@ -300,7 +297,6 @@
 :where(.itemTitle) {
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
-  display: -webkit-box;
   overflow: hidden;
   display: flex;
   width: fit-content;

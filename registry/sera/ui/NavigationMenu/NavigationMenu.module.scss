@@ -162,9 +162,6 @@
   position: relative;
 }
 
-:where(.navigationMenuTrigger) {
-}
-
 :where(.navigationMenuTriggerChevronDownIcon) {
   position: relative;
   top: 1px;
@@ -196,7 +193,6 @@
     overlay,
     pointer-events;
   transition-timing-function: var(--ease, var(--default-transition-timing-function));
-  transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .3s;
   transition-duration: 0.3s;
   &:is(:where([data-slot="navigation-menu-trigger"])[data-popup-open] *),
@@ -217,8 +213,6 @@
   padding: calc(var(--spacing) * 2.5);
   padding-right: calc(var(--spacing) * 3);
   transition-property: opacity, transform, translate;
-  transition-timing-function: var(--ease, var(--default-transition-timing-function));
-  transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .35s;
   transition-duration: 0.35s;
   --ease: cubic-bezier(.22, 1, .36, 1);
@@ -227,16 +221,12 @@
     border-radius: 0;
     background-color: var(--popover);
     color: var(--popover-foreground);
+    // biome-ignore-start lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
     --shadow: 0 4px 6px -1px var(--shadow-color, #0000001a), 0 2px 4px -2px var(
       --shadow-color,
       #0000001a
     );
-    box-shadow:
-      var(--inset-shadow),
-      var(--inset-ring-shadow),
-      var(--ring-offset-shadow),
-      var(--ring-shadow),
-      var(--shadow);
+    // biome-ignore-end lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
     --ring-shadow: var(--ring-inset,) 0 0 0 calc(1px + var(--ring-offset-width)) var(
       --ring-color,
       currentcolor
@@ -327,8 +317,6 @@
   width: var(--positioner-width);
   max-width: var(--available-width);
   transition-property: top, left, right, bottom;
-  transition-timing-function: var(--ease, var(--default-transition-timing-function));
-  transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .35s;
   transition-duration: 0.35s;
   --ease: cubic-bezier(.22, 1, .36, 1);
@@ -337,9 +325,7 @@
     transition-property: none;
   }
   &[data-side="bottom"]:before {
-    content: var(--content);
     top: -10px;
-    content: var(--content);
     right: 0;
     content: var(--content);
     left: 0;
@@ -354,16 +340,12 @@
   border-radius: 0;
   background-color: var(--popover);
   color: var(--popover-foreground);
+  // biome-ignore-start lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   --shadow: 0 4px 6px -1px var(--shadow-color, #0000001a), 0 2px 4px -2px var(
     --shadow-color,
     #0000001a
   );
-  box-shadow:
-    var(--inset-shadow),
-    var(--inset-ring-shadow),
-    var(--ring-offset-shadow),
-    var(--ring-shadow),
-    var(--shadow);
+  // biome-ignore-end lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   --ring-shadow: var(--ring-inset,) 0 0 0 calc(1px + var(--ring-offset-width)) var(
     --ring-color,
     currentcolor
@@ -379,8 +361,6 @@
     --ring-color: color-mix(in oklab, var(--foreground) 10%, transparent);
   }
   transition-property: opacity, transform, width, height, scale, translate;
-  transition-timing-function: var(--ease, var(--default-transition-timing-function));
-  transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .35s;
   transition-duration: 0.35s;
   --ease: cubic-bezier(.22, 1, .36, 1);
@@ -580,10 +560,12 @@
   rotate: 45deg;
   border-radius: 0;
   background-color: var(--border);
+  // biome-ignore-start lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   --shadow: 0 4px 6px -1px var(--shadow-color, #0000001a), 0 2px 4px -2px var(
     --shadow-color,
     #0000001a
   );
+  // biome-ignore-end lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   box-shadow:
     var(--inset-shadow),
     var(--inset-ring-shadow),

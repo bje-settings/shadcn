@@ -17,7 +17,9 @@
 }
 
 :where(.paginationPreviousPaginationLink) {
+  // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
   padding-left: calc(var(--spacing) * 2) !important;
+  // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
 }
 
 :where(.paginationPreviousSpan) {
@@ -28,7 +30,9 @@
 }
 
 :where(.paginationNextPaginationLink) {
+  // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
   padding-right: calc(var(--spacing) * 2) !important;
+  // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
 }
 
 :where(.paginationNextSpan) {

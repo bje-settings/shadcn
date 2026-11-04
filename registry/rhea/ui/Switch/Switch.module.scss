@@ -57,9 +57,7 @@
       var(--shadow);
   }
   &:after {
-    content: var(--content);
     position: absolute;
-    content: var(--content);
     inset-inline: calc(var(--spacing) * -3);
     content: var(--content);
     inset-block: calc(var(--spacing) * -2);
@@ -153,16 +151,12 @@
   display: block;
   border-radius: calc(var(--radius) * 1.8);
   background-color: var(--background);
+  // biome-ignore-start lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   --shadow: 0 1px 3px 0 var(--shadow-color, #0000001a), 0 1px 2px -1px var(
     --shadow-color,
     #0000001a
   );
-  box-shadow:
-    var(--inset-shadow),
-    var(--inset-ring-shadow),
-    var(--ring-offset-shadow),
-    var(--ring-shadow),
-    var(--shadow);
+  // biome-ignore-end lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   --ring-shadow: var(--ring-inset,) 0 0 0 calc(0px + var(--ring-offset-width)) var(
     --ring-color,
     currentcolor

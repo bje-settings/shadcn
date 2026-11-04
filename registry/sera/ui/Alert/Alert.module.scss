@@ -39,11 +39,8 @@
   font-size: var(--text-sm);
   line-height: var(--leading, var(--text-sm--line-height));
   &:after {
-    content: var(--content);
     position: absolute;
-    content: var(--content);
     inset-block: -1px;
-    content: var(--content);
     left: -1px;
     content: var(--content);
     width: calc(var(--spacing) * 0.5);

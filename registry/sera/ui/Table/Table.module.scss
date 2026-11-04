@@ -37,8 +37,6 @@
   line-height: var(--leading, var(--text-sm--line-height));
 }
 
-:where(.tableHeader) {
-}
 .tableHeader {
   & tr {
     border-bottom-style: var(--border-style);
@@ -46,8 +44,6 @@
   }
 }
 
-:where(.tableBody) {
-}
 .tableBody {
   & tr:last-child {
     border-style: var(--border-style);

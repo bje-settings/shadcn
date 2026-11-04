@@ -44,11 +44,11 @@ and `@bje/globals` lists it in `devDependencies`.
 Every component depends on `@bje/globals`, which installs three files into `styles/` under the
 project's `components` alias. Import each once, at the app's entry:
 
-| File             | Holds                                                                         |
-| ---------------- | ----------------------------------------------------------------------------- |
-| `variables.scss` | Tailwind's default theme and shadcn's light and dark colors, as custom properties |
+| File             | Holds                                                                               |
+| ---------------- | ----------------------------------------------------------------------------------- |
+| `variables.scss` | Tailwind's default theme and shadcn's light and dark colors, as custom properties   |
 | `base.scss`      | Tailwind's preflight, shadcn's base layer and the keyframes components animate with |
-| `fonts.css`      | The default font's package import (`@fontsource-variable/inter`)              |
+| `fonts.css`      | The default font's package import (`@fontsource-variable/inter`)                    |
 
 Dark colors apply under a `.dark` class, which shadcn apps set on `<html>`.
 
@@ -114,6 +114,42 @@ Where the items differ from upstream's, each on purpose:
   each of the `Root`, `Chevron`, `DayButton` and `WeekNumber` render functions that upstream
   passes to react-day-picker's `components` prop inline. The functions stay inline, where
   upstream writes them; the patch adds only the comments.
+
+The patches in `scripts/mirror/patches.ts` keep these upstream patterns and put a `biome-ignore`,
+with the rule and a reason, before each site, so Biome's recommended rules pass on every item with
+no override:
+
+- `useSemanticElements`: ButtonGroup, Field, InputGroup and InputGroupAddon render a `div` with
+  `role="group"`, Carousel one with `role="region"` and CarouselItem one with `role="group"`,
+  InputOTPSeparator one with `role="separator"` and ItemGroup one with `role="list"`. The element
+  Biome suggests (`fieldset`, `section`, `hr`, `ul`) would change the box and the semantics, and an
+  `hr` cannot hold the separator's icon.
+- `noArrayIndexKey`: FieldError's errors, Chart's tooltip and legend items and Slider's thumbs are
+  keyed by their index, as upstream keys them.
+- `useKeyWithClickEvents`: InputGroupAddon focuses its input when clicked; the input itself is
+  reachable by keyboard.
+- `noLabelWithoutControl`: Label renders a native `label`; you associate it with `htmlFor` or by
+  nesting the control.
+- `useExhaustiveDependencies`: SidebarProvider's `toggleSidebar` and context value list
+  `setOpenMobile`, a stable state setter, in their dependencies.
+- `noDocumentCookie`: SidebarProvider keeps its open state by assigning `document.cookie`.
+- `noDangerouslySetInnerHtml`: ChartStyle injects the chart's CSS variables as a `style` element.
+
+The stylesheets need no patch. The pipeline keeps the first three patterns below with a
+suppression, and changes upstream's compiled CSS for the last two:
+
+- `noImportantStyles`: each `!important` declaration, from upstream's `!` modifier or preflight's
+  `[hidden]` rule, sits in a suppression.
+- `noDescendingSpecificity`: Avatar's `.avatarGroupCount > svg` and Bubble's content hover in its
+  outline, ghost and destructive variants keep upstream's cascade order, with a suppression;
+  moving them would move a declaration past another.
+- `noUnknownUnit`: Biome reads a digit-led hex colour in a custom property (`#0000001a`) as a
+  number and a unit, its own bug [biomejs/biome#12332](https://github.com/biomejs/biome/issues/12332).
+  Each such declaration has a suppression beside it: `shadcn add` drops a file's leading comments,
+  so a file-level suppression would not reach your project.
+- A property a block sets twice keeps only the declaration the cascade applies, as tailwind-merge
+  keeps the later class upstream.
+- A slot's empty `:where()` block is left out, since Sass drops it anyway.
 
 Two upstream defaults stay, and your `role` replaces them:
 

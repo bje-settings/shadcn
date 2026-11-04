@@ -76,16 +76,12 @@
   background-color: var(--popover);
   padding: var(--spacing);
   color: var(--popover-foreground);
+  // biome-ignore-start lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   --shadow: 0 10px 15px -3px var(--shadow-color, #0000001a), 0 4px 6px -4px var(
     --shadow-color,
     #0000001a
   );
-  box-shadow:
-    var(--inset-shadow),
-    var(--inset-ring-shadow),
-    var(--ring-offset-shadow),
-    var(--ring-shadow),
-    var(--shadow);
+  // biome-ignore-end lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   --ring-shadow: var(--ring-inset,) 0 0 0 calc(1px + var(--ring-offset-width)) var(
     --ring-color,
     currentcolor
@@ -418,10 +414,12 @@
 }
 
 :where(.contextMenuSubContent) {
+  // biome-ignore-start lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   --shadow: 0 10px 15px -3px var(--shadow-color, #0000001a), 0 4px 6px -4px var(
     --shadow-color,
     #0000001a
   );
+  // biome-ignore-end lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   box-shadow:
     var(--inset-shadow),
     var(--inset-ring-shadow),

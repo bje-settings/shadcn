@@ -100,7 +100,6 @@
   width: 100%;
   max-width: calc(100% - 2rem);
   --transform-translate-x: calc(calc(1 / 2 * 100%) * -1);
-  translate: var(--transform-translate-x) var(--transform-translate-y);
   --transform-translate-y: calc(calc(1 / 2 * 100%) * -1);
   translate: var(--transform-translate-x) var(--transform-translate-y);
   gap: calc(var(--spacing) * 4);

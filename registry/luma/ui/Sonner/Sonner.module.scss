@@ -6,9 +6,6 @@
 // Upstream classes with no CSS output, dropped:
 //   toaster group
 
-:where(.toasterSonner) {
-}
-
 :where(.toasterCircleCheckIcon) {
   width: calc(var(--spacing) * 4);
   height: calc(var(--spacing) * 4);

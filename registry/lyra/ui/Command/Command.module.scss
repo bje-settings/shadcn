@@ -82,17 +82,23 @@
   @supports (color: color-mix(in lab, red, red)) {
     background-color: color-mix(in oklab, var(--input) 30%, transparent);
   }
+  // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
   --shadow: 0 0 #0000 !important;
+  // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
+  // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
   box-shadow:
     var(--inset-shadow),
     var(--inset-ring-shadow),
     var(--ring-offset-shadow),
     var(--ring-shadow),
     var(--shadow) !important;
+  // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
 }
 .commandInputInputGroup {
   :is(& > *)[data-slot="input-group-addon"] {
+    // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
     padding-left: calc(var(--spacing) * 2) !important;
+    // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
   }
 }
 
@@ -180,7 +186,9 @@
   -webkit-user-select: none;
   user-select: none;
   :where([data-slot="dialog-content"]) & {
+    // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
     border-radius: 0 !important;
+    // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
   }
   &[data-disabled="true"] {
     pointer-events: none;

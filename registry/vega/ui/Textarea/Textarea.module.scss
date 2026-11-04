@@ -39,6 +39,7 @@
   padding-block: calc(var(--spacing) * 2);
   font-size: var(--text-base);
   line-height: var(--leading, var(--text-base--line-height));
+  // biome-ignore lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   --shadow: 0 1px 2px 0 var(--shadow-color, #0000000d);
   box-shadow:
     var(--inset-shadow),

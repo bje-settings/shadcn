@@ -47,7 +47,6 @@
   }
   transition-property: opacity;
   transition-timing-function: var(--ease, var(--default-transition-timing-function));
-  transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .15s;
   transition-duration: 0.15s;
   &[data-ending-style],
@@ -76,10 +75,12 @@
   font-size: var(--text-sm);
   line-height: var(--leading, var(--text-sm--line-height));
   color: var(--popover-foreground);
+  // biome-ignore-start lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   --shadow: 0 20px 25px -5px var(--shadow-color, #0000001a), 0 8px 10px -6px var(
     --shadow-color,
     #0000001a
   );
+  // biome-ignore-end lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   box-shadow:
     var(--inset-shadow),
     var(--inset-ring-shadow),
@@ -110,8 +111,6 @@
     content-visibility,
     overlay,
     pointer-events;
-  transition-timing-function: var(--ease, var(--default-transition-timing-function));
-  transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .2s;
   transition-duration: 0.2s;
   --ease: var(--ease-in-out);

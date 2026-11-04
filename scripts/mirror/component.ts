@@ -7,12 +7,16 @@ import { pascalCase } from './names.ts'
 import type { ItemParts } from './parts.ts'
 import { applyPatch, PATCHES, type Patch, type Patches } from './patches.ts'
 import {
+  CASCADE_ORDER,
+  checkCascadeOrder,
   NAMED_TEXT_SIZE,
   SIZE_ATTRIBUTE,
   SIZE_PROBE,
+  type Site,
   type SlotOptions,
   slotToScss,
 } from './scss.ts'
+import { misreadsHex, unknownUnitSuppression } from './stylesheet-lint.ts'
 import { generateTest } from './tests.ts'
 import { type TransformedComponent, transformComponent } from './tsx.ts'
 
@@ -96,6 +100,14 @@ function wrap(label: string, values: string[]): string[] {
   }
   lines.push(line)
   return lines
+}
+
+// A default's declaration, in the noUnknownUnit suppression it needs when
+// Biome misreads its value, as print in scss.ts does for the rules.
+function defaultLines(line: string, misread: boolean): string[] {
+  if (!misread) return [`${line};`]
+  const { before, after } = unknownUnitSuppression(line)
+  return [before, `${line};`, ...(after === undefined ? [] : [after])]
 }
 
 // An upstream component as `shadcn add` would write it, and its transform.
@@ -324,9 +336,15 @@ export async function buildComponent(
   const gated = new Set<string>()
   // Slots the module exports no class for.
   const unstyled = new Set<string>()
+  const cascadeOrdered: Site[] = []
   for (const slot of source.slots) {
-    const block = slotToScss(await compile(slot.classes), slot, context.slotOptions)
-    blocks.push(block.scss)
+    const block = slotToScss(await compile(slot.classes), slot, {
+      ...context.slotOptions,
+      cascadeOrder: CASCADE_ORDER[upstream.name],
+    })
+    // A slot with no rule prints nothing.
+    if (block.scss !== '') blocks.push(block.scss)
+    cascadeOrdered.push(...block.cascadeOrdered)
     // One table serves every slot, so a name always has the same default.
     for (const [name, value] of Object.entries(block.defaults)) defaults.set(name, value)
     for (const selector of block.defaultSelectors) defaultSelectors.add(selector)
@@ -338,6 +356,7 @@ export async function buildComponent(
     for (const reason of block.dropped) dropped.add(reason)
     for (const c of block.gated) gated.add(c)
   }
+  checkCascadeOrder(upstream.name, cascadeOrdered)
 
   const scss = [
     generated,
@@ -358,7 +377,7 @@ export async function buildComponent(
           `  ${[...defaultSelectors].sort().join(',\n  ')} {`,
           ...[...defaults]
             .sort(([a], [b]) => a.localeCompare(b))
-            .map(([n, v]) => `    ${n}: ${v};`),
+            .flatMap(([n, v]) => defaultLines(`    ${n}: ${v}`, misreadsHex(n, v))),
           '  }',
           '}',
           '',

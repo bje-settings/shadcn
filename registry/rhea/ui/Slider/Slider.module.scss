@@ -91,16 +91,12 @@
   flex-shrink: 0;
   border-radius: calc(var(--radius) * 1.8);
   background-color: var(--color-white);
+  // biome-ignore-start lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   --shadow: 0 4px 6px -1px var(--shadow-color, #0000001a), 0 2px 4px -2px var(
     --shadow-color,
     #0000001a
   );
-  box-shadow:
-    var(--inset-shadow),
-    var(--inset-ring-shadow),
-    var(--ring-offset-shadow),
-    var(--ring-shadow),
-    var(--shadow);
+  // biome-ignore-end lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   --ring-shadow: var(--ring-inset,) 0 0 0 calc(1px + var(--ring-offset-width)) var(
     --ring-color,
     currentcolor
@@ -111,13 +107,13 @@
     var(--ring-offset-shadow),
     var(--ring-shadow),
     var(--shadow);
+  // biome-ignore lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   --ring-color: #0000001a;
   @supports (color: color-mix(in lab, red, red)) {
     --ring-color: color-mix(in oklab, var(--color-black) 10%, transparent);
   }
   transition-property: color, box-shadow;
   transition-timing-function: var(--ease, var(--default-transition-timing-function));
-  transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .2s;
   transition-duration: 0.2s;
   -webkit-user-select: none;

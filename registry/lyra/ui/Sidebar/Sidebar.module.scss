@@ -105,9 +105,15 @@
         )[data-collapsible="icon"]
         *
     ) {
+    // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
     width: calc(var(--spacing) * 8) !important;
+    // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
+    // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
     height: calc(var(--spacing) * 8) !important;
+    // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
+    // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
     padding: calc(var(--spacing) * 2) !important;
+    // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
   }
   &:hover {
     @media (hover: hover) {
@@ -225,7 +231,9 @@
         )[data-collapsible="icon"]
         *
     ) {
+    // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
     padding: 0 !important;
+    // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
   }
 }
 
@@ -321,8 +329,6 @@
   width: var(--sidebar-width);
   background-color: #0000;
   transition-property: width;
-  transition-timing-function: var(--ease, var(--default-transition-timing-function));
-  transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .2s;
   transition-duration: 0.2s;
   --ease: linear;
@@ -418,8 +424,6 @@
   height: 100svh;
   width: var(--sidebar-width);
   transition-property: left, right, width;
-  transition-timing-function: var(--ease, var(--default-transition-timing-function));
-  transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .2s;
   transition-duration: 0.2s;
   --ease: linear;
@@ -476,16 +480,12 @@
         *
     ) {
     border-radius: 0;
+    // biome-ignore-start lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
     --shadow: 0 1px 3px 0 var(--shadow-color, #0000001a), 0 1px 2px -1px var(
       --shadow-color,
       #0000001a
     );
-    box-shadow:
-      var(--inset-shadow),
-      var(--inset-ring-shadow),
-      var(--ring-offset-shadow),
-      var(--ring-shadow),
-      var(--shadow);
+    // biome-ignore-end lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
     --ring-shadow: var(--ring-inset,) 0 0 0 calc(1px + var(--ring-offset-width)) var(
       --ring-color,
       currentcolor
@@ -519,7 +519,6 @@
   display: none;
   width: calc(var(--spacing) * 4);
   transition-property: all;
-  transition-timing-function: var(--ease, var(--default-transition-timing-function));
   transition-duration: var(--duration, var(--default-transition-duration));
   --ease: linear;
   transition-timing-function: linear;
@@ -561,11 +560,8 @@
     left: 0;
   }
   &:after {
-    content: var(--content);
     position: absolute;
-    content: var(--content);
     inset-block: 0;
-    content: var(--content);
     inset-inline-start: 50%;
     content: var(--content);
     width: 2px;
@@ -653,10 +649,12 @@
       margin: calc(var(--spacing) * 2);
       margin-left: 0;
       border-radius: 0;
+      // biome-ignore-start lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
       --shadow: 0 1px 3px 0 var(--shadow-color, #0000001a), 0 1px 2px -1px var(
         --shadow-color,
         #0000001a
       );
+      // biome-ignore-end lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
       box-shadow:
         var(--inset-shadow),
         var(--inset-ring-shadow),
@@ -781,8 +779,6 @@
     outline: 2px solid #0000;
   }
   transition-property: margin, opacity;
-  transition-timing-function: var(--ease, var(--default-transition-timing-function));
-  transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .2s;
   transition-duration: 0.2s;
   --ease: linear;
@@ -856,7 +852,6 @@
     display: none;
   }
   &:after {
-    content: var(--content);
     position: absolute;
     content: var(--content);
     inset: calc(var(--spacing) * -2);
@@ -987,7 +982,6 @@
     top: var(--spacing);
   }
   &:after {
-    content: var(--content);
     position: absolute;
     content: var(--content);
     inset: calc(var(--spacing) * -2);

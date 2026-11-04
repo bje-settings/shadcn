@@ -242,6 +242,7 @@ export const SCAFFOLD_PACKAGES = {
     '@vitejs/plugin-react',
     '@types/react',
     '@types/react-dom',
+    '@biomejs/biome',
   ],
 }
 
@@ -251,6 +252,12 @@ export function scaffoldFiles({ registryUrl, style, namespace }: Scaffold): Reco
   const json = (value: unknown) => `${JSON.stringify(value, null, 2)}\n`
   return {
     'package.json': json({ name: 'install-check', private: true, type: 'module' }),
+    // A consumer running Biome's recommended rules with no override: they
+    // must pass on every installed file.
+    'biome.json': json({
+      linter: { enabled: true, rules: { preset: 'recommended' } },
+      formatter: { enabled: false },
+    }),
     // The public registry, whatever the machine's npm configuration says.
     '.npmrc': 'registry=https://registry.npmjs.org/\n',
     'components.json': json({
@@ -386,5 +393,15 @@ export async function run(io: Io): Promise<void> {
   await io.exec('pnpm', ['exec', 'tsc', '-p', 'tsconfig.json'], io.project)
   await io.exec('pnpm', ['exec', 'vitest', 'run'], io.project)
   await io.exec('pnpm', ['exec', 'vite', 'build'], io.project)
-  io.log(`Installed, type-checked, tested and built ${items.length} items`)
+  // Every directory an item was installed into (src/components, src/hooks,
+  // src/lib), and not the scaffold's own files.
+  const installed = items.flatMap((item) =>
+    item.files.map((file) => expectedPath(file).split('/').slice(0, 2).join('/')),
+  )
+  await io.exec(
+    'pnpm',
+    ['exec', 'biome', 'lint', '--error-on-warnings', ...[...new Set(installed)].sort()],
+    io.project,
+  )
+  io.log(`Installed, type-checked, tested, built and linted ${items.length} items`)
 }

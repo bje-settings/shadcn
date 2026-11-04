@@ -44,11 +44,16 @@ const config = forStyle(
 
 const cssPath = join(root, 'upstream/base-vega/index.css')
 
-async function build(item: UpstreamItem, compiler = compile, patches?: Patches) {
+async function build(
+  item: UpstreamItem,
+  compiler = compile,
+  patches?: Patches,
+  defaults = internalDefaults,
+) {
   const prepared = await prepareComponent(item, config, cssPath, patches)
   const context = {
     slotOptions: {
-      ...sharedSlotOptions(config, [prepared], internalDefaults),
+      ...sharedSlotOptions(config, [prepared], defaults),
       markers: markerSelectors([prepared], prepared),
     },
     types: new Map(),
@@ -144,6 +149,54 @@ describe('buildComponent', () => {
     expect(pinned.files[0]?.content).not.toContain('Patched')
     expect(pinned.files[0]?.content).toContain('role="note"')
     expect(pinned.files[2]?.content.startsWith(header)).toBe(true)
+  })
+
+  // A consumer's install drops the module's leading comments.
+  it('suppresses noUnknownUnit beside the declaration Biome misreads, not in the header', async () => {
+    const [, scss] = (await build(badge(source('shadow-xs')))).files
+    expect(scss?.content).not.toContain('biome-ignore-all')
+    expect(scss?.content).toMatch(
+      /\n {2}\/\/ biome-ignore lint\/correctness\/noUnknownUnit: [^\n]+\n {2}--shadow: [^\n]*#0000000d/,
+    )
+  })
+
+  it('suppresses noUnknownUnit beside a default Biome misreads, a range for a long one', async () => {
+    const long = `0 0 ${'1px '.repeat(25)}#0000001a`
+    const defaults = new Map([
+      ...internalDefaults,
+      ['--shadow', '0 0 #0000001a'],
+      ['--ring-shadow', long],
+    ])
+    const [, scss] = (await build(badge(source('shadow-xs ring-3')), compile, undefined, defaults))
+      .files
+    const rule = 'lint/correctness/noUnknownUnit'
+    expect(scss?.content).toMatch(
+      new RegExp(`\\n {4}// biome-ignore ${rule}: [^\\n]+\\n {4}--shadow: 0 0 #0000001a;\\n`),
+    )
+    expect(scss?.content).toContain(
+      `\n    --ring-shadow: ${long};\n    // biome-ignore-end ${rule}`,
+    )
+    expect(scss?.content).toMatch(
+      new RegExp(`// biome-ignore-start ${rule}: [^\\n]+\\n {4}--ring-shadow`),
+    )
+    expect(scss?.content).not.toMatch(/biome-ignore[^\n]*\n {4}--shadow-color/)
+  })
+
+  it('leaves a slot with no rule out of the module', async () => {
+    const content = source('flex').replace(
+      '<span data-slot="badge" className={cn(badgeVariants({ className }))} />',
+      '<span data-slot="badge" className={cn(badgeVariants({ className }))}><i className="group/x" /><b className="block" /></span>',
+    )
+    const [, scss] = (await build(badge(content))).files
+    expect(scss?.content).toMatch(
+      /\n\n:where\(\.badge\) \{\n {2}display: flex;\n\}\n\n:where\(\.[a-zA-Z]+\) \{\n {2}display: block;\n\}\n$/,
+    )
+  })
+
+  it("fails the build naming a noDescendingSpecificity site the item's module lacks", async () => {
+    await expect(build({ ...badge(source('flex')), name: 'avatar' })).rejects.toThrow(
+      'scss.ts: avatar has no nested rule "& > svg" in .avatarGroupCount for its noDescendingSpecificity suppression',
+    )
   })
 
   it('leaves an unpatched item with its one header line', async () => {
@@ -251,7 +304,8 @@ describe('markerSelectors', () => {
     type: 'registry:ui',
     files: [{ path: `registry/base-vega/ui/${name}.tsx`, type: 'registry:ui', content: body }],
   })
-  const prepare = (upstream: UpstreamItem) => prepareComponent(upstream, config, cssPath)
+  // No patches: the items borrow shipped names (field, label) for made-up sources.
+  const prepare = (upstream: UpstreamItem) => prepareComponent(upstream, config, cssPath, {})
 
   it('maps markers to the data-slot of every element carrying them', async () => {
     const field = await prepare(

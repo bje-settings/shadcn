@@ -65,9 +65,7 @@
     border-color: var(--input);
   }
   &:after {
-    content: var(--content);
     position: absolute;
-    content: var(--content);
     inset-inline: calc(var(--spacing) * -3);
     content: var(--content);
     inset-block: calc(var(--spacing) * -2);
@@ -162,7 +160,6 @@
   width: calc(var(--spacing) * 2);
   height: calc(var(--spacing) * 2);
   --transform-translate-x: calc(calc(1 / 2 * 100%) * -1);
-  translate: var(--transform-translate-x) var(--transform-translate-y);
   --transform-translate-y: calc(calc(1 / 2 * 100%) * -1);
   translate: var(--transform-translate-x) var(--transform-translate-y);
   border-radius: 3.40282e38px;

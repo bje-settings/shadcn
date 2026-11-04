@@ -6,7 +6,8 @@
 // nests under the slot's class, and adjacent rules that share a selector and
 // wrappers merge. Order is preserved exactly: Tailwind emits utilities in
 // cascade order, and only adjacent blocks merge, so no declaration moves past
-// another that could override it.
+// another that could override it. A property a block sets twice keeps only
+// the declaration the cascade applies (stylesheet-lint.ts).
 //
 // Rules styling the slot's own element nest under :where(.slot), so a
 // consumer's className outranks them, the job tailwind-merge does upstream.
@@ -17,6 +18,12 @@ import postcss, { type AtRule, type Root, type Rule } from 'postcss'
 import selectorParser from 'postcss-selector-parser'
 
 import { internalName, renameInternal } from './internal.ts'
+import {
+  type Declaration,
+  misreadsHex,
+  unknownUnitSuppression,
+  winners,
+} from './stylesheet-lint.ts'
 
 // The class fragment upstream's `svg:not([class*="size-"])` defaults probe
 // for, and the attribute the mirror puts on an element without a data-slot
@@ -62,6 +69,8 @@ export type ScssBlock = {
   // property it reads or sets, to check that the two never share a name.
   internal: string[]
   external: string[]
+  // The options' cascadeOrder sites this slot printed
+  cascadeOrdered: Site[]
 }
 
 // A named font size (`text-sm`, `text-xs/relaxed`): tailwind-merge drops a
@@ -98,6 +107,44 @@ export type SlotOptions = {
   markers: Map<string, string>
   // Initial value of every internal variable, renamed (registrations())
   internalDefaults: Map<string, string>
+  // The item's CASCADE_ORDER sites
+  cascadeOrder?: readonly Site[]
+}
+
+// A nested rule, by its parent block's selector and its own, as print writes
+// them.
+export type Site = readonly [parent: string, selector: string]
+
+// Nested rules Biome's noDescendingSpecificity reports, by item: each comes
+// after a rule of higher specificity reaching the same element, which is
+// upstream's order. Moving it would move its declarations past others that
+// could override them (see the top of this file), so it keeps its place and
+// a suppression. A site an item no longer has fails the build by name
+// (checkCascadeOrder), so an upstream change that removes the pattern is seen.
+const BUBBLE_CONTENT_HOVER = '& > [data-slot="bubble-content"]:is(button, a):hover'
+export const CASCADE_ORDER: Readonly<Record<string, readonly Site[]>> = {
+  avatar: [['.avatarGroupCount', '& > svg']],
+  bubble: [
+    ['.variantOutline', BUBBLE_CONTENT_HOVER],
+    ['.variantGhost', BUBBLE_CONTENT_HOVER],
+    ['.variantDestructive', BUBBLE_CONTENT_HOVER],
+  ],
+}
+
+// Fails the build naming each of the item's CASCADE_ORDER sites that no slot
+// printed.
+export function checkCascadeOrder(
+  item: string,
+  used: readonly Site[],
+  table: Readonly<Record<string, readonly Site[]>> = CASCADE_ORDER,
+): void {
+  for (const [parent, selector] of table[item] ?? []) {
+    if (!used.some(([p, s]) => p === parent && s === selector)) {
+      throw new Error(
+        `scss.ts: ${item} has no nested rule "${selector}" in ${parent} for its noDescendingSpecificity suppression`,
+      )
+    }
+  }
 }
 
 type Item = { decl: string } | Block
@@ -105,6 +152,16 @@ type Block = { key: string; items: Item[] }
 
 function isBlock(item: Item | undefined): item is Block {
   return item !== undefined && 'items' in item
+}
+
+const IMPORTANT = ' !important'
+
+function declarationOf(item: Item): Declaration | undefined {
+  if (isBlock(item)) return undefined
+  return {
+    prop: item.decl.slice(0, item.decl.indexOf(':')),
+    important: item.decl.endsWith(IMPORTANT),
+  }
 }
 
 function wrappersOf(rule: Rule, layer: AtRule): string[] {
@@ -206,14 +263,40 @@ function insert(root: Block, path: string[], decls: string[]): void {
     }
   }
   block.items.push(...decls.map((decl) => ({ decl })))
+  block.items = winners(block.items, declarationOf)
 }
 
-function print(block: Block, depth: number): string[] {
+// A class with upstream's `!` modifier compiles to !important, which a
+// consumer's className cannot override upstream either, so it stays. A range,
+// not a next-line suppression: the formatter spreads a long value over lines
+// and Biome reports the line !important is on.
+const IMPORTANT_IGNORE = "lint/complexity/noImportantStyles: upstream's ! modifier"
+const CASCADE_IGNORE =
+  "// biome-ignore lint/style/noDescendingSpecificity: upstream's cascade order; moving the rule would move a declaration past another"
+
+function print(block: Block, depth: number, sites: readonly Site[], used: Site[]): string[] {
   const indent = '  '.repeat(depth)
   const lines = [`${indent}${block.key} {`]
   for (const item of block.items) {
-    if (isBlock(item)) lines.push(...print(item, depth + 1))
-    else lines.push(`${indent}  ${item.decl};`)
+    if (isBlock(item)) {
+      const site = sites.find(([parent, selector]) => parent === block.key && selector === item.key)
+      if (site) {
+        lines.push(`${indent}  ${CASCADE_IGNORE}`)
+        used.push(site)
+      }
+      lines.push(...print(item, depth + 1, sites, used))
+    } else {
+      const line = `${indent}  ${item.decl}`
+      const colon = item.decl.indexOf(':')
+      const misread = misreadsHex(item.decl.slice(0, colon), item.decl.slice(colon + 1))
+      const { before, after } = misread ? unknownUnitSuppression(line) : {}
+      const important = item.decl.endsWith(IMPORTANT)
+      if (important) lines.push(`${indent}  // biome-ignore-start ${IMPORTANT_IGNORE}`)
+      if (before) lines.push(before)
+      lines.push(`${line};`)
+      if (after) lines.push(after)
+      if (important) lines.push(`${indent}  // biome-ignore-end ${IMPORTANT_IGNORE}`)
+    }
   }
   lines.push(`${indent}}`)
   return lines
@@ -419,7 +502,7 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
       }
       if (prop.startsWith('--')) sets.add(prop)
       for (const [, name] of value.matchAll(/var\((--[\w-]+)/g)) reads.add(name as string)
-      decls.push(`${prop}: ${value}${decl.important ? ' !important' : ''}`)
+      decls.push(`${prop}: ${value}${decl.important ? IMPORTANT : ''}`)
     })
     if (internal) for (const n of nested) users.add(defaultTarget(n.selector, slot.name))
     // Any other selector inspecting class names looks for Tailwind classes no
@@ -450,10 +533,13 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
   if (unknown.length > 0) {
     throw new Error(`${slot.name}: Tailwind produced no CSS for ${unknown.join(' ')}`)
   }
+  const cascadeOrdered: Site[] = []
   return {
+    // An empty root block is left out: Sass drops it anyway, so the module
+    // exports the same classes, and Biome reports it (noEmptyBlock).
     scss: [root, context]
-      .filter((block) => block === root || block.items.length > 0)
-      .flatMap((block) => print(block, 0))
+      .filter((block) => block.items.length > 0)
+      .flatMap((block) => print(block, 0, options.cascadeOrder ?? [], cascadeOrdered))
       .join('\n'),
     unresolved,
     customProperties: [...reads]
@@ -478,5 +564,6 @@ export function slotToScss(css: string, slot: Slot, options: SlotOptions): ScssB
     defaultSelectors: [...users].sort(),
     internal: [...internalNames].sort(),
     external: [...new Set([...reads, ...sets])].filter((name) => !internalNames.has(name)).sort(),
+    cascadeOrdered,
   }
 }

@@ -348,8 +348,14 @@ describe('scaffoldFiles', () => {
     expect(files['src/main.ts']).toContain(
       "['./**/*.{ts,tsx,css,scss}', '!./**/*.test.{ts,tsx}', '!./main.ts']",
     )
+    // Biome's recommended rules and nothing else, as a consumer would run them.
+    expect(JSON.parse(files['biome.json'] as string)).toEqual({
+      linter: { enabled: true, rules: { preset: 'recommended' } },
+      formatter: { enabled: false },
+    })
     expect(Object.keys(files).sort()).toEqual([
       '.npmrc',
+      'biome.json',
       'components.json',
       'index.html',
       'package.json',
@@ -488,20 +494,21 @@ describe('run', () => {
     }
   }
 
-  it('scaffolds, installs every catalog item, then type-checks, tests and builds', async () => {
+  it('scaffolds, installs every catalog item, then type-checks, tests, builds and lints', async () => {
     await run(io())
     expect(calls).toEqual([
       'pnpm add react@1.0.0 react-dom@1.0.0 @ project',
-      'pnpm add -D typescript@1.0.0 vite@1.0.0 @vitejs/plugin-react@1.0.0 @types/react@1.0.0 @types/react-dom@1.0.0 @ project',
+      'pnpm add -D typescript@1.0.0 vite@1.0.0 @vitejs/plugin-react@1.0.0 @types/react@1.0.0 @types/react-dom@1.0.0 @biomejs/biome@1.0.0 @ project',
       `pnpm exec shadcn add @bje/cn @bje/button --yes --cwd ${join(dir, 'p')} @ root`,
       'pnpm exec tsc -p tsconfig.json @ project',
       'pnpm exec vitest run @ project',
       'pnpm exec vite build @ project',
+      'pnpm exec biome lint --error-on-warnings src/components src/lib @ project',
     ])
     expect(readFileSync(join(dir, 'p/src/main.ts'), 'utf8')).toContain('import.meta.glob(')
     expect(logs).toEqual([
       `Installing 2 items of @bje from ${join(dir, 'r')} into ${join(dir, 'p')}`,
-      'Installed, type-checked, tested and built 2 items',
+      'Installed, type-checked, tested, built and linted 2 items',
     ])
     await expect(fetch(served as string)).rejects.toThrow()
   })
@@ -547,6 +554,7 @@ describe('run', () => {
     ['tsc', 4],
     ['vitest', 5],
     ['vite build', 6],
+    ['biome lint', 7],
   ])('fails, and stops, when %s fails', async (failing, count) => {
     await expect(run(io({ failing }))).rejects.toThrow(failing)
     expect(calls).toHaveLength(count)

@@ -49,11 +49,7 @@
     transparent 100%
   );
   -webkit-mask-image: var(--scroll-fade-mask);
-  -webkit-mask-image: var(--scroll-fade-mask);
-  -webkit-mask-image: var(--scroll-fade-mask);
   mask-image: var(--scroll-fade-mask);
-  -webkit-mask-composite: source-in;
-  -webkit-mask-composite: source-in;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-composite: source-in;
@@ -74,7 +70,6 @@
   contain: content;
   &[data-autoscrolling] {
     --scrollbar-thumb: transparent;
-    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
     --scrollbar-track: transparent;
     scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
   }
@@ -108,7 +103,6 @@
   color: var(--foreground);
   transition-property: translate, scale, opacity;
   transition-timing-function: var(--ease, var(--default-transition-timing-function));
-  transition-duration: var(--duration, var(--default-transition-duration));
   --duration: .2s;
   transition-duration: 0.2s;
   &:hover {

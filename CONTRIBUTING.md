@@ -106,13 +106,13 @@ Everything else reads `upstream.styles` and `derived`: the vitest projects, the 
 `.github/workflows/ci.yml` runs on every pull request and every push to `main`. The repository
 ruleset Require CI requires five checks by job name; renaming a job needs the ruleset updated too.
 
-| Check    | Passes when                                                                                       |
-| -------- | ------------------------------------------------------------------------------------------------- |
+| Check    | Passes when                                                                                                                          |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | `build`  | `pnpm build` and `pnpm build:showcase` succeed and write a non-empty registry and a showcase page for every style, and the root page |
-| `vitest` | Every `vitest-leg (<leg>)` passes and their merged coverage is 100, with every leg's files in it   |
-| `types`  | `tsc` passes on the scripts, every registry project, the A/B harness and each style's harness inputs |
-| `biome`  | `biome ci . --error-on-warnings` passes                                                            |
-| `ab`     | Every `ab-style (<style>)` leg passes or skips its comparison and showcase test, and so does `frost` |
+| `vitest` | Every `vitest-leg (<leg>)` passes and their merged coverage is 100, with every leg's files in it                                     |
+| `types`  | `tsc` passes on the scripts, every registry project, the A/B harness and each style's harness inputs                                 |
+| `biome`  | `biome ci . --error-on-warnings` passes                                                                                              |
+| `ab`     | Every `ab-style (<style>)` leg passes or skips its comparison and showcase test, and so does `frost`                                 |
 
 `vitest` and `ab` are fan-ins over one leg per style (for `ab`, per upstream style, plus the
 `frost` job), so the required names hold whatever the styles. `vitest` has one more leg,
@@ -140,7 +140,8 @@ every item of the first style in `upstream.styles`, served locally from `public/
 a file not at its alias, an import left pointing at `@/registry/`, a package imported that neither
 the item nor an item it reaches through `registryDependencies` declares, an item imported that
 those do not reach, a registry dependency that names no item of the style by its namespace, a
-pinned version not installed, a type error, a failing shipped test, or a failed `vite build`. It
+pinned version not installed, a type error, a failing shipped test, a failed `vite build`, or a
+finding of Biome's recommended rules, with no override, in an installed file. It
 skips, and still reports success, on a draft, or when the change touches only Markdown, `.claude/`,
 `ab/`, the scripts' tests, `lefthook.yml`, `biome.json`, `vitest.config.ts`, and other styles'
 `registry/<style>/` (every derived style's included) or `upstream/base-<style>/`.

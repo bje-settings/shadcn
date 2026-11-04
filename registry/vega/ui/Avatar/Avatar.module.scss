@@ -41,16 +41,11 @@
   -webkit-user-select: none;
   user-select: none;
   &:after {
-    content: var(--content);
     position: absolute;
-    content: var(--content);
     inset: 0;
-    content: var(--content);
     border-radius: 3.40282e38px;
-    content: var(--content);
     border-style: var(--border-style);
     border-width: 1px;
-    content: var(--content);
     border-color: var(--border);
     content: var(--content);
     mix-blend-mode: darken;
@@ -201,6 +196,7 @@
   }
 }
 .avatarGroupCount {
+  // biome-ignore lint/style/noDescendingSpecificity: upstream's cascade order; moving the rule would move a declaration past another
   & > svg {
     width: calc(var(--spacing) * 4);
     height: calc(var(--spacing) * 4);

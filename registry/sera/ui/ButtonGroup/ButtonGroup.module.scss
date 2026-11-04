@@ -202,15 +202,15 @@
   }
 }
 
-:where(.orientationHorizontal) {
-}
 .orientationHorizontal {
   :is(& > *)[data-slot] {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
   }
   & > [data-slot]:not(:has(~ [data-slot])) {
+    // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
     border-radius: 0 !important;
+    // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
   }
   & > [data-slot] ~ [data-slot] {
     border-top-left-radius: 0;
@@ -229,7 +229,9 @@
     border-bottom-left-radius: 0;
   }
   & > [data-slot]:not(:has(~ [data-slot])) {
+    // biome-ignore-start lint/complexity/noImportantStyles: upstream's ! modifier
     border-radius: 0 !important;
+    // biome-ignore-end lint/complexity/noImportantStyles: upstream's ! modifier
   }
   & > [data-slot] ~ [data-slot] {
     border-top-left-radius: 0;

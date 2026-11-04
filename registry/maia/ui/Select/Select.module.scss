@@ -161,7 +161,6 @@
   :is(& > *)[data-slot="select-value"] {
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
-    display: -webkit-box;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -277,12 +276,6 @@
   background-color: var(--popover);
   color: var(--popover-foreground);
   --shadow: 0 25px 50px -12px var(--shadow-color, #00000040);
-  box-shadow:
-    var(--inset-shadow),
-    var(--inset-ring-shadow),
-    var(--ring-offset-shadow),
-    var(--ring-shadow),
-    var(--shadow);
   --ring-shadow: var(--ring-inset,) 0 0 0 calc(1px + var(--ring-offset-width)) var(
     --ring-color,
     currentcolor

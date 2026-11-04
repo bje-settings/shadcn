@@ -40,6 +40,7 @@
   border-style: var(--border-style);
   border-width: 1px;
   border-color: #0000;
+  // biome-ignore lint/correctness/noUnknownUnit: Biome reads a digit-led hex colour in a custom property as a number and a unit (biomejs/biome#12332)
   --shadow: 0 1px 2px 0 var(--shadow-color, #0000000d);
   box-shadow:
     var(--inset-shadow),
@@ -66,9 +67,7 @@
       var(--shadow);
   }
   &:after {
-    content: var(--content);
     position: absolute;
-    content: var(--content);
     inset-inline: calc(var(--spacing) * -3);
     content: var(--content);
     inset-block: calc(var(--spacing) * -2);

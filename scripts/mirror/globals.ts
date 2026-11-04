@@ -15,10 +15,17 @@
 // Utilities are the components' own CSS and live in their modules. Anything
 // else at the top level fails the build rather than being guessed at.
 
-import postcss, { type ChildNode, type Container } from 'postcss'
+import postcss, {
+  type AtRule,
+  type ChildNode,
+  type Container,
+  type Declaration,
+  type Rule,
+} from 'postcss'
 
 import { renameInternal } from './internal.ts'
 import type { FontItem } from './project-css.ts'
+import { misreadsHex, unknownUnitSuppression, winners } from './stylesheet-lint.ts'
 
 export type GlobalStylesheets = { variables: string; base: string }
 
@@ -58,6 +65,92 @@ function removeEmpty(container: Container): void {
   }
 }
 
+const IMPORTANT_IGNORE =
+  "// biome-ignore lint/complexity/noImportantStyles: Tailwind's preflight keeps a hidden element hidden whatever display another rule gives it"
+
+// Preflight's [hidden]:where(...) rule, one compound selector on the hidden
+// element itself: no list, no combinator.
+const HIDDEN = /^\[hidden\][^\s>+~]*$/
+
+// A line comment, on its own line, last before a node, at the node's
+// indentation: postcss sets raws.before on every node it parses.
+function commentBefore(node: ChildNode, comment: string): void {
+  const raw = node.raws.before as string
+  const before = raw.includes('\n') ? raw : `\n${raw}`
+  node.raws.before = `${before}${comment}${before.slice(before.lastIndexOf('\n'))}`
+}
+
+// What follows a line comment starts on a line of its own.
+const onNewLine = (raw: string) => (raw.includes('\n') ? raw : `\n${raw}`)
+
+// Each declaration Biome misreads (noUnknownUnit) gets a suppression. Its form
+// depends on the line the formatter prints: at the declaration's depth, with
+// internal names renamed (renameInternal runs on this output), and without a
+// last declaration's trailing space.
+function suppressUnknownUnits(top: Container): void {
+  const ends: [Declaration, string][] = []
+  top.walkDecls((decl) => {
+    if (!misreadsHex(decl.prop, decl.value)) return
+    let depth = 0
+    for (let node = decl.parent; node && node.type !== 'root'; node = node.parent) depth++
+    const indent = '  '.repeat(depth)
+    const { before, after } = unknownUnitSuppression(
+      renameInternal(`${indent}${decl.prop}: ${decl.value.trimEnd()}`),
+    )
+    commentBefore(decl, before.trimStart())
+    if (after !== undefined) ends.push([decl, `\n${after}`])
+  })
+  // After every start, so an end lands before the next declaration's start.
+  for (const [decl, end] of ends) {
+    const next = decl.next()
+    if (next) next.raws.before = `${end}${onNewLine(next.raws.before as string)}`
+    else {
+      // postcss keeps a custom property's trailing space in its value when no
+      // semicolon ends it: move the space after the end comment, and end the
+      // declaration with a semicolon before the comment.
+      const space = decl.value.slice(decl.value.trimEnd().length)
+      decl.value = decl.value.trimEnd()
+      const parent = decl.parent as Container
+      parent.raws.semicolon = true
+      parent.raws.after = `${end}${onNewLine(`${space}${parent.raws.after}`)}`
+    }
+  }
+}
+
+// Each block keeps one declaration per property (stylesheet-lint.ts), and an
+// !important one, preflight's [hidden] display rule, gets a suppression on the
+// line before it. The reason is that rule's, so an !important declaration
+// anywhere else fails the build by name, to be given a reason of its own. Each
+// custom property Biome misreads gets its noUnknownUnit suppression.
+function forBiome(top: Container): void {
+  const containers: Container[] = [top]
+  top.walk((node) => {
+    if (node.type === 'rule' || node.type === 'atrule') containers.push(node)
+  })
+  for (const container of containers) {
+    const nodes = container.nodes ?? []
+    const kept = new Set(
+      winners(nodes, (node) =>
+        node.type === 'decl' ? { prop: node.prop, important: node.important } : undefined,
+      ),
+    )
+    for (const node of nodes.filter((n) => !kept.has(n))) node.remove()
+  }
+  top.walkDecls((decl) => {
+    if (!decl.important) return
+    const parent = decl.parent as Rule | AtRule
+    const selector = parent.type === 'rule' ? parent.selector : `@${parent.name}`
+    const hidden = parent.type === 'rule' && parent.selectors.every((s) => HIDDEN.test(s))
+    if (!hidden || decl.prop !== 'display') {
+      throw new Error(
+        `globals: ${decl.prop} in ${selector} is !important outside preflight's [hidden] display rule`,
+      )
+    }
+    commentBefore(decl, IMPORTANT_IGNORE)
+  })
+  suppressUnknownUnits(top)
+}
+
 export function globalStylesheets(css: string, header: string): GlobalStylesheets {
   const parts: Record<Destination, string[]> = { variables: [], base: [], drop: [] }
   const root = postcss.parse(css)
@@ -69,7 +162,12 @@ export function globalStylesheets(css: string, header: string): GlobalStylesheet
       })
   })
   removeEmpty(root)
-  for (const node of root.nodes) parts[destination(node)].push(renameInternal(node.toString()))
+  for (const node of root.nodes) {
+    const to = destination(node)
+    // Only what ships: a dropped utility's !important is not preflight's.
+    if (to !== 'drop') forBiome(node as Container)
+    parts[to].push(renameInternal(node.toString()))
+  }
   const file = (blocks: string[], extra: string[] = []) =>
     [header, ...extra, '', blocks.join('\n\n'), ''].join('\n')
   return {
