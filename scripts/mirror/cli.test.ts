@@ -89,10 +89,6 @@ function io(status = 200): Io {
 
 const read = async (path: string) => readFile(join(root, path), 'utf8')
 
-// A build compiles every style's classes with Tailwind, which takes longer than
-// vitest's default timeout on CI's runners. Each describe that builds ends with a
-// 30_000 timeout, a literal: Biome reindents the whole body for a named one.
-
 beforeEach(async () => {
   root = await mkdtemp(join(tmpdir(), 'mirror-'))
   logs = []
@@ -134,6 +130,10 @@ afterEach(async () => {
   await rm(root, { recursive: true, force: true })
 })
 
+// A build compiles every style's classes with Tailwind, which takes longer than
+// vitest's default timeout on CI's runners. Each describe that builds ends with a
+// 30_000 timeout: the options form trips Biome's usePlaywrightValidDescribeCallback,
+// and Biome reindents the whole body for a named constant.
 describe('mirror fetch', () => {
   it("snapshots each upstream style's items and theme sources, and Typeset once", async () => {
     await run(['fetch'], io())

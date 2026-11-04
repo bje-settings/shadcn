@@ -90,7 +90,7 @@ export type Sites = Array<[what: string, node: Node | undefined]>
 // next line. Among JSX children it is `{/* */}`, as `//` there would be text;
 // elsewhere (a statement, an object property, a returned element) it is `//`.
 // A named site that is gone fails the build by name; naming no site changes
-// nothing, so applyPatch reports the patch as absorbed.
+// nothing, so applyPatch fails the build as absorbed.
 export function suppress(
   source: string,
   rule: string,

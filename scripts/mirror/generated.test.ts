@@ -27,8 +27,8 @@ async function files(base: string, dir: string): Promise<string[]> {
 }
 
 // Where each declaration of a variable sits: its enclosing at-rules and rules,
-// and whether it is !important. A selector list reads as on one line, as Sass
-// prints it, whatever line breaks the formatter gave it.
+// and whether it is !important. A selector list reads as on one line, whatever
+// line breaks the formatter gave it, since Sass keeps them.
 function placements(css: string, variable: string): string[][] {
   const found: string[][] = []
   postcss.parse(css).walkDecls(variable, (decl) => {
